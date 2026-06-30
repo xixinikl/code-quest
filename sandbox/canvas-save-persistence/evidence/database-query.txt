@@ -1,0 +1,2 @@
+sqlite> SELECT id, owner_id, title FROM canvases WHERE owner_id = 'user_01';
+-- 0 rows

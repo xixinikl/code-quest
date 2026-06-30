@@ -1,0 +1,5 @@
+2026-06-30T09:12:41.203Z INFO request.start method=POST path=/api/canvases user=user_01
+2026-06-30T09:12:41.218Z INFO canvas.create canvasId=canvas_9f2 ownerId=user_01 status=created
+2026-06-30T09:12:41.220Z INFO request.end method=POST path=/api/canvases status=201 durationMs=18
+2026-06-30T09:12:45.011Z INFO request.start method=GET path=/api/canvases user=user_01
+2026-06-30T09:12:45.015Z INFO request.end method=GET path=/api/canvases status=200 count=0 durationMs=4

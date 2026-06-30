@@ -1,0 +1,23 @@
+{
+  "request": {
+    "method": "POST",
+    "url": "/api/canvases",
+    "body": {
+      "title": "首页构思",
+      "content": "{\"objects\":[{\"type\":\"rect\"}]}"
+    }
+  },
+  "response": {
+    "status": 201,
+    "body": {
+      "id": "canvas_9f2",
+      "ownerId": "user_01",
+      "title": "首页构思"
+    },
+    "durationMs": 18
+  },
+  "followUp": {
+    "action": "refresh-browser",
+    "visibleCanvases": []
+  }
+}
