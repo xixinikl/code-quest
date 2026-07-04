@@ -2,7 +2,7 @@ import { mkdirSync } from "node:fs";
 import { dirname } from "node:path";
 import { DatabaseSync } from "node:sqlite";
 
-export const SCHEMA_VERSION = 1;
+export const SCHEMA_VERSION = 2;
 
 const migrationV1 = `
   CREATE TABLE IF NOT EXISTS schema_migrations (
@@ -69,6 +69,21 @@ const migrationV1 = `
     ON evidence_records(skill_id, created_at DESC);
 `;
 
+const migrationV2 = `
+  CREATE TABLE IF NOT EXISTS teaching_progress (
+    attempt_id TEXT NOT NULL REFERENCES attempts(id) ON DELETE CASCADE,
+    step_id TEXT NOT NULL,
+    completed INTEGER NOT NULL DEFAULT 0,
+    teaching_response_json TEXT NOT NULL DEFAULT '{}',
+    remediation_events_json TEXT NOT NULL DEFAULT '[]',
+    updated_at TEXT NOT NULL,
+    PRIMARY KEY (attempt_id, step_id)
+  );
+
+  CREATE INDEX IF NOT EXISTS idx_teaching_progress_attempt
+    ON teaching_progress(attempt_id);
+`;
+
 export type LearningDatabase = DatabaseSync;
 
 export function openDatabase(path: string): LearningDatabase {
@@ -99,6 +114,20 @@ function migrate(db: LearningDatabase) {
       db.prepare(
         "INSERT INTO schema_migrations (version, applied_at) VALUES (?, ?)",
       ).run(1, new Date().toISOString());
+      db.exec("COMMIT");
+    } catch (error) {
+      db.exec("ROLLBACK");
+      throw error;
+    }
+  }
+
+  if (!applied.includes(2)) {
+    db.exec("BEGIN IMMEDIATE");
+    try {
+      db.exec(migrationV2);
+      db.prepare(
+        "INSERT INTO schema_migrations (version, applied_at) VALUES (?, ?)",
+      ).run(2, new Date().toISOString());
       db.exec("COMMIT");
     } catch (error) {
       db.exec("ROLLBACK");

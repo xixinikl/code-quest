@@ -299,4 +299,112 @@ export class LearningStore {
       createdAt: String(row.created_at),
     }));
   }
+
+  /** 获取教学步骤进度 */
+  getTeachingProgress(attemptId: string) {
+    this.getAttempt(attemptId); // 验证 attempt 存在
+    const rows = this.db
+      .prepare(
+        `SELECT step_id, completed, teaching_response_json,
+                remediation_events_json, updated_at
+         FROM teaching_progress
+         WHERE attempt_id = ?
+         ORDER BY updated_at`,
+      )
+      .all(attemptId) as Array<{
+      step_id: string;
+      completed: number;
+      teaching_response_json: string;
+      remediation_events_json: string;
+      updated_at: string;
+    }>;
+
+    return rows.map((row) => ({
+      stepId: row.step_id,
+      completed: row.completed === 1,
+      teachingResponse: JSON.parse(row.teaching_response_json),
+      remediationEvents: JSON.parse(row.remediation_events_json),
+      updatedAt: row.updated_at,
+    }));
+  }
+
+  /** 保存教学步骤进度 */
+  saveTeachingProgress(
+    attemptId: string,
+    stepId: string,
+    response: unknown,
+    completed: boolean,
+  ) {
+    this.getAttempt(attemptId); // 验证 attempt 存在
+    const now = new Date().toISOString();
+    const existing = this.db
+      .prepare(
+        `SELECT teaching_response_json FROM teaching_progress
+         WHERE attempt_id = ? AND step_id = ?`,
+      )
+      .get(attemptId, stepId) as { teaching_response_json: string } | undefined;
+
+    const existingResponse = existing
+      ? JSON.parse(existing.teaching_response_json)
+      : {};
+    const mergedResponse = { ...existingResponse, ...(response as object) };
+
+    this.db
+      .prepare(
+        `INSERT INTO teaching_progress
+         (attempt_id, step_id, completed, teaching_response_json,
+          remediation_events_json, updated_at)
+         VALUES (?, ?, ?, ?, '[]', ?)
+         ON CONFLICT(attempt_id, step_id)
+         DO UPDATE SET completed = excluded.completed,
+                       teaching_response_json = excluded.teaching_response_json,
+                       updated_at = excluded.updated_at`,
+      )
+      .run(
+        attemptId,
+        stepId,
+        completed ? 1 : 0,
+        JSON.stringify(mergedResponse),
+        now,
+      );
+    return this.getTeachingProgress(attemptId);
+  }
+
+  /** 记录补课事件 */
+  recordRemediation(attemptId: string, stepId: string, trigger: string) {
+    this.getAttempt(attemptId);
+    const now = new Date().toISOString();
+    const existing = this.db
+      .prepare(
+        `SELECT remediation_events_json FROM teaching_progress
+         WHERE attempt_id = ? AND step_id = ?`,
+      )
+      .get(attemptId, stepId) as
+      { remediation_events_json: string } | undefined;
+
+    const events = existing ? JSON.parse(existing.remediation_events_json) : [];
+    events.push({ trigger, timestamp: now });
+
+    this.db
+      .prepare(
+        `INSERT INTO teaching_progress
+         (attempt_id, step_id, completed, teaching_response_json,
+          remediation_events_json, updated_at)
+         VALUES (?, ?, 0, '{}', ?, ?)
+         ON CONFLICT(attempt_id, step_id)
+         DO UPDATE SET remediation_events_json = excluded.remediation_events_json,
+                       updated_at = excluded.updated_at`,
+      )
+      .run(attemptId, stepId, JSON.stringify(events), now);
+    return this.getTeachingProgress(attemptId);
+  }
+
+  /** 重置教学进度 */
+  resetTeachingProgress(attemptId: string) {
+    this.getAttempt(attemptId);
+    this.db
+      .prepare("DELETE FROM teaching_progress WHERE attempt_id = ?")
+      .run(attemptId);
+    return [];
+  }
 }

@@ -123,6 +123,57 @@ async function route(
     return sendJson(response, 200, store.submitAttempt(submitMatch[1]));
   }
 
+  const teachingMatch = url.pathname.match(
+    /^\/api\/attempts\/([^/]+)\/teaching$/,
+  );
+  if (method === "GET" && teachingMatch) {
+    return sendJson(response, 200, store.getTeachingProgress(teachingMatch[1]));
+  }
+
+  const teachingStepMatch = url.pathname.match(
+    /^\/api\/attempts\/([^/]+)\/teaching\/([^/]+)$/,
+  );
+  if (method === "PATCH" && teachingStepMatch) {
+    const body = await readJson(request);
+    return sendJson(
+      response,
+      200,
+      store.saveTeachingProgress(
+        teachingStepMatch[1],
+        teachingStepMatch[2],
+        body.response,
+        body.completed === true,
+      ),
+    );
+  }
+
+  const remediationMatch = url.pathname.match(
+    /^\/api\/attempts\/([^/]+)\/teaching\/([^/]+)\/remediation$/,
+  );
+  if (method === "POST" && remediationMatch) {
+    const body = await readJson(request);
+    return sendJson(
+      response,
+      200,
+      store.recordRemediation(
+        remediationMatch[1],
+        remediationMatch[2],
+        String(body.trigger),
+      ),
+    );
+  }
+
+  const teachingResetMatch = url.pathname.match(
+    /^\/api\/attempts\/([^/]+)\/teaching\/reset$/,
+  );
+  if (method === "POST" && teachingResetMatch) {
+    return sendJson(
+      response,
+      200,
+      store.resetTeachingProgress(teachingResetMatch[1]),
+    );
+  }
+
   if (method === "GET" && url.pathname === "/api/evidence") {
     return sendJson(response, 200, { evidence: store.getEvidence() });
   }

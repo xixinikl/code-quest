@@ -49,25 +49,45 @@ afterEach(() => {
 });
 
 describe("证据式学习入口", () => {
-  it("以自由回答采集无提示基线，而不是让用户自评技能等级", async () => {
+  it("打开显示游戏封面，点击后直接进入教学桥，不显示无聊的基线", async () => {
+    const user = userEvent.setup();
     vi.stubGlobal(
       "fetch",
-      vi.fn((input: RequestInfo | URL) => {
+      vi.fn((input: RequestInfo | URL, init?: RequestInit) => {
         const url = String(input);
         if (url === "/api/health") return response({ status: "ok" });
         if (url === "/api/diagnostic-sessions") {
           return response(diagnosticActive, 201);
         }
+        if (url === "/api/diagnostic-sessions/diagnostic-001") {
+          return response(diagnosticCompleted);
+        }
+        if (url === "/api/attempts" && init?.method === "POST") {
+          return response(attempt, 201);
+        }
+        if (url === "/api/scenarios/canvas-save-persistence") {
+          return response({ scenarioId: "canvas-save-persistence", artifacts });
+        }
+        if (url.includes("/steps/baseline-plan")) {
+          return response(attempt);
+        }
+        if (url.includes("/teaching")) return response([]);
         return response({ error: "NOT_FOUND", message: "unexpected" }, 404);
       }),
     );
 
     render(<App />);
 
-    expect(await screen.findByText("刷新后消失？")).toBeInTheDocument();
-    expect(screen.getByText(/先不看代码、不看提示/)).toBeInTheDocument();
-    expect(screen.getAllByRole("textbox")).toHaveLength(3);
-    expect(screen.queryByText("项目流程")).not.toBeInTheDocument();
+    // 游戏封面显示
+    await screen.findByRole("heading", { name: /码上冒险/ }, { timeout: 3000 });
+    expect(screen.getByText(/化身侦探/)).toBeInTheDocument();
+
+    // 点击 Case 001 — 自动跳过基线
+    const startBtn = screen.getByRole("button", { name: /开始调查/ });
+    await user.click(startBtn);
+
+    // 直接进入教学桥
+    expect(await screen.findByText("CASE 001")).toBeInTheDocument();
     expect(localStorage.length).toBe(0);
   });
 
@@ -106,34 +126,35 @@ describe("证据式学习入口", () => {
             },
           });
         }
+        // 教学桥进度：未完成 → 显示教学桥
+        if (url.includes("/teaching")) {
+          return response([]);
+        }
         return response({ error: "NOT_FOUND", message: "unexpected" }, 404);
       }),
     );
 
     render(<App />);
-    const textareas = await screen.findAllByRole("textbox");
-    await user.type(
-      textareas[0],
-      "先稳定复现问题，再查看 Network 请求，最后直接查询数据库，因为要逐层确定断点。",
-    );
-    await user.type(
-      textareas[1],
-      "我需要请求响应、后端日志和数据库查询，三者不能互相替代。",
-    );
-    await user.type(
-      textareas[2],
-      "用户点击按钮，前端发送请求，后端路由处理，再由数据访问层写入 SQLite。",
-    );
-    await user.click(
-      screen.getByRole("button", { name: /封存基线，进入真实项目/ }),
-    );
+
+    // 游戏封面 → 点击 Case 001
+    const gameStartBtn = await screen.findByRole("button", {
+      name: /开始调查/,
+    });
+    await user.click(gameStartBtn);
+
+    // 基线自动跳过，直接进入教学桥
+    expect(await screen.findByText("CASE 001")).toBeInTheDocument();
+
+    // 点击教学桥的「开始调查」进入教学
+    const teachStartBtn = screen.getByRole("button", { name: /开始调查/ });
+    await user.click(teachStartBtn);
 
     expect(
       await screen.findByRole("heading", {
-        name: "根据真实代码和运行证据，提出你的故障假设",
+        name: /项目地图/,
       }),
     ).toBeInTheDocument();
-    expect(screen.getByText(/不执行终端命令/)).toBeInTheDocument();
+    expect(screen.getByText(/教学模式/)).toBeInTheDocument();
     expect(localStorage.length).toBe(0);
   });
 });

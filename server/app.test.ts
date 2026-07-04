@@ -53,7 +53,7 @@ describe("本地学习 API", () => {
     expect(body).toEqual({
       status: "ok",
       database: "connected",
-      schemaVersion: 1,
+      schemaVersion: 2,
       safetyMode: "manual-sandbox-no-shell",
     });
     expect(JSON.stringify(body)).not.toContain("/Users/");

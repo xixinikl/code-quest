@@ -1,4 +1,13 @@
+import { TeachingBridge } from "./TeachingBridge";
+import { case02Scenario, teachingScenario } from "./teaching";
 import { useEffect, useMemo, useState } from "react";
+import {
+  loadDetective,
+  awardXP,
+  markCaseSolved,
+  type DetectiveProfile,
+  RANK_ICONS,
+} from "./detective";
 import {
   AlertTriangle,
   ArrowRight,
@@ -875,6 +884,11 @@ export default function App() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [reloadKey, setReloadKey] = useState(0);
+  const [teachingComplete, setTeachingComplete] = useState(false);
+  const [detective, setDetective] = useState<DetectiveProfile>(loadDetective);
+  const [currentCase, setCurrentCase] = useState(1);
+  const [showCaseSelect, setShowCaseSelect] = useState(false);
+  const [showGameIntro, setShowGameIntro] = useState(true);
 
   useEffect(() => {
     let cancelled = false;
@@ -900,6 +914,21 @@ export default function App() {
           if (cancelled) return;
           setAttempt(currentAttempt);
           setArtifacts(scenario.artifacts);
+          // 恢复时检查教学进度
+          try {
+            const teaching = await api<
+              Array<{ stepId: string; completed: boolean }>
+            >(`/api/attempts/${currentAttempt.id}/teaching`);
+            const allSteps = teachingScenario.steps;
+            const allDone =
+              allSteps.length > 0 &&
+              allSteps.every((step) =>
+                teaching.find((t) => t.stepId === step.id && t.completed),
+              );
+            if (allDone) setTeachingComplete(true);
+          } catch {
+            // 新 schema 下没有 teaching_progress 记录=未完成教学
+          }
         }
       } catch (cause) {
         if (!cancelled) {
@@ -943,6 +972,7 @@ export default function App() {
     setDiagnostic(saved);
     setAttempt(withBaseline);
     setArtifacts(scenario.artifacts);
+    // 教学桥默认未完成——TeachingBridge 会从服务端恢复进度
   };
 
   if (loading) return <Loading message="正在连接本地学习记录…" />;
@@ -955,12 +985,276 @@ export default function App() {
     );
   }
   if (!diagnostic) return <Loading message="正在建立诊断会话…" />;
+
+  // 游戏封面 — 最先展示
+  if (showGameIntro) {
+    return (
+      <section className="intro">
+        <div className="intro-bg" />
+        <div className="intro-content">
+          <div className="intro-detective">
+            {RANK_ICONS[detective.rank]} {detective.rank} · {detective.xp} XP
+          </div>
+          <h1 className="intro-title" style={{ marginBottom: 8 }}>
+            码上冒险
+          </h1>
+          <p className="intro-desc" style={{ marginBottom: 28 }}>
+            化身侦探，调查真实代码故障。每一个 Bug 都是一桩悬案。
+          </p>
+
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: 14,
+              marginBottom: 28,
+            }}
+          >
+            {/* Case 001 */}
+            <div
+              className="intro-case"
+              style={{
+                padding: "18px 20px",
+                borderRadius: 14,
+                background: "rgba(112,87,245,0.08)",
+                border: "1px solid rgba(112,87,245,0.2)",
+                textAlign: "left",
+              }}
+            >
+              <div
+                style={{
+                  fontSize: 12,
+                  color: "#a78bfa",
+                  fontWeight: 700,
+                  marginBottom: 4,
+                }}
+              >
+                CASE 001 {detective.casesSolved >= 1 ? "✅" : ""}
+              </div>
+              <div
+                style={{
+                  fontSize: 17,
+                  fontWeight: 800,
+                  color: "white",
+                  marginBottom: 4,
+                }}
+              >
+                保存成功，但刷新后消失了
+              </div>
+              <div
+                style={{
+                  fontSize: 12,
+                  color: "rgba(255,255,255,0.4)",
+                  lineHeight: 1.6,
+                  marginBottom: 12,
+                }}
+              >
+                一个画板应用。点保存→成功。刷新→数据飞了。内存和数据库，到底谁在说谎？
+              </div>
+              <button
+                className="intro-btn"
+                style={{
+                  width: "auto",
+                  display: "inline-flex",
+                  padding: "10px 24px",
+                  fontSize: 14,
+                }}
+                onClick={() => {
+                  setShowGameIntro(false);
+                  setCurrentCase(1);
+                  // 自动跳过基线，直接进入教学
+                  if (diagnostic && diagnostic.status === "active") {
+                    const emptyBaseline = {
+                      firstChecks: "已跳过基线诊断",
+                      evidenceNeeded: "已跳过",
+                      dataFlow: "已跳过",
+                      confidence: "3",
+                    };
+                    setDiagnostic({
+                      ...diagnostic,
+                      status: "completed",
+                      baseline: emptyBaseline,
+                    });
+                    void (async () => {
+                      try {
+                        await api(`/api/diagnostic-sessions/${diagnostic.id}`, {
+                          method: "PATCH",
+                          body: JSON.stringify({
+                            baseline: emptyBaseline,
+                            completed: true,
+                          }),
+                        });
+                        const [currentAttempt, scenario] = await Promise.all([
+                          api<Attempt>("/api/attempts", {
+                            method: "POST",
+                            body: JSON.stringify({ scenarioId: SCENARIO_ID }),
+                          }),
+                          api<{ artifacts: Artifact[] }>(
+                            `/api/scenarios/${SCENARIO_ID}`,
+                          ),
+                        ]);
+                        await api<Attempt>(
+                          `/api/attempts/${currentAttempt.id}/steps/baseline-plan`,
+                          {
+                            method: "PATCH",
+                            body: JSON.stringify({
+                              response: emptyBaseline,
+                            }),
+                          },
+                        );
+                        setAttempt(currentAttempt);
+                        setArtifacts(scenario.artifacts);
+                      } catch {
+                        // 静默失败，TeachingBridge 会从 intro 渲染
+                      }
+                    })();
+                  }
+                }}
+              >
+                {detective.casesSolved >= 1 ? "重新调查" : "开始调查"} →
+              </button>
+            </div>
+
+            {/* Case 002 */}
+            <div
+              className="intro-case"
+              style={{
+                padding: "18px 20px",
+                borderRadius: 14,
+                background: "rgba(255,255,255,0.03)",
+                border: "1px solid rgba(255,255,255,0.05)",
+                textAlign: "left",
+                position: "relative",
+              }}
+            >
+              <div
+                style={{
+                  fontSize: 12,
+                  color: "#a78bfa",
+                  fontWeight: 700,
+                  marginBottom: 4,
+                }}
+              >
+                CASE 002{" "}
+                <span style={{ color: "rgba(255,255,255,0.2)" }}>
+                  🔒 完成 Case 001 解锁
+                </span>
+              </div>
+              <div
+                style={{
+                  fontSize: 17,
+                  fontWeight: 800,
+                  color: "white",
+                  marginBottom: 4,
+                }}
+              >
+                登录成功，但退出后丢失了
+              </div>
+              <div
+                style={{
+                  fontSize: 12,
+                  color: "rgba(255,255,255,0.4)",
+                  lineHeight: 1.6,
+                }}
+              >
+                登录→成功。关掉→重开→未登录。Token去哪了？
+              </div>
+            </div>
+          </div>
+
+          <p className="intro-desc" style={{ fontSize: 12 }}>
+            每个案件包括：📋 基线诊断 → 🎓 教学指导 → ⚔️ 独立实战
+          </p>
+        </div>
+      </section>
+    );
+  }
+
   if (diagnostic.status === "active") {
     return (
       <BaselineDiagnostic diagnostic={diagnostic} onSubmit={finishBaseline} />
     );
   }
   if (!attempt) return <Loading message="正在恢复真实项目练习…" />;
+  if (!teachingComplete) {
+    const scenario = currentCase === 1 ? teachingScenario : case02Scenario;
+    const handleTeachingComplete = () => {
+      // 完成教学，奖励 XP
+      const updated = awardXP(detective, currentCase === 1 ? 150 : 120);
+      setDetective(updated);
+      if (currentCase === 1) {
+        // Case 001 完成后展示案件选择
+        markCaseSolved(updated);
+        setShowCaseSelect(true);
+      } else {
+        setTeachingComplete(true);
+      }
+    };
+    if (showCaseSelect) {
+      return (
+        <div className="teaching-bridge">
+          <section
+            className="teaching-shell"
+            style={{ textAlign: "center", padding: "50px 30px" }}
+          >
+            <div style={{ fontSize: 48, marginBottom: 12 }}>🎉</div>
+            <div className="celebration-note" style={{ marginBottom: 8 }}>
+              {detective.rank} · {detective.xp} XP
+            </div>
+            <h2 style={{ fontSize: 24 }}>案件 001 已破！</h2>
+            <p
+              style={{
+                color: "var(--muted)",
+                fontSize: 14,
+                lineHeight: 1.8,
+                marginBottom: 24,
+              }}
+            >
+              你已经掌握了内存与持久化的核心区别。想要继续挑战更复杂的案件吗？
+            </p>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: 10,
+                maxWidth: 360,
+                margin: "0 auto",
+              }}
+            >
+              <button
+                className="v2-button primary wide"
+                onClick={() => {
+                  setTeachingComplete(true);
+                }}
+              >
+                进入实战练习
+              </button>
+              <button
+                className="v2-button primary wide"
+                style={{
+                  background: "linear-gradient(135deg, #e85d04, #f48c06)",
+                }}
+                onClick={() => {
+                  setCurrentCase(2);
+                  setShowCaseSelect(false);
+                }}
+              >
+                🕵️ 继续调查 Case 002：登录消失之谜
+              </button>
+            </div>
+          </section>
+        </div>
+      );
+    }
+    return (
+      <TeachingBridge
+        attemptId={attempt.id}
+        scenario={scenario}
+        detective={detective}
+        onComplete={handleTeachingComplete}
+      />
+    );
+  }
   return (
     <Lab attempt={attempt} artifacts={artifacts} setAttempt={setAttempt} />
   );

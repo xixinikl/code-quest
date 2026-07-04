@@ -18,7 +18,7 @@ describe("SQLite 学习记录", () => {
     const db = openDatabase(":memory:");
     cleanup.push(() => db.close());
 
-    expect(currentSchemaVersion(db)).toBe(1);
+    expect(currentSchemaVersion(db)).toBe(2);
     expect(() =>
       db.exec(
         "INSERT OR IGNORE INTO schema_migrations(version, applied_at) VALUES (1, 'existing')",
