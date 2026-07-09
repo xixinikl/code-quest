@@ -1,0 +1,22 @@
+{
+  "documents": [
+    {
+      "id": "doc-login",
+      "path": "docs/login.md",
+      "title": "登录状态说明",
+      "text": "登录状态通过 httpOnly Cookie 保存。刷新页面时，前端应该请求 /api/me 恢复当前用户。"
+    },
+    {
+      "id": "doc-brief",
+      "path": "docs/project-brief.md",
+      "title": "Project Brief 说明",
+      "text": "Project Brief 必须包含用户目标、输入材料、输出格式和保存位置。AI 只能根据 Brief 生成候选方向。"
+    },
+    {
+      "id": "doc-rag",
+      "path": "docs/rag.md",
+      "title": "RAG 知识库说明",
+      "text": "RAG 会先把文档切成带来源的 chunk，再根据用户问题检索 topK 命中片段，最后让模型带引用回答。"
+    }
+  ]
+}

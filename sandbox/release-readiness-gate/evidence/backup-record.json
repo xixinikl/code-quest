@@ -1,0 +1,9 @@
+{
+  "requiresBackup": true,
+  "backupId": "backup_release_014_20260705",
+  "location": "local-sandbox-backups/release_014.sqlite",
+  "createdAt": "2026-07-05T13:30:00.000Z",
+  "restoreTested": false,
+  "recoveryTimeMinutes": null,
+  "explain": "有备份文件不等于可恢复；上线前要确认恢复步骤真的可执行。"
+}

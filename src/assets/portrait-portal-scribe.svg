@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 520" role="img" aria-label="回廊书记官">
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#061725"/>
+      <stop offset=".62" stop-color="#080d18"/>
+      <stop offset="1" stop-color="#15121f"/>
+    </linearGradient>
+    <radialGradient id="ring" cx="50%" cy="28%" r="42%">
+      <stop offset=".2" stop-color="#83c7ff" stop-opacity=".5"/>
+      <stop offset="1" stop-color="#83c7ff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="360" height="520" rx="34" fill="url(#bg)"/>
+  <circle cx="180" cy="146" r="124" fill="none" stroke="#4ba3d8" stroke-opacity=".32" stroke-width="8"/>
+  <circle cx="180" cy="146" r="150" fill="url(#ring)"/>
+  <path d="M96 132c-2-55 42-88 88-88 56 0 92 35 91 92-1 53-38 105-88 111-54 6-89-55-91-115Z" fill="#d7dbe5"/>
+  <path d="M111 154c-3 62 31 117 73 117 43 0 77-57 72-119-4-46-31-75-73-75-41 0-68 31-72 77Z" fill="#e0c4aa"/>
+  <path d="M99 146c28-64 88-84 161-45-9-42-52-68-100-59-48 9-73 45-61 104Z" fill="#dfe6f1"/>
+  <path d="M134 203c18 8 36 8 54-1M202 202c17 8 34 7 51-2" stroke="#1a2231" stroke-width="5" stroke-linecap="round"/>
+  <path d="M158 254c16 13 40 13 56 0" stroke="#6b4939" stroke-width="4" stroke-linecap="round"/>
+  <path d="M85 504c10-89 51-150 99-150 47 0 87 61 96 150Z" fill="#09111d"/>
+  <path d="M126 370l58 82 58-82 30 134H95Z" fill="#07111f"/>
+  <path d="M124 414h118M180 356v96" stroke="#56aadd" stroke-opacity=".58" stroke-width="6"/>
+  <text x="180" y="470" text-anchor="middle" fill="#d6ecff" font-family="serif" font-size="24" font-weight="700">回廊书记官</text>
+</svg>

@@ -3,6 +3,7 @@ import {
   type IncomingMessage,
   type ServerResponse,
 } from "node:http";
+import { fileURLToPath } from "node:url";
 import { readScenarioArtifacts } from "./artifacts.js";
 import { currentSchemaVersion, type LearningDatabase } from "./db.js";
 import { readScenarioReport } from "./report.js";
@@ -10,10 +11,11 @@ import { ContractError } from "./scenarios.js";
 import { LearningStore } from "./store.js";
 
 const MAX_BODY_BYTES = 64 * 1024;
+const MAX_BACKUP_BODY_BYTES = 2 * 1024 * 1024;
 
 export function createLearningServer(
   db: LearningDatabase,
-  projectRoot = new URL("..", import.meta.url).pathname,
+  projectRoot = fileURLToPath(new URL("..", import.meta.url)),
 ) {
   const store = new LearningStore(db);
 
@@ -43,6 +45,19 @@ async function route(
       schemaVersion: currentSchemaVersion(db),
       safetyMode: "manual-sandbox-no-shell",
     });
+  }
+
+  if (method === "GET" && url.pathname === "/api/learning-backup") {
+    return sendJson(
+      response,
+      200,
+      store.exportLearningBackup(currentSchemaVersion(db)),
+    );
+  }
+
+  if (method === "POST" && url.pathname === "/api/learning-backup/import") {
+    const body = await readJson(request, MAX_BACKUP_BODY_BYTES);
+    return sendJson(response, 200, store.importLearningBackup(body.backup));
   }
 
   const scenarioMatch = url.pathname.match(/^\/api\/scenarios\/([^/]+)$/);
@@ -183,14 +198,15 @@ async function route(
 
 async function readJson(
   request: IncomingMessage,
+  maxBytes = MAX_BODY_BYTES,
 ): Promise<Record<string, unknown>> {
   const chunks: Buffer[] = [];
   let total = 0;
   for await (const chunk of request) {
     const buffer = Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk);
     total += buffer.length;
-    if (total > MAX_BODY_BYTES) {
-      throw new ContractError("BODY_TOO_LARGE", "请求内容超过 64KB");
+    if (total > maxBytes) {
+      throw new ContractError("BODY_TOO_LARGE", "请求内容超过允许大小");
     }
     chunks.push(buffer);
   }

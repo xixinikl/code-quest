@@ -1,0 +1,23 @@
+[
+  {
+    "chapter": 1,
+    "title": "保存成功但刷新后消失",
+    "ability": "沿前端、接口、数据层和数据库排查保存链路",
+    "evidence": ["Network POST 201", "SQLite SELECT 0 rows"],
+    "interviewUse": "解释为什么接口成功不等于数据库持久化成功。"
+  },
+  {
+    "chapter": 7,
+    "title": "AI API 安全接入",
+    "ability": "把密钥放在服务端，前端只调用本地 API",
+    "evidence": ["前端密钥扫描", "服务端环境变量检查"],
+    "interviewUse": "解释为什么 API Key 不能进前端包。"
+  },
+  {
+    "chapter": 13,
+    "title": "交付审查",
+    "ability": "核对 Diff、测试证据、移动端和文档同步",
+    "evidence": ["Diff 范围摘要"],
+    "interviewUse": "说明为什么不盲信 Agent 的已完成说明。"
+  }
+]

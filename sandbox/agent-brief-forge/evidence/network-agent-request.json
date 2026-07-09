@@ -1,0 +1,11 @@
+{
+  "requestId": "req_brief_012",
+  "method": "POST",
+  "url": "/api/agent/tasks",
+  "status": 422,
+  "response": {
+    "code": "MISSING_ACCEPTANCE",
+    "message": "任务缺少可执行验收标准。"
+  },
+  "explain": "422 说明后端拒绝了空泛任务；它不是 bug，而是保护 Agent 不要乱做。"
+}

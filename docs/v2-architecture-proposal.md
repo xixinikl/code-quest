@@ -56,7 +56,8 @@ localStorage 只允许保存主题、侧栏状态等可丢失的界面偏好。
 - `POST /api/attempts/:id/submit`：根据证据规则结算。
 - `GET /api/evidence`：查看能力证据和评分理由。
 - `GET /api/reviews/due`：获取到期变式复测。
-- `POST /api/export`：导出本地学习记录。
+- `GET /api/learning-backup`：导出本地 SQLite 学习记录。
+- `POST /api/learning-backup/import`：从本地 JSON 合并恢复白名单学习记录表。
 
 ## 回滚与迁移
 

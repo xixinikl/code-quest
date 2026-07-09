@@ -84,14 +84,12 @@ src/
   App.tsx                当前学习 UI，组件较大；修改前先识别可复用边界
   styles.css             V2 视觉样式
   App.test.tsx           前端主流程测试
-  game.ts                V1 游戏数据，当前不再是 V2 能力事实源
-  useProgress.ts         V1 localStorage 逻辑，不得重新用于 V2 学习证据
 
 server/
   index.ts               本地服务入口，仅监听 127.0.0.1
   app.ts                 HTTP API 路由
   db.ts                  SQLite schema 与迁移
-  store.ts               学习记录、提示、验证和候选证据
+  store.ts               学习记录、提示、验证和成长档案数据
   scenarios.ts           场景、步骤、允许读取的材料注册表
   artifacts.ts           固定沙盒材料读取与路径边界检查
   report.ts              测试报告时间、结构、路径与源码指纹校验
@@ -132,13 +130,13 @@ docs/
 
 - 本地 API 与 SQLite 事实源；
 - 安全沙盒与测试报告机制；
-- 无提示基线；
-- 提示记录与透明“候选证据”措辞；
+- 本地学习记录与提示依赖记录；
+- 可追溯的成长档案措辞；
 - 当前真实材料和视觉语言。
 
 需要重构：
 
-- `src/App.tsx` 中从基线直接进入材料调查的流程；
+- `src/App.tsx` 中旧证据实验室/诊断式入口；
 - 把整份文件直接展示给初学者的代码阅读方式；
 - 全局提示等级与教学帮助的混淆；
 - 当前即时文字迁移题；

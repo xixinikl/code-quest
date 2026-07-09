@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 320" role="img" aria-label="检索狐">
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#08121f" />
+      <stop offset="1" stop-color="#142f2a" />
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="42%" r="58%">
+      <stop offset="0" stop-color="#b7ffe3" stop-opacity=".45" />
+      <stop offset="1" stop-color="#b7ffe3" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+  <rect width="320" height="320" rx="34" fill="url(#bg)" />
+  <circle cx="160" cy="145" r="112" fill="url(#glow)" />
+  <path d="M82 196c-28-18-35-45-21-75 30 26 49 51 57 77Z" fill="#e08b46" />
+  <path d="M238 196c28-18 35-45 21-75-30 26-49 51-57 77Z" fill="#e08b46" />
+  <path d="M105 105l-32-50 58 24M215 105l32-50-58 24" fill="#e08b46" stroke="#f8d19b" stroke-width="6" stroke-linejoin="round" />
+  <path d="M92 172c0-59 28-94 68-94s68 35 68 94c0 57-28 92-68 92s-68-35-68-92Z" fill="#e69a52" />
+  <path d="M113 168c11-33 27-50 47-50s36 17 47 50c-17-10-33-14-47-14s-30 4-47 14Z" fill="#fff0c7" opacity=".92" />
+  <circle cx="134" cy="178" r="8" fill="#0b1220" />
+  <circle cx="186" cy="178" r="8" fill="#0b1220" />
+  <path d="M154 198h12l-6 8Z" fill="#0b1220" />
+  <path d="M139 219c11 10 31 10 42 0" stroke="#0b1220" stroke-width="5" stroke-linecap="round" fill="none" />
+  <path d="M70 258c32-33 70-48 114-43M236 258c-32-33-70-48-114-43" stroke="#b7ffe3" stroke-opacity=".55" stroke-width="7" stroke-linecap="round" fill="none" />
+  <path d="M126 253h68" stroke="#d7b36a" stroke-opacity=".7" stroke-width="7" stroke-linecap="round" />
+  <text x="160" y="295" text-anchor="middle" fill="#d9fff1" font-family="serif" font-size="22" font-weight="700">检索狐</text>
+</svg>

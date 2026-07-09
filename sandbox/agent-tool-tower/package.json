@@ -1,0 +1,9 @@
+{
+  "name": "agent-tool-tower-sandbox",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node tests/run-tests.js"
+  }
+}

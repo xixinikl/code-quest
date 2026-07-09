@@ -26,6 +26,30 @@ type StepRow = {
   saved_at: string;
 };
 
+const BACKUP_FORMAT = "code-quest-learning-backup";
+const BACKUP_FORMAT_VERSION = 1;
+
+const tableNames = [
+  "learner_profiles",
+  "diagnostic_sessions",
+  "attempts",
+  "step_responses",
+  "verification_events",
+  "evidence_records",
+  "teaching_progress",
+] as const;
+
+type BackupTableName = (typeof tableNames)[number];
+type BackupRow = Record<string, unknown>;
+
+type LearningBackup = {
+  format: typeof BACKUP_FORMAT;
+  formatVersion: typeof BACKUP_FORMAT_VERSION;
+  schemaVersion: number;
+  exportedAt: string;
+  tables: Record<BackupTableName, BackupRow[]>;
+};
+
 export class LearningStore {
   constructor(private readonly db: LearningDatabase) {
     this.ensureLearner();
@@ -407,4 +431,379 @@ export class LearningStore {
       .run(attemptId);
     return [];
   }
+
+  exportLearningBackup(schemaVersion: number): LearningBackup {
+    return {
+      format: BACKUP_FORMAT,
+      formatVersion: BACKUP_FORMAT_VERSION,
+      schemaVersion,
+      exportedAt: new Date().toISOString(),
+      tables: {
+        learner_profiles: this.rows(
+          "SELECT id, created_at, updated_at FROM learner_profiles ORDER BY id",
+        ),
+        diagnostic_sessions: this.rows(
+          `SELECT id, learner_id, status, baseline_json, started_at, completed_at
+           FROM diagnostic_sessions ORDER BY started_at, id`,
+        ),
+        attempts: this.rows(
+          `SELECT id, learner_id, scenario_id, status, hint_level,
+                  verification_status, started_at, submitted_at
+           FROM attempts ORDER BY started_at, id`,
+        ),
+        step_responses: this.rows(
+          `SELECT attempt_id, step_id, response_json, saved_at
+           FROM step_responses ORDER BY saved_at, attempt_id, step_id`,
+        ),
+        verification_events: this.rows(
+          `SELECT id, attempt_id, status, report_json, observed_at
+           FROM verification_events ORDER BY id`,
+        ),
+        evidence_records: this.rows(
+          `SELECT id, attempt_id, skill_id, evidence_type, level_candidate,
+                  reason_json, created_at
+           FROM evidence_records ORDER BY id`,
+        ),
+        teaching_progress: this.rows(
+          `SELECT attempt_id, step_id, completed, teaching_response_json,
+                  remediation_events_json, updated_at
+           FROM teaching_progress ORDER BY updated_at, attempt_id, step_id`,
+        ),
+      },
+    };
+  }
+
+  importLearningBackup(input: unknown) {
+    const backup = parseLearningBackup(input);
+    const attemptScenarioById = new Map<string, string>();
+
+    for (const row of backup.tables.learner_profiles) {
+      if (stringField(row, "id") !== LEARNER_ID) {
+        throw new ContractError("INVALID_BACKUP", "备份只能恢复本地学习者记录");
+      }
+    }
+
+    for (const row of backup.tables.diagnostic_sessions) {
+      ensureLocalLearner(row);
+      const status = stringField(row, "status");
+      if (!["active", "completed"].includes(status)) {
+        throw new ContractError("INVALID_BACKUP", "诊断状态不合法");
+      }
+      ensureJsonField(row, "baseline_json");
+    }
+
+    for (const row of backup.tables.attempts) {
+      ensureLocalLearner(row);
+      const scenarioId = stringField(row, "scenario_id");
+      requireScenario(scenarioId);
+      const status = stringField(row, "status");
+      const verificationStatus = stringField(row, "verification_status");
+      if (!["active", "submitted"].includes(status)) {
+        throw new ContractError("INVALID_BACKUP", "练习状态不合法");
+      }
+      if (
+        !["not_run", "failed", "passed", "invalid_report"].includes(
+          verificationStatus,
+        )
+      ) {
+        throw new ContractError("INVALID_BACKUP", "验证状态不合法");
+      }
+      const hintLevel = numberField(row, "hint_level");
+      if (!Number.isInteger(hintLevel) || hintLevel < 0 || hintLevel > 3) {
+        throw new ContractError("INVALID_BACKUP", "提示等级不合法");
+      }
+      attemptScenarioById.set(stringField(row, "id"), scenarioId);
+    }
+
+    for (const row of backup.tables.step_responses) {
+      const scenarioId = attemptScenarioById.get(
+        stringField(row, "attempt_id"),
+      );
+      if (!scenarioId) {
+        throw new ContractError("INVALID_BACKUP", "步骤缺少对应练习记录");
+      }
+      requireScenarioStep(scenarioId, stringField(row, "step_id"));
+      ensureJsonField(row, "response_json");
+    }
+
+    for (const row of backup.tables.verification_events) {
+      if (!attemptScenarioById.has(stringField(row, "attempt_id"))) {
+        throw new ContractError("INVALID_BACKUP", "验证事件缺少对应练习记录");
+      }
+      ensureJsonField(row, "report_json");
+    }
+
+    for (const row of backup.tables.evidence_records) {
+      if (!attemptScenarioById.has(stringField(row, "attempt_id"))) {
+        throw new ContractError("INVALID_BACKUP", "能力证据缺少对应练习记录");
+      }
+      const level = numberField(row, "level_candidate");
+      if (!Number.isInteger(level) || level < 0 || level > 5) {
+        throw new ContractError("INVALID_BACKUP", "能力等级候选不合法");
+      }
+      ensureJsonField(row, "reason_json");
+    }
+
+    for (const row of backup.tables.teaching_progress) {
+      if (!attemptScenarioById.has(stringField(row, "attempt_id"))) {
+        throw new ContractError("INVALID_BACKUP", "教学进度缺少对应练习记录");
+      }
+      const completed = numberField(row, "completed");
+      if (![0, 1].includes(completed)) {
+        throw new ContractError("INVALID_BACKUP", "教学完成状态不合法");
+      }
+      ensureJsonField(row, "teaching_response_json");
+      ensureJsonField(row, "remediation_events_json");
+    }
+
+    this.db.exec("BEGIN IMMEDIATE");
+    try {
+      for (const row of backup.tables.learner_profiles) {
+        this.db
+          .prepare(
+            `INSERT INTO learner_profiles (id, created_at, updated_at)
+             VALUES (?, ?, ?)
+             ON CONFLICT(id) DO UPDATE SET
+               created_at = excluded.created_at,
+               updated_at = excluded.updated_at`,
+          )
+          .run(
+            stringField(row, "id"),
+            stringField(row, "created_at"),
+            stringField(row, "updated_at"),
+          );
+      }
+
+      for (const row of backup.tables.diagnostic_sessions) {
+        this.db
+          .prepare(
+            `INSERT INTO diagnostic_sessions
+             (id, learner_id, status, baseline_json, started_at, completed_at)
+             VALUES (?, ?, ?, ?, ?, ?)
+             ON CONFLICT(id) DO UPDATE SET
+               learner_id = excluded.learner_id,
+               status = excluded.status,
+               baseline_json = excluded.baseline_json,
+               started_at = excluded.started_at,
+               completed_at = excluded.completed_at`,
+          )
+          .run(
+            stringField(row, "id"),
+            stringField(row, "learner_id"),
+            stringField(row, "status"),
+            stringField(row, "baseline_json"),
+            stringField(row, "started_at"),
+            nullableStringField(row, "completed_at"),
+          );
+      }
+
+      for (const row of backup.tables.attempts) {
+        this.db
+          .prepare(
+            `INSERT INTO attempts
+             (id, learner_id, scenario_id, status, hint_level,
+              verification_status, started_at, submitted_at)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+             ON CONFLICT(id) DO UPDATE SET
+               learner_id = excluded.learner_id,
+               scenario_id = excluded.scenario_id,
+               status = excluded.status,
+               hint_level = excluded.hint_level,
+               verification_status = excluded.verification_status,
+               started_at = excluded.started_at,
+               submitted_at = excluded.submitted_at`,
+          )
+          .run(
+            stringField(row, "id"),
+            stringField(row, "learner_id"),
+            stringField(row, "scenario_id"),
+            stringField(row, "status"),
+            numberField(row, "hint_level"),
+            stringField(row, "verification_status"),
+            stringField(row, "started_at"),
+            nullableStringField(row, "submitted_at"),
+          );
+      }
+
+      for (const row of backup.tables.step_responses) {
+        this.db
+          .prepare(
+            `INSERT INTO step_responses
+             (attempt_id, step_id, response_json, saved_at)
+             VALUES (?, ?, ?, ?)
+             ON CONFLICT(attempt_id, step_id) DO UPDATE SET
+               response_json = excluded.response_json,
+               saved_at = excluded.saved_at`,
+          )
+          .run(
+            stringField(row, "attempt_id"),
+            stringField(row, "step_id"),
+            stringField(row, "response_json"),
+            stringField(row, "saved_at"),
+          );
+      }
+
+      for (const row of backup.tables.verification_events) {
+        this.db
+          .prepare(
+            `INSERT INTO verification_events
+             (id, attempt_id, status, report_json, observed_at)
+             VALUES (?, ?, ?, ?, ?)
+             ON CONFLICT(id) DO UPDATE SET
+               attempt_id = excluded.attempt_id,
+               status = excluded.status,
+               report_json = excluded.report_json,
+               observed_at = excluded.observed_at`,
+          )
+          .run(
+            numberField(row, "id"),
+            stringField(row, "attempt_id"),
+            stringField(row, "status"),
+            stringField(row, "report_json"),
+            stringField(row, "observed_at"),
+          );
+      }
+
+      for (const row of backup.tables.evidence_records) {
+        this.db
+          .prepare(
+            `INSERT INTO evidence_records
+             (id, attempt_id, skill_id, evidence_type, level_candidate,
+              reason_json, created_at)
+             VALUES (?, ?, ?, ?, ?, ?, ?)
+             ON CONFLICT(id) DO UPDATE SET
+               attempt_id = excluded.attempt_id,
+               skill_id = excluded.skill_id,
+               evidence_type = excluded.evidence_type,
+               level_candidate = excluded.level_candidate,
+               reason_json = excluded.reason_json,
+               created_at = excluded.created_at`,
+          )
+          .run(
+            numberField(row, "id"),
+            stringField(row, "attempt_id"),
+            stringField(row, "skill_id"),
+            stringField(row, "evidence_type"),
+            numberField(row, "level_candidate"),
+            stringField(row, "reason_json"),
+            stringField(row, "created_at"),
+          );
+      }
+
+      for (const row of backup.tables.teaching_progress) {
+        this.db
+          .prepare(
+            `INSERT INTO teaching_progress
+             (attempt_id, step_id, completed, teaching_response_json,
+              remediation_events_json, updated_at)
+             VALUES (?, ?, ?, ?, ?, ?)
+             ON CONFLICT(attempt_id, step_id) DO UPDATE SET
+               completed = excluded.completed,
+               teaching_response_json = excluded.teaching_response_json,
+               remediation_events_json = excluded.remediation_events_json,
+               updated_at = excluded.updated_at`,
+          )
+          .run(
+            stringField(row, "attempt_id"),
+            stringField(row, "step_id"),
+            numberField(row, "completed"),
+            stringField(row, "teaching_response_json"),
+            stringField(row, "remediation_events_json"),
+            stringField(row, "updated_at"),
+          );
+      }
+
+      this.db.exec("COMMIT");
+    } catch (error) {
+      this.db.exec("ROLLBACK");
+      throw error;
+    }
+
+    return {
+      importedAt: new Date().toISOString(),
+      counts: Object.fromEntries(
+        tableNames.map((table) => [table, backup.tables[table].length]),
+      ),
+    };
+  }
+
+  private rows(sql: string): BackupRow[] {
+    return this.db.prepare(sql).all() as BackupRow[];
+  }
+}
+
+function parseLearningBackup(input: unknown): LearningBackup {
+  if (!input || typeof input !== "object" || Array.isArray(input)) {
+    throw new ContractError("INVALID_BACKUP", "备份内容必须是 JSON 对象");
+  }
+  const backup = input as Record<string, unknown>;
+  if (backup.format !== BACKUP_FORMAT) {
+    throw new ContractError("INVALID_BACKUP", "备份格式不属于码上冒险");
+  }
+  if (backup.formatVersion !== BACKUP_FORMAT_VERSION) {
+    throw new ContractError("INVALID_BACKUP", "备份版本暂不支持");
+  }
+  if (backup.schemaVersion !== 2) {
+    throw new ContractError("INVALID_BACKUP", "备份 schema 版本暂不支持");
+  }
+  if (!backup.tables || typeof backup.tables !== "object") {
+    throw new ContractError("INVALID_BACKUP", "备份缺少学习记录表");
+  }
+  const rawTables = backup.tables as Record<string, unknown>;
+  const tables = Object.fromEntries(
+    tableNames.map((table) => {
+      const rows = rawTables[table];
+      if (!Array.isArray(rows)) {
+        throw new ContractError("INVALID_BACKUP", `备份缺少 ${table} 表`);
+      }
+      return [table, rows as BackupRow[]];
+    }),
+  ) as Record<BackupTableName, BackupRow[]>;
+
+  return {
+    format: BACKUP_FORMAT,
+    formatVersion: BACKUP_FORMAT_VERSION,
+    schemaVersion: 2,
+    exportedAt: stringField(backup, "exportedAt"),
+    tables,
+  };
+}
+
+function ensureLocalLearner(row: BackupRow) {
+  if (stringField(row, "learner_id") !== LEARNER_ID) {
+    throw new ContractError("INVALID_BACKUP", "备份只能恢复本地学习者记录");
+  }
+}
+
+function ensureJsonField(row: BackupRow, key: string) {
+  try {
+    JSON.parse(stringField(row, key));
+  } catch {
+    throw new ContractError("INVALID_BACKUP", `${key} 不是有效 JSON`);
+  }
+}
+
+function stringField(row: BackupRow, key: string) {
+  const value = row[key];
+  if (typeof value !== "string") {
+    throw new ContractError("INVALID_BACKUP", `${key} 必须是字符串`);
+  }
+  return value;
+}
+
+function nullableStringField(row: BackupRow, key: string) {
+  const value = row[key];
+  if (value === null || value === undefined) return null;
+  if (typeof value !== "string") {
+    throw new ContractError("INVALID_BACKUP", `${key} 必须是字符串或 null`);
+  }
+  return value;
+}
+
+function numberField(row: BackupRow, key: string) {
+  const value = row[key];
+  if (typeof value !== "number" || !Number.isFinite(value)) {
+    throw new ContractError("INVALID_BACKUP", `${key} 必须是数字`);
+  }
+  return value;
 }

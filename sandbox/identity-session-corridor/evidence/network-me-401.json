@@ -1,0 +1,18 @@
+{
+  "request": {
+    "method": "GET",
+    "url": "/api/me",
+    "headers": {
+      "cookie": "",
+      "authorization": ""
+    }
+  },
+  "response": {
+    "status": 401,
+    "body": {
+      "error": "UNAUTHORIZED",
+      "message": "缺少有效登录凭证"
+    }
+  },
+  "observation": "刷新后请求没有携带 Cookie 或 Authorization，所以后端无法判断当前用户是谁。"
+}

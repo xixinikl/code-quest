@@ -1,0 +1,8 @@
+{
+  "topic": "AI API 接入方式",
+  "options": ["前端直接调模型 API", "服务端代理模型 API"],
+  "choice": "服务端代理模型 API",
+  "cost": "",
+  "verification": "前端包扫描不到 API Key，服务端缺 key 时返回结构化错误。",
+  "explain": "有选择和验证，但没讲代价，面试官追问时会断。"
+}

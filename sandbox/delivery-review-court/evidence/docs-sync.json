@@ -1,0 +1,5 @@
+{
+  "updated": ["README.md", "changelogs/2026-07-04-ui-refresh.md"],
+  "missing": ["HANDOFF.md", "docs/ai-career-rpg-tasks.md"],
+  "explain": "用户可感知变化写进 changelog 还不够，交接入口和任务事实源也必须同步。"
+}

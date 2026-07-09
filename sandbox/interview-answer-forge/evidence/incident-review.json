@@ -1,0 +1,8 @@
+{
+  "phenomenon": "点击保存提示成功，但刷新后数据消失。",
+  "evidence": "Network 看到 POST 返回 201，数据库查询是 0 rows。",
+  "rootCause": "后端只把数据写入内存数组，没有写入 SQLite。",
+  "fix": "把保存动作改为真实 INSERT，并让读取和写入使用同一数据源。",
+  "verification": "",
+  "explain": "缺少修复后的刷新、数据库和测试验证。"
+}

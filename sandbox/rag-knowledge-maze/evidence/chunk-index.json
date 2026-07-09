@@ -1,0 +1,15 @@
+{
+  "index": [
+    {
+      "id": "doc-login-1",
+      "text": "登录状态通过 httpOnly Cookie 保存。刷新页面时，前端应该请求 /api/me 恢复当前用户。",
+      "missing": ["sourcePath", "title", "stable citation id"]
+    },
+    {
+      "id": "doc-brief-1",
+      "text": "Project Brief 必须包含用户目标、输入材料、输出格式和保存位置。AI 只能根据 Brief 生成候选方向。",
+      "missing": ["sourcePath", "title", "stable citation id"]
+    }
+  ],
+  "observation": "当前索引能保存文字，但缺少用户和面试复盘最需要的来源证据。"
+}

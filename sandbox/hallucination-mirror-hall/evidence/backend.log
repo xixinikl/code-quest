@@ -1,0 +1,3 @@
+[2026-07-05T00:36:10.210+08:00] WARN requestId=req_mirror_001 verifier=skipped answer="auto deploy supported"
+[2026-07-05T00:36:10.211+08:00] WARN requestId=req_mirror_001 citation=deploy#auto allowed=false action=still-returned
+[2026-07-05T00:36:18.042+08:00] WARN requestId=req_mirror_002 contextChunks=0 action=model-called

@@ -1,0 +1,22 @@
+{
+  "scanTarget": "dist/assets/index-demo.js",
+  "capturedAt": "2026-07-05T00:28:00+08:00",
+  "findings": [
+    {
+      "type": "secret-pattern",
+      "pattern": "sk-*",
+      "match": "sk-demo-leaked-key-in-browser",
+      "risk": "浏览器用户可以复制密钥并消耗额度"
+    },
+    {
+      "type": "direct-provider-call",
+      "match": "https://api.example.ai/v1/chat",
+      "risk": "前端绕过自己的后端，无法统一日志、限流和失败兜底"
+    },
+    {
+      "type": "authorization-header",
+      "match": "Authorization: Bearer <browser-key>",
+      "risk": "浏览器 Network 面板可见 Authorization"
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "response": {
+    "status": 500,
+    "body": {
+      "error": "INTERNAL_ERROR",
+      "message": "服务器开小差了，请稍后再试"
+    }
+  },
+  "expectedShape": {
+    "status": 400,
+    "body": {
+      "error": "VALIDATION_ERROR",
+      "requestId": "req_brief_042",
+      "fields": {
+        "userGoal": "用户目标不能为空"
+      }
+    }
+  },
+  "observation": "当前响应把可预期的缺字段问题伪装成 500，前端和用户都不知道该补哪个字段。"
+}

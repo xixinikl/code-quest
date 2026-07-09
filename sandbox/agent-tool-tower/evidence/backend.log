@@ -1,0 +1,3 @@
+[2026-07-05T00:52:10.110+08:00] WARN requestId=req_tool_001 tool=updateProjectStatus validation=skipped status=shipped
+[2026-07-05T00:52:12.320+08:00] WARN requestId=req_tool_002 tool=updateProjectStatus permission=skipped user=user_apprentice
+[2026-07-05T00:52:14.451+08:00] ERROR requestId=req_tool_003 tool=updateProjectStatus error="database connection refused" leaked_to_client=true

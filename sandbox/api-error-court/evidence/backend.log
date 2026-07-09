@@ -1,0 +1,3 @@
+[brief] requestId=req_brief_042 level=error status=500 message=userGoal is required
+[brief] WARN validation error was reported as INTERNAL_ERROR
+[brief] HINT Compare payload.userGoal, response.status, response.body.error and this requestId.

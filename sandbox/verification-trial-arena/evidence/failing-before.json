@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "scenarioId": "verification-trial-arena",
+  "phase": "before-fix",
+  "sourceHash": "before_fix_source_hash",
+  "summary": {
+    "passed": 0,
+    "failed": 1
+  },
+  "tests": [
+    {
+      "name": "刷新后仍能看到刚保存的画布",
+      "phase": "reproduction",
+      "status": "failed",
+      "message": "刷新页面后，GET /api/canvases 返回空数组。"
+    }
+  ]
+}

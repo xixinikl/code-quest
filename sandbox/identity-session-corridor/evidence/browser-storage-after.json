@@ -1,0 +1,12 @@
+{
+  "cookies": {},
+  "localStorage": {},
+  "memory": {
+    "currentUser": {
+      "id": "user_apprentice",
+      "name": "见习开发者"
+    },
+    "accessToken": "token_for_user_apprentice"
+  },
+  "observation": "当前实现只把用户放在内存里；刷新页面后 memory 会清空，所以登录状态会丢。"
+}

@@ -1,0 +1,14 @@
+{
+  "question": "这个项目是否支持自动发布？",
+  "contextChunks": [],
+  "currentAnswer": {
+    "answer": "可以，系统已经支持自动发布。",
+    "citations": [],
+    "confidence": "high"
+  },
+  "expected": {
+    "answer": "资料不足，无法确认。请补充发布流程或部署文档。",
+    "citations": [],
+    "confidence": "low"
+  }
+}

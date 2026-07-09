@@ -1,0 +1,21 @@
+{
+  "page": "/ai-answer",
+  "capturedAt": "2026-07-05T00:36:00+08:00",
+  "request": {
+    "method": "POST",
+    "url": "/api/ai/grounded-answer",
+    "body": {
+      "question": "CanvasStorm 是否会自动发布到线上？"
+    }
+  },
+  "response": {
+    "status": 200,
+    "body": {
+      "answer": "CanvasStorm 会在用户接受候选方向后自动发布到线上。",
+      "citations": ["deploy#auto"],
+      "confidence": "high",
+      "allowedCitationCount": 0
+    }
+  },
+  "observation": "响应自己已经显示 allowedCitationCount 为 0，却仍然把答案当 high confidence 展示。"
+}

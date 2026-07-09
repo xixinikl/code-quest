@@ -1,0 +1,19 @@
+{
+  "page": "/ai-assistant",
+  "capturedAt": "2026-07-05T00:29:00+08:00",
+  "request": {
+    "method": "POST",
+    "url": "https://api.example.ai/v1/chat",
+    "visibleToBrowser": true,
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer sk-demo-leaked-key-in-browser"
+    },
+    "body": {
+      "apiKey": "sk-demo-leaked-key-in-browser",
+      "prompt": "帮我总结这个 Project Brief",
+      "stream": false
+    }
+  },
+  "observation": "用户在浏览器 Network 里能看到密钥和第三方接口地址。"
+}

@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 520" role="img" aria-label="模型熔炉执钥人">
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#0e1827" />
+      <stop offset=".55" stop-color="#07101a" />
+      <stop offset="1" stop-color="#241408" />
+    </linearGradient>
+    <radialGradient id="halo" cx="50%" cy="30%" r="52%">
+      <stop offset="0" stop-color="#ffd88c" stop-opacity=".55" />
+      <stop offset=".46" stop-color="#52e8ff" stop-opacity=".18" />
+      <stop offset="1" stop-color="#52e8ff" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+  <rect width="360" height="520" rx="34" fill="url(#bg)" />
+  <circle cx="180" cy="184" r="152" fill="url(#halo)" />
+  <path d="M92 418c12-72 47-112 88-112s76 40 88 112Z" fill="#162033" stroke="#d9b56f" stroke-opacity=".42" stroke-width="6" />
+  <path d="M128 184c4-52 24-86 52-86s48 34 52 86c5 62-18 105-52 105s-57-43-52-105Z" fill="#d5ad83" />
+  <path d="M122 180c7-58 30-94 60-94 45 0 72 48 70 116-20-40-58-52-115-42Z" fill="#111827" />
+  <path d="M139 222c14 8 28 8 42 0M193 222c14 8 28 8 41 0" stroke="#10202b" stroke-width="6" stroke-linecap="round" />
+  <path d="M164 264c12 12 32 12 45 0" stroke="#36251b" stroke-width="5" stroke-linecap="round" />
+  <path d="M138 326l42 42 42-42M180 368v52" stroke="#8ceaff" stroke-opacity=".7" stroke-width="7" stroke-linecap="round" fill="none" />
+  <path d="M248 250l42-42 22 22-42 42h-22Z" fill="#d9b56f" stroke="#fff0c2" stroke-opacity=".6" stroke-width="4" />
+  <path d="M82 430h196" stroke="#d9b56f" stroke-opacity=".35" stroke-width="6" />
+  <text x="180" y="468" text-anchor="middle" fill="#fff0c2" font-family="serif" font-size="22" font-weight="700">模型熔炉执钥人</text>
+</svg>

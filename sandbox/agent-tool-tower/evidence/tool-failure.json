@@ -1,0 +1,19 @@
+{
+  "toolCall": {
+    "toolName": "updateProjectStatus",
+    "args": {
+      "projectId": "project_fail",
+      "status": "review"
+    }
+  },
+  "currentResult": {
+    "ok": false,
+    "error": "database connection refused"
+  },
+  "expected": {
+    "ok": false,
+    "code": "TOOL_FAILED",
+    "requestId": "req_tool_001",
+    "message": "工具暂时失败，请稍后重试或交给人工确认。"
+  }
+}

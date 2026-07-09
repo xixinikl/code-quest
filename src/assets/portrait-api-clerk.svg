@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 520" role="img" aria-label="审判庭书记员">
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#21140e"/>
+      <stop offset=".58" stop-color="#080d12"/>
+      <stop offset="1" stop-color="#20140b"/>
+    </linearGradient>
+    <radialGradient id="scale" cx="56%" cy="25%" r="46%">
+      <stop offset="0" stop-color="#f0b66b" stop-opacity=".48"/>
+      <stop offset="1" stop-color="#f0b66b" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="360" height="520" rx="34" fill="url(#bg)"/>
+  <path d="M180 80v198M114 130h132M126 130l-34 72h68Zm108 0-34 72h68Z" fill="none" stroke="#dfae61" stroke-opacity=".34" stroke-width="5"/>
+  <circle cx="180" cy="138" r="140" fill="url(#scale)"/>
+  <path d="M99 126c16-54 56-81 108-72 45 8 72 43 66 92-7 60-44 111-88 113-52 2-103-59-86-133Z" fill="#3a1d16"/>
+  <path d="M111 154c-6 63 31 119 74 119 42 0 75-55 70-117-4-46-31-73-73-73-40 0-67 27-71 71Z" fill="#e2c2a5"/>
+  <path d="M105 151c28-56 80-75 151-40-8-38-34-62-73-64-45-2-79 32-78 104Z" fill="#512719"/>
+  <path d="M132 204c18 8 36 8 54-1M203 203c16 8 33 7 49-2" stroke="#201510" stroke-width="5" stroke-linecap="round"/>
+  <path d="M160 255c16 12 40 12 56 0" stroke="#6d3f31" stroke-width="4" stroke-linecap="round"/>
+  <path d="M83 504c10-91 51-151 101-151 49 0 90 60 100 151Z" fill="#101015"/>
+  <path d="M128 369l56 77 56-77 35 135H92Z" fill="#0a0c12"/>
+  <path d="M123 413h122M180 356v90" stroke="#e0a75e" stroke-opacity=".6" stroke-width="6"/>
+  <text x="180" y="470" text-anchor="middle" fill="#f0c47d" font-family="serif" font-size="24" font-weight="700">审判庭书记员</text>
+</svg>

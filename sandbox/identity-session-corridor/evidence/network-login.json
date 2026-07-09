@@ -1,0 +1,24 @@
+{
+  "request": {
+    "method": "POST",
+    "url": "/api/login",
+    "body": {
+      "email": "apprentice@canvasstorm.dev",
+      "password": "******"
+    }
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "content-type": "application/json"
+    },
+    "body": {
+      "user": {
+        "id": "user_apprentice",
+        "name": "见习开发者"
+      },
+      "accessToken": "token_for_user_apprentice"
+    }
+  },
+  "observation": "登录看起来成功，但响应头没有 Set-Cookie，也没有说明前端会把 token 放到可刷新恢复的位置。"
+}

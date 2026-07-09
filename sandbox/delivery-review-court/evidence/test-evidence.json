@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "scenarioId": "delivery-review-court",
+  "sourceHash": "old_delivery_review_hash",
+  "summary": {
+    "passed": 45,
+    "failed": 0
+  },
+  "commands": ["npm run verify"],
+  "generatedAt": "2026-07-04T22:18:00.000Z"
+}

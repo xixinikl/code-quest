@@ -1,0 +1,17 @@
+{
+  "requestId": "req_ai_003",
+  "expected": {
+    "providerStream": true,
+    "contentType": "text/event-stream",
+    "chunks": ["AI", " 正在", " 生成"]
+  },
+  "actual": {
+    "providerStream": false,
+    "contentType": "application/json",
+    "body": {
+      "text": "AI 完整回复：帮我总结这个 Project Brief",
+      "stream": false
+    }
+  },
+  "observation": "当前实现一次性返回完整文本，用户等待期间看不到任何逐段输出。"
+}

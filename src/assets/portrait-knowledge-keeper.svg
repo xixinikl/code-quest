@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 520" role="img" aria-label="知识馆守卷人">
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#0b1722" />
+      <stop offset=".52" stop-color="#081019" />
+      <stop offset="1" stop-color="#173027" />
+    </linearGradient>
+    <radialGradient id="glow" cx="48%" cy="26%" r="56%">
+      <stop offset="0" stop-color="#b7ffe3" stop-opacity=".52" />
+      <stop offset=".45" stop-color="#68d8ff" stop-opacity=".2" />
+      <stop offset="1" stop-color="#68d8ff" stop-opacity="0" />
+    </radialGradient>
+    <linearGradient id="robe" x1="0" x2="1">
+      <stop offset="0" stop-color="#101827" />
+      <stop offset=".52" stop-color="#12312b" />
+      <stop offset="1" stop-color="#08111d" />
+    </linearGradient>
+  </defs>
+  <rect width="360" height="520" rx="34" fill="url(#bg)" />
+  <circle cx="180" cy="160" r="150" fill="url(#glow)" />
+  <path d="M68 95h224M68 135h224M68 175h224M68 215h224" stroke="#9df9d1" stroke-opacity=".13" stroke-width="7" />
+  <path d="M88 504c11-94 50-150 92-150s81 56 92 150Z" fill="url(#robe)" />
+  <path d="M123 174c4-63 27-99 58-99s54 36 58 99c4 67-21 112-58 112s-62-45-58-112Z" fill="#d8b58f" />
+  <path d="M114 159c17-65 54-99 99-79 31 14 49 49 47 100-33-35-77-46-136-24Z" fill="#111827" />
+  <path d="M132 188c25-14 63-16 103 0-10-51-36-82-74-78-29 3-44 31-29 78Z" fill="#192235" opacity=".95" />
+  <path d="M141 218c15 7 31 7 46 0M204 218c15 7 31 7 46 0" stroke="#142035" stroke-width="6" stroke-linecap="round" />
+  <path d="M164 261c15 12 36 12 51 0" stroke="#593625" stroke-width="5" stroke-linecap="round" />
+  <path d="M124 376l56 70 56-70M180 355v92" fill="none" stroke="#b7ffe3" stroke-opacity=".58" stroke-width="7" stroke-linecap="round" />
+  <path d="M238 250h58v86h-58z" fill="#0b1220" stroke="#b7ffe3" stroke-opacity=".5" stroke-width="5" />
+  <path d="M250 270h34M250 289h34M250 308h25" stroke="#b7ffe3" stroke-opacity=".75" stroke-width="5" stroke-linecap="round" />
+  <path d="M76 438h208" stroke="#d7b36a" stroke-opacity=".34" stroke-width="8" />
+  <text x="180" y="470" text-anchor="middle" fill="#d9fff1" font-family="serif" font-size="24" font-weight="700">知识馆守卷人</text>
+</svg>

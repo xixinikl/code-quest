@@ -1,0 +1,4 @@
+[identity] POST /api/login email=apprentice@canvasstorm.dev status=200 pendingSessionId=session_user_apprentice
+[identity] WARN session_user_apprentice was not saved into serverSessions.bySessionId
+[identity] GET /api/me cookie.sessionId=missing authorization=missing status=401
+[identity] HINT Login success is not proof of persistence. Check browser credential storage and the protected request.

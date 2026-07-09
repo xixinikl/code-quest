@@ -1,0 +1,6 @@
+[2026-07-05T11:15:00.000Z] WARN interview forge requestId=req_interview_015 code=MISSING_STAR_SECTION field=result
+[2026-07-05T11:15:01.000Z] WARN interview forge requestId=req_interview_015 code=MISSING_PROJECT_EVIDENCE chapter=13
+[2026-07-05T11:15:02.000Z] WARN interview forge requestId=req_interview_015 code=INCOMPLETE_INCIDENT_REVIEW field=verification
+[2026-07-05T11:15:03.000Z] WARN interview forge requestId=req_interview_015 code=MISSING_TRADEOFF field=cost
+[2026-07-05T11:15:04.000Z] WARN interview forge requestId=req_interview_015 code=MISSING_FOLLOW_UPS count=2
+[2026-07-05T11:15:05.000Z] WARN interview forge requestId=req_interview_015 code=OVERCLAIMED_LEARNING_RESULT phrase=已经完全掌握

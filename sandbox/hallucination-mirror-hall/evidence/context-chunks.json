@@ -1,0 +1,16 @@
+{
+  "question": "CanvasStorm 是否会自动发布到线上？",
+  "chunks": [
+    {
+      "id": "brief#goal",
+      "title": "Project Brief 目标",
+      "text": "CanvasStorm 的 AI 助手只能根据用户填写的 Project Brief 生成候选方向。"
+    },
+    {
+      "id": "brief#save",
+      "title": "会话保存规则",
+      "text": "候选方向必须保存到当前会话，并记录 accepted 与 rejected 的候选 id。"
+    }
+  ],
+  "observation": "本轮资料只说明候选方向和会话保存，没有任何自动发布信息。"
+}

@@ -1,0 +1,24 @@
+{
+  "user": {
+    "id": "user_apprentice",
+    "permissions": ["docs:read"]
+  },
+  "toolCall": {
+    "toolName": "updateProjectStatus",
+    "args": {
+      "projectId": "project_1",
+      "status": "released"
+    }
+  },
+  "currentResult": {
+    "ok": true,
+    "data": {
+      "projectId": "project_1",
+      "status": "released"
+    }
+  },
+  "expected": {
+    "ok": false,
+    "code": "PERMISSION_DENIED"
+  }
+}

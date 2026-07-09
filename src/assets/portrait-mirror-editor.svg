@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 520" role="img" aria-label="镜厅校对师">
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#111827" />
+      <stop offset=".48" stop-color="#07131d" />
+      <stop offset="1" stop-color="#20143a" />
+    </linearGradient>
+    <radialGradient id="mirror" cx="50%" cy="28%" r="54%">
+      <stop offset="0" stop-color="#d8f7ff" stop-opacity=".55" />
+      <stop offset=".42" stop-color="#8b7cff" stop-opacity=".24" />
+      <stop offset="1" stop-color="#8b7cff" stop-opacity="0" />
+    </radialGradient>
+    <linearGradient id="coat" x1="0" x2="1">
+      <stop offset="0" stop-color="#111827" />
+      <stop offset=".55" stop-color="#18213b" />
+      <stop offset="1" stop-color="#0b1020" />
+    </linearGradient>
+  </defs>
+  <rect width="360" height="520" rx="34" fill="url(#bg)" />
+  <circle cx="180" cy="160" r="146" fill="url(#mirror)" />
+  <path d="M82 84h196v230H82z" fill="none" stroke="#c7f7ff" stroke-opacity=".22" stroke-width="6" />
+  <path d="M102 105l156 188M258 105L102 293" stroke="#c7f7ff" stroke-opacity=".13" stroke-width="4" />
+  <path d="M90 504c13-94 50-151 90-151s77 57 90 151Z" fill="url(#coat)" />
+  <path d="M126 176c2-60 24-96 56-96s54 36 56 96c2 68-22 111-56 111s-58-43-56-111Z" fill="#d7b28e" />
+  <path d="M117 164c13-72 48-111 96-93 32 12 52 46 49 104-30-40-72-53-134-33Z" fill="#121827" />
+  <path d="M132 190c24-16 59-20 99-8-8-49-33-80-70-82-28-2-47 26-29 90Z" fill="#1b2438" opacity=".9" />
+  <path d="M139 218c15 8 31 8 47 0M202 218c15 8 31 8 47 0" stroke="#172033" stroke-width="6" stroke-linecap="round" />
+  <path d="M165 260c13 11 34 11 47 0" stroke="#4c2f24" stroke-width="5" stroke-linecap="round" />
+  <path d="M116 374l64 70 64-70M180 356v92" fill="none" stroke="#b7f4ff" stroke-opacity=".58" stroke-width="7" stroke-linecap="round" />
+  <path d="M80 438h200" stroke="#887cff" stroke-opacity=".42" stroke-width="8" />
+  <path d="M242 236h54v82h-54z" fill="#0f172a" stroke="#c7f7ff" stroke-opacity=".55" stroke-width="5" />
+  <path d="M254 255h30M254 274h30M254 293h20" stroke="#c7f7ff" stroke-opacity=".7" stroke-width="5" stroke-linecap="round" />
+  <text x="180" y="470" text-anchor="middle" fill="#d8f7ff" font-family="serif" font-size="24" font-weight="700">镜厅校对师</text>
+</svg>

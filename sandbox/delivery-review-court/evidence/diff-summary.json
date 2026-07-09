@@ -1,0 +1,28 @@
+{
+  "base": "main",
+  "head": "cx/ai-career-rpg-home",
+  "allowedPaths": [
+    "sandbox/delivery-review-court/",
+    "server/scenarios.ts",
+    "server/app.test.ts",
+    "docs/ai-career-rpg-tasks.md",
+    "HANDOFF.md",
+    "README.md",
+    "changelogs/"
+  ],
+  "files": [
+    {
+      "path": "sandbox/delivery-review-court/server/deliveryReview.js",
+      "status": "added"
+    },
+    {
+      "path": "server/scenarios.ts",
+      "status": "modified"
+    },
+    {
+      "path": "src/game.ts",
+      "status": "deleted"
+    }
+  ],
+  "explain": "src/game.ts 不在本章允许范围里，审查时需要要求解释或回退。"
+}

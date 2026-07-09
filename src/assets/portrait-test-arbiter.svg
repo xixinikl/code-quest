@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 520" role="img" aria-label="验收试炼官">
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#08111d" />
+      <stop offset=".48" stop-color="#111827" />
+      <stop offset="1" stop-color="#2a1d32" />
+    </linearGradient>
+    <radialGradient id="halo" cx="50%" cy="27%" r="58%">
+      <stop offset="0" stop-color="#ffe6a3" stop-opacity=".48" />
+      <stop offset=".44" stop-color="#7dd3fc" stop-opacity=".18" />
+      <stop offset="1" stop-color="#7dd3fc" stop-opacity="0" />
+    </radialGradient>
+    <linearGradient id="robe" x1="0" x2="1">
+      <stop offset="0" stop-color="#0d1726" />
+      <stop offset=".5" stop-color="#26314f" />
+      <stop offset="1" stop-color="#101523" />
+    </linearGradient>
+  </defs>
+  <rect width="360" height="520" rx="34" fill="url(#bg)" />
+  <circle cx="180" cy="150" r="152" fill="url(#halo)" />
+  <path d="M70 104h220M96 144h168M78 184h204" stroke="#f8d98b" stroke-opacity=".16" stroke-width="7" />
+  <path d="M92 504c8-96 50-154 88-154s80 58 88 154Z" fill="url(#robe)" />
+  <path d="M122 176c4-63 27-98 58-98s54 35 58 98c4 66-21 111-58 111s-62-45-58-111Z" fill="#d9b18c" />
+  <path d="M112 160c14-72 53-106 99-86 34 15 51 53 48 107-31-39-78-50-135-24Z" fill="#111827" />
+  <path d="M130 190c22-17 64-18 104-1-11-51-36-78-73-76-29 3-45 31-31 77Z" fill="#20243d" opacity=".97" />
+  <path d="M139 219c16 8 32 8 48 0M204 219c16 8 32 8 48 0" stroke="#101827" stroke-width="6" stroke-linecap="round" />
+  <path d="M165 260c13 13 36 13 50 0" stroke="#553225" stroke-width="5" stroke-linecap="round" />
+  <path d="M119 382h122M180 349v100M138 405l42 42 42-42" fill="none" stroke="#f8d98b" stroke-opacity=".68" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
+  <path d="M240 236h58v92h-58z" fill="#0d1322" stroke="#7dd3fc" stroke-opacity=".55" stroke-width="5" />
+  <path d="m252 260 8 8 18-21M252 286l8 8 18-21M252 312h32" fill="none" stroke="#f8d98b" stroke-opacity=".82" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" />
+  <path d="M76 438h208" stroke="#7dd3fc" stroke-opacity=".28" stroke-width="8" />
+  <text x="180" y="470" text-anchor="middle" fill="#fff3cf" font-family="serif" font-size="24" font-weight="700">验收试炼官</text>
+</svg>

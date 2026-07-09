@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 520" role="img" aria-label="档案馆记录员">
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#101a24"/>
+      <stop offset="0.58" stop-color="#071017"/>
+      <stop offset="1" stop-color="#1d1308"/>
+    </linearGradient>
+    <radialGradient id="halo" cx="50%" cy="24%" r="46%">
+      <stop offset="0" stop-color="#e8c46f" stop-opacity=".55"/>
+      <stop offset="1" stop-color="#e8c46f" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="360" height="520" rx="34" fill="url(#bg)"/>
+  <circle cx="180" cy="118" r="126" fill="url(#halo)"/>
+  <path d="M58 92h244M76 128h208M64 390h232" stroke="#d7ad5b" stroke-opacity=".28"/>
+  <path d="M98 70c42-40 128-38 164 7 31 39 22 105-2 142-25 39-57 54-82 54-43 0-85-44-94-91-8-43-2-84 14-112Z" fill="#16100f"/>
+  <path d="M108 152c-5 67 31 127 73 127 44 0 78-62 72-128-3-42-30-74-72-75-41-1-70 32-73 76Z" fill="#e3c8ab"/>
+  <path d="M107 160c20-54 63-74 128-59 18 4 30 19 33 45-19-23-46-26-78-19-33 7-60 18-83 33Z" fill="#17100e"/>
+  <path d="M130 205c19 10 38 10 58 0M199 205c17 9 33 8 49-2" stroke="#241a18" stroke-width="5" stroke-linecap="round"/>
+  <path d="M173 233c8 5 17 5 26 0M157 256c14 13 41 14 58 0" stroke="#6b4232" stroke-width="4" stroke-linecap="round"/>
+  <path d="M92 504c8-92 44-151 88-151s80 59 88 151Z" fill="#101820"/>
+  <path d="M132 356l48 92 48-92 32 148H100Z" fill="#0b1118"/>
+  <path d="M147 356l33 63 33-63M112 438h136" stroke="#d7ad5b" stroke-opacity=".62" stroke-width="5"/>
+  <path d="M88 504c12-67 38-111 74-134M272 504c-12-67-38-111-74-134" stroke="#d7ad5b" stroke-opacity=".42" stroke-width="6"/>
+  <text x="180" y="470" text-anchor="middle" fill="#e9c878" font-family="serif" font-size="24" font-weight="700">档案馆记录员</text>
+</svg>

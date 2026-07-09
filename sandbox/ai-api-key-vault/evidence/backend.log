@@ -1,0 +1,3 @@
+[2026-07-05T00:29:10.112+08:00] WARN requestId=req_ai_002 message="request body carried apiKey from browser"
+[2026-07-05T00:29:14.930+08:00] ERROR requestId=req_ai_004 provider=429 apiKey=sk-server-only-key message="provider failed"
+[2026-07-05T00:29:14.931+08:00] WARN requestId=req_ai_004 message="error response contains debug.apiKey"

@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 520" role="img" aria-label="雾灯猫">
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#101a24" />
+      <stop offset=".55" stop-color="#071019" />
+      <stop offset="1" stop-color="#1d2215" />
+    </linearGradient>
+    <radialGradient id="lamp" cx="50%" cy="38%" r="48%">
+      <stop offset="0" stop-color="#bdf7ff" stop-opacity=".65" />
+      <stop offset=".45" stop-color="#80d9ff" stop-opacity=".28" />
+      <stop offset="1" stop-color="#80d9ff" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+  <rect width="360" height="520" rx="34" fill="url(#bg)" />
+  <circle cx="180" cy="190" r="154" fill="url(#lamp)" />
+  <path d="M92 230 126 126l42 58 48-58 52 104v128c0 38-38 66-88 66s-88-28-88-66Z" fill="#23313a" stroke="#9ed9e8" stroke-opacity=".5" stroke-width="6" />
+  <path d="M126 238c11-22 31-34 54-34s44 12 55 34c-10 36-29 58-55 58s-45-22-54-58Z" fill="#314653" />
+  <circle cx="149" cy="244" r="10" fill="#9ff6d4" />
+  <circle cx="211" cy="244" r="10" fill="#9ff6d4" />
+  <path d="M174 266h12l-6 8Z" fill="#d6b369" />
+  <path d="M153 296c15 12 39 12 54 0" stroke="#bdf7ff" stroke-opacity=".7" stroke-width="5" stroke-linecap="round" fill="none" />
+  <path d="M78 294c40-13 73-16 98-10M282 294c-40-13-73-16-98-10M84 329c37-6 67-7 91-2M276 329c-37-6-67-7-91-2" stroke="#bdf7ff" stroke-opacity=".4" stroke-width="5" stroke-linecap="round" />
+  <path d="M180 114V64M144 126l-18-40M216 126l18-40" stroke="#d6b369" stroke-opacity=".7" stroke-width="6" stroke-linecap="round" />
+  <path d="M118 406h124" stroke="#d6b369" stroke-opacity=".38" stroke-width="6" />
+  <text x="180" y="462" text-anchor="middle" fill="#c7f6ff" font-family="serif" font-size="26" font-weight="700">雾灯猫</text>
+</svg>

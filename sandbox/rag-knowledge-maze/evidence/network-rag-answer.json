@@ -1,0 +1,20 @@
+{
+  "page": "/knowledge",
+  "capturedAt": "2026-07-05T00:44:00+08:00",
+  "request": {
+    "method": "POST",
+    "url": "/api/rag/answer",
+    "body": {
+      "question": "RAG 是怎么让资料进入回答的？"
+    }
+  },
+  "response": {
+    "status": 200,
+    "body": {
+      "answer": "根据知识库，答案是：登录状态通过 httpOnly Cookie 保存。",
+      "citations": [],
+      "matches": []
+    }
+  },
+  "observation": "用户看不到命中的 chunk、score 或来源，无法判断答案是否来自正确资料。"
+}

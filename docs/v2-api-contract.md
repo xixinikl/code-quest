@@ -94,4 +94,5 @@
 - 数据库位于 `.data/code-quest.sqlite`，由 `.gitignore` 排除。
 - 迁移记录写入 `schema_migrations`，每个版本只执行一次。
 - 每次 schema 变化都必须有从空库创建和从前一版本升级的测试。
-- 数据导出功能在 T11 实现前，数据库文件是唯一事实源，不声称具备完整备份能力。
+- `GET /api/learning-backup` 导出本地学习记录 JSON；前端备份库会额外打包成长档案。
+- `POST /api/learning-backup/import` 只合并恢复白名单学习记录表，并校验格式、schema、场景和步骤。

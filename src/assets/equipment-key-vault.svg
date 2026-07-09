@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 520" role="img" aria-label="密钥匣">
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#111827" />
+      <stop offset=".52" stop-color="#07101c" />
+      <stop offset="1" stop-color="#24140b" />
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="42%" r="48%">
+      <stop offset="0" stop-color="#ffe6a7" stop-opacity=".62" />
+      <stop offset=".48" stop-color="#56f0ff" stop-opacity=".18" />
+      <stop offset="1" stop-color="#56f0ff" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+  <rect width="360" height="520" rx="34" fill="url(#bg)" />
+  <circle cx="180" cy="210" r="156" fill="url(#glow)" />
+  <path d="M105 202h150c16 0 28 12 28 28v126c0 18-14 32-32 32H109c-18 0-32-14-32-32V230c0-16 12-28 28-28Z" fill="#192638" stroke="#d9b56f" stroke-width="7" />
+  <path d="M126 202v-42c0-34 22-58 54-58s54 24 54 58v42" fill="none" stroke="#8ceaff" stroke-opacity=".72" stroke-width="12" stroke-linecap="round" />
+  <path d="M121 248h118M121 342h118" stroke="#d9b56f" stroke-opacity=".46" stroke-width="6" stroke-linecap="round" />
+  <circle cx="180" cy="294" r="28" fill="#06111c" stroke="#8ceaff" stroke-width="7" />
+  <path d="M180 322v35" stroke="#8ceaff" stroke-width="9" stroke-linecap="round" />
+  <path d="M272 142l20-20M88 142l-20-20M180 82V46" stroke="#d9b56f" stroke-opacity=".72" stroke-width="6" stroke-linecap="round" />
+  <path d="M94 424h172" stroke="#d9b56f" stroke-opacity=".36" stroke-width="6" />
+  <text x="180" y="468" text-anchor="middle" fill="#fff0c2" font-family="serif" font-size="26" font-weight="700">密钥匣</text>
+</svg>

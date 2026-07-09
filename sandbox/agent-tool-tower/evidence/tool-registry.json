@@ -1,0 +1,23 @@
+{
+  "tools": [
+    {
+      "name": "searchProjectDocs",
+      "description": "搜索项目文档。",
+      "permission": "docs:read",
+      "schema": {
+        "query": "string"
+      },
+      "risk": "描述没有写清只读边界，用户不知道它不会修改数据。"
+    },
+    {
+      "name": "updateProjectStatus",
+      "description": "更新项目状态。",
+      "permission": "project:write",
+      "schema": {
+        "projectId": "string",
+        "status": ["draft", "review", "released"]
+      },
+      "risk": "写入工具需要权限和审计，不能只靠 Agent 自觉。"
+    }
+  ]
+}

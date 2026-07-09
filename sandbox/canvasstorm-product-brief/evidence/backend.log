@@ -1,0 +1,3 @@
+[2026-07-05T00:18:01.441Z] POST /api/storm/brief-plan direction=mvp candidates=3
+[2026-07-05T00:18:01.447Z] buildProductPlan accepted=3 rejected=0
+[2026-07-05T00:18:01.448Z] session=session_01 saved candidateIds=mvp-brief-board,growth-share-loop,mvp-session-save

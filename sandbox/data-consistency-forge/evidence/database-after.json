@@ -1,0 +1,31 @@
+{
+  "drafts": [
+    {
+      "id": "draft_1",
+      "userId": "user_apprentice",
+      "clientMutationId": "mutation_2026_0705_001",
+      "title": "AI 面试复盘草稿",
+      "idempotencyKey": "draft-save-abc"
+    },
+    {
+      "id": "draft_2",
+      "userId": "user_apprentice",
+      "clientMutationId": "mutation_2026_0705_001",
+      "title": "AI 面试复盘草稿",
+      "idempotencyKey": "draft-save-abc"
+    }
+  ],
+  "auditLog": [
+    {
+      "event": "draft.created",
+      "draftId": "draft_1",
+      "requestId": "req_draft_001"
+    },
+    {
+      "event": "draft.created",
+      "draftId": "draft_2",
+      "requestId": "req_draft_002"
+    }
+  ],
+  "observation": "同一个用户、同一个 clientMutationId 和同一个 Idempotency-Key 写出了两条草稿。"
+}

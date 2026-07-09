@@ -1,0 +1,25 @@
+{
+  "request": {
+    "method": "POST",
+    "url": "/api/storm/brief-plan",
+    "body": {
+      "brief": {
+        "projectName": "CanvasStorm",
+        "userGoal": "帮助独立开发者把模糊 AI 点子拆成可执行产品路线",
+        "stage": "prototype",
+        "constraints": ["先做单人使用", "不做复杂协作"]
+      },
+      "direction": "mvp"
+    }
+  },
+  "response": {
+    "status": 200,
+    "body": {
+      "acceptedCandidates": [
+        "mvp-brief-board",
+        "growth-share-loop",
+        "mvp-session-save"
+      ]
+    }
+  }
+}

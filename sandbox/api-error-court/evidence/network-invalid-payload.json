@@ -1,0 +1,16 @@
+{
+  "request": {
+    "method": "POST",
+    "url": "/api/briefs",
+    "headers": {
+      "content-type": "application/json",
+      "x-request-id": "req_brief_042"
+    },
+    "body": {
+      "projectName": "CanvasStorm",
+      "userGoal": "",
+      "audience": "独立开发者"
+    }
+  },
+  "observation": "请求已经到达后端，但 userGoal 为空。这个证据更像前端表单校验或后端参数校验问题，不应直接判断成服务器崩了。"
+}

@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 520" role="img" aria-label="身份回廊守卫">
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#09251f"/>
+      <stop offset=".55" stop-color="#070f12"/>
+      <stop offset="1" stop-color="#10170b"/>
+    </linearGradient>
+    <radialGradient id="lock" cx="54%" cy="28%" r="45%">
+      <stop offset="0" stop-color="#64e7b0" stop-opacity=".45"/>
+      <stop offset="1" stop-color="#64e7b0" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="360" height="520" rx="34" fill="url(#bg)"/>
+  <path d="M180 58l86 42v86c0 72-39 119-86 145-47-26-86-73-86-145v-86Z" fill="url(#lock)" stroke="#78e0af" stroke-opacity=".32" stroke-width="4"/>
+  <path d="M100 127c9-55 43-83 89-82 48 1 78 34 80 84 2 65-40 126-83 129-52 4-98-58-86-131Z" fill="#13100e"/>
+  <path d="M110 154c-5 63 31 119 74 119s75-56 70-119c-4-45-30-72-73-72-40 0-67 28-71 72Z" fill="#dfc2a5"/>
+  <path d="M103 154c28-55 78-73 151-42-9-41-39-66-80-67-44-1-75 34-71 109Z" fill="#15100f"/>
+  <path d="M133 204c18 8 36 8 54-1M204 203c16 8 32 7 48-2" stroke="#181512" stroke-width="5" stroke-linecap="round"/>
+  <path d="M160 255c17 13 40 13 56 0" stroke="#614433" stroke-width="4" stroke-linecap="round"/>
+  <path d="M82 504c11-93 52-152 101-152 49 0 91 59 101 152Z" fill="#0a1714"/>
+  <path d="M128 368l55 74 55-74 35 136H92Z" fill="#07120f"/>
+  <path d="M128 413h110M180 357v86" stroke="#69dfad" stroke-opacity=".58" stroke-width="6"/>
+  <text x="180" y="470" text-anchor="middle" fill="#bcf4d6" font-family="serif" font-size="24" font-weight="700">身份回廊守卫</text>
+</svg>

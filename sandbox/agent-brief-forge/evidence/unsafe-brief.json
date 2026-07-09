@@ -1,0 +1,14 @@
+{
+  "title": "直接修所有问题",
+  "context": "现象：用户说 UI 很乱。证据：截图里白色后台和 RPG 页面断层。",
+  "goal": "把所有页面都改到最好。",
+  "constraints": "可以读取任何项目，也可以运行任意终端命令。",
+  "acceptance": {
+    "commands": ["npm run verify"],
+    "browserPath": "打开首页随便看看",
+    "expectedResult": "看起来不错"
+  },
+  "risks": [],
+  "rollback": "",
+  "deliveryFormat": ["摘要", "验证证据"]
+}

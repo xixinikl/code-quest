@@ -1,0 +1,17 @@
+{
+  "question": "Project Brief 需要包含哪些内容？",
+  "currentMatches": [
+    {
+      "id": "doc-login-1",
+      "score": 1,
+      "text": "登录状态通过 httpOnly Cookie 保存。"
+    },
+    {
+      "id": "doc-brief-1",
+      "score": 0.9,
+      "text": "Project Brief 必须包含用户目标、输入材料、输出格式和保存位置。"
+    }
+  ],
+  "expectedTop1": "doc-brief#chunk-1",
+  "observation": "检索直接取前几个 chunk，导致 Brief 问题先命中登录资料。"
+}

@@ -1,0 +1,4 @@
+[2026-07-05T10:13:00.000Z] WARN delivery review requestId=req_review_013 code=OUT_OF_SCOPE_DIFF file=src/game.ts
+[2026-07-05T10:13:01.000Z] WARN delivery review requestId=req_review_013 code=STALE_TEST_EVIDENCE sourceHash=old_delivery_review_hash
+[2026-07-05T10:13:02.000Z] WARN delivery review requestId=req_review_013 code=MISSING_MOBILE_CHECK viewport=390px
+[2026-07-05T10:13:03.000Z] WARN delivery review requestId=req_review_013 code=MISSING_DOC_SYNC docs=HANDOFF.md,docs/ai-career-rpg-tasks.md

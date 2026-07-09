@@ -1,0 +1,14 @@
+{
+  "title": "帮我优化一下项目",
+  "context": "现在体验不好。",
+  "goal": "做得更好看、更专业。",
+  "constraints": "你看着办。",
+  "acceptance": {
+    "commands": [],
+    "browserPath": "",
+    "expectedResult": ""
+  },
+  "risks": [],
+  "rollback": "",
+  "deliveryFormat": ["摘要"]
+}

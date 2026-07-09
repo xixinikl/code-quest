@@ -1,0 +1,26 @@
+{
+  "page": "/agent-tools",
+  "capturedAt": "2026-07-05T00:52:00+08:00",
+  "request": {
+    "method": "POST",
+    "url": "/api/agent/tools/run",
+    "body": {
+      "toolName": "updateProjectStatus",
+      "args": {
+        "projectId": "project_1",
+        "status": "shipped"
+      }
+    }
+  },
+  "response": {
+    "status": 200,
+    "body": {
+      "ok": true,
+      "data": {
+        "projectId": "project_1",
+        "status": "shipped"
+      }
+    }
+  },
+  "observation": "status 不在允许枚举里，却仍然执行成功。"
+}

@@ -1,0 +1,18 @@
+{
+  "title": "第 12 章：补 Agent 委托书沙盒",
+  "context": "现象：第 12 章只有剧情教学，还没有可运行沙盒。证据：docs/ai-career-rpg-tasks.md 标记第 12 章未接入独立沙盒。",
+  "goal": "用户能看到一个空泛 Agent 任务为什么不可信，并生成一份包含背景、目标、约束、验收、风险的委托书。",
+  "constraints": "只能新增 sandbox/agent-brief-forge 和服务端白名单；不得读取真实项目；不要执行应用提供的任意命令；不得提交或推送。",
+  "acceptance": {
+    "commands": [
+      "npm test",
+      "npm run test -- server/app.test.ts server/report.test.ts",
+      "npm run verify"
+    ],
+    "browserPath": "首页 -> 任务简报 -> 第 12 章 -> 进入教学关卡",
+    "expectedResult": "第 12 章展示委托书锻造师、背景、目标、约束、验收、风险和面试复盘。"
+  },
+  "risks": ["只补种子沙盒，还没有完整 UI 实战修复闭环"],
+  "rollback": "删除 sandbox/agent-brief-forge，并移除 server/scenarios.ts 与文档里的第 12 章沙盒记录。",
+  "deliveryFormat": ["摘要", "验证证据", "风险", "后续"]
+}
