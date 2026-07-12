@@ -1,5 +1,17 @@
 # 码上冒险
 
+## 仓库身份
+
+| 项目 | 说明 |
+|---|---|
+| 类型 | 产品仓库：面向初学者的证据式开发学习应用。 |
+| 协作关系 | 由 `xixi-dev-system` 接入；质量报告供 `quality-hub` 读取；个人偏好来自 `xixi-agent-profile`。 |
+| 平时需要打开吗 | 开发或学习时打开；只看整体状态时打开 Quality Hub。 |
+| 当前状态 | 使用中，当前开发基线是 `feat/guided-learning-bridge`。 |
+| 新电脑恢复 | `git clone` 后运行 `npm install`，再运行 `~/.codex/bin/xixi-dev-system doctor --project .` 和 `npm run verify`。 |
+
+本产品的界面只遵守本仓库自己的设计和学习体验要求，不复用其他产品的配色与版式。
+
 一个为“用 Agent 做项目、同时想真正学会开发”的初学者设计的本地证据式学习应用。
 
 它不再用明显的单选题判断水平。首个真实场景要求用户阅读独立项目代码、Network、日志和 SQLite 证据，在自己的编辑器中修复故障，并手动运行测试。
