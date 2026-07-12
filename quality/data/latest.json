@@ -4,11 +4,11 @@
   "projectName": "码上冒险",
   "date": "2026-07-12",
   "timezone": "Asia/Shanghai",
-  "generatedAt": "2026-07-12T05:04:35.681Z",
+  "generatedAt": "2026-07-12T05:12:25.754Z",
   "source": {
     "branch": "feat/guided-learning-bridge",
-    "testedSha": "34c67bdc8f8d96ea6f07a7463a3fe3e68d7b3f5d",
-    "runUrl": "https://github.com/xixinikl/code-quest/actions/runs/29180627093"
+    "testedSha": "67d6fc653967266646db718a7282e04be9c6ca0d",
+    "runUrl": "https://github.com/xixinikl/code-quest/actions/runs/29180824576"
   },
   "verdict": {
     "status": "fail",
@@ -23,32 +23,32 @@
       {
         "name": "format",
         "exitCode": 1,
-        "durationSeconds": 2.31,
-        "outputTail": "> code-quest@0.1.0 format:check\n> prettier --check .\n\nChecking formatting...\n[\u001b[33mwarn\u001b[39m] .xixi-dev-system.json\n[\u001b[33mwarn\u001b[39m] HANDOFF.md\n[\u001b[33mwarn\u001b[39m] quality/data/latest.json\n[\u001b[33mwarn\u001b[39m] quality/data/runs/2026-07-12.json\n[\u001b[33mwarn\u001b[39m] src/TeachingBridge.tsx\n[\u001b[33mwarn\u001b[39m] Code style issues found in 5 files. Run Prettier with --write to fix."
+        "durationSeconds": 1.99,
+        "outputTail": "> code-quest@0.1.0 format:check\n> prettier --check .\n\nChecking formatting...\n[\u001b[33mwarn\u001b[39m] .xixi-dev-system.json\n[\u001b[33mwarn\u001b[39m] HANDOFF.md\n[\u001b[33mwarn\u001b[39m] quality/data/latest.json\n[\u001b[33mwarn\u001b[39m] quality/data/runs/2026-07-12.json\n[\u001b[33mwarn\u001b[39m] README.md\n[\u001b[33mwarn\u001b[39m] src/TeachingBridge.tsx\n[\u001b[33mwarn\u001b[39m] Code style issues found in 6 files. Run Prettier with --write to fix."
       },
       {
         "name": "lint",
         "exitCode": 1,
-        "durationSeconds": 3.62,
+        "durationSeconds": 3.71,
         "outputTail": "> code-quest@0.1.0 lint\n> eslint .\n\n\n/home/runner/work/code-quest/code-quest/src/detective.ts\n  50:11  error  Empty block statement  no-empty\n\n✖ 1 problem (1 error, 0 warnings)"
       },
       {
         "name": "typecheck",
         "exitCode": 0,
-        "durationSeconds": 3.54,
+        "durationSeconds": 3.53,
         "outputTail": "> code-quest@0.1.0 typecheck\n> tsc -b"
       },
       {
         "name": "test",
         "exitCode": 0,
-        "durationSeconds": 2.45,
-        "outputTail": "> code-quest@0.1.0 test\n> vitest run\n\n\n\u001b[1m\u001b[30m\u001b[46m RUN \u001b[49m\u001b[39m\u001b[22m \u001b[36mv4.1.9 \u001b[39m\u001b[90m/home/runner/work/code-quest/code-quest\u001b[39m\n\n \u001b[32m✓\u001b[39m server/report.test.ts \u001b[2m(\u001b[22m\u001b[2m4 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 16\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m server/app.test.ts \u001b[2m(\u001b[22m\u001b[2m3 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 154\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m server/store.test.ts \u001b[2m(\u001b[22m\u001b[2m3 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 42\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m src/game.test.ts \u001b[2m(\u001b[22m\u001b[2m5 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 9\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m src/App.test.tsx \u001b[2m(\u001b[22m\u001b[2m2 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[33m 430\u001b[2mms\u001b[22m\u001b[39m\n     \u001b[33m\u001b[2m✓\u001b[22m\u001b[39m 打开显示游戏封面，点击后直接进入教学桥，不显示无聊的基线 \u001b[33m 305\u001b[2mms\u001b[22m\u001b[39m\n\n\u001b[2m Test Files \u001b[22m \u001b[1m\u001b[32m5 passed\u001b[39m\u001b[22m\u001b[90m (5)\u001b[39m\n\u001b[2m      Tests \u001b[22m \u001b[1m\u001b[32m17 passed\u001b[39m\u001b[22m\u001b[90m (17)\u001b[39m\n\u001b[2m   Start at \u001b[22m 05:04:45\n\u001b[2m   Duration \u001b[22m 2.02s\u001b[2m (transform 491ms, setup 1.04s, import 697ms, tests 650ms, environment 1.44s)\u001b[22m\n\n(node:2490) ExperimentalWarning: SQLite is an experimental feature and might change at any time\n(Use `node --trace-warnings ...` to show where the warning was created)\n(node:2512) ExperimentalWarning: SQLite is an experimental feature and might change at any time\n(Use `node --trace-warnings ...` to show where the warning was created)"
+        "durationSeconds": 2.46,
+        "outputTail": "> code-quest@0.1.0 test\n> vitest run\n\n\n\u001b[1m\u001b[30m\u001b[46m RUN \u001b[49m\u001b[39m\u001b[22m \u001b[36mv4.1.9 \u001b[39m\u001b[90m/home/runner/work/code-quest/code-quest\u001b[39m\n\n \u001b[32m✓\u001b[39m server/report.test.ts \u001b[2m(\u001b[22m\u001b[2m4 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 17\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m server/app.test.ts \u001b[2m(\u001b[22m\u001b[2m3 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 135\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m server/store.test.ts \u001b[2m(\u001b[22m\u001b[2m3 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 48\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m src/game.test.ts \u001b[2m(\u001b[22m\u001b[2m5 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 6\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m src/App.test.tsx \u001b[2m(\u001b[22m\u001b[2m2 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[33m 433\u001b[2mms\u001b[22m\u001b[39m\n     \u001b[33m\u001b[2m✓\u001b[22m\u001b[39m 打开显示游戏封面，点击后直接进入教学桥，不显示无聊的基线 \u001b[33m 313\u001b[2mms\u001b[22m\u001b[39m\n\n\u001b[2m Test Files \u001b[22m \u001b[1m\u001b[32m5 passed\u001b[39m\u001b[22m\u001b[90m (5)\u001b[39m\n\u001b[2m      Tests \u001b[22m \u001b[1m\u001b[32m17 passed\u001b[39m\u001b[22m\u001b[90m (17)\u001b[39m\n\u001b[2m   Start at \u001b[22m 05:12:35\n\u001b[2m   Duration \u001b[22m 2.03s\u001b[2m (transform 498ms, setup 1.10s, import 713ms, tests 639ms, environment 1.48s)\u001b[22m\n\n(node:2491) ExperimentalWarning: SQLite is an experimental feature and might change at any time\n(Use `node --trace-warnings ...` to show where the warning was created)\n(node:2513) ExperimentalWarning: SQLite is an experimental feature and might change at any time\n(Use `node --trace-warnings ...` to show where the warning was created)"
       },
       {
         "name": "build",
         "exitCode": 0,
-        "durationSeconds": 5.77,
-        "outputTail": "> code-quest@0.1.0 build\n> tsc -b && vite build\n\n\u001b[36mvite v7.3.6 \u001b[32mbuilding client environment for production...\u001b[36m\u001b[39m\ntransforming...\n\u001b[32m✓\u001b[39m 1685 modules transformed.\nrendering chunks...\ncomputing gzip size...\n\u001b[2mdist/\u001b[22m\u001b[32mindex.html                 \u001b[39m\u001b[1m\u001b[2m  0.58 kB\u001b[22m\u001b[1m\u001b[22m\u001b[2m │ gzip:  0.44 kB\u001b[22m\n\u001b[2mdist/\u001b[22m\u001b[2massets/\u001b[22m\u001b[35mindex-JW-AOoy5.css  \u001b[39m\u001b[1m\u001b[2m 33.85 kB\u001b[22m\u001b[1m\u001b[22m\u001b[2m │ gzip:  7.58 kB\u001b[22m\n\u001b[2mdist/\u001b[22m\u001b[2massets/\u001b[22m\u001b[36mindex-BAGCl9Lj.js   \u001b[39m\u001b[1m\u001b[2m274.73 kB\u001b[22m\u001b[1m\u001b[22m\u001b[2m │ gzip: 88.19 kB\u001b[22m\n\u001b[32m✓ built in 2.08s\u001b[39m"
+        "durationSeconds": 5.82,
+        "outputTail": "> code-quest@0.1.0 build\n> tsc -b && vite build\n\n\u001b[36mvite v7.3.6 \u001b[32mbuilding client environment for production...\u001b[36m\u001b[39m\ntransforming...\n\u001b[32m✓\u001b[39m 1685 modules transformed.\nrendering chunks...\ncomputing gzip size...\n\u001b[2mdist/\u001b[22m\u001b[32mindex.html                 \u001b[39m\u001b[1m\u001b[2m  0.58 kB\u001b[22m\u001b[1m\u001b[22m\u001b[2m │ gzip:  0.44 kB\u001b[22m\n\u001b[2mdist/\u001b[22m\u001b[2massets/\u001b[22m\u001b[35mindex-JW-AOoy5.css  \u001b[39m\u001b[1m\u001b[2m 33.85 kB\u001b[22m\u001b[1m\u001b[22m\u001b[2m │ gzip:  7.58 kB\u001b[22m\n\u001b[2mdist/\u001b[22m\u001b[2massets/\u001b[22m\u001b[36mindex-BAGCl9Lj.js   \u001b[39m\u001b[1m\u001b[2m274.73 kB\u001b[22m\u001b[1m\u001b[22m\u001b[2m │ gzip: 88.19 kB\u001b[22m\n\u001b[32m✓ built in 2.10s\u001b[39m"
       }
     ]
   },
