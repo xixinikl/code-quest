@@ -4,6 +4,17 @@
 
 `cx/ai-career-rpg-home` 分支，基于冻结 `main` (`d21721e`) 开发。
 
+## 分支与合并状态（2026-07-12）
+
+- 当前继续开发分支：`cx/ai-career-rpg-home`
+- 当前已上传提交：`4ee7c51602958182d5f5424e006d85a696bd4291`
+- 远端位置：`origin/cx/ai-career-rpg-home`
+- 远端仓库当前会提示迁移到 `https://github.com/xixinikl/code-quest.git`，但本地 `origin` 仍指向 `https://github.com/2082743849-beep/code-quest.git` 并可正常推送。
+- 旧引导式教学分支：`origin/feat/guided-learning-bridge`
+- 旧分支当前远端最新提交：`10132c1 chore: onboard project to Xixi Dev System (#1)`
+- 本分支尚未准备合并到主线；不要直接 merge。原因：产品体验仍在打磨，真人学习效果未验收，Java/前端路线还只是锁定态骨架。
+- 后续合并前先读：`docs/branch-merge-status-2026-07-12.md`
+
 **已完成：**
 
 - 引导式教学桥（项目地图 → 4概念卡 → 代码导读 → 共同示范 → 陪练清单）

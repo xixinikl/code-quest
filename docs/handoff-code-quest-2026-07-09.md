@@ -6,7 +6,10 @@
 - 远端仓库：`origin` -> `https://github.com/2082743849-beep/code-quest.git`
 - 冻结基线：`d21721e`
 - 本轮上传目标：把当前 AI 职业 RPG 学习路线开发内容推送到 `origin/cx/ai-career-rpg-home`
-- 旧远端分支：`origin/feat/guided-learning-bridge` 仍停在 `daa8fc7`
+- 当前 AI 职业 RPG 已上传到：`origin/cx/ai-career-rpg-home`，提交 `4ee7c51`
+- 旧远端分支：`origin/feat/guided-learning-bridge` 已更新到 `10132c1 chore: onboard project to Xixi Dev System (#1)`
+- 合并状态记录：`docs/branch-merge-status-2026-07-12.md`
+- 当前建议：暂不合并，继续在 `cx/ai-career-rpg-home` 或其后续 `cx/` 子分支开发。
 
 ## 已完成范围
 
