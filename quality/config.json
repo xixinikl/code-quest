@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "project": "code-quest",
+  "projectName": "码上冒险",
+  "defaultBranch": "feat/guided-learning-bridge",
+  "failureNextAction": "查看失败检查，修复后重新运行完整质量门禁。",
+  "checks": [
+    { "name": "format", "command": "npm run format:check" },
+    { "name": "lint", "command": "npm run lint" },
+    { "name": "typecheck", "command": "npm run typecheck" },
+    { "name": "test", "command": "npm run test" },
+    { "name": "build", "command": "npm run build" }
+  ]
+}
