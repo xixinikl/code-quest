@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "projectName": "code-quest",
+  "repository": "https://github.com/xixinikl/code-quest.git",
+  "defaultBranch": "feat/guided-learning-bridge",
+  "runtime": {
+    "manager": "uv",
+    "python": "3.11",
+    "startCommand": "npm run dev",
+    "doctorCommand": "npm run verify",
+    "portEnvironment": "PORT",
+    "dataNamespaceEnvironment": "XDS_DATA_NAMESPACE",
+    "workingDirectory": ".",
+    "requirements": []
+  },
+  "collaboration": {
+    "focusAuthors": [],
+    "riskPathPatterns": [
+      "auth",
+      "payment",
+      "migration",
+      "deploy",
+      "secret"
+    ]
+  },
+  "quality": {
+    "acceptanceCommand": "npm run verify",
+    "autofixCommand": "",
+    "autofixPaths": []
+  },
+  "learning": {
+    "projectRetrospectiveDirectory": "doc/retrospectives",
+    "sharedProfileRepository": "https://github.com/xixinikl/xixi-agent-profile"
+  }
+}
