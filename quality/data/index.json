@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "project": "code-quest",
-  "generatedAt": "2026-07-12T05:02:49.255Z",
+  "generatedAt": "2026-07-12T05:04:35.681Z",
   "latestDate": "2026-07-12",
   "totals": {
     "runs": 1,
@@ -14,7 +14,7 @@
       "date": "2026-07-12",
       "status": "fail",
       "reason": "真实检查未通过：format、lint。",
-      "testedSha": "10132c1cecf8",
+      "testedSha": "34c67bdc8f8d",
       "checkTotal": 5,
       "checkPassed": 3,
       "checkFailed": 2,
