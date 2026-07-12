@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 1,
+  "project": "code-quest",
+  "projectName": "码上冒险",
+  "date": "2026-07-12",
+  "timezone": "Asia/Shanghai",
+  "generatedAt": "2026-07-12T05:02:49.255Z",
+  "source": {
+    "branch": "codex/quality-report",
+    "testedSha": "10132c1cecf86f80f21fb1b8797b7c1c36aeb06a",
+    "runUrl": null
+  },
+  "verdict": {
+    "status": "fail",
+    "reason": "真实检查未通过：format、lint。",
+    "recommendedLevel": "L1"
+  },
+  "checks": {
+    "total": 5,
+    "passed": 3,
+    "failed": 2,
+    "results": [
+      {
+        "name": "format",
+        "exitCode": 1,
+        "durationSeconds": 0.61,
+        "outputTail": "> code-quest@0.1.0 format:check\n> prettier --check .\n\nChecking formatting...\n[warn] .xixi-dev-system.json\n[warn] HANDOFF.md\n[warn] quality/data/latest.json\n[warn] quality/data/runs/2026-07-12.json\n[warn] src/TeachingBridge.tsx\n[warn] Code style issues found in 5 files. Run Prettier with --write to fix."
+      },
+      {
+        "name": "lint",
+        "exitCode": 1,
+        "durationSeconds": 1.15,
+        "outputTail": "> code-quest@0.1.0 lint\n> eslint .\n\n\n/Users/xixi/Documents/前端大测试/code-quest/src/detective.ts\n  50:11  error  Empty block statement  no-empty\n\n✖ 1 problem (1 error, 0 warnings)"
+      },
+      {
+        "name": "typecheck",
+        "exitCode": 0,
+        "durationSeconds": 1.08,
+        "outputTail": "> code-quest@0.1.0 typecheck\n> tsc -b"
+      },
+      {
+        "name": "test",
+        "exitCode": 0,
+        "durationSeconds": 0.85,
+        "outputTail": "> code-quest@0.1.0 test\n> vitest run\n\n\n RUN  v4.1.9 /Users/xixi/Documents/前端大测试/code-quest\n\n\n Test Files  5 passed (5)\n      Tests  17 passed (17)\n   Start at  13:02:52\n   Duration  625ms (transform 206ms, setup 355ms, import 249ms, tests 183ms, environment 528ms)\n\n(node:74893) ExperimentalWarning: SQLite is an experimental feature and might change at any time\n(Use `node --trace-warnings ...` to show where the warning was created)\n(node:74892) ExperimentalWarning: SQLite is an experimental feature and might change at any time\n(Use `node --trace-warnings ...` to show where the warning was created)"
+      },
+      {
+        "name": "build",
+        "exitCode": 0,
+        "durationSeconds": 1.8,
+        "outputTail": "> code-quest@0.1.0 build\n> tsc -b && vite build\n\nvite v7.3.6 building client environment for production...\ntransforming...\n✓ 1685 modules transformed.\nrendering chunks...\ncomputing gzip size...\ndist/index.html                   0.58 kB │ gzip:  0.44 kB\ndist/assets/index-JW-AOoy5.css   33.85 kB │ gzip:  7.58 kB\ndist/assets/index-BAGCl9Lj.js   274.73 kB │ gzip: 88.19 kB\n✓ built in 623ms"
+      }
+    ]
+  },
+  "risk": {
+    "highRiskFiles": [],
+    "failedChecks": [
+      "format",
+      "lint"
+    ]
+  },
+  "nextAction": "查看失败检查，修复后重新运行完整质量门禁。"
+}
