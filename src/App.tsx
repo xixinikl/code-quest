@@ -27,7 +27,10 @@ import briefForgemasterPortrait from "./assets/portrait-brief-forgemaster.svg";
 import deliveryJudgePortrait from "./assets/portrait-delivery-judge.svg";
 import identityGuardPortrait from "./assets/portrait-identity-guard.svg";
 import idempotencyStonePet from "./assets/pet-idempotency-stone.svg";
+import knowledgeKeeperPortrait from "./assets/portrait-knowledge-keeper.svg";
 import mirrorEditorPortrait from "./assets/portrait-mirror-editor.svg";
+import modelWardenPortrait from "./assets/portrait-model-warden.svg";
+import portalScribePortrait from "./assets/portrait-portal-scribe.svg";
 import releaseGatekeeperPortrait from "./assets/portrait-release-gatekeeper.svg";
 import interviewCouncilorPortrait from "./assets/portrait-interview-councilor.svg";
 import testArbiterPortrait from "./assets/portrait-test-arbiter.svg";
@@ -4592,12 +4595,49 @@ const chapterScenarioIds: Partial<Record<number, string>> = {
   15: CASE15_SCENARIO_ID,
 };
 
+const routeBaselineRecord = {
+  firstChecks: "AI 应用开发路线入口",
+  evidenceNeeded: "从真实项目委托开始，先学习数据流、关键代码和验证方式。",
+  dataFlow: "职业路线 → 项目委托 → 教学引导 → 沙盒实战 → 成长档案",
+  confidence: "3",
+};
+
 function getScenarioIdForChapter(chapter: number) {
   return chapterScenarioIds[chapter] ?? SCENARIO_ID;
 }
 
+function getChapterHash(chapter: number) {
+  return `#chapter-${chapter}`;
+}
+
+function readChapterHash() {
+  if (typeof window === "undefined") return null;
+  const match = window.location.hash.match(/^#chapter-(\d{1,2})$/);
+  if (!match) return null;
+  const chapter = Number(match[1]);
+  return chapterScenarioIds[chapter] ? chapter : null;
+}
+
+function writeChapterHash(chapter: number) {
+  if (typeof window === "undefined") return;
+  const nextHash = getChapterHash(chapter);
+  if (window.location.hash !== nextHash) {
+    window.history.replaceState(null, "", nextHash);
+  }
+}
+
+function clearChapterHash() {
+  if (typeof window === "undefined" || !window.location.hash) return;
+  window.history.replaceState(
+    null,
+    "",
+    `${window.location.pathname}${window.location.search}`,
+  );
+}
+
 const companionPortraits: Record<string, string> = {
   档案馆记录员: archiveKeeperPortrait,
+  灵感萤火: portalScribePortrait,
   回廊守卫: identityGuardPortrait,
   审判庭书记员: apiClerkPortrait,
   塔楼副官: toolWardenPortrait,
@@ -4612,6 +4652,119 @@ const companionPortraits: Record<string, string> = {
   镜厅校对师: mirrorEditorPortrait,
   检索狐: retrievalFoxPet,
 };
+
+const chapterGuidePortraits: Record<string, { name: string; image: string }> = {
+  "1": { name: "档案馆记录员", image: archiveKeeperPortrait },
+  "2": { name: "传送门书记官", image: portalScribePortrait },
+  "3": { name: "身份回廊守卫", image: identityGuardPortrait },
+  "4": { name: "接口审判庭书记员", image: apiClerkPortrait },
+  "5": { name: "幂等石灵", image: idempotencyStonePet },
+  "6": { name: "雾灯猫", image: foglampCatPet },
+  "7": { name: "模型熔炉执钥人", image: modelWardenPortrait },
+  "8": { name: "镜厅校对师", image: mirrorEditorPortrait },
+  "9": { name: "知识馆守卷人", image: knowledgeKeeperPortrait },
+  "10": { name: "塔楼副官", image: toolWardenPortrait },
+  "11": { name: "验收试炼官", image: testArbiterPortrait },
+  "12": { name: "委托书锻造师", image: briefForgemasterPortrait },
+  "13": { name: "交付审查官", image: deliveryJudgePortrait },
+  "14": { name: "上线守门人", image: releaseGatekeeperPortrait },
+  "15": { name: "终章答辩官", image: interviewCouncilorPortrait },
+};
+
+const chapterDossierBackgrounds: Record<string, string> = {
+  "1": questArchive,
+  "2": questWorkbench,
+  "3": questPortal,
+  "4": questPortal,
+  "5": questWorkbench,
+  "6": questStage,
+  "7": questPortal,
+  "8": questArchive,
+  "9": questArchive,
+  "10": questPortal,
+  "11": questStage,
+  "12": questWorkbench,
+  "13": questWorkbench,
+  "14": questArchive,
+  "15": questStage,
+};
+
+function getChapterDossierBackground(chapter: CareerChapter) {
+  return chapterDossierBackgrounds[chapter.id] ?? questArchive;
+}
+
+function getChapterFlowSteps(chapter: CareerChapter) {
+  const steps = chapter.flow
+    .split("→")
+    .map((step) => step.trim())
+    .filter(Boolean);
+  const visibleSteps = steps.slice(0, 5);
+  return visibleSteps.map((step, index) => {
+    const nextStep = visibleSteps[index + 1];
+    const isLast = index === visibleSteps.length - 1;
+    return {
+      label: step,
+      note:
+        index === 0
+          ? "先确认这一棒真的发生了。"
+          : isLast
+            ? "最后用这里证明结果成立。"
+            : `把证据交给「${nextStep}」。`,
+    };
+  });
+}
+
+function getChapterGuide(chapter: CareerChapter) {
+  return (
+    chapterGuidePortraits[chapter.id] ?? {
+      name: chapter.companionUnlock.name,
+      image: companionPortraits[chapter.companionUnlock.name],
+    }
+  );
+}
+
+function getChapterHandoffs(chapter: CareerChapter) {
+  const steps = chapter.flow
+    .split("→")
+    .map((step) => step.trim())
+    .filter(Boolean);
+  const payloads = [
+    "用户动作",
+    chapter.glossary[0] ?? "请求证据",
+    chapter.glossary[1] ?? "处理结果",
+    chapter.glossary[2] ?? "验证材料",
+  ];
+
+  return steps
+    .slice(0, 5)
+    .slice(0, -1)
+    .map((from, index) => ({
+      from,
+      to: steps[index + 1],
+      payload: payloads[index],
+      proof:
+        index === 0
+          ? "先看输入和页面动作，不急着猜后端。"
+          : index === 1
+            ? "用本章关键代码确认这一棒有没有传对。"
+            : index === 2
+              ? "再去 Network、日志、数据库或测试报告里找反证。"
+              : "最后把结论写成可验收的话。",
+    }));
+}
+
+function getChapterPlayerGoal(chapter: CareerChapter) {
+  return `你不是来背「${chapter.learn}」，而是要练到：${chapter.validation}。`;
+}
+
+function scrollChapterDossierIntoView() {
+  window.setTimeout(() => {
+    const dossier = document.querySelector(
+      ".chapter-dossier",
+    ) as HTMLElement | null;
+    dossier?.scrollIntoView?.({ block: "start" });
+  }, 0);
+}
 
 type ChapterReward = {
   chapter: CareerChapter;
@@ -4902,14 +5055,47 @@ function ArtifactViewer({
   );
 }
 
-function LabFlowMap({ config }: { config: LabConfig }) {
+function LabFlowMap({
+  activeIndex,
+  activeStepLabel,
+  config,
+}: {
+  activeIndex: number;
+  activeStepLabel: string;
+  config: LabConfig;
+}) {
+  const activeFlowIndex = Math.min(
+    Math.max(activeIndex, 0),
+    config.flowItems.length - 1,
+  );
+  const activeFlow = config.flowItems[activeFlowIndex] ?? config.flowItems[0];
+  const nextFlow = config.flowItems[activeFlowIndex + 1];
+
   return (
     <section className="lab-flow-map" aria-label={config.flowAriaLabel}>
       <span>{config.flowEyebrow}</span>
       <strong>{config.flowTitle}</strong>
+      {activeFlow && (
+        <div className="lab-flow-focus" aria-label="当前这一棒">
+          <span>当前这一棒</span>
+          <strong>
+            {activeFlow.label} 把「{activeFlow.title}」交给{" "}
+            {nextFlow?.label ?? "结案卷宗"}
+          </strong>
+          <p>
+            你现在处在「{activeStepLabel}」阶段：{activeFlow.detail}
+            {nextFlow ? `。下一步要去确认「${nextFlow.title}」。` : "。"}
+          </p>
+        </div>
+      )}
       <div>
         {config.flowItems.map((item, index) => (
-          <article key={item.label}>
+          <article
+            className={`${index === activeFlowIndex ? "active" : ""} ${
+              index < activeFlowIndex ? "done" : ""
+            }`}
+            key={item.label}
+          >
             <small>{String(index + 1).padStart(2, "0")}</small>
             <b>{item.label}</b>
             <strong>{item.title}</strong>
@@ -4922,6 +5108,7 @@ function LabFlowMap({ config }: { config: LabConfig }) {
 }
 
 function ResponseForm({
+  stepId,
   title,
   prompt,
   placeholder,
@@ -4930,6 +5117,7 @@ function ResponseForm({
   onSave,
   children,
 }: {
+  stepId: string;
   title: string;
   prompt: string;
   placeholder: string;
@@ -4942,6 +5130,46 @@ function ResponseForm({
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState("");
+  const isAgentBrief = stepId === "agent-brief";
+  const answerFrame = isAgentBrief
+    ? "背景：\n目标：\n范围/约束：\n验收标准：\n风险和回滚："
+    : "我看到：\n它说明：\n下一步：";
+  const evidencePattern =
+    /Network|日志|数据库|代码|测试|SELECT|POST|GET|201|错误|状态码|Diff|回归|验收|证据/;
+  const answerChecks = isAgentBrief
+    ? [
+        {
+          label: "写出背景和现象",
+          done: text.includes("背景") || text.includes("现象"),
+        },
+        {
+          label: "写出范围和约束",
+          done: text.includes("约束") || text.includes("不得"),
+        },
+        {
+          label: "写出验收标准",
+          done: text.includes("验收") || text.includes("测试"),
+        },
+      ]
+    : [
+        {
+          label: "写出至少一条证据",
+          done: evidencePattern.test(text),
+        },
+        {
+          label: "说明这条证据能证明什么",
+          done: text.includes("证明") || text.includes("说明"),
+        },
+        {
+          label: "写出下一步验证动作",
+          done:
+            text.includes("下一步") ||
+            text.includes("验证") ||
+            text.includes("修好"),
+        },
+      ];
+  const completedAnswerChecks = answerChecks.filter((item) => item.done).length;
+  const nextMissingAnswerCheck = answerChecks.find((item) => !item.done);
 
   const save = async () => {
     setSaving(true);
@@ -4956,11 +5184,63 @@ function ResponseForm({
     }
   };
 
+  const insertAnswerFrame = () => {
+    setText((current) => {
+      if (
+        isAgentBrief
+          ? current.includes("背景：") &&
+            current.includes("目标：") &&
+            current.includes("验收标准：")
+          : current.includes("我看到：") &&
+            current.includes("它说明：") &&
+            current.includes("下一步：")
+      ) {
+        return current;
+      }
+      return current.trim()
+        ? `${current.trimEnd()}\n\n${answerFrame}`
+        : answerFrame;
+    });
+    setSaved(false);
+  };
+
   return (
     <section className="lab-card response-card">
       <span className="mini-label">{title}</span>
       <h2>{prompt}</h2>
       {children}
+      <div className="answer-ritual" aria-label="作答支架">
+        <div className="answer-ritual-heading">
+          <span>作答支架</span>
+          <button type="button" onClick={insertAnswerFrame}>
+            填入骨架
+          </button>
+        </div>
+        <div className="answer-ritual-step">
+          <b>{isAgentBrief ? "1. 背景" : "1. 我看到"}</b>
+          <p>
+            {isAgentBrief
+              ? "先写清问题现场、复现入口和你已经掌握的证据。"
+              : "先写你看到的 Network、日志、数据库、代码或测试证据。"}
+          </p>
+        </div>
+        <div className="answer-ritual-step">
+          <b>{isAgentBrief ? "2. 边界" : "2. 它说明"}</b>
+          <p>
+            {isAgentBrief
+              ? "再写目标、允许改哪里、不能碰哪里、风险在哪里。"
+              : "再写这条证据能证明什么，不能证明什么。"}
+          </p>
+        </div>
+        <div className="answer-ritual-step">
+          <b>{isAgentBrief ? "3. 验收" : "3. 下一步"}</b>
+          <p>
+            {isAgentBrief
+              ? "最后写命令、浏览器路径、通过标准和交付格式。"
+              : "最后写你要继续查哪里，或怎样证明已经修好。"}
+          </p>
+        </div>
+      </div>
       <textarea
         value={text}
         onChange={(event) => {
@@ -4970,6 +5250,24 @@ function ResponseForm({
         placeholder={placeholder}
         rows={7}
       />
+      <div className="answer-checklist" aria-label="提交前检查">
+        <span>
+          表达完整度 {completedAnswerChecks}/{answerChecks.length}
+        </span>
+        {answerChecks.map((item) => (
+          <b className={item.done ? "done" : ""} key={item.label}>
+            {item.done ? <Check size={13} /> : <CircleDot size={13} />}
+            {item.label}
+          </b>
+        ))}
+        {nextMissingAnswerCheck ? (
+          <strong className="missing">
+            还差：{nextMissingAnswerCheck.label}
+          </strong>
+        ) : (
+          <strong>可以保存并继续</strong>
+        )}
+      </div>
       <footer>
         <span>
           {text.trim().length} 字 · 至少 {minimum} 字
@@ -5109,46 +5407,64 @@ function CareerDossier({
   config: LabConfig;
 }) {
   return (
-    <section className="result-page">
-      <span className="result-medal">
-        <Trophy />
-      </span>
-      <span className="mini-label">{config.result.label}</span>
-      <h1>{config.result.title}</h1>
-      <p>{config.result.body(hintLevel)}</p>
-      <div className="dossier-summary">
+    <main
+      className="quest-shell career-dossier-gate"
+      style={
+        { "--quest-bg": `url(${config.backgroundImage})` } as CSSProperties
+      }
+    >
+      <div className="quest-camera" />
+      <header className="quest-hud" aria-label="成长档案结案">
         <div>
-          <CheckCircle2 />
-          <span>
-            <strong>已证明</strong>
-            {config.result.proved}
-          </span>
+          <span>章节</span>
+          <strong>{config.missionLabel}</strong>
         </div>
         <div>
-          <CheckCircle2 />
-          <span>
-            <strong>已记录</strong>
-            {config.result.recorded}
-          </span>
+          <span>提示等级</span>
+          <strong>{hintLevel} / 3</strong>
         </div>
-        <div className="pending">
-          <Clock3 />
-          <span>
-            <strong>仍待证明</strong>
-            {config.result.pending}
-          </span>
+      </header>
+      <section className="result-page career-dossier-stage">
+        <span className="result-medal">
+          <Trophy />
+        </span>
+        <span className="mini-label">{config.result.label}</span>
+        <h1>{config.result.title}</h1>
+        <p>{config.result.body(hintLevel)}</p>
+        <div className="dossier-summary">
+          <div>
+            <CheckCircle2 />
+            <span>
+              <strong>已证明</strong>
+              {config.result.proved}
+            </span>
+          </div>
+          <div>
+            <CheckCircle2 />
+            <span>
+              <strong>已记录</strong>
+              {config.result.recorded}
+            </span>
+          </div>
+          <div className="pending">
+            <Clock3 />
+            <span>
+              <strong>仍待证明</strong>
+              {config.result.pending}
+            </span>
+          </div>
         </div>
-      </div>
-      <div className="rubric-box">
-        <h2>{config.result.nextTitle}</h2>
-        <ul>
-          {config.result.nextItems.map((item) => (
-            <li key={item}>{item}</li>
-          ))}
-          <li>本次提示等级为 {hintLevel}，后续尽量减少提示依赖。</li>
-        </ul>
-      </div>
-    </section>
+        <div className="rubric-box">
+          <h2>{config.result.nextTitle}</h2>
+          <ul>
+            {config.result.nextItems.map((item) => (
+              <li key={item}>{item}</li>
+            ))}
+            <li>本次提示等级为 {hintLevel}，后续尽量减少提示依赖。</li>
+          </ul>
+        </div>
+      </section>
+    </main>
   );
 }
 
@@ -6271,7 +6587,11 @@ function Lab({
           </div>
         </header>
         <div className="lab-content">
-          <LabFlowMap config={config} />
+          <LabFlowMap
+            activeIndex={activeIndex}
+            activeStepLabel={activeStep.label}
+            config={config}
+          />
           {activeStep.kind === "baseline" && (
             <section className="lab-card baseline-sealed">
               <span className="large-icon">
@@ -6297,6 +6617,8 @@ function Lab({
           )}
           {activeStep.kind === "response" && activeStep.response && (
             <ResponseForm
+              key={activeStep.id}
+              stepId={activeStep.id}
               title={activeStep.response.title}
               prompt={activeStep.response.prompt}
               placeholder={activeStep.response.placeholder}
@@ -6425,6 +6747,9 @@ export default function App() {
     careerRoutes[0].id,
   );
   const [selectedChapterId, setSelectedChapterId] = useState("3");
+  const [briefingRoom, setBriefingRoom] = useState<
+    "mission" | "companions" | "interview" | "backup"
+  >("mission");
   const [storyChoice, setStoryChoice] = useState<
     "rush" | "evidence" | "agent" | null
   >(null);
@@ -6442,6 +6767,40 @@ export default function App() {
         });
         if (cancelled) return;
         setDiagnostic(session);
+        const restoredChapter = readChapterHash();
+        if (restoredChapter) {
+          const scenarioId = getScenarioIdForChapter(restoredChapter);
+          if (session.status === "active") {
+            const saved = await api<Diagnostic>(
+              `/api/diagnostic-sessions/${session.id}`,
+              {
+                method: "PATCH",
+                body: JSON.stringify({
+                  baseline: routeBaselineRecord,
+                  completed: true,
+                }),
+              },
+            );
+            if (cancelled) return;
+            setDiagnostic(saved);
+          }
+          const [currentAttempt, scenario] = await Promise.all([
+            api<Attempt>("/api/attempts", {
+              method: "POST",
+              body: JSON.stringify({ scenarioId }),
+            }),
+            api<{ artifacts: Artifact[] }>(`/api/scenarios/${scenarioId}`),
+          ]);
+          if (cancelled) return;
+          setAttempt(currentAttempt);
+          setArtifacts(scenario.artifacts);
+          setCurrentMission(restoredChapter);
+          setShowGameIntro(false);
+          setShowMissionSelect(false);
+          setTeachingComplete(false);
+          setChapterReward(null);
+          return;
+        }
         if (session.status === "completed") {
           const [currentAttempt, scenario] = await Promise.all([
             api<Attempt>("/api/attempts", {
@@ -6490,20 +6849,16 @@ export default function App() {
 
     if (attempt?.scenarioId === scenarioId) return;
 
-    const routeRecord = {
-      firstChecks: "AI 应用开发路线入口",
-      evidenceNeeded: "从真实项目委托开始，先学习数据流、关键代码和验证方式。",
-      dataFlow: "职业路线 → 项目委托 → 教学引导 → 沙盒实战 → 成长档案",
-      confidence: "3",
-    };
-
     try {
       if (diagnostic.status === "active") {
         const saved = await api<Diagnostic>(
           `/api/diagnostic-sessions/${diagnostic.id}`,
           {
             method: "PATCH",
-            body: JSON.stringify({ baseline: routeRecord, completed: true }),
+            body: JSON.stringify({
+              baseline: routeBaselineRecord,
+              completed: true,
+            }),
           },
         );
         setDiagnostic(saved);
@@ -6521,7 +6876,7 @@ export default function App() {
           `/api/attempts/${currentAttempt.id}/steps/baseline-plan`,
           {
             method: "PATCH",
-            body: JSON.stringify({ response: routeRecord }),
+            body: JSON.stringify({ response: routeBaselineRecord }),
           },
         );
         setAttempt(withRouteRecord);
@@ -6536,6 +6891,7 @@ export default function App() {
 
   const startMissionOne = async () => {
     scrollPageToTop();
+    writeChapterHash(1);
     setShowGameIntro(false);
     setChapterReward(null);
     setCurrentMission(1);
@@ -6546,6 +6902,7 @@ export default function App() {
     chapter: 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15,
   ) => {
     scrollPageToTop();
+    writeChapterHash(chapter);
     setShowGameIntro(false);
     setShowMissionSelect(false);
     setTeachingComplete(false);
@@ -6556,6 +6913,7 @@ export default function App() {
 
   const openInterviewDossier = async (chapterId: string) => {
     scrollPageToTop();
+    clearChapterHash();
     setDossierChapterId(chapterId);
     await prepareRouteAttempt();
     setShowInterviewPortfolio(false);
@@ -6564,6 +6922,7 @@ export default function App() {
 
   const openInterviewPortfolio = async () => {
     scrollPageToTop();
+    clearChapterHash();
     if (!attempt) await prepareRouteAttempt();
     setShowInterviewDossier(false);
     setShowInterviewPortfolio(true);
@@ -6571,6 +6930,7 @@ export default function App() {
 
   const openBackupVault = () => {
     scrollPageToTop();
+    clearChapterHash();
     setShowInterviewDossier(false);
     setShowInterviewPortfolio(false);
     setShowBackupVault(true);
@@ -6596,6 +6956,7 @@ export default function App() {
         developer={developer}
         onBack={() => {
           scrollPageToTop();
+          clearChapterHash();
           setShowInterviewDossier(false);
           setShowGameIntro(true);
           setIntroScene(2);
@@ -6614,6 +6975,7 @@ export default function App() {
         developer={developer}
         onBack={() => {
           scrollPageToTop();
+          clearChapterHash();
           setShowInterviewPortfolio(false);
           setShowGameIntro(true);
           setIntroScene(2);
@@ -6631,6 +6993,7 @@ export default function App() {
         developer={developer}
         onBack={() => {
           scrollPageToTop();
+          clearChapterHash();
           setShowBackupVault(false);
           setShowGameIntro(true);
           setIntroScene(2);
@@ -6714,6 +7077,12 @@ export default function App() {
       agent:
         "你召唤副官。它可以帮你执行任务，但前提是你写清楚目标、边界和验收方式。",
     }[storyChoice ?? "evidence"];
+    const selectedChapterGuide = getChapterGuide(selectedChapter);
+    const selectedChapterStageImage =
+      getChapterDossierBackground(selectedChapter);
+    const selectedChapterFlowSteps = getChapterFlowSteps(selectedChapter);
+    const selectedChapterHandoffs = getChapterHandoffs(selectedChapter);
+    const selectedChapterPlayerGoal = getChapterPlayerGoal(selectedChapter);
 
     return (
       <section
@@ -6894,58 +7263,108 @@ export default function App() {
                     </div>
                   ))}
                 </div>
-                <section className="companion-codex" aria-label="伙伴图鉴">
-                  <div className="companion-codex-head">
-                    <span>伙伴图鉴</span>
-                    <strong>收集角色、宠物与装备</strong>
+                <div className="briefing-room-tabs" aria-label="简报房间">
+                  {[
+                    ["mission", "当前委托"],
+                    ["companions", "伙伴图鉴"],
+                    ["interview", "面试复盘"],
+                    ["backup", "本地备份"],
+                  ].map(([id, label]) => (
+                    <button
+                      aria-pressed={briefingRoom === id}
+                      className={briefingRoom === id ? "active" : ""}
+                      key={id}
+                      onClick={() => setBriefingRoom(id as typeof briefingRoom)}
+                      type="button"
+                    >
+                      {label}
+                    </button>
+                  ))}
+                </div>
+                {briefingRoom === "mission" && (
+                  <section
+                    className="briefing-focus-room"
+                    aria-label="当前委托说明"
+                  >
+                    <span>当前委托</span>
+                    <strong>先破第一起“保存消失”事故。</strong>
                     <p>
-                      每章通关都会留下一个可复盘的能力印记，也会解锁一位同伴或一件装备。
+                      这一关只要求你看清一条数据旅行路线：用户点击保存，
+                      前端把请求交给后端，后端再把数据交给数据库。你不需要一次吃下全部
+                      15 章。
                     </p>
-                  </div>
-                  <div className="companion-codex-grid">
-                    {companionCodex.map(
-                      ({ chapter, collected, status, portrait }) => (
-                        <article
-                          className={`companion-card ${
-                            collected ? "collected" : ""
-                          }`}
-                          key={chapter.id}
-                        >
-                          {portrait ? (
-                            <img
-                              src={portrait}
-                              alt=""
-                              className="companion-card-portrait"
-                            />
-                          ) : (
-                            <div className="companion-card-sigil">
-                              {chapter.companionUnlock.name.slice(0, 1)}
-                            </div>
-                          )}
-                          <div>
-                            <small>
-                              第 {chapter.id} 章 ·{" "}
-                              {chapter.companionUnlock.type}
-                            </small>
-                            <strong>{chapter.companionUnlock.name}</strong>
-                            <span>{status}</span>
-                          </div>
-                        </article>
-                      ),
-                    )}
-                  </div>
-                </section>
-                <CompanionArchive entries={companionCodex} />
-                <InterviewDossierBook
-                  entries={companionCodex}
-                  onOpenDossier={(chapterId) => {
-                    void openInterviewDossier(chapterId);
-                  }}
-                  onOpenPortfolio={() => {
-                    void openInterviewPortfolio();
-                  }}
-                />
-                <LearningBackupCard onOpen={openBackupVault} />
+                    <div>
+                      <b>本章目标：{currentChapter.validation}</b>
+                      <b>本章奖励：{currentChapter.companionUnlock.name}</b>
+                    </div>
+                    <button className="dialogue-next" onClick={startMissionOne}>
+                      {developer.missionsCleared >= 1
+                        ? "重新练习第一章"
+                        : "进入第一章主线"}
+                      <ArrowRight size={17} />
+                    </button>
+                  </section>
+                )}
+                {briefingRoom === "companions" && (
+                  <>
+                    <section className="companion-codex" aria-label="伙伴图鉴">
+                      <div className="companion-codex-head">
+                        <span>伙伴图鉴</span>
+                        <strong>收集角色、宠物与装备</strong>
+                        <p>
+                          每章通关都会留下一个可复盘的能力印记，也会解锁一位同伴或一件装备。
+                        </p>
+                      </div>
+                      <div className="companion-codex-grid">
+                        {companionCodex.map(
+                          ({ chapter, collected, status, portrait }) => (
+                            <article
+                              className={`companion-card ${
+                                collected ? "collected" : ""
+                              }`}
+                              key={chapter.id}
+                            >
+                              {portrait ? (
+                                <img
+                                  src={portrait}
+                                  alt=""
+                                  className="companion-card-portrait"
+                                />
+                              ) : (
+                                <div className="companion-card-sigil">
+                                  {chapter.companionUnlock.name.slice(0, 1)}
+                                </div>
+                              )}
+                              <div>
+                                <small>
+                                  第 {chapter.id} 章 ·{" "}
+                                  {chapter.companionUnlock.type}
+                                </small>
+                                <strong>{chapter.companionUnlock.name}</strong>
+                                <span>{status}</span>
+                              </div>
+                            </article>
+                          ),
+                        )}
+                      </div>
+                    </section>
+                    <CompanionArchive entries={companionCodex} />
+                  </>
+                )}
+                {briefingRoom === "interview" && (
+                  <InterviewDossierBook
+                    entries={companionCodex}
+                    onOpenDossier={(chapterId) => {
+                      void openInterviewDossier(chapterId);
+                    }}
+                    onOpenPortfolio={() => {
+                      void openInterviewPortfolio();
+                    }}
+                  />
+                )}
+                {briefingRoom === "backup" && (
+                  <LearningBackupCard onOpen={openBackupVault} />
+                )}
               </div>
               <div className="intro-panel">
                 <div className="roadmap-summary">
@@ -7043,7 +7462,10 @@ export default function App() {
                         mission.status === "预览" ? "preview" : "locked"
                       } ${selectedChapter.id === mission.id ? "selected" : ""}`}
                       key={mission.id}
-                      onClick={() => setSelectedChapterId(mission.id)}
+                      onClick={() => {
+                        setSelectedChapterId(mission.id);
+                        scrollChapterDossierIntoView();
+                      }}
                       type="button"
                     >
                       <div className="mission-index">{mission.id}</div>
@@ -7086,6 +7508,84 @@ export default function App() {
                     </span>
                     <strong>{selectedChapter.title}</strong>
                     <p>{selectedChapter.summary}</p>
+                  </div>
+                  <div
+                    className="chapter-dossier-stage"
+                    style={
+                      {
+                        "--chapter-scene": `url(${selectedChapterStageImage})`,
+                      } as CSSProperties
+                    }
+                  >
+                    <div className="chapter-stage-portrait">
+                      {selectedChapterGuide.image ? (
+                        <img
+                          src={selectedChapterGuide.image}
+                          alt={selectedChapterGuide.name}
+                        />
+                      ) : (
+                        <i>{selectedChapterGuide.name.slice(0, 1)}</i>
+                      )}
+                    </div>
+                    <div className="chapter-stage-copy">
+                      <span>剧情舞台 · {selectedChapter.world}</span>
+                      <h2>
+                        第 {selectedChapter.id} 章现场：{selectedChapter.world}
+                      </h2>
+                      <p>
+                        先看事故为什么发生，再沿流程追证据；每一步都要能说清楚谁把什么交给谁。
+                      </p>
+                      <blockquote className="chapter-stage-dialogue">
+                        <b>{selectedChapterGuide.name}</b>
+                        <span>
+                          “{selectedChapter.world}
+                          已经开场。先别急着冲进代码，把「
+                          {selectedChapter.theme}」拆成可验证的证据接力。”
+                        </span>
+                      </blockquote>
+                      <div className="chapter-player-goal">
+                        <span>玩家目标</span>
+                        <strong>{selectedChapterPlayerGoal}</strong>
+                      </div>
+                      <div className="chapter-stage-companion">
+                        <b>
+                          {selectedChapter.companionUnlock.type} ·{" "}
+                          {selectedChapter.companionUnlock.name}
+                        </b>
+                        <small>
+                          {selectedChapter.companionUnlock.description}
+                        </small>
+                      </div>
+                    </div>
+                    <div className="chapter-handoff-board">
+                      <span>谁把什么交给谁</span>
+                      <div>
+                        {selectedChapterHandoffs.map((handoff) => (
+                          <article
+                            key={`${selectedChapter.id}-${handoff.from}-${handoff.to}`}
+                          >
+                            <b>
+                              {handoff.from} <ArrowRight size={13} />{" "}
+                              {handoff.to}
+                            </b>
+                            <strong>交接物：{handoff.payload}</strong>
+                            <small>{handoff.proof}</small>
+                          </article>
+                        ))}
+                      </div>
+                    </div>
+                    <ol
+                      className="chapter-stage-flow"
+                      aria-label="本章流程接力"
+                    >
+                      {selectedChapterFlowSteps.map((step, index) => (
+                        <li key={`${selectedChapter.id}-${step.label}`}>
+                          <b>{String(index + 1).padStart(2, "0")}</b>
+                          <span>{step.label}</span>
+                          <small>{step.note}</small>
+                        </li>
+                      ))}
+                    </ol>
                   </div>
                   <div className="chapter-dossier-grid">
                     {[
@@ -7266,6 +7766,7 @@ export default function App() {
                 <button
                   className="dialogue-next"
                   onClick={() => {
+                    writeChapterHash(2);
                     setCurrentMission(2);
                     setShowMissionSelect(false);
                     void prepareRouteAttempt(CASE02_SCENARIO_ID);
@@ -7276,6 +7777,7 @@ export default function App() {
                 <button
                   className="novel-back"
                   onClick={() => {
+                    clearChapterHash();
                     setTeachingComplete(true);
                   }}
                 >

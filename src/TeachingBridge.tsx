@@ -41,6 +41,7 @@ import testArbiterPortrait from "./assets/portrait-test-arbiter.svg";
 import toolWardenPortrait from "./assets/portrait-tool-warden.svg";
 import {
   type ConceptCard,
+  type CodeFocus,
   type GlossaryEntry,
   type MapNode,
   type ProjectMap,
@@ -4164,7 +4165,12 @@ function EvidenceStoryQuest({
   const [sceneIndex, setSceneIndex] = useState(0);
   const [discovered, setDiscovered] = useState<Record<string, string[]>>({});
   const [activeClueId, setActiveClueId] = useState<string | null>(null);
+  const [transitionScene, setTransitionScene] = useState<{
+    scene: QuestScene;
+    index: number;
+  } | null>(null);
   const scene = scenes[sceneIndex];
+  const nextScene = scenes[sceneIndex + 1] ?? null;
   const sceneDiscovered = discovered[scene.id] ?? [];
   const activeClue =
     scene.clues.find((clue) => clue.id === activeClueId) ??
@@ -4188,6 +4194,36 @@ function EvidenceStoryQuest({
       0,
     );
   const activeJourney = journey[activeJourneyIndex] ?? journey[0];
+  const sceneInterviewLine = `我会这样讲：在「${scene.place}」，我用「${
+    scene.clues[0]?.label ?? scene.title
+  }」这条证据说明：${scene.clues.at(-1)?.skill ?? scene.goal}`;
+  const sceneRecap = [
+    {
+      label: "现象",
+      value: scene.title,
+      note: scene.dialogue,
+    },
+    {
+      label: "证据",
+      value: scene.clues[0]?.label ?? scene.goal,
+      note: scene.clues[0]?.result ?? scene.goal,
+    },
+    {
+      label: "结论",
+      value: scene.clues.at(-1)?.skill ?? scene.goal,
+      note: "把这一幕学到的判断方式，带到下一地点继续验证。",
+    },
+  ];
+
+  useEffect(() => {
+    if (!transitionScene) return undefined;
+    const timer = window.setTimeout(() => {
+      setSceneIndex(transitionScene.index);
+      setTransitionScene(null);
+      scrollPageToTop();
+    }, 560);
+    return () => window.clearTimeout(timer);
+  }, [transitionScene]);
 
   const discover = (clue: QuestClue) => {
     setActiveClueId(clue.id);
@@ -4201,8 +4237,10 @@ function EvidenceStoryQuest({
   const goNext = () => {
     setActiveClueId(null);
     if (sceneIndex + 1 < scenes.length) {
-      setSceneIndex(sceneIndex + 1);
-      scrollPageToTop();
+      setTransitionScene({
+        scene: scenes[sceneIndex + 1],
+        index: sceneIndex + 1,
+      });
       return;
     }
     onComplete();
@@ -4214,6 +4252,16 @@ function EvidenceStoryQuest({
       style={{ "--quest-bg": `url(${scene.image})` } as CSSProperties}
     >
       <div className="quest-camera" />
+      {transitionScene && (
+        <div className="quest-transition-card" aria-live="polite">
+          <span>场景转移</span>
+          <strong>前往：{transitionScene.scene.place}</strong>
+          <p>
+            {transitionScene.scene.speaker} 即将登场，下一幕要调查「
+            {transitionScene.scene.title}」。
+          </p>
+        </div>
+      )}
       <header className="quest-hud" aria-label="调查进度">
         <div>
           <span>{developer.rank}</span>
@@ -4314,10 +4362,11 @@ function EvidenceStoryQuest({
                   className={`${activeClueId === clue.id ? "active" : ""} ${
                     found ? "found" : ""
                   }`}
+                  disabled={found}
                   onClick={() => discover(clue)}
                 >
                   <strong>{clue.label}</strong>
-                  <small>{found ? "已记录" : clue.action}</small>
+                  <small>{found ? "卷宗已收录" : clue.action}</small>
                 </button>
               );
             })}
@@ -4346,6 +4395,63 @@ function EvidenceStoryQuest({
                 <small>{activeClue.skill}</small>
               </>
             )}
+            {sceneDone && (
+              <>
+                <div className="quest-scene-reward" aria-label="本幕收获">
+                  <span>本幕收获</span>
+                  <strong>
+                    {scene.place} 已完成：你拿到了 {scene.clues.length}{" "}
+                    条证据印记
+                  </strong>
+                  <ul>
+                    {scene.clues.map((clue) => (
+                      <li key={clue.id}>{clue.skill}</li>
+                    ))}
+                  </ul>
+                  <div
+                    className="quest-recap-board"
+                    aria-label="本幕复盘三段式"
+                  >
+                    <span>本幕复盘</span>
+                    <div className="quest-recap-grid">
+                      {sceneRecap.map((item) => (
+                        <article key={item.label}>
+                          <b>{item.label}</b>
+                          <strong>{item.value}</strong>
+                          <p>{item.note}</p>
+                        </article>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="quest-interview-line">
+                    <span>面试一句话</span>
+                    <p>{sceneInterviewLine}</p>
+                  </div>
+                </div>
+                <div
+                  className="quest-next-preview"
+                  aria-label={nextScene ? "下一地点预告" : "结案预告"}
+                >
+                  <img
+                    src={nextScene?.portrait ?? archiveKeeperPortrait}
+                    alt=""
+                  />
+                  <div>
+                    <span>{nextScene ? "下一地点预告" : "结案预告"}</span>
+                    <strong>
+                      {nextScene
+                        ? `${nextScene.place} · ${nextScene.speaker}`
+                        : "结案卷宗 · 证据链已闭合"}
+                    </strong>
+                    <p>
+                      {nextScene
+                        ? `下一幕要去「${nextScene.title}」：${nextScene.goal}`
+                        : "你已经把本关线索串起来了。下一步进入实战，把判断变成可验收的修复。"}
+                    </p>
+                  </div>
+                </div>
+              </>
+            )}
             <footer>
               <div className="quest-scene-dots" aria-hidden="true">
                 {scenes.map((item, index) => (
@@ -4357,7 +4463,7 @@ function EvidenceStoryQuest({
               </div>
               <button
                 className="dialogue-next"
-                disabled={!sceneDone || saving}
+                disabled={!sceneDone || saving || Boolean(transitionScene)}
                 onClick={goNext}
               >
                 {sceneIndex + 1 < scenes.length
@@ -4418,7 +4524,7 @@ function ProjectMapView({
       : map.nodes;
 
   return (
-    <section className="teaching-shell">
+    <section className="teaching-shell map-quest-shell">
       <header className="teaching-header">
         <span className="mini-label">教学模式 · 不影响能力分</span>
         <h2>
@@ -4429,6 +4535,23 @@ function ProjectMapView({
           即可继续。
         </p>
       </header>
+
+      <div className="map-guide-board" aria-label="地图向导">
+        <img src={portalScribePortrait} alt="" />
+        <div>
+          <span>地图向导</span>
+          <strong>先别急着记名字，先看每一站收到什么、交出什么。</strong>
+          <p>
+            这张地图像一条办案路线：上一站交出材料，下一站继续处理。
+            你点开节点时，只需要回答三个问题：它收到什么、交出什么、能用哪些证据证明。
+          </p>
+        </div>
+        <ol aria-label="地图阅读顺序">
+          <li>看输入</li>
+          <li>看输出</li>
+          <li>找证据</li>
+        </ol>
+      </div>
 
       <div className="flowchart">
         {orderedNodes.map((node, idx) => {
@@ -4472,6 +4595,15 @@ function ProjectMapView({
             </button>
           </header>
           <p>{selected.description}</p>
+          <div className="map-node-handoff" aria-label="当前节点接力解释">
+            <span>这一站的接力</span>
+            <strong>
+              收到「{selected.input}」，处理后交出「{selected.output}」。
+            </strong>
+            <p>
+              如果这里出问题，先找这一站附近的观察证据，不要把整条链路都怀疑一遍。
+            </p>
+          </div>
           <div className="flowchart-detail-grid">
             <div>
               <b>输入</b>
@@ -4549,18 +4681,31 @@ function ConceptCardView({
         <h2>{card.label}</h2>
       </header>
 
+      <div className="concept-guide-board" aria-label="术语解锁向导">
+        <img src={knowledgeKeeperPortrait} alt="" />
+        <div>
+          <span>术语解锁室</span>
+          <strong>先把术语变成画面，再把画面放回项目。</strong>
+          <p>
+            这一页不是背定义。你会先听一个类比，再看它在当前项目里的样子，
+            最后做一次判断，确认自己真的能用这个概念看问题。
+          </p>
+        </div>
+      </div>
+
       <div className="concept-section">
         <h3>
           <Lightbulb size={18} />
-          生活类比
+          第一步 · 生活类比
           {showAnalogy && <Check size={16} className="check-green" />}
         </h3>
         {!showAnalogy ? (
           <button className="reveal-btn" onClick={() => setShowAnalogy(true)}>
-            <span>💡</span> 点我查看类比
+            <Lightbulb size={17} /> 点我查看类比
           </button>
         ) : (
           <div className="concept-revealed">
+            <span>类比记录</span>
             <p className="concept-text">{card.analogy}</p>
           </div>
         )}
@@ -4569,15 +4714,16 @@ function ConceptCardView({
       <div className="concept-section">
         <h3>
           <FileCode2 size={18} />
-          当前项目例子
+          第二步 · 当前项目例子
           {showExample && <Check size={16} className="check-green" />}
         </h3>
         {!showExample ? (
           <button className="reveal-btn" onClick={() => setShowExample(true)}>
-            <span>🔍</span> 点我查看例子
+            <Search size={17} /> 点我查看例子
           </button>
         ) : (
           <div className="concept-revealed">
+            <span>项目现场</span>
             <p className="concept-text">{card.example}</p>
           </div>
         )}
@@ -4586,7 +4732,7 @@ function ConceptCardView({
       <div className="concept-section">
         <h3>
           <HelpCircle size={18} />
-          预测问题
+          第三步 · 预测问题
           {predictionSubmitted && (
             <span
               className={`prediction-result ${correct ? "correct" : "wrong"}`}
@@ -4664,37 +4810,104 @@ function ConceptCardView({
   );
 }
 
-function explainCodeLine(line: string): string {
+function explainCodeLine(
+  line: string,
+  focus: CodeFocus,
+  projectPosition?: string,
+): string {
   const compact = line.trim();
   if (!compact) return "空行只是把代码分段，方便你看清结构。";
   if (compact.startsWith("//"))
     return "这是作者留给读代码的人看的提示，不会被程序执行。";
+  if (compact.match(/^import\s/)) {
+    return "这里先把外部工具或组件拿进来。先不用背路径，只要知道这段代码接下来会借用它。";
+  }
+  if (compact.match(/^export\s/)) {
+    return `这里把「${focus.functionName}」交给项目其他地方使用。它不是孤立代码，后面会有人调用它。`;
+  }
+  if (compact.includes("useState")) {
+    return `这里给页面准备一份会变化的状态。当前这一步接收「${focus.input}」，后面会把它整理成「${focus.output}」。`;
+  }
+  if (compact.includes("useEffect")) {
+    return "这里声明一个自动发生的副作用：页面状态变化后，还会继续触发请求、保存或同步。";
+  }
+  if (compact.match(/^(const|let|var)\s+\w+\s*=\s*\{/)) {
+    return `这里把分散的信息装进一个对象。先确认对象里有没有「${focus.input}」需要的材料。`;
+  }
+  if (compact.match(/^(const|let|var)\s+\w+\s*=\s*\[/)) {
+    return "这里把一组候选项排成清单。读数组时先看每一项代表什么选择，不急着看样式。";
+  }
+  if (compact.includes("map(")) {
+    return "这里在把一组材料逐个加工。看到 map，就想成“每张卷宗都按同一规则处理一遍”。";
+  }
+  if (compact.includes("filter(")) {
+    return "这里在筛掉不符合条件的材料。它决定哪些证据能继续进入下一步。";
+  }
+  if (compact.includes("find(")) {
+    return "这里是在清单里找目标记录。排障时要确认它找的是不是你以为的那一项。";
+  }
   if (compact.includes("fetch(") || compact.includes("POST")) {
-    return "这里把页面里的动作送到接口，下一步要去 Network 或后端路由看它有没有到达。";
+    return `这里把当前材料送到接口。下一步去 Network 看请求是否真的带着「${focus.input}」出门。`;
+  }
+  if (compact.includes("PUT") || compact.includes("PATCH")) {
+    return `这里不是新建，而是在更新已有记录。验收时要看「${focus.output}」有没有覆盖到正确对象。`;
+  }
+  if (compact.includes("GET")) {
+    return "这里是在向后端要数据。它能证明页面发起了读取，但还要看返回内容是否来自正确数据源。";
   }
   if (compact.includes("JSON.stringify")) {
-    return "这里把页面状态打包成请求体，后端收到的字段就从这里来。";
+    return `这里把页面状态打包成请求体。后端能收到什么字段，基本就由这一包决定。`;
   }
   if (compact.includes("response.ok")) {
     return "这里判断接口状态是否成功。它只能证明接口回应成功，不能单独证明数据已经保存。";
   }
+  if (compact.includes("status(") || compact.includes("statusCode")) {
+    return "这里给响应盖状态码印章。状态码是证据，但还要结合响应体和后端日志一起判断。";
+  }
   if (compact.includes("response.json")) {
-    return "这里把后端返回的内容读出来，页面后续展示或保存的对象来自这里。";
+    return `这里把后端返回的内容读出来。页面后续能展示或继续传递的「${focus.output}」从这里来。`;
+  }
+  if (compact.includes("throw new Error") || compact.includes("catch")) {
+    return "这里处理失败路径。真实工作里要看失败是否被清楚提示，而不是悄悄吞掉。";
   }
   if (compact.includes("setError")) {
     return "这里把失败原因显示给用户，是前端把接口错误翻译成人能看懂提示的地方。";
   }
+  if (compact.includes("setStatus") || compact.includes("setLoading")) {
+    return "这里更新页面状态灯。它改变用户看到的反馈，但不等于后端已经完成真实副作用。";
+  }
+  if (compact.includes("localStorage") || compact.includes("sessionStorage")) {
+    return "这里把信息放进浏览器本地柜子。刷新可能还在，但它不是后端数据库证据。";
+  }
+  if (compact.includes("cookie") || compact.includes("Cookie")) {
+    return "这里在处理浏览器门牌 Cookie。登录态排障时要确认它是否被保存、携带和过期。";
+  }
+  if (compact.includes("token") || compact.includes("Token")) {
+    return "这里在处理身份令牌 Token。它能代表登录凭证，但要确认有没有暴露、过期或漏带。";
+  }
+  if (compact.includes("process.env") || compact.includes("import.meta.env")) {
+    return "这里读取环境变量。AI API Key 这类秘密应该停在服务端，不能被打包进前端。";
+  }
+  if (compact.includes("INSERT") || compact.includes("db.run")) {
+    return "这里才像真正写库：把数据刻进数据库。验收时要用查询或测试证明它真的执行过。";
+  }
+  if (compact.includes("SELECT") || compact.includes("db.get")) {
+    return "这里是在查数据库。它能作为反证：如果查不到，前面的成功提示就不够可信。";
+  }
   if (compact.includes("return res.status")) {
     return "这里是后端盖章返回结果。状态码会成为前端和 Network 里的关键证据。";
+  }
+  if (compact.startsWith("return ")) {
+    return `这里把这一棒的结果交出去。回到流程里看，它应该交出「${focus.output}」。`;
   }
   if (compact.includes("logger.")) {
     return "这里把原因写进后端日志。页面看不到它，但排障时可以用它确认后端发生了什么。";
   }
   if (compact.includes("await ") || compact.includes("save")) {
-    return "这里把事情交给下一层处理。要继续追踪，就看被调用的函数或保存后的证据。";
+    return `这里把事情交给下一层处理。要继续追踪，就沿着「${projectPosition ?? focus.functionName}」往后看证据。`;
   }
   if (compact.includes("const ") || compact.includes("let ")) {
-    return "这里是在给一份数据起名字。先看它从哪里来，再看后面交给了谁。";
+    return `这里是在给一份数据起名字。先问：它来自「${focus.input}」里的哪一块，后面会不会变成「${focus.output}」。`;
   }
   if (compact.includes("if ")) {
     return "这里是分岔口：条件成立走错误或特殊路径，不成立才继续主流程。";
@@ -4751,6 +4964,23 @@ function GuidedCodeTour({
         <h2>{step.title}</h2>
         <p className="tour-goal">{step.goal}</p>
       </header>
+
+      <div className="code-guide-board" aria-label="代码巡读官">
+        <img src={modelWardenPortrait} alt="" />
+        <div>
+          <span>代码巡读官</span>
+          <strong>这一页只读当前几行，不把整座项目一次塞进脑子。</strong>
+          <p>
+            先看上一棒交来的材料，再看这几行交出去什么。读完以后，你还要知道：
+            这几行能证明什么，不能证明什么，下一步该找哪种证据。
+          </p>
+        </div>
+        <ol aria-label="代码阅读顺序">
+          <li>抓输入</li>
+          <li>看关键行</li>
+          <li>找反证</li>
+        </ol>
+      </div>
 
       <div className="tour-reading-compass" aria-label="代码阅读罗盘">
         <div>
@@ -4900,7 +5130,7 @@ function GuidedCodeTour({
           {focus.lines.map((line, i) => (
             <article key={`${line}-${i}`}>
               <code>{String(i + 1).padStart(2, "0")}</code>
-              <p>{explainCodeLine(line)}</p>
+              <p>{explainCodeLine(line, focus, step.projectPosition)}</p>
             </article>
           ))}
         </div>
@@ -5200,6 +5430,10 @@ export function TeachingBridge({
           updatedAt: s.updatedAt ?? "",
         }));
         setProgress(mapped);
+        if (mapped.some((p) => p.completed)) {
+          setShowIntro(false);
+          setStoryQuestComplete(true);
+        }
 
         // 找到第一个未完成的步骤
         const firstIncomplete = scenario.steps.findIndex(
@@ -5281,6 +5515,7 @@ export function TeachingBridge({
       });
       setProgress([]);
       setCurrentStepIdx(0);
+      setShowIntro(true);
       setStoryQuestComplete(false);
     } catch (cause) {
       setError(String(cause));
@@ -6328,7 +6563,12 @@ function GlossaryPanel({ entries }: { entries: GlossaryEntry[] }) {
       </button>
 
       {open && (
-        <div className="glossary-panel">
+        <div
+          aria-label="词库本"
+          aria-modal="false"
+          className="glossary-panel"
+          role="dialog"
+        >
           <header>
             <strong>词库本</strong>
             <small>{entries.length} 个术语 · 随时查看</small>

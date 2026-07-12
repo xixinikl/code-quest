@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "projectName": "教学项目",
+  "repository": "https://github.com/2082743849-beep/code-quest.git",
+  "defaultBranch": "main",
+  "runtime": {
+    "manager": "npm",
+    "python": "",
+    "startCommand": "npm run dev",
+    "doctorCommand": "npm run verify",
+    "portEnvironment": "PORT",
+    "dataNamespaceEnvironment": "XDS_DATA_NAMESPACE",
+    "workingDirectory": ".",
+    "requirements": []
+  },
+  "collaboration": {
+    "focusAuthors": [],
+    "riskPathPatterns": ["auth", "payment", "migration", "deploy", "secret"]
+  },
+  "quality": {
+    "acceptanceCommand": "npm run verify",
+    "autofixCommand": "",
+    "autofixPaths": []
+  },
+  "learning": {
+    "projectRetrospectiveDirectory": "docs/retrospectives",
+    "sharedProfileRepository": "https://github.com/xixinikl/xixi-agent-profile"
+  }
+}
