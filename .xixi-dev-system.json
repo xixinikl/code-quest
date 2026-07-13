@@ -10,8 +10,15 @@
     "doctorCommand": "npm run verify",
     "portEnvironment": "PORT",
     "dataNamespaceEnvironment": "XDS_DATA_NAMESPACE",
+    "additionalPortEnvironments": ["API_PORT"],
+    "updateStrategy": "hmr",
     "workingDirectory": ".",
     "requirements": []
+  },
+  "data": {
+    "environment": {
+      "CODE_QUEST_DB_PATH": ".xds/data/{namespace}/code-quest.sqlite"
+    }
   },
   "collaboration": {
     "focusAuthors": [],
