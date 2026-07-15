@@ -15,7 +15,7 @@
 - 已验证：独立 Playwright 390px 新用户移动会话从序章「走进档案馆」→「调取现场证据」→「领取委托」进入路线大厅；AI、Java 后端、前端工程路线均 `scrollWidth === 390`、暗色背景、无白色后台断层、Java/前端不串 AI 第 15 章；控制台 0 error。
 - 已验证：隔离 API/SQLite + 独立 Vite origin 下，AI 15 章教学入口桌面 `1200×760` 与移动 `390×844` 批量抽检通过；Java/前端第 1 章教学入口桌面与移动抽检通过。
 - 尚未声称完成：真人学习效果、Java/前端第 2-5 章教学入口逐章浏览器回归、真实沙盒修复与报告回读、分支合并审查。
-- 版本状态：当前分支未提交、未推送、未合并；不要把本快照当成已合并到 `main`。
+- 版本状态：当前分支已提交并推送到 `origin/cx/ai-career-rpg-home`，最新提交为 `09c3228 feat(rpg): expand guided career adventure`；尚未合并到 `main`。
 
 ### 2026-07-15 R272：AI 15 章教学入口桌面/移动批量回归
 
@@ -243,17 +243,19 @@
 ## 分支与合并状态（2026-07-12）
 
 - 当前继续开发分支：`cx/ai-career-rpg-home`
-- 当前已上传提交：`9b5767b feat(rpg): improve guided chapter continuity`
+- 当前已上传提交：`09c3228 feat(rpg): expand guided career adventure`
 - 远端位置：`origin/cx/ai-career-rpg-home`
 - 远端仓库当前会提示迁移到 `https://github.com/xixinikl/code-quest.git`，但本地 `origin` 仍指向 `https://github.com/2082743849-beep/code-quest.git` 并可正常推送。
 - 旧引导式教学分支：`origin/feat/guided-learning-bridge`
 - 旧分支当前远端最新提交：`10132c1 chore: onboard project to Xixi Dev System (#1)`
-- 本分支尚未准备合并到主线；不要直接 merge。原因：产品体验仍在打磨，真人学习效果未验收，Java/前端路线还只是锁定态骨架。
+- 本分支已作为阶段成果推送，但尚未准备直接合并到主线；建议先开 PR 审查，不要直接 merge。原因：改动量极大，真人学习效果、真实沙盒修复和逐章回归仍未全部完成。
 - 后续合并前先读：`docs/branch-merge-status-2026-07-12.md`
 
-### 2026-07-12 当前接手须知
+### 2026-07-16 当前接手须知
 
-- 当前本地仍有未提交改动，涉及首页主线推进、实战 Lab 新手解释、备份恢复、失败报告译文、样式统一、测试和交接文档。接手前先跑 `git status --short --branch`，不要误以为远端已经包含全部本地内容。
+- 当前大版本阶段成果已提交并推送：`09c3228 feat(rpg): expand guided career adventure`。接手前仍要先跑 `git status --short --branch`，确认是否有后续本地补丁。
+- 本次收口前完整 `npm run verify` 已通过：格式、Lint、类型、10 个测试文件 / 170 个测试、生产构建和 TeachingBridge 懒加载检查。
+- 不要把“已推送分支”理解成“已合并 main”。合并前仍需 PR 审查、用户视觉确认和关键路径浏览器抽检。
 - 最新本地修复：任务简报右侧“选中章节卷宗”默认跟随下一章主线。新号默认显示第 1 章卷宗；通关第 1 章后默认显示第 2 章卷宗；用户手动点第 3-15 章时才切换到对应卷宗。
 - 这个修复解决用户反馈的“左边当前委托说一章，右边卷宗却显示别章”的认知断层；后续不要把 `selectedChapterId` 默认值改回固定 `"3"`。
 - 已验证：`npm run verify` 通过，包含 Prettier、ESLint、TypeScript、64 个 Vitest 测试和 Vite 生产构建。
