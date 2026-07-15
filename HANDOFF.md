@@ -584,12 +584,13 @@ Java 入口现在从职业档案的 Java 后端路线进入 `java-layered-reques
 ## 强制阅读顺序
 
 1. `AGENTS.md` — 项目规则、安全不变量
-2. `docs/ai-career-rpg-tasks.md` — 当前 AI 职业 RPG 工程化任务入口
-3. `docs/cx-ai-career-rpg-home-merge-notes.md` — 当前分支继续开发、提交和合并注意事项
-4. `docs/guided-learning-spec.md` — 引导式教学需求
-5. `docs/guided-learning-tasks.md` — 引导式教学历史实施清单
-6. `docs/handoff-guided-learning.md` — 用户反馈与产品目标
-7. `docs/v2-architecture-proposal.md` — 架构与安全边界
+2. `docs/cross-computer-handoff.md` — 跨电脑拉取、当前远端提交、完成情况、下一步和合并建议
+3. `docs/ai-career-rpg-tasks.md` — 当前 AI 职业 RPG 工程化任务入口
+4. `docs/cx-ai-career-rpg-home-merge-notes.md` — 当前分支继续开发、提交和合并注意事项
+5. `docs/guided-learning-spec.md` — 引导式教学需求
+6. `docs/guided-learning-tasks.md` — 引导式教学历史实施清单
+7. `docs/handoff-guided-learning.md` — 用户反馈与产品目标
+8. `docs/v2-architecture-proposal.md` — 架构与安全边界
 
 ## 技术栈
 
