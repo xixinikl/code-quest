@@ -1,0 +1,11 @@
+{
+  "phase": "before-fix",
+  "summary": { "passed": 0, "failed": 1 },
+  "tests": [
+    {
+      "name": "刷新后画布仍存在",
+      "status": "failed",
+      "message": "GET 返回空数组"
+    }
+  ]
+}

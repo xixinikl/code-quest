@@ -55,6 +55,10 @@ async function route(
     );
   }
 
+  if (method === "GET" && url.pathname === "/api/learning-recalls") {
+    return sendJson(response, 200, { recalls: store.getLearningRecalls() });
+  }
+
   if (method === "POST" && url.pathname === "/api/learning-backup/import") {
     const body = await readJson(request, MAX_BACKUP_BODY_BYTES);
     return sendJson(response, 200, store.importLearningBackup(body.backup));
@@ -94,6 +98,28 @@ async function route(
       throw new ContractError("INVALID_BODY", "scenarioId 必须是字符串");
     }
     return sendJson(response, 201, store.startAttempt(body.scenarioId));
+  }
+
+  const transferRetestMatch = url.pathname.match(
+    /^\/api\/transfer-retests\/([^/]+)\/start$/,
+  );
+  if (method === "POST" && transferRetestMatch) {
+    return sendJson(
+      response,
+      201,
+      store.startTransferRetest(transferRetestMatch[1]),
+    );
+  }
+
+  const transferRetestStatusMatch = url.pathname.match(
+    /^\/api\/transfer-retests\/([^/]+)$/,
+  );
+  if (method === "GET" && transferRetestStatusMatch) {
+    return sendJson(
+      response,
+      200,
+      store.getTransferRetestStatus(transferRetestStatusMatch[1]),
+    );
   }
 
   const attemptMatch = url.pathname.match(/^\/api\/attempts\/([^/]+)$/);

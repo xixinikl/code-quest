@@ -1,0 +1,7 @@
+{
+  "rawRequest": "帮我做一个更聪明的 AI 会议助手",
+  "observedUsers": ["每周项目会主持人", "参会成员"],
+  "observedProblem": "会后行动项散落在聊天里，负责人和截止时间经常丢失",
+  "currentStage": "follow-up",
+  "successSignal": "会后 2 分钟内生成带负责人和截止时间的行动项"
+}

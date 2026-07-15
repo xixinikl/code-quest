@@ -1,0 +1,19 @@
+{
+  "documentId": "handbook-ai-101",
+  "version": 7,
+  "rows": [
+    {
+      "id": 901,
+      "chunkIndex": 0,
+      "workerId": "worker-a",
+      "content": "RAG 检索基础"
+    },
+    {
+      "id": 906,
+      "chunkIndex": 0,
+      "workerId": "worker-b",
+      "content": "RAG 检索基础"
+    }
+  ],
+  "missingConstraint": ["document_id", "document_version", "chunk_index"]
+}

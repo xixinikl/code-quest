@@ -1,0 +1,8 @@
+{
+  "requestId": "req-proof-011",
+  "steps": [
+    { "method": "POST", "url": "/api/canvases", "status": 201 },
+    { "method": "GET", "url": "/api/canvases", "status": 200 }
+  ],
+  "boundary": "Network 只能证明本次请求链路，不证明报告对应当前源码。"
+}

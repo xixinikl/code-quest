@@ -1,0 +1,6 @@
+{
+  "businessQuery": { "teamId": "east", "date": "2026-07-14" },
+  "first": { "requestId": "req-dawn-101", "ttfbMs": 3336, "cache": "MISS" },
+  "second": { "requestId": "req-dawn-102", "ttfbMs": 3318, "cache": "MISS" },
+  "observation": "团队与日期相同，只有 requestId 变化；第二次仍重新调用模型。"
+}

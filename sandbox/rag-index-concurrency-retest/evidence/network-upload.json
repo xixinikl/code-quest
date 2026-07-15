@@ -1,0 +1,7 @@
+{
+  "request": "POST /api/knowledge/documents",
+  "documentId": "handbook-ai-101",
+  "version": 7,
+  "requestCount": 1,
+  "response": { "status": 202, "jobId": 417 }
+}

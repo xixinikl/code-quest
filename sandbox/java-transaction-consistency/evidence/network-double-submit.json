@@ -1,0 +1,33 @@
+{
+  "requests": [
+    {
+      "requestId": "req_draft_001",
+      "method": "POST",
+      "url": "/api/drafts",
+      "headers": {
+        "Idempotency-Key": "draft-save-abc"
+      },
+      "body": {
+        "userId": "user_apprentice",
+        "clientMutationId": "mutation_2026_0705_001",
+        "title": "AI 面试复盘草稿"
+      },
+      "responseStatus": 201
+    },
+    {
+      "requestId": "req_draft_002",
+      "method": "POST",
+      "url": "/api/drafts",
+      "headers": {
+        "Idempotency-Key": "draft-save-abc"
+      },
+      "body": {
+        "userId": "user_apprentice",
+        "clientMutationId": "mutation_2026_0705_001",
+        "title": "AI 面试复盘草稿"
+      },
+      "responseStatus": 201
+    }
+  ],
+  "observation": "两次请求的 Idempotency-Key 和 clientMutationId 相同，但当前实现仍返回两次 201。"
+}

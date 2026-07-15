@@ -1,0 +1,5 @@
+06:58:02.101 requestId=req-dawn-101 team=east date=2026-07-14 cache=miss
+06:58:02.183 requestId=req-dawn-101 dataMs=82 model=start
+06:58:05.393 requestId=req-dawn-101 modelFirstTokenMs=3210 totalMs=3292
+06:59:11.014 requestId=req-dawn-102 team=east date=2026-07-14 cache=miss
+06:59:14.332 requestId=req-dawn-102 modelFirstTokenMs=3201 totalMs=3283

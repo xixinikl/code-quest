@@ -1,0 +1,2 @@
+2026-07-13T08:12:04.100Z profile.avatar.update user=user_01 status=200 avatar=/avatars/new-moon.webp
+2026-07-13T08:14:31.420Z profile.read user=user_01 status=200 avatar=/avatars/old-sun.webp source=sqlite

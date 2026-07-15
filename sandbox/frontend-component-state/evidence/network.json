@@ -1,0 +1,9 @@
+{
+  "action": "click-load-profile",
+  "request": "GET /api/profile/me",
+  "success": { "status": 200, "body": { "displayName": "林遥" } },
+  "failure": {
+    "status": 503,
+    "body": { "message": "profile service unavailable" }
+  }
+}

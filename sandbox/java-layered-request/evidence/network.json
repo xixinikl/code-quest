@@ -1,0 +1,7 @@
+{
+  "method": "GET",
+  "path": "/api/users/u-17",
+  "status": 200,
+  "response": { "id": "u-17", "displayName": "林遥" },
+  "requestId": "java-layer-001"
+}

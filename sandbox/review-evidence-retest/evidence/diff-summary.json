@@ -1,0 +1,9 @@
+{
+  "allowedPaths": ["src/ImportPanel.jsx", "server/importRoute.js"],
+  "files": [
+    { "path": "src/ImportPanel.jsx", "change": "新增失败条目下载" },
+    { "path": "server/importRoute.js", "change": "返回失败条目" },
+    { "path": "scripts/temporary-check.js", "change": "临时调试脚本" },
+    { "path": "README.md", "change": "未同步" }
+  ]
+}

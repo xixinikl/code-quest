@@ -1,0 +1,8 @@
+{
+  "runtime": "production",
+  "expectedVariable": "AI_API_KEY",
+  "currentCodePath": "server/modelGateway.js",
+  "currentBehavior": "hard-coded sk-old-2025",
+  "proves": "当前代码没有使用轮换后的服务端配置",
+  "doesNotProve": "部署平台是否真的配置了新变量"
+}

@@ -1,0 +1,9 @@
+{
+  "method": "POST",
+  "url": "/api/knowledge/documents",
+  "status": 201,
+  "documentId": "refund-policy",
+  "version": "2026-07",
+  "proves": "新文档进入索引任务",
+  "doesNotProve": "回答一定会检索到新版本"
+}

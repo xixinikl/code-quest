@@ -1,0 +1,5 @@
+[draft] requestId=req_draft_001 inserted=draft_1 idempotencyKey=draft-save-abc clientMutationId=mutation_2026_0705_001
+[draft] requestId=req_draft_002 inserted=draft_2 idempotencyKey=draft-save-abc clientMutationId=mutation_2026_0705_001
+[draft] WARN duplicate request created a second row; no idempotency lookup or unique constraint was applied
+[draft] requestId=req_draft_004 inserted=draft_1 audit=failed
+[draft] HINT Frontend button locking is not enough. Check backend idempotency, unique keys and transaction rollback.

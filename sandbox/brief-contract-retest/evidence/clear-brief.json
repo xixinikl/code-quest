@@ -1,0 +1,21 @@
+{
+  "context": "客服知识库批量导入失败条目无法重试",
+  "goal": "在导入页展示成功数、失败数和失败条目下载入口",
+  "constraints": {
+    "allowed": [
+      "frontend/ImportPanel.jsx",
+      "server/importRoute.js",
+      "tests/importRoute.test.js"
+    ],
+    "forbidden": ["部署配置", "生产数据库迁移", "删除旧导入接口"]
+  },
+  "acceptance": {
+    "commands": ["npm test -- importRoute"],
+    "browserPath": "打开导入页 → 上传包含 1 条坏数据的文件",
+    "expectedResult": "页面显示 2 成功、1 失败，并可下载失败条目"
+  },
+  "rollback": {
+    "when": "失败条目无法下载或成功数不准确",
+    "action": "关闭新入口，恢复旧导入路径"
+  }
+}

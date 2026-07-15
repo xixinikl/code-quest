@@ -1,0 +1,5 @@
+{
+  "declared": { "orderId": "string" },
+  "received": { "orderId": "ord-2048", "path": "/internal/secrets" },
+  "finding": "Schema 没有拒绝未声明的 path，也没有表达资源归属"
+}

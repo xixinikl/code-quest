@@ -1,0 +1,10 @@
+{
+  "action": "submit-application",
+  "request": "POST /api/applications",
+  "success": { "status": 201, "body": { "id": "app-17" } },
+  "failure": {
+    "status": 503,
+    "body": { "message": "application service unavailable" }
+  },
+  "timeout": "请求超过 8 秒没有响应"
+}

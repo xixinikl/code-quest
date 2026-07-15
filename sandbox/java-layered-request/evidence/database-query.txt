@@ -1,0 +1,4 @@
+查询：SELECT id, display_name FROM users WHERE id = 'u-17';
+结果：1 行，说明 Repository 查到了记录。
+
+这份结果只能证明数据层拿到了数据，不能证明 Service 的权限规则执行过。

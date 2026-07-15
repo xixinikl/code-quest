@@ -1,0 +1,25 @@
+{
+  "requestId": "req_verify_011",
+  "steps": [
+    {
+      "method": "POST",
+      "url": "/api/canvases",
+      "status": 201,
+      "body": {
+        "title": "验收试炼画布"
+      }
+    },
+    {
+      "method": "GET",
+      "url": "/api/canvases",
+      "status": 200,
+      "body": [
+        {
+          "id": "canvas_011",
+          "title": "验收试炼画布"
+        }
+      ]
+    }
+  ],
+  "explain": "这份 Network 只能证明本次请求链路正常，不能单独证明测试报告对应当前代码。"
+}

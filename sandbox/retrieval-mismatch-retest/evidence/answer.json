@@ -1,0 +1,6 @@
+{
+  "text": "根据资料：签收后 7 天内可退款。",
+  "citations": ["refund-v1-03"],
+  "proves": "回答带了一个实际命中 Chunk 的引用",
+  "doesNotProve": "这个 Chunk 是当前有效版本"
+}

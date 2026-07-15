@@ -1,0 +1,26 @@
+[
+  {
+    "at": "02:14:08.101",
+    "worker": "worker-a",
+    "event": "SELECT pending",
+    "jobId": 417
+  },
+  {
+    "at": "02:14:08.103",
+    "worker": "worker-b",
+    "event": "SELECT pending",
+    "jobId": 417
+  },
+  {
+    "at": "02:14:08.109",
+    "worker": "worker-a",
+    "event": "UPDATE running",
+    "jobId": 417
+  },
+  {
+    "at": "02:14:08.111",
+    "worker": "worker-b",
+    "event": "UPDATE running",
+    "jobId": 417
+  }
+]

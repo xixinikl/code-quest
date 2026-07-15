@@ -1,0 +1,15 @@
+{
+  "provider": "fixed-local-model-simulator",
+  "requestId": "req-night-429",
+  "response": {
+    "status": 429,
+    "headers": {
+      "retry-after": "30"
+    },
+    "body": {
+      "code": "MODEL_RATE_LIMITED",
+      "message": "capacity window exhausted"
+    }
+  },
+  "boundary": "这份 429 来自模型供应商，不是浏览器直接收到的自有 API 状态"
+}

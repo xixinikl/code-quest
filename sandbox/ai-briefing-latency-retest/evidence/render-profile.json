@@ -1,0 +1,7 @@
+{
+  "component": "MorningBriefingPanel",
+  "itemCount": 24,
+  "commitDurationMs": 42,
+  "longTasks": 0,
+  "observation": "浏览器渲染不是本次三秒等待的主要来源。"
+}

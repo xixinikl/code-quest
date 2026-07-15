@@ -1,0 +1,14 @@
+{
+  "page": "/support/morning-briefing",
+  "requestId": "req-dawn-101",
+  "requests": [
+    { "name": "app.js", "ttfbMs": 34, "downloadMs": 51, "cache": "memory" },
+    {
+      "name": "/api/briefings/morning?teamId=east&date=2026-07-14",
+      "ttfbMs": 3336,
+      "downloadMs": 47,
+      "cache": "MISS"
+    }
+  ],
+  "browserRenderMs": 42
+}

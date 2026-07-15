@@ -1,4 +1,3 @@
-import { TeachingBridge } from "./TeachingBridge";
 import {
   case02Scenario,
   case03Scenario,
@@ -14,48 +13,96 @@ import {
   case13Scenario,
   case14Scenario,
   case15Scenario,
+  frontendComponentStateScenario,
+  frontendRequestStatesScenario,
+  frontendPerformanceProofScenario,
+  frontendAccessibilityProofScenario,
+  frontendTestingProofScenario,
+  javaLayeredScenario,
+  javaCacheObservabilityScenario,
+  javaProductionIncidentScenario,
+  javaReleaseHarborScenario,
+  javaTransactionConsistencyScenario,
   teachingScenario,
 } from "./teaching";
-import { useEffect, useMemo, useState, type CSSProperties } from "react";
-import archiveNight from "./assets/code-archive-night.png";
+import {
+  lazy,
+  Suspense,
+  useEffect,
+  useMemo,
+  useState,
+  type CSSProperties,
+} from "react";
+import archiveNight from "./assets/code-archive-night.webp";
 import keyVaultEquipment from "./assets/equipment-key-vault.svg";
-import foglampCatPet from "./assets/pet-foglamp-cat.svg";
-import retrievalFoxPet from "./assets/pet-retrieval-fox.svg";
-import archiveKeeperPortrait from "./assets/portrait-archive-keeper.svg";
-import apiClerkPortrait from "./assets/portrait-api-clerk.svg";
-import briefForgemasterPortrait from "./assets/portrait-brief-forgemaster.svg";
-import deliveryJudgePortrait from "./assets/portrait-delivery-judge.svg";
-import identityGuardPortrait from "./assets/portrait-identity-guard.svg";
-import idempotencyStonePet from "./assets/pet-idempotency-stone.svg";
-import knowledgeKeeperPortrait from "./assets/portrait-knowledge-keeper.svg";
-import mirrorEditorPortrait from "./assets/portrait-mirror-editor.svg";
-import modelWardenPortrait from "./assets/portrait-model-warden.svg";
-import portalScribePortrait from "./assets/portrait-portal-scribe.svg";
-import releaseGatekeeperPortrait from "./assets/portrait-release-gatekeeper.svg";
-import interviewCouncilorPortrait from "./assets/portrait-interview-councilor.svg";
-import testArbiterPortrait from "./assets/portrait-test-arbiter.svg";
-import toolWardenPortrait from "./assets/portrait-tool-warden.svg";
-import questArchive from "./assets/quest-archive.png";
-import questPortal from "./assets/quest-portal.png";
-import questStage from "./assets/quest-stage.png";
-import questWorkbench from "./assets/quest-workbench.png";
+import foglampCatPet from "./assets/pet-foglamp-cat-v2.webp";
+import retrievalFoxPet from "./assets/pet-retrieval-fox-v2.webp";
+import archiveKeeperPortrait from "./assets/portrait-archive-keeper-v2.webp";
+import apiClerkPortrait from "./assets/portrait-api-clerk-v2.webp";
+import briefForgemasterPortrait from "./assets/portrait-brief-forgemaster-v2.webp";
+import deliveryJudgePortrait from "./assets/portrait-delivery-judge-v2.webp";
+import echoForensicsPortrait from "./assets/portrait-echo-forensics-officer.webp";
+import identityGuardPortrait from "./assets/portrait-identity-guard-v2.webp";
+import indexArbiterPortrait from "./assets/portrait-index-arbiter.webp";
+import idempotencyStonePet from "./assets/pet-idempotency-stone-v2.webp";
+import knowledgeKeeperPortrait from "./assets/portrait-index-arbiter.webp";
+import mirrorEditorPortrait from "./assets/portrait-mirror-editor-v2.webp";
+import modelWardenPortrait from "./assets/portrait-model-warden-v2.webp";
+import inspirationGlowPet from "./assets/pet-inspiration-glow-v2.webp";
+import portalScribePortrait from "./assets/portrait-portal-scribe-v2.webp";
+import releaseGatekeeperPortrait from "./assets/portrait-release-gatekeeper-v2.webp";
+import interviewCouncilorPortrait from "./assets/portrait-interview-councilor-v2.webp";
+import stormDispatcherPortrait from "./assets/portrait-storm-dispatcher.webp";
+import testArbiterPortrait from "./assets/portrait-test-arbiter-v2.webp";
+import timingNavigatorPortrait from "./assets/portrait-timing-navigator.webp";
+import toolWardenPortrait from "./assets/portrait-tool-warden-v2.webp";
+import questArchive from "./assets/quest-archive.webp";
+import questPortal from "./assets/quest-portal.webp";
+import questStage from "./assets/quest-stage.webp";
+import questWorkbench from "./assets/quest-workbench.webp";
+import apiErrorCourtScene from "./assets/scene-api-error-court.webp";
+import identityCorridorScene from "./assets/scene-identity-corridor.webp";
+import idempotencyForgeScene from "./assets/scene-idempotency-forge.webp";
+import hallucinationMirrorScene from "./assets/scene-hallucination-mirror.webp";
+import modelKeyForgeScene from "./assets/scene-model-key-forge.webp";
+import memoryEchoGalleryScene from "./assets/scene-memory-echo-gallery.webp";
+import performanceObservatoryScene from "./assets/scene-performance-observatory.webp";
+import ragKnowledgeMazeScene from "./assets/scene-rag-knowledge-maze.webp";
+import agentBriefForgeScene from "./assets/scene-agent-brief-forge.webp";
+import agentToolContractHallScene from "./assets/scene-agent-tool-contract-hall.webp";
+import deliveryReviewCourtScene from "./assets/scene-delivery-review-court.webp";
+import interviewDefenseHallScene from "./assets/scene-interview-defense-hall.webp";
+import releaseReadinessGateScene from "./assets/scene-release-readiness-gate.webp";
+import signalStormDispatchTowerScene from "./assets/scene-signal-storm-dispatch-tower.webp";
+import verificationTrialArenaScene from "./assets/scene-verification-trial-arena.webp";
 import {
   aiCareerRoadmap,
   careerRoutes,
   currentChapter,
+  sharedCoreAbilities,
   type CareerChapter,
   type CareerRoute,
+  type SharedCoreAbilityId,
 } from "./careerRoadmap";
 import {
   loadDeveloper,
   saveDeveloper,
   awardXP,
   completeChapter,
+  getAdventureProgress,
+  getChapterXp,
   getRank,
   getNextRank,
   isChapterCleared,
+  reconcileCareerXp,
+  reconcileCompanionUnlocks,
   type DeveloperProfile,
 } from "./careerProfile";
+import {
+  getTransferRetestConfig,
+  transferRetestSourceIds,
+  type TransferRetestSourceId,
+} from "./transferRetests";
 import {
   AlertTriangle,
   ArrowRight,
@@ -86,6 +133,18 @@ import {
   XCircle,
 } from "lucide-react";
 
+const TeachingBridge = lazy(() =>
+  import("./TeachingBridge").then((module) => ({
+    default: module.TeachingBridge,
+  })),
+);
+
+const TransferRetestLab = lazy(() =>
+  import("./TransferRetestLab").then((module) => ({
+    default: module.TransferRetestLab,
+  })),
+);
+
 type Diagnostic = {
   id: string;
   status: "active" | "completed";
@@ -104,7 +163,34 @@ type Attempt = {
   hintLevel: number;
   verificationStatus: "not_run" | "failed" | "passed" | "invalid_report";
   steps: Record<string, StepValue>;
+  latestVerification?: {
+    status: "not_run" | "failed" | "passed" | "invalid_report";
+    observedAt: string;
+    report: {
+      message?: string;
+      generatedAt?: string;
+      sourceHash?: string;
+      summary?: {
+        passed: number;
+        failed: number;
+      };
+      tests?: Array<{
+        name: string;
+        status: "passed" | "failed";
+        message?: string;
+      }>;
+    };
+  } | null;
 };
+
+type OpeningChoice = "rush" | "evidence" | "agent";
+
+function readOpeningChoice(attempt: Attempt): OpeningChoice | null {
+  const value = attempt.steps["baseline-plan"]?.response?.openingChoice;
+  return value === "rush" || value === "evidence" || value === "agent"
+    ? value
+    : null;
+}
 
 type Artifact = {
   id: string;
@@ -128,7 +214,358 @@ type BackupImportResult = {
   counts: Record<string, number>;
 };
 
+type TransferRetestStatus = {
+  sourceScenarioId: string;
+  scenarioId: string;
+  title: string;
+  status: "prerequisite" | "waiting" | "available" | "active" | "completed";
+  delayHours: number;
+  sourceSubmittedAt: string | null;
+  availableAt: string | null;
+  remainingMs: number;
+  attemptId: string | null;
+  hintLevel: number;
+  verificationStatus: Attempt["verificationStatus"];
+};
+
 type ApiError = { error: string; message: string };
+
+function describeTransferRetest(
+  sourceScenarioId: TransferRetestSourceId,
+  status: TransferRetestStatus | null,
+) {
+  const config = getTransferRetestConfig(sourceScenarioId);
+  if (!status || status.status === "prerequisite") {
+    return {
+      label: "延迟复测 · 未解锁",
+      title: `先完成第 ${config.chapterId} 章真实实战`,
+      body: `完成原案件后，系统会等待 24 小时，再把你带到${config.location}处理完全不同的业务。`,
+      action: "等待原关通关",
+      enabled: false,
+    };
+  }
+  if (status.status === "waiting") {
+    return {
+      label: "延迟复测 · 记忆沉淀中",
+      title: "答案正在离开短期记忆",
+      body: `预计 ${new Date(status.availableAt ?? "").toLocaleString("zh-CN")} 解锁。到时不再先给概念提示。`,
+      action: "尚未到复测时间",
+      enabled: false,
+    };
+  }
+  if (status.status === "completed") {
+    return {
+      label: "延迟复测 · 已封存",
+      title: `${config.location}事件已完成`,
+      body: `本次提示等级 ${status.hintLevel}/3。系统只记录迁移候选证据，不把单次通过冒充完全掌握。`,
+      action: "查看已完成卷宗",
+      enabled: false,
+    };
+  }
+  return {
+    label:
+      status.status === "active" ? "延迟复测 · 进行中" : "延迟复测 · 已解锁",
+    title: config.cardTitle,
+    body:
+      status.status === "active"
+        ? `你的原始判断已经保存，继续在${config.location}追踪这条新证据链。`
+        : config.cardBody,
+    action:
+      status.status === "active"
+        ? `继续${config.location}复测`
+        : `进入${config.location}复测`,
+    enabled: true,
+  };
+}
+
+function TransferRetestCard({
+  sourceScenarioId,
+  status,
+  onOpen,
+}: {
+  sourceScenarioId: TransferRetestSourceId;
+  status: TransferRetestStatus | null;
+  onOpen: () => void;
+}) {
+  const config = getTransferRetestConfig(sourceScenarioId);
+  const copy = describeTransferRetest(sourceScenarioId, status);
+
+  return (
+    <section
+      className={`transfer-retest-card ${status?.status ?? "prerequisite"}`}
+      style={
+        {
+          "--retest-card-scene": `url(${config.scene})`,
+        } as CSSProperties
+      }
+      aria-label={`第${config.chapterId}章延迟变式复测`}
+    >
+      <div className="transfer-retest-card-scene" />
+      <img src={config.portrait} alt={`${config.mentorName}复测卷宗`} />
+      <div>
+        <span>{copy.label}</span>
+        <strong>{copy.title}</strong>
+        <p>{copy.body}</p>
+      </div>
+      <button disabled={!copy.enabled} onClick={onOpen} type="button">
+        <FlaskConical /> {copy.action}
+      </button>
+    </section>
+  );
+}
+
+function TransferRetestCollection({
+  statuses,
+  onOpen,
+}: {
+  statuses: Partial<Record<TransferRetestSourceId, TransferRetestStatus>>;
+  onOpen: (sourceScenarioId: TransferRetestSourceId) => void;
+}) {
+  return (
+    <section
+      className="transfer-retest-collection"
+      aria-label="延迟变式复测卷宗"
+    >
+      <header>
+        <span>迁移能力复测</span>
+        <strong>换一座地图，再证明一次你真的会了</strong>
+        <p>
+          每份卷宗都在原关结束至少 24
+          小时后解锁，业务、角色、文件和证据全部更换。
+        </p>
+      </header>
+      <div>
+        {transferRetestSourceIds.map((sourceScenarioId) => (
+          <TransferRetestCard
+            key={sourceScenarioId}
+            sourceScenarioId={sourceScenarioId}
+            status={statuses[sourceScenarioId] ?? null}
+            onOpen={() => onOpen(sourceScenarioId)}
+          />
+        ))}
+      </div>
+    </section>
+  );
+}
+
+const sharedAbilityIcons: Record<SharedCoreAbilityId, LucideIcon> = {
+  "read-project": BookOpen,
+  "trace-flow": Network,
+  "diagnose-fault": Search,
+  "read-evidence": Database,
+  "direct-agent": TerminalSquare,
+  "verify-delivery": ShieldCheck,
+  "explain-work": Trophy,
+};
+
+function SharedCoreTrail({
+  route,
+  detailed = false,
+}: {
+  route: CareerRoute;
+  detailed?: boolean;
+}) {
+  const highlightedIds: Record<CareerRoute["id"], SharedCoreAbilityId[]> = {
+    "ai-development": ["trace-flow", "read-evidence", "direct-agent"],
+    "java-backend": ["read-project", "trace-flow", "verify-delivery"],
+    "frontend-engineering": [
+      "read-project",
+      "diagnose-fault",
+      "verify-delivery",
+    ],
+  };
+  const highlights = sharedCoreAbilities.filter((ability) =>
+    highlightedIds[route.id].includes(ability.id),
+  );
+
+  return (
+    <section
+      className={`shared-core-trail ${detailed ? "detailed" : "compact"}`}
+      aria-label="跨岗位核心能力"
+    >
+      <header>
+        <span>跨岗位能力护照</span>
+        <strong>
+          {route.status === "可进入"
+            ? `${route.chapters.length} 章同时训练 7 项可迁移工程能力`
+            : `现在学的能力，将来会这样迁移到${route.label}`}
+        </strong>
+        <p>
+          岗位会变，但读项目、追流程、找证据、委托 Agent 和验收交付不会消失。
+        </p>
+      </header>
+      {!detailed && (
+        <div className="shared-core-steps">
+          {sharedCoreAbilities.map((ability) => {
+            const Icon = sharedAbilityIcons[ability.id];
+            return (
+              <span key={ability.id} title={ability.workAction}>
+                <Icon size={14} /> {ability.label}
+              </span>
+            );
+          })}
+        </div>
+      )}
+      {detailed && (
+        <div className="shared-core-transfer">
+          {highlights.map((ability) => {
+            const Icon = sharedAbilityIcons[ability.id];
+            return (
+              <article key={ability.id}>
+                <Icon size={18} />
+                <div>
+                  <span>
+                    {ability.label} · AI 第 {ability.aiChapterIds.join("、")} 章
+                  </span>
+                  <strong>{ability.transferTo[route.id]}</strong>
+                  <p>带走证据：{ability.evidence}</p>
+                </div>
+              </article>
+            );
+          })}
+        </div>
+      )}
+    </section>
+  );
+}
+
+function CareerGraduationRoom({
+  developer,
+  transferRetestStatuses,
+  onOpenInterview,
+  onOpenPortfolio,
+  onOpenRetest,
+}: {
+  developer: DeveloperProfile;
+  transferRetestStatuses: Partial<
+    Record<TransferRetestSourceId, TransferRetestStatus>
+  >;
+  onOpenInterview: () => void;
+  onOpenPortfolio: () => void;
+  onOpenRetest: (sourceScenarioId: TransferRetestSourceId) => void;
+}) {
+  const capabilities = [
+    {
+      icon: Search,
+      label: "读懂项目",
+      title: "先画地图，再进入代码",
+      body: "能说清页面、接口、数据层、数据库和 AI 服务分别接收什么、交出什么。",
+    },
+    {
+      icon: Network,
+      label: "定位问题",
+      title: "沿证据链找到断点",
+      body: "会用 Network、日志、数据库和测试结果区分现象、原因与修复证据。",
+    },
+    {
+      icon: Code2,
+      label: "驾驭 Agent",
+      title: "写清背景、边界与验收",
+      body: "能把任务交给 Agent，也能检查 Diff、回归风险和没有完成的部分。",
+    },
+    {
+      icon: Trophy,
+      label: "面向求职",
+      title: "把工程过程讲成证据故事",
+      body: "能用 STAR、故障复盘和技术取舍整理项目经历，并准备继续被追问。",
+    },
+  ];
+
+  return (
+    <div
+      className="career-graduation-room"
+      role="region"
+      aria-label="AI 工程主线结业授勋"
+      style={
+        {
+          "--graduation-scene": `url(${interviewDefenseHallScene})`,
+        } as CSSProperties
+      }
+    >
+      <div className="career-graduation-scene" />
+      <header className="career-graduation-hero">
+        <img src={interviewCouncilorPortrait} alt="终章答辩官" />
+        <div>
+          <span>十五枚主线证据已归档 · 终章授勋</span>
+          <h2>AI 工程主线完成，真正的独立训练从这里开始</h2>
+          <blockquote>
+            “你已经走过需求、接口、数据、AI、Agent、验收和上线。现在别再追下一章编号，把证据整理成能交付、能复测、能面试讲清楚的职业档案。”
+          </blockquote>
+        </div>
+      </header>
+
+      <div className="career-graduation-actions" aria-label="终章后的行动">
+        <button
+          className="dialogue-next"
+          onClick={onOpenInterview}
+          type="button"
+        >
+          <BookOpen /> 整理面试复盘
+        </button>
+        <button
+          className="dialogue-next secondary"
+          onClick={onOpenPortfolio}
+          type="button"
+        >
+          <FileCode2 /> 打开面试作品集
+        </button>
+      </div>
+
+      <TransferRetestCollection
+        statuses={transferRetestStatuses}
+        onOpen={onOpenRetest}
+      />
+
+      <div className="career-graduation-ledger" aria-label="路线完成记录">
+        <article>
+          <span>主线进度</span>
+          <strong>15 / 15</strong>
+          <p>十五章实战结算均已写入成长档案。</p>
+        </article>
+        <article>
+          <span>当前身份</span>
+          <strong>{developer.rank}</strong>
+          <p>{developer.xp} XP · 继续用新案件检验迁移能力。</p>
+        </article>
+        <article>
+          <span>伙伴收藏</span>
+          <strong>{developer.unlockedCompanionNames.length} / 15</strong>
+          <p>收藏只反映已归档奖励，不替代真实工作能力。</p>
+        </article>
+      </div>
+
+      <section
+        className="career-graduation-capabilities"
+        aria-label="已训练的职业能力"
+      >
+        <header>
+          <span>职业能力卷轴</span>
+          <strong>你已经反复练过的四种工作动作</strong>
+        </header>
+        <div>
+          {capabilities.map((capability) => {
+            const Icon = capability.icon;
+            return (
+              <article key={capability.label}>
+                <Icon aria-hidden="true" />
+                <span>{capability.label}</span>
+                <strong>{capability.title}</strong>
+                <p>{capability.body}</p>
+              </article>
+            );
+          })}
+        </div>
+      </section>
+
+      <div className="career-graduation-boundary">
+        <ShieldCheck aria-hidden="true" />
+        <p>
+          路线完成证明你留下了十五章工程训练记录，不等于自动获得工作能力认证。下一步要用作品集、无提示变式复测和真人面试继续验证。
+        </p>
+      </div>
+    </div>
+  );
+}
 
 const SCENARIO_ID = "canvas-save-persistence";
 const CASE02_SCENARIO_ID = "canvasstorm-product-brief";
@@ -145,12 +582,39 @@ const CASE12_SCENARIO_ID = "agent-brief-forge";
 const CASE13_SCENARIO_ID = "delivery-review-court";
 const CASE14_SCENARIO_ID = "release-readiness-gate";
 const CASE15_SCENARIO_ID = "interview-answer-forge";
+const JAVA_SCENARIO_ID = "java-layered-request";
+const JAVA_TRANSACTION_SCENARIO_ID = "java-transaction-consistency";
+const JAVA_CACHE_SCENARIO_ID = "java-cache-observability";
+const JAVA_RELEASE_SCENARIO_ID = "java-release-harbor";
+const JAVA_INCIDENT_SCENARIO_ID = "java-production-incident";
+const FRONTEND_SCENARIO_ID = "frontend-component-state";
+const FRONTEND_REQUEST_STATES_SCENARIO_ID = "frontend-request-states";
+const FRONTEND_PERFORMANCE_SCENARIO_ID = "frontend-performance-proof";
+const FRONTEND_ACCESSIBILITY_SCENARIO_ID = "frontend-accessibility-proof";
+const FRONTEND_TESTING_SCENARIO_ID = "frontend-testing-proof";
+
+type RouteChapterNumber =
+  2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15;
+
+function toRouteChapterNumber(chapterId: string): RouteChapterNumber | null {
+  const chapter = Number(chapterId);
+  return chapter >= 2 && chapter <= 15 ? (chapter as RouteChapterNumber) : null;
+}
 
 type LabStep = {
   id: string;
   label: string;
   icon: LucideIcon;
   kind: "baseline" | "response" | "verification";
+  scene?: {
+    location: string;
+    image: string;
+    portrait: string;
+    actor: string;
+    mood: string;
+    objective: string;
+    reward: string;
+  };
   response?: {
     title: string;
     prompt: string;
@@ -173,6 +637,12 @@ type ArtifactGuide = {
   keyLines: string[];
   proves: string;
   cannotProve: string;
+};
+
+type VerificationClue = {
+  breakPoint: string;
+  material: string;
+  nextAction: string;
 };
 
 type LabConfig = {
@@ -217,6 +687,347 @@ type LabConfig = {
   requiredResponseStepIds: string[];
   artifactGuides: Record<string, ArtifactGuide>;
 };
+
+function pickArtifactGuide(
+  config: LabConfig,
+  words: string[],
+): ArtifactGuide | undefined {
+  const entries = Object.entries(config.artifactGuides ?? {});
+  const matched = entries.find(([id, guide]) => {
+    const haystack = `${id} ${guide.place} ${guide.focus} ${guide.keyLines.join(
+      " ",
+    )}`.toLowerCase();
+    return words.some((word) => haystack.includes(word.toLowerCase()));
+  });
+
+  return matched?.[1] ?? entries[0]?.[1];
+}
+
+function getLabStepScene(config: LabConfig, step: LabStep) {
+  return (
+    step.scene ?? {
+      location: config.missionTitle,
+      image: config.backgroundImage,
+      portrait:
+        chapterGuidePortraits[labGuideChapterIds[config.scenarioId] ?? "1"]
+          ?.image ?? archiveKeeperPortrait,
+      actor:
+        chapterGuidePortraits[labGuideChapterIds[config.scenarioId] ?? "1"]
+          ?.name ?? "实战向导",
+      mood: "本幕继续把剧情线索转成可验证的工程证据。",
+      objective:
+        step.kind === "verification"
+          ? "确认测试、代码和手动验收能互相证明。"
+          : step.kind === "baseline"
+            ? config.baseline.body
+            : (step.response?.prompt ?? step.label),
+      reward: config.result.recorded,
+    }
+  );
+}
+
+function buildFocusedArtifactContent(
+  content: string,
+  keyLines: string[],
+): string {
+  const lines = content.split("\n");
+  const normalizedKeys = keyLines
+    .map((line) => line.trim().toLowerCase())
+    .filter(Boolean);
+  const semanticKeys = keyLines.flatMap((line) =>
+    line
+      .split(/[^a-zA-Z0-9_/-]+/)
+      .map((token) => token.trim().toLowerCase())
+      .filter((token) => token.length >= 3),
+  );
+  const matchedIndexes = lines.reduce<number[]>((indexes, line, index) => {
+    const normalizedLine = line.toLowerCase();
+    const exactMatch = normalizedKeys.some((key) =>
+      normalizedLine.includes(key),
+    );
+    const semanticMatch = semanticKeys.some((key) =>
+      normalizedLine.includes(key),
+    );
+    if (exactMatch || semanticMatch) {
+      indexes.push(index);
+    }
+    return indexes;
+  }, []);
+  const anchors = matchedIndexes.length > 0 ? matchedIndexes : [0];
+  const visibleIndexes = new Set<number>();
+  for (const anchor of anchors) {
+    for (
+      let index = Math.max(0, anchor - 1);
+      index <= Math.min(lines.length - 1, anchor + 1);
+      index += 1
+    ) {
+      visibleIndexes.add(index);
+    }
+  }
+
+  const sortedIndexes = [...visibleIndexes].sort((a, b) => a - b);
+  const output: string[] = [];
+  let previousIndex = -2;
+  for (const index of sortedIndexes) {
+    if (index > previousIndex + 1) output.push("···");
+    output.push(`${String(index + 1).padStart(3, "0")}  ${lines[index]}`);
+    previousIndex = index;
+  }
+  return output.join("\n");
+}
+
+function getArtifactRelay(artifact: Artifact, guide?: ArtifactGuide) {
+  if (artifact.language === "sql") {
+    return {
+      from: "数据层或数据库",
+      to: "刷新后的事实校验",
+      question: "这份材料回答：数据有没有真的落到可再次读取的位置？",
+    };
+  }
+  if (artifact.language === "log") {
+    return {
+      from: "后端运行现场",
+      to: "定位下一处断点",
+      question: "这份材料回答：请求实际走到了哪一步，哪里留下了异常痕迹？",
+    };
+  }
+  if (artifact.language === "json") {
+    return {
+      from: "浏览器 Network 或测试报告",
+      to: "后端接口与验收判断",
+      question: "这份材料回答：这次请求或测试到底返回了什么结果？",
+    };
+  }
+  return {
+    from: "项目代码",
+    to: "Agent 修复任务或人工改动",
+    question: guide
+      ? `这份材料回答：${guide.focus}`
+      : "这份材料回答：当前流程是由哪几行代码推动的？",
+  };
+}
+
+function explainKeyLine(line: string, index: number) {
+  const normalized = line.toLowerCase();
+  if (normalized.includes("fetch") || normalized.includes("post")) {
+    return {
+      role: "把动作送出去",
+      meaning: "页面把用户的草稿打包成一次请求，交给后端接口处理。",
+    };
+  }
+  if (normalized.includes("response.ok") || normalized.includes("201")) {
+    return {
+      role: "判断接口有没有接住",
+      meaning: "它只能说明接口回了成功信号，不能直接证明数据库已经写入。",
+    };
+  }
+  if (
+    normalized.includes("onsaved") ||
+    normalized.includes("setstatus") ||
+    normalized.includes("saved")
+  ) {
+    return {
+      role: "把成功感交给页面",
+      meaning: "页面开始显示保存成功，但下一棒还要用数据库或刷新结果复查。",
+    };
+  }
+  if (normalized.includes("select") || normalized.includes("0 rows")) {
+    return {
+      role: "向数据库要反证",
+      meaning: "直接检查可读取记录，判断保存成功提示有没有事实支撑。",
+    };
+  }
+  if (normalized.includes("test") || normalized.includes("passed")) {
+    return {
+      role: "把判断交给验收",
+      meaning: "用可复跑的结果证明修复不是只在当前页面看起来正常。",
+    };
+  }
+  return {
+    role: `关键线索 ${index + 1}`,
+    meaning: "先把这一行放回流程里，判断它能证明哪一棒、不能证明哪一棒。",
+  };
+}
+
+function buildVerificationClue(
+  test: NonNullable<
+    NonNullable<Attempt["latestVerification"]>["report"]["tests"]
+  >[number],
+  config: LabConfig,
+): VerificationClue {
+  const clueText = `${test.name} ${test.message ?? ""}`.toLowerCase();
+  const flowItems = config.flowItems ?? [];
+  const routeStart = flowItems[0];
+  const routeEnd = flowItems.at(-1);
+  const defaultGuide = pickArtifactGuide(config, []);
+  const fallback = {
+    breakPoint: `${routeStart?.label ?? "上一棒"} 到 ${
+      routeEnd?.label ?? "下一棒"
+    } 的证据链还没有闭合。`,
+    material: defaultGuide
+      ? `${defaultGuide.place}：${defaultGuide.focus}`
+      : "先回到本关材料导览，找最能证明现象的那一份证据。",
+    nextAction:
+      "先写清“我看到 / 它说明 / 下一步”，再改代码；修完后重新手动运行 npm test。",
+  };
+
+  const keywordRules: Array<{
+    keywords: string[];
+    guideWords: string[];
+    breakPoint: string;
+    nextAction: string;
+  }> = [
+    {
+      keywords: ["candidate", "候选", "方向", "mvp", "growth", "accepted"],
+      guideWords: ["planner", "candidate", "direction", "候选", "方向"],
+      breakPoint:
+        "方向筛选这一棒还没成立：用户选择的阶段没有正确过滤进入执行草案的候选。",
+      nextAction:
+        "回到规划器逻辑，只让符合 direction 的候选进入草案，同时把被拒绝的候选和理由留下。",
+    },
+    {
+      keywords: ["brief", "目标", "user goal", "empty", "空"],
+      guideWords: ["brief", "frontend", "form", "目标", "表单"],
+      breakPoint:
+        "用户输入这一棒还不稳：空目标或 Brief 约束没有被正确拦截和解释。",
+      nextAction: "先补输入校验和可读错误，再用测试证明空目标不会生成假草案。",
+    },
+    {
+      keywords: ["session", "会话", "保存", "candidateids", "记录"],
+      guideWords: ["session", "after", "会话", "保存"],
+      breakPoint:
+        "会话保存这一棒缺证据：系统没有完整留下本轮方向、取舍理由和下一步动作。",
+      nextAction:
+        "检查保存对象字段，确认 accepted/rejected/nextStep 都进入会话记录，再重新生成测试报告。",
+    },
+    {
+      keywords: [
+        "cookie",
+        "token",
+        "401",
+        "authorization",
+        "登录",
+        "sessionid",
+      ],
+      guideWords: ["cookie", "token", "401", "storage", "session", "凭证"],
+      breakPoint:
+        "身份凭证接力断了：前端、浏览器存储和后端会话没有拿到同一张通行证。",
+      nextAction:
+        "先确认登录响应把凭证交给哪里，再验证刷新后的 /api/me 是否真的带上 Cookie 或 Authorization。",
+    },
+    {
+      keywords: ["status", "状态码", "requestid", "payload", "400", "500"],
+      guideWords: ["network", "log", "payload", "status", "日志"],
+      breakPoint:
+        "接口排障链路还没闭合：请求体、状态码、响应体和后端日志没有用同一个证据串起来。",
+      nextAction:
+        "用 requestId 把 Network 和 backend.log 对齐，修正参数校验或错误响应结构。",
+    },
+    {
+      keywords: ["duplicate", "重复", "idempot", "幂等", "transaction", "事务"],
+      guideWords: ["duplicate", "idempot", "database", "transaction", "数据库"],
+      breakPoint:
+        "数据一致性门还没关上：重复提交、唯一约束或事务边界仍然会让记录错乱。",
+      nextAction:
+        "先确定幂等键和唯一键，再让写入逻辑在同一事务里完成检查与保存。",
+    },
+    {
+      keywords: ["performance", "slow", "cache", "timing", "渲染", "慢"],
+      guideWords: ["network", "timing", "cache", "render", "瀑布"],
+      breakPoint:
+        "性能证据还没分清责任：慢在请求、后端处理、前端渲染还是缓存策略里。",
+      nextAction:
+        "先补 Server-Timing 或渲染指标，再用缓存复测证明第二次访问是否变快。",
+    },
+    {
+      keywords: ["api key", "key", "secret", "env", "stream", "密钥", "流式"],
+      guideWords: ["key", "env", "stream", "network", "密钥"],
+      breakPoint:
+        "AI 接口安全链路不完整：密钥、服务端转发、流式响应或失败兜底仍有缺口。",
+      nextAction:
+        "把密钥留在服务端环境变量里，前端只调本地接口；同时补上上游失败时的用户可读兜底。",
+    },
+    {
+      keywords: ["citation", "引用", "context", "hallucination", "幻觉"],
+      guideWords: ["context", "citation", "network", "引用", "资料"],
+      breakPoint:
+        "AI 回答缺少资料锚点：输出还没有被上下文、引用来源和校验器约束住。",
+      nextAction:
+        "让回答只基于命中的资料生成；无资料时拒答，并把 citations 返回给前端。",
+    },
+    {
+      keywords: ["rag", "chunk", "topk", "match", "检索"],
+      guideWords: ["chunk", "top", "match", "citation", "检索"],
+      breakPoint:
+        "RAG 接力没有对准：资料切片、检索命中和回答引用之间还没一一对应。",
+      nextAction:
+        "先修检索排序和 matches，再让回答引用实际命中的 chunk，而不是凭空拼答案。",
+    },
+    {
+      keywords: ["tool", "schema", "permission", "fallback", "工具", "越权"],
+      guideWords: ["tool", "schema", "permission", "fallback", "审计"],
+      breakPoint:
+        "Agent 工具边界还不安全：参数校验、权限门禁或失败回退没有挡住错误调用。",
+      nextAction:
+        "先让工具注册表声明 schema 和权限，再让越权/失败路径返回可审计的安全结果。",
+    },
+    {
+      keywords: ["sourcehash", "stale", "manual", "report", "回归", "过期"],
+      guideWords: ["report", "manual", "stale", "source", "测试"],
+      breakPoint:
+        "验收证据还不能收案：报告可能过期、缺复现红灯、缺手动路径或缺回归边界。",
+      nextAction:
+        "要求报告同时包含旧问题先红、当前代码指纹、自动测试、手动复测和风险边界。",
+    },
+    {
+      keywords: ["brief", "acceptance", "boundary", "risk", "委托", "验收"],
+      guideWords: ["brief", "acceptance", "risk", "delivery", "委托"],
+      breakPoint:
+        "Agent 委托不够可执行：背景、边界、验收或风险没有写到可以直接交付的程度。",
+      nextAction:
+        "把任务改成背景、目标、范围约束、验收命令、浏览器路径和风险回滚六段。",
+    },
+    {
+      keywords: ["diff", "delivery", "review", "mobile", "文档", "交付"],
+      guideWords: ["diff", "delivery", "mobile", "doc", "交付"],
+      breakPoint:
+        "交付审查还没过庭：Diff 范围、回归测试、移动端或文档同步仍有缺口。",
+      nextAction: "先拒收缺证据的交付说明，要求补齐风险边界和可复跑验收记录。",
+    },
+    {
+      keywords: ["env", "backup", "rollback", "smoke", "release", "上线"],
+      guideWords: ["env", "backup", "rollback", "smoke", "上线"],
+      breakPoint:
+        "上线前门禁还没闭合：配置、备份、冒烟、监控或回滚没有形成清单。",
+      nextAction:
+        "补齐上线检查清单，并证明 390px/桌面冒烟、备份恢复和回滚条件都可执行。",
+    },
+    {
+      keywords: ["star", "interview", "复盘", "面试", "verification"],
+      guideWords: ["star", "interview", "incident", "tradeoff", "面试"],
+      breakPoint:
+        "面试素材还没成形：现象、行动、验证、取舍和成长证据没有连成一个可讲故事。",
+      nextAction:
+        "用 STAR 重写答案，把证据和结果说具体，再准备一个追问时能展开的技术取舍。",
+    },
+  ];
+
+  const matchedRule = keywordRules.find((rule) =>
+    rule.keywords.some((keyword) => clueText.includes(keyword.toLowerCase())),
+  );
+
+  if (!matchedRule) {
+    return fallback;
+  }
+
+  const guide = pickArtifactGuide(config, matchedRule.guideWords);
+
+  return {
+    breakPoint: matchedRule.breakPoint,
+    material: guide ? `${guide.place}：${guide.focus}` : fallback.material,
+    nextAction: matchedRule.nextAction,
+  };
+}
 
 const labConfigs: Record<string, LabConfig> = {
   [SCENARIO_ID]: {
@@ -282,12 +1093,31 @@ const labConfigs: Record<string, LabConfig> = {
         label: "任务委托",
         icon: CircleDot,
         kind: "baseline",
+        scene: {
+          location: "记忆档案馆 · 委托长桌",
+          image: questArchive,
+          portrait: archiveKeeperPortrait,
+          actor: "档案馆记录员",
+          mood: "旧代码像一封失踪信，桌面上只剩一次绿色成功提示。",
+          objective: "领取委托，先确认本关要追的是一次保存请求的完整旅行路线。",
+          reward: "解锁第一份案件卷宗",
+        },
       },
       {
         id: "inspect-evidence",
         label: "读取项目材料",
         icon: Search,
         kind: "response",
+        scene: {
+          location: "前端讯号窗 · 保存按钮旁",
+          image: questWorkbench,
+          portrait: portalScribePortrait,
+          actor: "传送门书记官",
+          mood: "按钮亮起绿色回声，但书记官提醒你：光亮不是数据库收据。",
+          objective:
+            "只盯 fetch、response.ok 和 saved 状态，判断前端到底证明了什么。",
+          reward: "获得关键代码读法",
+        },
         response: {
           title: "阶段 02 · 项目材料",
           prompt: "先看这一棒在流程里的位置，再提出故障假设",
@@ -303,6 +1133,16 @@ const labConfigs: Record<string, LabConfig> = {
         label: "还原数据流",
         icon: Network,
         kind: "response",
+        scene: {
+          location: "请求中转门 · 后端接口前厅",
+          image: questPortal,
+          portrait: apiClerkPortrait,
+          actor: "接口接待员",
+          mood: "每个请求都要盖章转交，少一个印记，线索就会在走廊里消失。",
+          objective:
+            "把用户、前端、HTTP、路由、数据访问层和 SQLite 串成一条证据链。",
+          reward: "点亮数据流地图",
+        },
         response: {
           title: "阶段 03 · 数据流",
           prompt: "还原保存请求的完整路径，并标出证据断点",
@@ -319,12 +1159,31 @@ const labConfigs: Record<string, LabConfig> = {
         label: "沙盒修复与测试",
         icon: TerminalSquare,
         kind: "verification",
+        scene: {
+          location: "持久化熔炉 · SQLite 工位",
+          image: idempotencyForgeScene,
+          portrait: echoForensicsPortrait,
+          actor: "回声取证官",
+          mood: "熔炉只承认可重复验证的副作用：写进去，刷新后还在。",
+          objective: "用测试报告和手动路径证明修复真的产生数据库副作用。",
+          reward: "获得工程闭环印记",
+        },
       },
       {
         id: "agent-brief",
         label: "给 Agent 写任务",
         icon: FileCode2,
         kind: "response",
+        scene: {
+          location: "任务锻造间 · Brief 台",
+          image: agentBriefForgeScene,
+          portrait: briefForgemasterPortrait,
+          actor: "任务锻造师",
+          mood: "一份模糊愿望会烧坏锻炉，一份清晰任务能让 Agent 停在正确边界。",
+          objective:
+            "把背景、目标、约束、验收和风险写成 Agent 可以执行的委托。",
+          reward: "解锁协作委托模板",
+        },
         response: {
           title: "阶段 05 · 协作能力",
           prompt: "给 Agent 写一份可以直接执行和验收的修复任务",
@@ -340,6 +1199,15 @@ const labConfigs: Record<string, LabConfig> = {
         label: "审查交付说明",
         icon: ShieldCheck,
         kind: "response",
+        scene: {
+          location: "交付审判庭 · Diff 证据席",
+          image: deliveryReviewCourtScene,
+          portrait: deliveryJudgePortrait,
+          actor: "交付审判官",
+          mood: "漂亮总结不算证据，审判庭只听测试、Diff、回归风险和边界条件。",
+          objective: "识别交付说明里哪些证据有效、哪些还不能证明修复成立。",
+          reward: "获得交付审查眼",
+        },
         response: {
           title: "阶段 06 · 交付审查",
           prompt: "审查 Agent 的交付说明：哪些证据无效或缺失？",
@@ -354,6 +1222,15 @@ const labConfigs: Record<string, LabConfig> = {
         label: "解释故障因果",
         icon: Lightbulb,
         kind: "response",
+        scene: {
+          location: "回声画廊 · 因果镜前",
+          image: memoryEchoGalleryScene,
+          portrait: mirrorEditorPortrait,
+          actor: "镜面编辑师",
+          mood: "镜子会把绿色提示和数据库事实分开，让你看见真正的断层。",
+          objective: "讲清成功提示从哪里来、刷新数据从哪里来、为什么修复有效。",
+          reward: "获得故障因果复述",
+        },
         response: {
           title: "阶段 07 · 因果解释",
           prompt: "不用背术语，解释故障为什么发生、修复为什么有效",
@@ -373,6 +1250,16 @@ const labConfigs: Record<string, LabConfig> = {
         label: "面试迁移题",
         icon: FlaskConical,
         kind: "response",
+        scene: {
+          location: "面试议事厅 · 迁移试炼门",
+          image: interviewDefenseHallScene,
+          portrait: interviewCouncilorPortrait,
+          actor: "面试策士",
+          mood: "同一种能力会换皮出题：保存画布、上传头像、更新资料，本质都要找真实副作用。",
+          objective:
+            "把本关证据链迁移到头像上传场景，组织成面试可讲的定位思路。",
+          reward: "生成项目复盘素材",
+        },
         response: {
           title: "阶段 08 · 面试迁移题",
           prompt:
@@ -456,6 +1343,432 @@ const labConfigs: Record<string, LabConfig> = {
         keyLines: ["改了哪里", "如何验证", "还有什么风险"],
         proves: "交付说明可以作为审查入口。",
         cannotProve: "说明写得好不代表行为真的修好了，仍要看测试和证据。",
+      },
+    },
+  },
+  [JAVA_SCENARIO_ID]: {
+    scenarioId: JAVA_SCENARIO_ID,
+    missionLabel: "Java 后端 · 第 1 关",
+    missionTitle: "分层服务塔",
+    duration: "45-75 分钟 · 产出后端排障复盘",
+    backgroundImage: questWorkbench,
+    flowAriaLabel: "Java 请求分层路线",
+    flowEyebrow: "固定路线",
+    flowTitle: "一个请求为什么要经过 Controller、Service 和 Repository",
+    flowItems: [
+      {
+        label: "客户端",
+        title: "发出请求",
+        detail: "带着 userId 和查看者身份进入服务",
+      },
+      {
+        label: "Controller",
+        title: "接住请求",
+        detail: "负责协议、参数和响应格式",
+      },
+      { label: "Service", title: "执行规则", detail: "负责权限与业务判断" },
+      { label: "Repository", title: "访问数据", detail: "只负责把数据取出来" },
+      {
+        label: "面试表达",
+        title: "讲清取舍",
+        detail: "说明分层如何降低修改风险",
+      },
+    ],
+    baseline: {
+      label: "Java 后端委托已领取",
+      title: "先画出请求经过的每一棒",
+      body: "这不是背三个名词，而是追踪一份请求交给了谁、谁做了什么判断、下一棒拿到了什么结果。",
+      action: "进入后端现场",
+    },
+    practical: {
+      title: "在独立 Java 沙盒里修正分层职责",
+      sandboxPath: "sandbox/java-layered-request",
+      statusPassed:
+        "测试证明 Controller 已把业务判断交给 Service，分层边界成立。",
+      statusFailed:
+        "先看失败测试：它会告诉你 Controller 是否绕过 Service 直接查库。",
+    },
+    result: {
+      label: "后端分层闭环通过 · 成长档案已更新",
+      title: "你已经能解释一次请求的责任接力",
+      body: (hintLevel) =>
+        `测试证明分层行为成立；系统记录了你的证据链和解释。提示依赖等级为 L${hintLevel >= 3 ? "1" : "2"}，下一步要在事务、缓存或线上排障场景迁移。`,
+      proved: "Controller、Service、Repository 的职责边界",
+      recorded: "请求流、代码证据、修复测试和面试表达",
+      pending: "换一个后端故障场景独立定位",
+      nextTitle: "这关如何变成工作能力？",
+      nextItems: [
+        "看到接口异常时，先判断是哪一层违反了责任边界。",
+        "把“谁收请求、谁做业务判断、谁查数据”讲成一条证据链。",
+        "面试中说明分层不是形式，而是让规则变化更容易测试和回滚。",
+      ],
+    },
+    hints: [
+      "Controller 像前台：负责接待和格式，不应该替 Service 做权限决定。",
+      "对照 UserController.java 和 UserService.java：查看者不是本人时，哪一层会拒绝请求？",
+      "测试先红后绿：修复目标是让 Controller 调用 userService.findUser，而不是直接调用 userRepository。",
+    ],
+    verificationStepId: "practical-fix",
+    requiredResponseStepIds: [
+      "inspect-evidence",
+      "trace-flow",
+      "agent-brief",
+      "delivery-review",
+      "causal-explanation",
+      "interview-dossier",
+    ],
+    steps: [
+      {
+        id: "baseline-plan",
+        label: "任务委托",
+        icon: CircleDot,
+        kind: "baseline",
+      },
+      {
+        id: "inspect-evidence",
+        label: "读懂后端材料",
+        icon: Search,
+        kind: "response",
+        response: {
+          title: "阶段 02 · 后端现场",
+          prompt:
+            "先说清每一层负责什么，再提出 Controller 绕过 Service 的故障假设",
+          placeholder:
+            "Controller 负责……Service 负责……Repository 负责……我怀疑……因为……",
+          minimum: 60,
+          instruction:
+            "至少引用 UserController.java、UserService.java 或测试结果中的两份证据。",
+        },
+      },
+      {
+        id: "trace-flow",
+        label: "还原请求接力",
+        icon: Network,
+        kind: "response",
+        response: {
+          title: "阶段 03 · 请求流",
+          prompt:
+            "还原 userId 从请求进入到数据返回的路径，并标出权限判断发生在哪里",
+          placeholder:
+            "客户端 → Controller → Service → Repository → 数据库；每一棒交给下一棒……",
+          minimum: 70,
+          instruction: "不要只列名词，要写清上一棒把什么交给下一棒。",
+          flowStrip: ["请求", "Controller", "Service", "Repository", "数据库"],
+        },
+      },
+      {
+        id: "practical-fix",
+        label: "沙盒修复与测试",
+        icon: TerminalSquare,
+        kind: "verification",
+      },
+      {
+        id: "agent-brief",
+        label: "给 Agent 写任务",
+        icon: FileCode2,
+        kind: "response",
+        response: {
+          title: "阶段 05 · 协作能力",
+          prompt: "给 Agent 写一份只修改分层职责、可直接验收的 Java 修复任务",
+          placeholder: "现象……证据……允许修改……不得修改……验收命令……风险……",
+          minimum: 100,
+          instruction:
+            "必须写出 sandbox/java-layered-request 下的测试命令和禁止绕过 Service 的边界。",
+        },
+      },
+      {
+        id: "delivery-review",
+        label: "审查交付说明",
+        icon: ShieldCheck,
+        kind: "response",
+        response: {
+          title: "阶段 06 · 交付审查",
+          prompt: "判断一份 Java 修复交付说明是否真的证明了分层边界",
+          placeholder: "编译通过只能证明……测试还必须证明……代码审查还要看……",
+          minimum: 80,
+          artifactIds: ["delivery"],
+        },
+      },
+      {
+        id: "causal-explanation",
+        label: "解释故障因果",
+        icon: Lightbulb,
+        kind: "response",
+        response: {
+          title: "阶段 07 · 因果解释",
+          prompt: "不用背术语，解释 Controller 直接查库为什么会让权限规则失效",
+          placeholder: "原来请求从……直接到……所以……；修复后交给……因此……",
+          minimum: 100,
+          rubricItems: [
+            "职责边界",
+            "权限判断位置",
+            "直接查库的风险",
+            "测试如何证明修复",
+          ],
+        },
+      },
+      {
+        id: "interview-dossier",
+        label: "后端面试复盘",
+        icon: FlaskConical,
+        kind: "response",
+        response: {
+          title: "阶段 08 · 面试迁移题",
+          prompt:
+            "面试官问：为什么不让 Controller 直接调用 Repository？请用项目证据回答",
+          placeholder: "在这个项目里……我通过……发现……这样分层的取舍是……",
+          minimum: 80,
+          warning: {
+            title: "把名词变成证据",
+            body: "面试不是背 Controller-Service-Repository，而是说明每一层的责任和违反边界后的真实后果。",
+          },
+        },
+      },
+    ],
+    artifactGuides: {
+      controller: {
+        place: "Controller 现场",
+        focus: "只看请求参数、Service 调用和响应格式。",
+        keyLines: ["getUser(userId, viewerId)", "userService.findUser(...)"],
+        proves: "Controller 是否把业务判断交给 Service。",
+        cannotProve: "不能单靠代码说明真实测试已通过。",
+      },
+      service: {
+        place: "Service 规则室",
+        focus: "只看查看者身份校验和 Repository 调用。",
+        keyLines: [
+          "viewerId.equals(userId)",
+          "userRepository.findById(userId)",
+        ],
+        proves: "权限规则是否集中在业务层。",
+        cannotProve: "不能证明 Controller 没有绕过它。",
+      },
+      repository: {
+        place: "Repository 数据门",
+        focus: "只看数据访问接口，不让它承担权限判断。",
+        keyLines: ["findById(userId)"],
+        proves: "数据访问边界。",
+        cannotProve: "接口存在不代表调用路径正确。",
+      },
+      network: {
+        place: "请求证据",
+        focus: "把 userId、viewerId 和响应结果对齐。",
+        keyLines: ["GET /users/{id}", "403 Forbidden", "200 OK"],
+        proves: "不同身份应得到不同结果。",
+        cannotProve: "单个成功响应不能证明权限覆盖完整。",
+      },
+      logs: {
+        place: "后端日志",
+        focus: "看请求进入哪一层以及拒绝原因。",
+        keyLines: ["requestId", "permission denied"],
+        proves: "排查路径。",
+        cannotProve: "日志本身不能代替测试。",
+      },
+      database: {
+        place: "数据库结构",
+        focus: "确认数据查询是 Repository 的职责。",
+        keyLines: ["users", "SELECT"],
+        proves: "数据源位置。",
+        cannotProve: "数据库有数据不代表业务规则正确。",
+      },
+      delivery: {
+        place: "Agent 交付说明",
+        focus: "看它是否写出修改边界和测试证据。",
+        keyLines: ["npm test", "Controller", "Service"],
+        proves: "交付可审查。",
+        cannotProve: "文字说明不能替代红绿测试。",
+      },
+    },
+  },
+  [FRONTEND_SCENARIO_ID]: {
+    scenarioId: FRONTEND_SCENARIO_ID,
+    missionLabel: "前端工程 · 第 1 关",
+    missionTitle: "组件剧场",
+    duration: "35-60 分钟 · 产出前端排障复盘",
+    backgroundImage: memoryEchoGalleryScene,
+    flowAriaLabel: "前端状态渲染路线",
+    flowEyebrow: "组件状态路线",
+    flowTitle: "一次点击怎样变成正确的页面反馈",
+    flowItems: [
+      { label: "用户", title: "点击加载", detail: "发出一次交互事件" },
+      { label: "组件", title: "保存状态", detail: "先进入 loading" },
+      { label: "请求", title: "返回结果", detail: "response.ok 决定下一步" },
+      { label: "渲染", title: "更新画面", detail: "成功或失败都要可见" },
+      { label: "面试表达", title: "讲清取舍", detail: "说明状态所有者和证据" },
+    ],
+    baseline: {
+      label: "前端工程委托已领取",
+      title: "先跟住一盏状态灯",
+      body: "这一关不先背 React API，而是观察用户点击、请求返回和页面反馈之间谁先发生、谁应该决定下一步。",
+      action: "进入组件剧场",
+    },
+    practical: {
+      title: "在独立前端沙盒里修正状态流",
+      sandboxPath: "sandbox/frontend-component-state",
+      statusPassed: "测试证明 loading、success、error 都由同一条请求结果驱动。",
+      statusFailed:
+        "先看失败报告：它会指出成功提前亮灯、失败不可见或状态来源重复的问题。",
+    },
+    result: {
+      label: "组件状态闭环通过 · 成长档案已更新",
+      title: "你已经能解释一次交互为什么正确渲染",
+      body: (hintLevel) =>
+        `测试证明页面反馈和请求结果对齐；系统记录了你的状态流和解释。提示依赖等级为 L${hintLevel >= 3 ? "1" : "2"}。`,
+      proved: "组件状态所有者、请求结果和可见反馈一致",
+      recorded: "组件树、交互证据、成功/失败路径和面试表达",
+      pending: "换一个请求错误或性能场景继续迁移",
+      nextTitle: "这关如何变成工作能力？",
+      nextItems: [
+        "遇到页面乱跳时，先找状态来源和更新顺序。",
+        "用 Network 和浏览器日志证明页面为什么显示了这个状态。",
+        "面试中说明状态边界如何降低组件之间互相覆盖的风险。",
+      ],
+    },
+    hints: [
+      "点击发生时只能证明用户开始了动作，不能证明请求成功。",
+      "把 loading、success、error 放回同一条时间线，比较它们和 response.ok 的先后。",
+      "测试目标是让 ProfilePanel 根据请求结果渲染，并让 503 失败对用户可见。",
+    ],
+    verificationStepId: "practical-fix",
+    requiredResponseStepIds: [
+      "inspect-evidence",
+      "trace-render-flow",
+      "agent-brief",
+      "delivery-review",
+      "causal-explanation",
+      "interview-dossier",
+    ],
+    steps: [
+      {
+        id: "baseline-plan",
+        label: "任务委托",
+        icon: CircleDot,
+        kind: "baseline",
+      },
+      {
+        id: "inspect-evidence",
+        label: "读懂组件材料",
+        icon: Search,
+        kind: "response",
+        response: {
+          title: "阶段 02 · 组件现场",
+          prompt: "先说清用户点击、状态、请求和渲染分别负责什么",
+          placeholder: "用户点击……组件状态……Network 返回……页面应该……",
+          minimum: 60,
+          instruction:
+            "至少引用 ProfilePanel.jsx 和 network.json 或 browser.log 两份证据。",
+        },
+      },
+      {
+        id: "trace-render-flow",
+        label: "还原渲染接力",
+        icon: Network,
+        kind: "response",
+        response: {
+          title: "阶段 03 · 状态流",
+          prompt:
+            "还原一次点击从 loading 到 success/error 的路径，并标出状态由谁拥有",
+          placeholder:
+            "点击 → loading → 请求返回……→ success/error → 页面渲染……",
+          minimum: 70,
+          instruction: "不要只列名词，要写清哪份结果触发下一次渲染。",
+          flowStrip: ["点击", "状态", "请求", "结果", "渲染"],
+        },
+      },
+      {
+        id: "practical-fix",
+        label: "沙盒修复与测试",
+        icon: TerminalSquare,
+        kind: "verification",
+      },
+      {
+        id: "agent-brief",
+        label: "给 Agent 写任务",
+        icon: FileCode2,
+        kind: "response",
+        response: {
+          title: "阶段 05 · 协作能力",
+          prompt:
+            "给 Agent 写一份只修改 ProfilePanel 状态流、可直接验收的前端修复任务",
+          placeholder: "现象……证据……允许修改……不得修改……验收命令……风险……",
+          minimum: 100,
+          instruction:
+            "必须写出 sandbox/frontend-component-state 下的测试命令和成功/失败验收边界。",
+        },
+      },
+      {
+        id: "delivery-review",
+        label: "审查交付说明",
+        icon: ShieldCheck,
+        kind: "response",
+        response: {
+          title: "阶段 06 · 交付审查",
+          prompt: "判断一份前端状态修复说明是否真的覆盖了失败路径",
+          placeholder: "交互测试证明……Network 证明……503 时……代码审查还要看……",
+          minimum: 80,
+          artifactIds: ["delivery"],
+        },
+      },
+      {
+        id: "causal-explanation",
+        label: "解释故障因果",
+        icon: Lightbulb,
+        kind: "response",
+        response: {
+          title: "阶段 07 · 因果解释",
+          prompt: "解释为什么提前设置 success 会让用户误判",
+          placeholder: "因为点击时……请求还没有……所以失败时……修复后……",
+          minimum: 80,
+          instruction: "必须同时提到时间顺序、response.ok 和用户可见反馈。",
+        },
+      },
+      {
+        id: "interview-dossier",
+        label: "面试复盘",
+        icon: BookOpen,
+        kind: "response",
+        response: {
+          title: "阶段 08 · 前端面试复盘",
+          prompt: "把这次组件状态故障讲成现象、证据、修改、验证和取舍",
+          placeholder: "我遇到……通过……发现……我修改……用……验证……",
+          minimum: 100,
+          instruction: "说清状态所有者、成功/失败两条路径和仍未覆盖的风险。",
+        },
+      },
+    ],
+    artifactGuides: {
+      component: {
+        place: "组件剧场 · ProfilePanel.jsx",
+        focus: "只看 load 函数里状态更新和 await 的先后顺序。",
+        keyLines: [
+          "setStatus",
+          "await loadProfile",
+          "response.ok",
+          "aria-live",
+        ],
+        proves: "组件状态流的关键代码。",
+        cannotProve: "静态代码不能替代成功/失败交互测试。",
+      },
+      network: {
+        place: "Network 交互记录",
+        focus: "比较 200 和 503 两条结果对应的页面状态。",
+        keyLines: ["GET /api/profile/me", "200", "503"],
+        proves: "请求结果发生了什么。",
+        cannotProve: "Network 不能单独证明页面是否正确展示。",
+      },
+      console: {
+        place: "浏览器日志",
+        focus: "看 success 是否早于 response=503 出现。",
+        keyLines: ["visibleStatus", "response", "userMessage"],
+        proves: "状态变化的时间顺序。",
+        cannotProve: "日志不能替代用户可见的错误提示。",
+      },
+      delivery: {
+        place: "Agent 交付说明",
+        focus: "看它是否写出成功和失败两条验收路径。",
+        keyLines: ["npm test", "503", "aria-live"],
+        proves: "交付可审查。",
+        cannotProve: "说明不能替代真实交互测试。",
       },
     },
   },
@@ -697,7 +2010,7 @@ const labConfigs: Record<string, LabConfig> = {
     missionLabel: "主线 1-3 · AI 应用开发",
     missionTitle: "身份回廊",
     duration: "45-90 分钟 · 产出登录态排障复盘",
-    backgroundImage: questPortal,
+    backgroundImage: identityCorridorScene,
     flowAriaLabel: "登录态从登录到刷新恢复的路线",
     flowEyebrow: "本关路线",
     flowTitle: "登录成功以后，身份凭证要交给谁保管",
@@ -974,7 +2287,7 @@ const labConfigs: Record<string, LabConfig> = {
     missionLabel: "主线 1-4 · AI 应用开发",
     missionTitle: "接口审判庭",
     duration: "45-90 分钟 · 产出接口失败定位复盘",
-    backgroundImage: questArchive,
+    backgroundImage: apiErrorCourtScene,
     flowAriaLabel: "接口错误从请求体到日志的路线",
     flowEyebrow: "本关路线",
     flowTitle: "红色状态码背后，谁的证词不完整",
@@ -1232,7 +2545,7 @@ const labConfigs: Record<string, LabConfig> = {
     missionLabel: "主线 1-5 · AI 应用开发",
     missionTitle: "一致性熔炉",
     duration: "45-90 分钟 · 产出数据一致性复盘",
-    backgroundImage: questWorkbench,
+    backgroundImage: idempotencyForgeScene,
     flowAriaLabel: "重复提交从按钮到数据库的路线",
     flowEyebrow: "本关路线",
     flowTitle: "同一份草稿为什么被锻造成多份记录",
@@ -1509,7 +2822,7 @@ const labConfigs: Record<string, LabConfig> = {
     missionLabel: "主线 1-6 · AI 应用开发",
     missionTitle: "慢速迷雾",
     duration: "45-90 分钟 · 产出性能瓶颈复盘",
-    backgroundImage: questStage,
+    backgroundImage: performanceObservatoryScene,
     flowAriaLabel: "页面变慢从打开页面到缓存复测的路线",
     flowEyebrow: "本关路线",
     flowTitle: "用户说慢的时候，时间到底花在了哪一段",
@@ -1796,7 +3109,7 @@ const labConfigs: Record<string, LabConfig> = {
     missionLabel: "主线 1-7 · AI 应用开发",
     missionTitle: "密钥金库",
     duration: "45-90 分钟 · 产出 AI API 安全接入复盘",
-    backgroundImage: questPortal,
+    backgroundImage: modelKeyForgeScene,
     flowAriaLabel: "AI 请求从用户输入到模型返回的安全路线",
     flowEyebrow: "本关路线",
     flowTitle: "模型熔炉要点火，但钥匙不能出现在舞台上",
@@ -2099,7 +3412,7 @@ const labConfigs: Record<string, LabConfig> = {
     missionLabel: "主线 1-8 · AI 应用开发",
     missionTitle: "幻觉镜厅",
     duration: "45-90 分钟 · 产出可验证 AI 输出复盘",
-    backgroundImage: questArchive,
+    backgroundImage: hallucinationMirrorScene,
     flowAriaLabel: "AI 回答从用户问题到引用校验的可验证路线",
     flowEyebrow: "本关路线",
     flowTitle: "镜子说得再顺，也要能指出每句话来自哪份资料",
@@ -2400,7 +3713,7 @@ const labConfigs: Record<string, LabConfig> = {
     missionLabel: "主线 1-9 · AI 应用开发",
     missionTitle: "知识迷宫",
     duration: "45-90 分钟 · 产出 RAG 检索证据复盘",
-    backgroundImage: questArchive,
+    backgroundImage: ragKnowledgeMazeScene,
     flowAriaLabel: "RAG 资料从文档进入回答的证据路线",
     flowEyebrow: "本关路线",
     flowTitle: "AI 不是凭空知道资料，它要先在迷宫里找到正确书页",
@@ -2701,7 +4014,7 @@ const labConfigs: Record<string, LabConfig> = {
     missionLabel: "主线 1-10 · AI 应用开发",
     missionTitle: "工具契约大厅",
     duration: "45-90 分钟 · 产出 Agent 工具边界复盘",
-    backgroundImage: questPortal,
+    backgroundImage: agentToolContractHallScene,
     flowAriaLabel: "Agent 工具从计划到受控执行的安全路线",
     flowEyebrow: "本关路线",
     flowTitle: "副官能开门，但每把钥匙都要登记、校验和审计",
@@ -3032,7 +4345,7 @@ const labConfigs: Record<string, LabConfig> = {
     missionLabel: "主线 1-11 · AI 应用开发",
     missionTitle: "验收试炼场",
     duration: "45-90 分钟 · 产出可信验收证据",
-    backgroundImage: questStage,
+    backgroundImage: verificationTrialArenaScene,
     flowAriaLabel: "可信验收从旧故障到交付审查的证据路线",
     flowEyebrow: "本关路线",
     flowTitle: "试炼官不听口头承诺，只看复现、测试、手动报告和风险",
@@ -3344,7 +4657,7 @@ const labConfigs: Record<string, LabConfig> = {
     missionLabel: "主线 1-12 · AI 应用开发",
     missionTitle: "委托书工坊",
     duration: "45-90 分钟 · 产出可执行 Agent 任务",
-    backgroundImage: questWorkbench,
+    backgroundImage: agentBriefForgeScene,
     flowAriaLabel: "Agent 委托从现场到交付格式的任务路线",
     flowEyebrow: "本关路线",
     flowTitle: "锻造师不收“你看着办”，只收有证据、有边界、有验收的委托书",
@@ -3661,7 +4974,7 @@ const labConfigs: Record<string, LabConfig> = {
     missionLabel: "主线 1-13 · AI 应用开发",
     missionTitle: "交付审查庭",
     duration: "45-90 分钟 · 产出可信交付审查",
-    backgroundImage: questArchive,
+    backgroundImage: deliveryReviewCourtScene,
     flowAriaLabel: "Agent 交付从说明到接收决定的审查路线",
     flowEyebrow: "本关路线",
     flowTitle: "审查官不看漂亮话，只看 Diff、测试、浏览器边界和文档证据",
@@ -3945,7 +5258,7 @@ const labConfigs: Record<string, LabConfig> = {
     missionLabel: "主线 1-14 · AI 应用开发",
     missionTitle: "上线城门",
     duration: "45-90 分钟 · 产出上线检查清单",
-    backgroundImage: questPortal,
+    backgroundImage: releaseReadinessGateScene,
     flowAriaLabel: "从交付审查到可回滚上线的门禁路线",
     flowEyebrow: "本关路线",
     flowTitle: "守门人不看构建绿灯，只看计划、配置、备份、冒烟、监控和回滚",
@@ -4267,7 +5580,7 @@ const labConfigs: Record<string, LabConfig> = {
     missionLabel: "主线 1-15 · AI 应用开发",
     missionTitle: "终章答辩厅",
     duration: "45-90 分钟 · 产出面试答辩作品集",
-    backgroundImage: questStage,
+    backgroundImage: interviewDefenseHallScene,
     flowAriaLabel: "从关卡证据到可追问面试回答的答辩路线",
     flowEyebrow: "本关路线",
     flowTitle:
@@ -4573,7 +5886,328 @@ const labConfigs: Record<string, LabConfig> = {
   },
 };
 
-function getLabConfig(scenarioId: string) {
+labConfigs[FRONTEND_REQUEST_STATES_SCENARIO_ID] = {
+  ...labConfigs[FRONTEND_SCENARIO_ID],
+  scenarioId: FRONTEND_REQUEST_STATES_SCENARIO_ID,
+  missionLabel: "前端工程 · 第 2 关",
+  missionTitle: "表单传送厅",
+  duration: "35-60 分钟 · 产出请求状态排障复盘",
+  backgroundImage: questPortal,
+  flowAriaLabel: "前端请求状态路线",
+  flowEyebrow: "状态机路线",
+  flowTitle: "一次提交怎样从点击走到成功、失败或重试",
+  flowItems: [
+    { label: "用户", title: "提交申请", detail: "只发起动作，不宣布结果" },
+    { label: "组件", title: "进入 loading", detail: "阻止重复提交" },
+    { label: "接口", title: "返回结果", detail: "201、400、503 或超时" },
+    { label: "反馈", title: "告诉用户", detail: "成功、原因和下一步" },
+    { label: "复盘", title: "讲清取舍", detail: "用证据证明状态正确" },
+  ],
+  baseline: {
+    label: "前端错误反馈委托已领取",
+    title: "先让传送厅的灯说真话",
+    body: "点击只是请求开始。你要让页面等结果回来，再把 201、失败和超时翻译成用户能行动的反馈。",
+    action: "进入表单传送厅",
+  },
+  practical: {
+    title: "在独立前端沙盒里修正请求状态机",
+    sandboxPath: "sandbox/frontend-request-states",
+    statusPassed: "测试证明 loading、成功、失败和重复提交边界都被覆盖。",
+    statusFailed:
+      "先看失败报告：它会指出提前成功、错误不可见或重复提交的问题。",
+  },
+  result: {
+    label: "请求状态闭环通过 · 成长档案已更新",
+    title: "你已经能把接口结果翻译成用户下一步",
+    body: (hintLevel) =>
+      `测试证明页面没有替请求提前下结论；系统记录了成功、失败和重试证据。提示依赖等级为 L${hintLevel >= 3 ? "1" : "2"}。`,
+    proved: "请求状态机、错误反馈和重复提交边界",
+    recorded: "Network、浏览器日志、交互路径和面试表达",
+    pending: "换一个性能或可访问性场景继续迁移",
+    nextTitle: "这关如何变成工作能力？",
+    nextItems: [
+      "遇到页面乱跳时，先画出状态变化和触发它的真实证据。",
+      "用 201、400、503 和超时验证成功与失败路径，而不是只测 happy path。",
+      "面试中说明错误反馈不是装饰，而是接口契约翻译给用户的下一步。",
+    ],
+  },
+  hints: [
+    "点击只代表请求开始；先把状态切到 loading，再等待 submit() 返回。",
+    "对照 network.json：201 才能进入 success，503 和超时必须进入 error 并给出可读提示。",
+    "测试还要求按钮在 loading 时 disabled，并用 aria-live 让失败反馈可被感知。",
+  ],
+  artifactGuides: {
+    component: {
+      place: "表单传送厅 · SubmitPanel.jsx",
+      focus: "只看 handleSubmit 里状态更新与 await 的先后顺序。",
+      keyLines: ["setStatus", "await submit", "response.ok", "aria-live"],
+      proves: "组件是否等待真实结果再更新页面。",
+      cannotProve: "静态代码不能替代 201、503 和超时交互复测。",
+    },
+    network: {
+      place: "提交请求 Network",
+      focus: "比较 201、503 和超时各自应该触发什么反馈。",
+      keyLines: ["POST /api/applications", "201", "503", "timeout"],
+      proves: "服务端真实返回了什么。",
+      cannotProve: "Network 不能单独证明用户看见了正确提示。",
+    },
+    console: {
+      place: "浏览器日志",
+      focus: "看 visibleStatus 是否早于 response 发生。",
+      keyLines: ["visibleStatus", "response", "userMessage"],
+      proves: "状态变化的时间顺序。",
+      cannotProve: "日志不能替代键盘和读屏路径。",
+    },
+    delivery: {
+      place: "Agent 交付说明",
+      focus: "看交付是否写出状态矩阵与失败复测。",
+      keyLines: ["npm test", "503", "timeout", "aria-live"],
+      proves: "交付说明是否可审查。",
+      cannotProve: "说明不能替代红绿测试和浏览器操作。",
+    },
+  },
+};
+
+labConfigs[JAVA_TRANSACTION_SCENARIO_ID] = {
+  ...labConfigs[CASE05_SCENARIO_ID],
+  scenarioId: JAVA_TRANSACTION_SCENARIO_ID,
+  missionLabel: "Java 后端 · 第 2 关",
+  missionTitle: "事务熔炉",
+  duration: "45-75 分钟 · 产出事务一致性复盘",
+  backgroundImage: idempotencyForgeScene,
+  flowAriaLabel: "Java 事务一致性路线",
+  flowEyebrow: "事务边界路线",
+  flowTitle: "一次下单怎样保证订单和库存一起成功或一起回滚",
+  flowItems: [
+    { label: "请求", title: "发起下单", detail: "带着幂等键进入服务" },
+    { label: "Service", title: "开启事务", detail: "把核心写入放进同一边界" },
+    { label: "数据库", title: "写订单与库存", detail: "唯一约束防重复" },
+    { label: "异常", title: "提交或回滚", detail: "不留下半成品" },
+    { label: "复核", title: "查询与复测", detail: "用失败路径证明一致" },
+  ],
+  baseline: {
+    label: "Java 事务委托已领取",
+    title: "先查清熔炉里哪一半留下了",
+    body: "一次业务操作可能触碰多张表。你要找出谁开启事务、谁提交、哪里异常，以及数据库最终有没有留下半成品。",
+    action: "进入事务熔炉",
+  },
+  practical: {
+    title: "在独立后端沙盒里修正事务和幂等边界",
+    sandboxPath: "sandbox/java-transaction-consistency",
+    statusPassed: "测试证明重复请求不会重复写入，中途失败会回滚核心数据。",
+    statusFailed: "先看失败报告：它会指出重复记录、半成品数据或事务边界缺口。",
+  },
+  result: {
+    label: "事务一致性闭环通过 · 成长档案已更新",
+    title: "你已经能证明后端没有留下半成品",
+    body: (hintLevel) =>
+      `测试证明重复与中途失败都被覆盖；系统记录了数据库前后对比和失败复测。提示依赖等级为 L${hintLevel >= 3 ? "1" : "2"}。`,
+    proved: "幂等键、唯一约束、事务提交与回滚边界",
+    recorded: "Network、后端日志、数据库查询和面试表达",
+    pending: "换一个缓存或线上部署故障继续迁移",
+    nextTitle: "这关如何变成工作能力？",
+    nextItems: [
+      "看到重复数据时，先区分重复请求、服务端幂等和数据库唯一约束各自负责什么。",
+      "看到半成功状态时，用失败复现和数据库查询验证事务是否覆盖了全部核心写入。",
+      "面试中说明事务不是口号，要讲清边界、异常路径和复核证据。",
+    ],
+  },
+  hints: [
+    "先看两次请求是否共享同一个 Idempotency-Key，再看服务端是否把重复请求当成同一次业务动作。",
+    "数据库里订单有、库存没有，说明异常发生后没有把核心写入放在同一个回滚边界。",
+    "最终验收不能只看接口返回，要同时查记录数、库存变化和失败复测结果。",
+  ],
+  artifactGuides: {
+    frontend: {
+      place: "下单入口 · SaveDraftButton.jsx",
+      focus: "只看请求 id、幂等键和重复点击如何形成两次请求。",
+      keyLines: ["Idempotency-Key", "requestId", "POST"],
+      proves: "重复请求确实抵达了后端。",
+      cannotProve: "前端不能独自保证并发下数据库只有一份。",
+    },
+    repository: {
+      place: "事务熔炉 · draftRepository.js",
+      focus: "看查重、写入和异常处理是否在同一业务边界。",
+      keyLines: ["findByIdempotencyKey", "insert", "rollback"],
+      proves: "服务端如何处理重复与失败。",
+      cannotProve: "代码存在不等于失败路径真的复测过。",
+    },
+    "database-before": {
+      place: "事务前数据库",
+      focus: "记录订单、库存和唯一键的初始状态。",
+      keyLines: ["orders", "inventory", "count"],
+      proves: "复测前的基线。",
+      cannotProve: "不能证明后续写入是否完整。",
+    },
+    "database-after": {
+      place: "失败后数据库",
+      focus: "查订单和库存是否出现半成品或重复。",
+      keyLines: ["orders: 1", "inventory", "duplicate"],
+      proves: "最终数据是否一致。",
+      cannotProve: "查询结果不能单独说明是哪一行代码造成的。",
+    },
+    logs: {
+      place: "事务熔炉后端日志",
+      focus: "看 transaction begin、commit、rollback 和 requestId 的时间线。",
+      keyLines: ["BEGIN", "ROLLBACK", "requestId"],
+      proves: "运行时实际走了哪条异常路径。",
+      cannotProve: "日志不能替代数据库结果和测试。",
+    },
+    delivery: {
+      place: "Agent 交付说明",
+      focus: "看它是否写出重复请求、失败回滚和数据库验收。",
+      keyLines: ["npm test", "rollback", "SELECT count(*)"],
+      proves: "交付是否可审查。",
+      cannotProve: "说明不能替代真实失败复测。",
+    },
+  },
+};
+
+labConfigs[JAVA_CACHE_SCENARIO_ID] = {
+  ...labConfigs[CASE06_SCENARIO_ID],
+  scenarioId: JAVA_CACHE_SCENARIO_ID,
+  missionLabel: "Java 后端 · 第 3 关",
+  missionTitle: "缓存风廊",
+  duration: "45-75 分钟 · 产出缓存与观测复盘",
+  backgroundImage: performanceObservatoryScene,
+  flowAriaLabel: "Java 缓存观测路线",
+  flowEyebrow: "缓存与可观测性",
+  flowTitle: "用户读到旧数据时，怎样判断缓存、数据库还是异步任务的问题",
+  practical: {
+    title: "在独立后端沙盒里修正缓存读取与复测边界",
+    sandboxPath: "sandbox/java-cache-observability",
+    statusPassed: "测试证明缓存命中、失效和复测时间线有可解释证据。",
+    statusFailed: "先看失败报告：它会指出缓存旧、日志缺失或复测没有证明收敛。",
+  },
+  result: {
+    ...labConfigs[CASE06_SCENARIO_ID].result,
+    label: "缓存观测闭环通过 · 成长档案已更新",
+    title: "你已经能用时间线解释旧数据",
+  },
+};
+
+labConfigs[FRONTEND_PERFORMANCE_SCENARIO_ID] = {
+  ...labConfigs[CASE06_SCENARIO_ID],
+  scenarioId: FRONTEND_PERFORMANCE_SCENARIO_ID,
+  missionLabel: "前端工程 · 第 3 关",
+  missionTitle: "首屏观测塔",
+  duration: "45-75 分钟 · 产出性能排障复盘",
+  backgroundImage: performanceObservatoryScene,
+  flowAriaLabel: "前端首屏性能路线",
+  flowEyebrow: "性能证据路线",
+  flowTitle: "页面变慢时，如何证明慢在资源、接口还是渲染",
+  practical: {
+    title: "在独立前端沙盒里修正性能证据与渲染边界",
+    sandboxPath: "sandbox/frontend-performance-proof",
+    statusPassed: "测试证明资源、接口和渲染瓶颈都有可复测的证据。",
+    statusFailed:
+      "先看失败报告：它会指出性能基线、缓存复测或渲染边界缺在哪里。",
+  },
+  result: {
+    ...labConfigs[CASE06_SCENARIO_ID].result,
+    label: "首屏观测闭环通过 · 成长档案已更新",
+    title: "你已经能用证据定位页面变慢",
+  },
+};
+
+labConfigs[JAVA_RELEASE_SCENARIO_ID] = {
+  ...labConfigs[CASE14_SCENARIO_ID],
+  scenarioId: JAVA_RELEASE_SCENARIO_ID,
+  missionLabel: "Java 后端 · 第 4 关",
+  missionTitle: "上线港",
+  duration: "45-75 分钟 · 产出上线检查与回滚复盘",
+  backgroundImage: releaseReadinessGateScene,
+  flowAriaLabel: "Java 服务上线路线",
+  flowEyebrow: "上线可控路线",
+  flowTitle: "一个 Java 服务怎样做到可发现、可恢复、可回滚",
+  practical: {
+    title: "在独立后端沙盒里补齐上线门禁",
+    sandboxPath: "sandbox/java-release-harbor",
+    statusPassed: "测试证明配置、健康检查、备份、监控和回滚条件都可验收。",
+    statusFailed: "先看失败报告：它会指出上线前哪一道门没有真正挡住风险。",
+  },
+  result: {
+    ...labConfigs[CASE14_SCENARIO_ID].result,
+    label: "上线港门禁通过 · 成长档案已更新",
+    title: "你已经能把部署成功和可控上线区分开",
+  },
+};
+
+labConfigs[JAVA_INCIDENT_SCENARIO_ID] = {
+  ...labConfigs[CASE14_SCENARIO_ID],
+  scenarioId: JAVA_INCIDENT_SCENARIO_ID,
+  missionLabel: "Java 后端 · 第 5 关",
+  missionTitle: "事故回声塔",
+  duration: "45-75 分钟 · 产出线上故障复盘",
+  backgroundImage: signalStormDispatchTowerScene,
+  flowAriaLabel: "Java 线上故障路线",
+  flowEyebrow: "事故证据路线",
+  flowTitle: "线上故障怎样从报警、日志走到止血与回滚",
+  practical: {
+    title: "在独立后端沙盒里整理事故时间线并补齐回滚证据",
+    sandboxPath: "sandbox/java-production-incident",
+    statusPassed: "测试证明报警、日志、回滚和恢复后的复测证据都齐了。",
+    statusFailed: "先看失败报告：它会指出事故时间线或回滚验收缺在哪里。",
+  },
+  result: {
+    ...labConfigs[CASE14_SCENARIO_ID].result,
+    label: "事故回声闭环通过 · 成长档案已更新",
+    title: "你已经能把线上故障讲成可复核的证据链",
+  },
+};
+
+labConfigs[FRONTEND_ACCESSIBILITY_SCENARIO_ID] = {
+  ...labConfigs[CASE14_SCENARIO_ID],
+  scenarioId: FRONTEND_ACCESSIBILITY_SCENARIO_ID,
+  missionLabel: "前端工程 · 第 4 关",
+  missionTitle: "无障碍交付庭",
+  duration: "45-75 分钟 · 产出前端交付审查复盘",
+  backgroundImage: deliveryReviewCourtScene,
+  flowAriaLabel: "前端无障碍交付路线",
+  flowEyebrow: "完整交付路线",
+  flowTitle: "一张好看的页面怎样变成更多用户都能完成的产品",
+  practical: {
+    title: "在独立前端沙盒里补齐语义、键盘和移动端验收",
+    sandboxPath: "sandbox/frontend-accessibility-proof",
+    statusPassed: "测试证明语义、键盘、错误反馈、移动端和回归证据都已覆盖。",
+    statusFailed:
+      "先看失败报告：它会指出只有鼠标能走、提示不可感知或移动端溢出的边界。",
+  },
+  result: {
+    ...labConfigs[CASE14_SCENARIO_ID].result,
+    label: "无障碍交付闭环通过 · 成长档案已更新",
+    title: "你已经能审查一份完整前端交付",
+  },
+};
+
+labConfigs[FRONTEND_TESTING_SCENARIO_ID] = {
+  ...labConfigs[CASE11_SCENARIO_ID],
+  scenarioId: FRONTEND_TESTING_SCENARIO_ID,
+  missionLabel: "前端工程 · 第 5 关",
+  missionTitle: "回归试炼场",
+  duration: "45-90 分钟 · 产出前端测试与回归审查",
+  backgroundImage: verificationTrialArenaScene,
+  flowAriaLabel: "前端测试与回归证据路线",
+  flowEyebrow: "测试证据路线",
+  flowTitle: "绿色报告怎样证明当前前端交付真的可靠",
+  practical: {
+    title: "在独立前端沙盒里审查测试报告和浏览器回归证据",
+    sandboxPath: "sandbox/frontend-testing-proof",
+    statusPassed:
+      "测试证明旧故障、组件边界、请求集成、浏览器复测和回归风险都已被记录。",
+    statusFailed:
+      "先看失败报告：它会指出绿灯是否来自旧代码、是否缺少手动路径或回归边界。",
+  },
+  result: {
+    ...labConfigs[CASE11_SCENARIO_ID].result,
+    label: "前端回归证据通过 · 成长档案已更新",
+    title: "你已经能审查前端测试是否真的覆盖用户路径",
+  },
+};
+
+// The route contract test reads the same registry used by Lab.
+// eslint-disable-next-line react-refresh/only-export-components
+export function getLabConfig(scenarioId: string) {
   return labConfigs[scenarioId] ?? labConfigs[SCENARIO_ID];
 }
 
@@ -4595,6 +6229,41 @@ const chapterScenarioIds: Partial<Record<number, string>> = {
   15: CASE15_SCENARIO_ID,
 };
 
+type RouteChapterTarget = {
+  routeId: CareerRoute["id"];
+  chapterId: string;
+  chapterNumber: number;
+  scenarioId: string;
+};
+
+const routeChapterScenarioIds: Record<string, string> = {
+  "ai-development:1": SCENARIO_ID,
+  "ai-development:2": CASE02_SCENARIO_ID,
+  "ai-development:3": CASE03_SCENARIO_ID,
+  "ai-development:4": CASE04_SCENARIO_ID,
+  "ai-development:5": CASE05_SCENARIO_ID,
+  "ai-development:6": CASE06_SCENARIO_ID,
+  "ai-development:7": CASE07_SCENARIO_ID,
+  "ai-development:8": CASE08_SCENARIO_ID,
+  "ai-development:9": CASE09_SCENARIO_ID,
+  "ai-development:10": CASE10_SCENARIO_ID,
+  "ai-development:11": CASE11_SCENARIO_ID,
+  "ai-development:12": CASE12_SCENARIO_ID,
+  "ai-development:13": CASE13_SCENARIO_ID,
+  "ai-development:14": CASE14_SCENARIO_ID,
+  "ai-development:15": CASE15_SCENARIO_ID,
+  "java-backend:java-1": JAVA_SCENARIO_ID,
+  "java-backend:java-2": JAVA_TRANSACTION_SCENARIO_ID,
+  "java-backend:java-3": JAVA_CACHE_SCENARIO_ID,
+  "java-backend:java-4": JAVA_RELEASE_SCENARIO_ID,
+  "java-backend:java-5": JAVA_INCIDENT_SCENARIO_ID,
+  "frontend-engineering:frontend-1": FRONTEND_SCENARIO_ID,
+  "frontend-engineering:frontend-2": FRONTEND_REQUEST_STATES_SCENARIO_ID,
+  "frontend-engineering:frontend-3": FRONTEND_PERFORMANCE_SCENARIO_ID,
+  "frontend-engineering:frontend-4": FRONTEND_ACCESSIBILITY_SCENARIO_ID,
+  "frontend-engineering:frontend-5": FRONTEND_TESTING_SCENARIO_ID,
+};
+
 const routeBaselineRecord = {
   firstChecks: "AI 应用开发路线入口",
   evidenceNeeded: "从真实项目委托开始，先学习数据流、关键代码和验证方式。",
@@ -4602,12 +6271,32 @@ const routeBaselineRecord = {
   confidence: "3",
 };
 
+function getRouteBaselineRecord(openingChoice?: OpeningChoice | null) {
+  return {
+    ...routeBaselineRecord,
+    ...(openingChoice ? { openingChoice } : {}),
+  };
+}
+
 function getScenarioIdForChapter(chapter: number) {
   return chapterScenarioIds[chapter] ?? SCENARIO_ID;
 }
 
-function getChapterHash(chapter: number) {
-  return `#chapter-${chapter}`;
+function getScenarioIdForRouteChapter(
+  routeId: CareerRoute["id"],
+  chapterId: string,
+) {
+  return routeChapterScenarioIds[`${routeId}:${chapterId}`];
+}
+
+function getChapterHash(target: number | RouteChapterTarget) {
+  if (typeof target === "number") return `#chapter-${target}`;
+  if (target.routeId === "ai-development")
+    return `#chapter-${target.chapterId}`;
+  if (target.routeId === "java-backend") return `#chapter-${target.chapterId}`;
+  if (target.routeId === "frontend-engineering")
+    return `#chapter-${target.chapterId}`;
+  return `#chapter-${target.chapterNumber}`;
 }
 
 function readChapterHash() {
@@ -4618,12 +6307,75 @@ function readChapterHash() {
   return chapterScenarioIds[chapter] ? chapter : null;
 }
 
+function readRouteChapterHash(): RouteChapterTarget | null {
+  if (typeof window === "undefined") return null;
+  const hash = window.location.hash;
+  const numericChapter = readChapterHash();
+  if (numericChapter) {
+    return {
+      routeId: "ai-development",
+      chapterId: String(numericChapter),
+      chapterNumber: numericChapter,
+      scenarioId: getScenarioIdForChapter(numericChapter),
+    };
+  }
+  const routeChapterMatch = hash.match(/^#chapter-(java|frontend)-(\d)$/);
+  if (!routeChapterMatch) return null;
+  const routeId =
+    routeChapterMatch[1] === "java" ? "java-backend" : "frontend-engineering";
+  const chapterId = `${routeChapterMatch[1]}-${routeChapterMatch[2]}`;
+  const chapter = careerRoutes
+    .find((route) => route.id === routeId)
+    ?.chapters.find((entry) => entry.id === chapterId);
+  const scenarioId = getScenarioIdForRouteChapter(routeId, chapterId);
+  if (!chapter || !scenarioId) return null;
+  return {
+    routeId,
+    chapterId,
+    chapterNumber: chapter.chapter,
+    scenarioId,
+  };
+}
+
+function findRouteChapterTarget(
+  routeId: CareerRoute["id"],
+  chapterId: string,
+): RouteChapterTarget | null {
+  const chapter = careerRoutes
+    .find((route) => route.id === routeId)
+    ?.chapters.find((entry) => entry.id === chapterId);
+  const scenarioId = getScenarioIdForRouteChapter(routeId, chapterId);
+  if (!chapter || !scenarioId) return null;
+  return {
+    routeId,
+    chapterId,
+    chapterNumber: chapter.chapter,
+    scenarioId,
+  };
+}
+
 function writeChapterHash(chapter: number) {
   if (typeof window === "undefined") return;
   const nextHash = getChapterHash(chapter);
   if (window.location.hash !== nextHash) {
     window.history.replaceState(null, "", nextHash);
   }
+}
+
+function writeRouteChapterHash(target: RouteChapterTarget) {
+  if (typeof window === "undefined") return;
+  const nextHash = getChapterHash(target);
+  if (window.location.hash !== nextHash) {
+    window.history.replaceState(null, "", nextHash);
+  }
+}
+
+function writeRouteChapterHashById(
+  routeId: CareerRoute["id"],
+  chapterId: string,
+) {
+  const target = findRouteChapterTarget(routeId, chapterId);
+  if (target) writeRouteChapterHash(target);
 }
 
 function clearChapterHash() {
@@ -4637,7 +6389,7 @@ function clearChapterHash() {
 
 const companionPortraits: Record<string, string> = {
   档案馆记录员: archiveKeeperPortrait,
-  灵感萤火: portalScribePortrait,
+  灵感萤火: inspirationGlowPet,
   回廊守卫: identityGuardPortrait,
   审判庭书记员: apiClerkPortrait,
   塔楼副官: toolWardenPortrait,
@@ -4652,6 +6404,10 @@ const companionPortraits: Record<string, string> = {
   镜厅校对师: mirrorEditorPortrait,
   检索狐: retrievalFoxPet,
 };
+
+function displayChapterNumber(chapter: CareerChapter) {
+  return chapter.chapter;
+}
 
 const chapterGuidePortraits: Record<string, { name: string; image: string }> = {
   "1": { name: "档案馆记录员", image: archiveKeeperPortrait },
@@ -4669,24 +6425,44 @@ const chapterGuidePortraits: Record<string, { name: string; image: string }> = {
   "13": { name: "交付审查官", image: deliveryJudgePortrait },
   "14": { name: "上线守门人", image: releaseGatekeeperPortrait },
   "15": { name: "终章答辩官", image: interviewCouncilorPortrait },
+  "java-1": { name: "分层塔守门人", image: briefForgemasterPortrait },
+  "java-2": { name: "事务熔炉守门人", image: timingNavigatorPortrait },
+  "java-3": { name: "缓存巡航员", image: indexArbiterPortrait },
+  "java-4": { name: "上线港守门人", image: releaseGatekeeperPortrait },
+  "java-5": { name: "事故回声官", image: deliveryJudgePortrait },
+  "frontend-1": { name: "状态编舞师", image: portalScribePortrait },
+  "frontend-2": { name: "错误回声引导员", image: apiClerkPortrait },
+  "frontend-3": { name: "首屏观测师", image: echoForensicsPortrait },
+  "frontend-4": { name: "无障碍灯塔守望者", image: interviewCouncilorPortrait },
+  "frontend-5": { name: "回归审查官", image: stormDispatcherPortrait },
 };
 
 const chapterDossierBackgrounds: Record<string, string> = {
   "1": questArchive,
   "2": questWorkbench,
-  "3": questPortal,
-  "4": questPortal,
-  "5": questWorkbench,
-  "6": questStage,
-  "7": questPortal,
-  "8": questArchive,
-  "9": questArchive,
-  "10": questPortal,
-  "11": questStage,
-  "12": questWorkbench,
-  "13": questWorkbench,
-  "14": questArchive,
-  "15": questStage,
+  "3": identityCorridorScene,
+  "4": apiErrorCourtScene,
+  "5": idempotencyForgeScene,
+  "6": performanceObservatoryScene,
+  "7": modelKeyForgeScene,
+  "8": hallucinationMirrorScene,
+  "9": ragKnowledgeMazeScene,
+  "10": agentToolContractHallScene,
+  "11": verificationTrialArenaScene,
+  "12": agentBriefForgeScene,
+  "13": deliveryReviewCourtScene,
+  "14": releaseReadinessGateScene,
+  "15": interviewDefenseHallScene,
+  "java-1": questWorkbench,
+  "java-2": idempotencyForgeScene,
+  "java-3": performanceObservatoryScene,
+  "java-4": releaseReadinessGateScene,
+  "java-5": signalStormDispatchTowerScene,
+  "frontend-1": memoryEchoGalleryScene,
+  "frontend-2": apiErrorCourtScene,
+  "frontend-3": performanceObservatoryScene,
+  "frontend-4": verificationTrialArenaScene,
+  "frontend-5": deliveryReviewCourtScene,
 };
 
 function getChapterDossierBackground(chapter: CareerChapter) {
@@ -4706,10 +6482,10 @@ function getChapterFlowSteps(chapter: CareerChapter) {
       label: step,
       note:
         index === 0
-          ? "先确认这一棒真的发生了。"
+          ? `起点材料：${chapter.flowPayloads[index] ?? "本章事故线索"}。`
           : isLast
-            ? "最后用这里证明结果成立。"
-            : `把证据交给「${nextStep}」。`,
+            ? `终点验收：确认「${chapter.flowPayloads[index - 1] ?? "结果证据"}」没有在刷新或复测后消失。`
+            : `收到「${chapter.flowPayloads[index - 1] ?? "上一棒材料"}」，再把「${chapter.flowPayloads[index] ?? "处理结果"}」交给「${nextStep}」。`,
     };
   });
 }
@@ -4728,33 +6504,30 @@ function getChapterHandoffs(chapter: CareerChapter) {
     .split("→")
     .map((step) => step.trim())
     .filter(Boolean);
-  const payloads = [
-    "用户动作",
-    chapter.glossary[0] ?? "请求证据",
-    chapter.glossary[1] ?? "处理结果",
-    chapter.glossary[2] ?? "验证材料",
-  ];
-
   return steps
     .slice(0, 5)
     .slice(0, -1)
     .map((from, index) => ({
       from,
       to: steps[index + 1],
-      payload: payloads[index],
+      payload: chapter.flowPayloads[index] ?? "待核对的流程材料",
       proof:
         index === 0
-          ? "先看输入和页面动作，不急着猜后端。"
+          ? `先确认「${chapter.flowPayloads[index] ?? "用户动作"}」真的发生，不急着猜后端。`
           : index === 1
-            ? "用本章关键代码确认这一棒有没有传对。"
+            ? `用本章关键代码确认「${chapter.flowPayloads[index] ?? "请求材料"}」有没有传对。`
             : index === 2
-              ? "再去 Network、日志、数据库或测试报告里找反证。"
-              : "最后把结论写成可验收的话。",
+              ? `再用 Network、日志或数据库确认「${chapter.flowPayloads[index] ?? "处理结果"}」是否成立。`
+              : `最后证明「${chapter.flowPayloads[index] ?? "结果材料"}」真的抵达下一站。`,
     }));
 }
 
+function getChapterValidation(chapter: CareerChapter) {
+  return chapter.validation.replace(/[。.!！?？]+$/u, "");
+}
+
 function getChapterPlayerGoal(chapter: CareerChapter) {
-  return `你不是来背「${chapter.learn}」，而是要练到：${chapter.validation}。`;
+  return `你不是来背「${chapter.learn}」，而是要练到：${getChapterValidation(chapter)}。`;
 }
 
 function scrollChapterDossierIntoView() {
@@ -4767,11 +6540,18 @@ function scrollChapterDossierIntoView() {
 }
 
 type ChapterReward = {
+  phase: "rendezvous" | "earned";
   chapter: CareerChapter;
   xpGained: number;
   wasAlreadyCleared: boolean;
   beforeRank: DeveloperProfile["rank"];
   afterRank: DeveloperProfile["rank"];
+  beforeLevel: number;
+  afterLevel: number;
+};
+
+type LabSubmissionOptions = {
+  showReward?: boolean;
 };
 
 type CompanionArchiveEntry = {
@@ -4782,6 +6562,13 @@ type CompanionArchiveEntry = {
 };
 
 const INTERVIEW_DOSSIER_STEP_ID = "interview-dossier";
+
+type LearningRecall = {
+  scenarioId: string;
+  stepId: string;
+  activeRecall: string;
+  updatedAt: string;
+};
 
 const interviewDossierFields = [
   {
@@ -4850,9 +6637,29 @@ function getDossierReferenceFields(
   };
 }
 
+function getChapterLearningRecalls(
+  recalls: LearningRecall[],
+  chapterId: string,
+) {
+  const scenarioId = getScenarioIdForChapter(Number(chapterId));
+  const chapterRecalls = recalls.filter(
+    (recall) => recall.scenarioId === scenarioId,
+  );
+  return {
+    flow: chapterRecalls.find(
+      (recall) =>
+        recall.stepId === "project-map" || recall.stepId.includes("-map"),
+    ),
+    acceptance: chapterRecalls.find((recall) =>
+      recall.stepId.includes("-close"),
+    ),
+  };
+}
+
 function buildInterviewPortfolioMarkdown(
   developer: DeveloperProfile,
   response: Record<string, string>,
+  recalls: LearningRecall[],
 ) {
   const lines = [
     "# 码上冒险 · AI 应用开发面试作品集",
@@ -4865,12 +6672,19 @@ function buildInterviewPortfolioMarkdown(
   for (const chapter of aiCareerRoadmap) {
     const saved = readDossierFields(response, chapter.id);
     const reference = getDossierReferenceFields(chapter);
+    const chapterRecalls = getChapterLearningRecalls(recalls, chapter.id);
 
     lines.push(`## 第 ${chapter.id} 章 · ${chapter.title}`);
     lines.push("");
     lines.push(`- 工作场景：${chapter.workBackground}`);
     lines.push(`- 学会：${chapter.learn}`);
     lines.push(`- 验收目标：${chapter.validation}`);
+    lines.push(
+      `- 我的流程复述：${chapterRecalls.flow?.activeRecall ?? "尚未形成主动复述"}`,
+    );
+    lines.push(
+      `- 我的验收复述：${chapterRecalls.acceptance?.activeRecall ?? "尚未形成主动复述"}`,
+    );
 
     for (const field of interviewDossierFields) {
       const value = saved[field.id].trim();
@@ -4942,18 +6756,47 @@ function Loading({ message }: { message: string }) {
   );
 }
 
-function RoleAvatar() {
+function TeachingBridgeLoading({
+  mission,
+  title,
+  location,
+  flow,
+  backgroundImage,
+}: {
+  mission: string;
+  title: string;
+  location: string;
+  flow: string;
+  backgroundImage?: string;
+}) {
   return (
-    <div className="role-avatar" aria-hidden="true">
-      <div className="avatar-screen">
-        <span />
-        <i />
+    <main
+      className="loading-screen teaching-bridge-loading"
+      aria-live="polite"
+      style={{
+        backgroundImage: backgroundImage
+          ? `linear-gradient(135deg, rgba(4, 9, 16, 0.86), rgba(5, 13, 22, 0.96)), url(${backgroundImage})`
+          : undefined,
+      }}
+    >
+      <div className="teaching-loading-scene" aria-hidden="true" />
+      <div className="teaching-loading-kicker">项目委托 · {mission}</div>
+      <Logo />
+      <div className="teaching-loading-copy">
+        <span>正在抵达 · {location}</span>
+        <h1>{title}</h1>
+        <p>{flow}</p>
       </div>
-      <div className="avatar-core" />
-      <div className="avatar-rune one" />
-      <div className="avatar-rune two" />
-      <div className="avatar-base" />
-    </div>
+      <div className="teaching-loading-route" aria-label="本关学习路线">
+        <span>剧情现场</span>
+        <i />
+        <span>关键代码</span>
+        <i />
+        <span>证据验收</span>
+      </div>
+      <LoaderCircle className="spin" />
+      <p className="teaching-loading-status">正在召集本关导师与现场材料…</p>
+    </main>
   );
 }
 
@@ -4987,11 +6830,42 @@ function ArtifactViewer({
   guides: Record<string, ArtifactGuide>;
 }) {
   const [selectedId, setSelectedId] = useState(artifacts[0]?.id ?? "");
+  const [showFullMaterial, setShowFullMaterial] = useState(false);
   const selected =
     artifacts.find((artifact) => artifact.id === selectedId) ?? artifacts[0];
   const guide = selected ? guides[selected.id] : undefined;
-
+  const focusedMaterial = selected
+    ? buildFocusedArtifactContent(selected.content, guide?.keyLines ?? [])
+    : "";
+  const mentor =
+    selected?.language === "sql"
+      ? {
+          name: "档案馆记录员",
+          image: archiveKeeperPortrait,
+          advice:
+            "数据库材料不要通读，先找 SELECT、INSERT、0 rows 这种能证明有没有落库的词。",
+        }
+      : selected?.language === "log" || selected?.language === "json"
+        ? {
+            name: "传送门书记官",
+            image: portalScribePortrait,
+            advice:
+              "请求和日志要按时间线读：先找状态码、路径、requestId，再判断它只能证明哪一棒。",
+          }
+        : {
+            name: "代码证据带读官",
+            image: archiveKeeperPortrait,
+            advice:
+              "代码材料第一遍只找关键变量和函数名，不从第一行读到最后一行。",
+          };
   if (!selected) return <p>没有可用的项目材料。</p>;
+  const relay = getArtifactRelay(selected, guide);
+  const translatedKeyLines = (guide?.keyLines ?? [])
+    .slice(0, 3)
+    .map((line, index) => ({
+      line,
+      ...explainKeyLine(line, index),
+    }));
 
   return (
     <div className="artifact-viewer">
@@ -5000,7 +6874,10 @@ function ArtifactViewer({
           <button
             key={artifact.id}
             className={selected.id === artifact.id ? "active" : ""}
-            onClick={() => setSelectedId(artifact.id)}
+            onClick={() => {
+              setSelectedId(artifact.id);
+              setShowFullMaterial(false);
+            }}
             role="tab"
             aria-selected={selected.id === artifact.id}
           >
@@ -5017,6 +6894,26 @@ function ArtifactViewer({
       </div>
       {guide && (
         <section className="artifact-reading-guide">
+          <div className="artifact-mentor-card" aria-label="材料导师">
+            <img src={mentor.image} alt={mentor.name} />
+            <blockquote>
+              <b>{mentor.name}</b>
+              <span>“{mentor.advice}”</span>
+            </blockquote>
+          </div>
+          <div className="artifact-relay-card" aria-label="材料接力解释">
+            <span>材料接力</span>
+            <strong>{selected.label}</strong>
+            <div>
+              <b>从</b>
+              <p>{relay.from}</p>
+            </div>
+            <div>
+              <b>交给</b>
+              <p>{relay.to}</p>
+            </div>
+            <em>{relay.question}</em>
+          </div>
           <span>阅读导览 · {guide.place}</span>
           <strong>{guide.focus}</strong>
           <div>
@@ -5025,6 +6922,36 @@ function ArtifactViewer({
               <code key={line}>{line}</code>
             ))}
           </div>
+          <div className="artifact-keyline-focus" aria-label="关键行聚焦">
+            <b>先看这几行</b>
+            <p>
+              先在完整材料里找到这些词，再判断它们能不能证明当前这一棒。
+              不需要从第一行读到最后一行。
+            </p>
+            <ul>
+              {guide.keyLines.map((line) => (
+                <li key={line}>{line}</li>
+              ))}
+            </ul>
+          </div>
+          {translatedKeyLines.length > 0 && (
+            <div
+              className="artifact-code-translation"
+              aria-label="代码三步翻译卡"
+            >
+              <b>代码三步翻译卡</b>
+              <p>把代码先翻译成人话，再决定它能证明哪一段流程。</p>
+              <ol>
+                {translatedKeyLines.map((item) => (
+                  <li key={item.line}>
+                    <code>{item.line}</code>
+                    <strong>{item.role}</strong>
+                    <span>{item.meaning}</span>
+                  </li>
+                ))}
+              </ol>
+            </div>
+          )}
           <dl>
             <div>
               <dt>能证明</dt>
@@ -5045,10 +6972,33 @@ function ArtifactViewer({
             <i />
           </span>
           <code>{selected.relativePath}</code>
-          <b>{selected.language}</b>
+          <b>
+            {selected.language} · {showFullMaterial ? "完整材料" : "关键行"}
+          </b>
         </header>
+        <p className="code-window-note">
+          {showFullMaterial
+            ? "现在显示完整卷宗，用来核对上下文；读完后回到上方的能证明/不能证明。"
+            : "先只看关键行和前后一行上下文；确认这一棒后，再展开完整卷宗。"}
+        </p>
+        <div className="code-window-actions">
+          <span>
+            {showFullMaterial
+              ? "已展开完整材料"
+              : "新手阅读模式 · 只显示关键证据"}
+          </span>
+          <button
+            className="artifact-material-toggle"
+            type="button"
+            aria-expanded={showFullMaterial}
+            onClick={() => setShowFullMaterial((current) => !current)}
+          >
+            <FileCode2 size={14} />
+            {showFullMaterial ? "收起完整卷宗" : "查看完整卷宗"}
+          </button>
+        </div>
         <pre>
-          <code>{selected.content}</code>
+          <code>{showFullMaterial ? selected.content : focusedMaterial}</code>
         </pre>
       </div>
     </div>
@@ -5107,6 +7057,448 @@ function LabFlowMap({
   );
 }
 
+function LabRelayBoard({
+  activeIndex,
+  activeStep,
+  config,
+}: {
+  activeIndex: number;
+  activeStep: LabStep;
+  config: LabConfig;
+}) {
+  const activeFlowIndex = Math.min(
+    Math.max(activeIndex, 0),
+    config.flowItems.length - 1,
+  );
+  const previousFlow = config.flowItems[activeFlowIndex - 1];
+  const activeFlow = config.flowItems[activeFlowIndex] ?? config.flowItems[0];
+  const nextFlow = config.flowItems[activeFlowIndex + 1];
+  const evidenceHint =
+    activeStep.kind === "baseline"
+      ? config.baseline.body
+      : activeStep.kind === "verification"
+        ? config.practical.statusPassed
+        : activeStep.response?.prompt;
+  const handoffTrail =
+    activeStep.kind === "response" && activeStep.response?.flowStrip?.length
+      ? activeStep.response.flowStrip
+      : [
+          previousFlow?.label ?? "剧情委托",
+          activeFlow?.label ?? activeStep.label,
+          nextFlow?.label ?? "结案卷宗",
+        ];
+
+  return (
+    <section className="lab-relay-board" aria-label="实战接力板">
+      <header>
+        <span>实战接力板</span>
+        <strong>别背名词，盯住这份材料正在被谁接走</strong>
+      </header>
+      <div className="lab-relay-grid">
+        <article>
+          <span>上一棒交来</span>
+          <strong>{previousFlow?.title ?? config.missionTitle}</strong>
+          <p>
+            {previousFlow?.detail ??
+              "你已经从章节剧情拿到事故背景和本关目标，现在开始把它变成可验证证据。"}
+          </p>
+        </article>
+        <article className="active">
+          <span>当前要证明</span>
+          <strong>{activeFlow?.title ?? activeStep.label}</strong>
+          <p>
+            {evidenceHint ??
+              activeFlow?.detail ??
+              "写答案前，先说清楚你看到了什么证据，以及它能证明什么。"}
+          </p>
+        </article>
+        <article>
+          <span>交给下一棒</span>
+          <strong>{nextFlow?.title ?? config.result.nextTitle}</strong>
+          <p>
+            {nextFlow?.detail ??
+              "最后把现象、证据、结论和验证动作收束成能交给同事、Agent 和面试官复核的材料。"}
+          </p>
+        </article>
+      </div>
+      <div className="lab-relay-trail" aria-label="这一题的证据路线">
+        {handoffTrail.map((label, index) => (
+          <span key={`${label}-${index}`}>
+            {index > 0 && <ArrowRight size={14} />}
+            <b>{label}</b>
+          </span>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function LabCaseRouteBoard({ config }: { config: LabConfig }) {
+  const start = config.flowItems[0];
+  const end = config.flowItems.at(-1);
+  const guide = Object.values(config.artifactGuides)[0];
+  const route = config.flowItems.map((item) => item.label).join(" → ");
+
+  return (
+    <section className="lab-case-route-board" aria-label="本关案件路线牌">
+      <header>
+        <span>案件路线牌</span>
+        <strong>先知道这关在追哪条工作链路</strong>
+        <p>
+          {config.missionTitle} 不是让你背术语，而是训练你把一次真实工作问题从
+          「发生了什么」追到「怎么证明修好了」。
+        </p>
+      </header>
+      <div className="case-route-line" aria-label="本关完整路线">
+        {config.flowItems.map((item, index) => (
+          <span key={item.label}>
+            {index > 0 && <ArrowRight size={13} />}
+            <b>{item.label}</b>
+          </span>
+        ))}
+      </div>
+      <div className="case-route-grid">
+        <article>
+          <span>事故从哪来</span>
+          <strong>{start?.title ?? config.baseline.title}</strong>
+          <p>{config.baseline.body}</p>
+        </article>
+        <article>
+          <span>谁传给谁</span>
+          <strong>{route}</strong>
+          <p>
+            你每写一段答案，都要说清楚上一棒交来了什么、当前材料能证明什么、
+            下一棒还需要什么反证。
+          </p>
+        </article>
+        <article>
+          <span>第一眼看哪里</span>
+          <strong>{guide?.place ?? config.practical.sandboxPath}</strong>
+          <p>
+            {guide
+              ? `${guide.focus} 先找 ${guide.keyLines.slice(0, 2).join("、")}。`
+              : "先看材料导览里的关键行，再打开完整卷宗备查。"}
+          </p>
+        </article>
+        <article>
+          <span>最后交出什么</span>
+          <strong>{end?.title ?? config.result.nextTitle}</strong>
+          <p>{config.result.recorded}</p>
+        </article>
+      </div>
+    </section>
+  );
+}
+
+function LabAbilityMark({
+  activeStep,
+  config,
+}: {
+  activeStep: LabStep;
+  config: LabConfig;
+}) {
+  const action =
+    activeStep.kind === "verification"
+      ? "用测试报告证明修复成立"
+      : activeStep.kind === "baseline"
+        ? "把剧情委托翻译成工作问题"
+        : activeStep.response?.title;
+  return (
+    <section className="lab-ability-mark" aria-label="当前能力印记">
+      <span>当前能力印记</span>
+      <strong>{config.result.proved}</strong>
+      <div>
+        <b>正在练</b>
+        <p>{action}</p>
+      </div>
+      <div>
+        <b>会沉淀成</b>
+        <p>{config.result.recorded}</p>
+      </div>
+    </section>
+  );
+}
+
+function LabStepReceipt({
+  config,
+  nextStep,
+  savedStep,
+}: {
+  config: LabConfig;
+  nextStep: LabStep;
+  savedStep: LabStep;
+}) {
+  const savedOutput =
+    savedStep.kind === "baseline"
+      ? config.baseline.action
+      : savedStep.kind === "verification"
+        ? "测试报告和手动验收路径"
+        : `一段可复查的${savedStep.label}判断`;
+  const nextAction =
+    nextStep.kind === "verification"
+      ? "下一步用测试报告证明修复成立，不只看页面提示。"
+      : nextStep.kind === "baseline"
+        ? config.baseline.body
+        : (nextStep.response?.prompt ?? nextStep.label);
+
+  return (
+    <section className="lab-step-receipt" aria-label="刚刚收录的证据">
+      <span>证据已收录</span>
+      <strong>{savedStep.label}</strong>
+      <p>
+        这一步已经写入本地练习记录。现在进入「{nextStep.label}
+        」，继续把上一棒证据交给下一棒。
+      </p>
+      <dl>
+        <div>
+          <dt>刚刚沉淀</dt>
+          <dd>{savedOutput}</dd>
+        </div>
+        <div>
+          <dt>下一步验证</dt>
+          <dd>{nextAction}</dd>
+        </div>
+        <div>
+          <dt>以后可复盘</dt>
+          <dd>{config.result.recorded}</dd>
+        </div>
+      </dl>
+    </section>
+  );
+}
+
+const labGuideChapterIds: Record<string, string> = {
+  [SCENARIO_ID]: "1",
+  [CASE02_SCENARIO_ID]: "2",
+  [CASE03_SCENARIO_ID]: "3",
+  [CASE04_SCENARIO_ID]: "4",
+  [CASE05_SCENARIO_ID]: "5",
+  [CASE06_SCENARIO_ID]: "6",
+  [CASE07_SCENARIO_ID]: "7",
+  [CASE08_SCENARIO_ID]: "8",
+  [CASE09_SCENARIO_ID]: "9",
+  [CASE10_SCENARIO_ID]: "10",
+  [CASE11_SCENARIO_ID]: "11",
+  [CASE12_SCENARIO_ID]: "12",
+  [CASE13_SCENARIO_ID]: "13",
+  [CASE14_SCENARIO_ID]: "14",
+  [CASE15_SCENARIO_ID]: "15",
+  [JAVA_SCENARIO_ID]: "java-1",
+  [JAVA_TRANSACTION_SCENARIO_ID]: "java-2",
+  [JAVA_CACHE_SCENARIO_ID]: "java-3",
+  [JAVA_RELEASE_SCENARIO_ID]: "java-4",
+  [JAVA_INCIDENT_SCENARIO_ID]: "java-5",
+  [FRONTEND_SCENARIO_ID]: "frontend-1",
+  [FRONTEND_REQUEST_STATES_SCENARIO_ID]: "frontend-2",
+  [FRONTEND_PERFORMANCE_SCENARIO_ID]: "frontend-3",
+  [FRONTEND_ACCESSIBILITY_SCENARIO_ID]: "frontend-4",
+  [FRONTEND_TESTING_SCENARIO_ID]: "frontend-5",
+};
+
+function LabSceneGuide({
+  activeIndex,
+  activeStep,
+  config,
+}: {
+  activeIndex: number;
+  activeStep: LabStep;
+  config: LabConfig;
+}) {
+  const scene = getLabStepScene(config, activeStep);
+  const routePoint =
+    config.flowItems[Math.min(activeIndex, config.flowItems.length - 1)] ??
+    config.flowItems[0];
+
+  return (
+    <section
+      className="lab-scene-guide"
+      aria-label="实战剧情向导"
+      style={{ "--lab-scene-bg": `url(${scene.image})` } as CSSProperties}
+    >
+      <div className="lab-scene-guide-bg" aria-hidden="true" />
+      <img src={scene.portrait} alt={`${scene.actor}实战向导`} />
+      <div className="lab-scene-guide-story">
+        <span>
+          {scene.actor} · {scene.location}
+        </span>
+        <strong>这一幕先看懂：{activeStep.label}</strong>
+        <p>
+          “{scene.mood}” 你现在站在「{routePoint.label}」这一棒：
+          {routePoint.detail}。
+        </p>
+      </div>
+      <dl>
+        <div>
+          <dt>当前地点</dt>
+          <dd>{scene.location}</dd>
+        </div>
+        <div>
+          <dt>本幕目标</dt>
+          <dd>{scene.objective}</dd>
+        </div>
+        <div>
+          <dt>通关收获</dt>
+          <dd>{scene.reward}</dd>
+        </div>
+      </dl>
+    </section>
+  );
+}
+
+function LabStepQuestBrief({
+  activeIndex,
+  activeStep,
+  config,
+}: {
+  activeIndex: number;
+  activeStep: LabStep;
+  config: LabConfig;
+}) {
+  const guide = pickArtifactGuide(config, []);
+  const currentFlow =
+    config.flowItems[Math.min(activeIndex, config.flowItems.length - 1)] ??
+    config.flowItems[0];
+  const nextFlow =
+    config.flowItems[Math.min(activeIndex + 1, config.flowItems.length - 1)] ??
+    currentFlow;
+  const why =
+    activeStep.kind === "baseline"
+      ? config.baseline.title
+      : activeStep.kind === "verification"
+        ? "把修复从“我觉得好了”变成能复查的证据。"
+        : (activeStep.response?.prompt ?? activeStep.label);
+  const evidence =
+    activeStep.kind === "verification"
+      ? "测试报告、源码指纹、通过/失败清单和手动路径。"
+      : activeStep.response?.artifactIds?.length
+        ? "打开本步指定材料，先看关键行、能证明什么、不能证明什么。"
+        : guide
+          ? `${guide.place}：${guide.focus}`
+          : `${currentFlow.label} → ${nextFlow.label} 的接力证据。`;
+  const output =
+    activeStep.kind === "baseline"
+      ? config.baseline.action
+      : activeStep.kind === "verification"
+        ? "一份能说明修复有效和仍有边界的验收报告。"
+        : `一段包含证据、含义和下一步的作答，沉淀为${config.result.recorded}。`;
+
+  return (
+    <section className="lab-step-quest-brief" aria-label="本步任务卷轴">
+      <article>
+        <span>为什么学</span>
+        <p>{why}</p>
+      </article>
+      <article>
+        <span>先看什么</span>
+        <p>{evidence}</p>
+      </article>
+      <article>
+        <span>最后交什么</span>
+        <p>{output}</p>
+      </article>
+    </section>
+  );
+}
+
+function LabFlowDialogue({
+  activeIndex,
+  activeStep,
+  config,
+}: {
+  activeIndex: number;
+  activeStep: LabStep;
+  config: LabConfig;
+}) {
+  const currentFlow =
+    config.flowItems[Math.min(activeIndex, config.flowItems.length - 1)] ??
+    config.flowItems[0];
+  const previousFlow =
+    config.flowItems[Math.max(0, Math.min(activeIndex - 1, activeIndex))] ??
+    currentFlow;
+  const nextFlow =
+    config.flowItems[Math.min(activeIndex + 1, config.flowItems.length - 1)] ??
+    currentFlow;
+  const currentTask =
+    activeStep.kind === "verification"
+      ? "把修复结果交给测试和验收报告复查。"
+      : activeStep.kind === "baseline"
+        ? config.baseline.body
+        : (activeStep.response?.prompt ?? activeStep.label);
+
+  return (
+    <section className="lab-flow-dialogue" aria-label="流程接力小剧场">
+      <header>
+        <span>流程接力小剧场</span>
+        <strong>
+          {previousFlow.label} 把线索交给 {currentFlow.label}，再去找{" "}
+          {nextFlow.label}
+        </strong>
+      </header>
+      <div>
+        <article>
+          <span>上一棒 · {previousFlow.label}</span>
+          <p>
+            “我已经把「{previousFlow.title}」交出来了：{previousFlow.detail}
+            。”
+          </p>
+        </article>
+        <article className="active">
+          <span>当前棒 · {currentFlow.label}</span>
+          <p>
+            “现在看我有没有真的完成「{currentFlow.title}」。这一题要做的是：
+            {currentTask}”
+          </p>
+        </article>
+        <article>
+          <span>下一棒 · {nextFlow.label}</span>
+          <p>
+            “等你说清这一棒，我才知道要检查「{nextFlow.title}」：
+            {nextFlow.detail}。”
+          </p>
+        </article>
+      </div>
+    </section>
+  );
+}
+
+function QuestLog({
+  title,
+  previous,
+  current,
+  next,
+}: {
+  title: string;
+  previous: { label: string; body: string };
+  current: { label: string; body: string };
+  next: { label: string; body: string };
+}) {
+  return (
+    <section className="quest-log" aria-label={title}>
+      <header>
+        <span>冒险日志</span>
+        <strong>{title}</strong>
+      </header>
+      <div>
+        <article>
+          <span>已收录</span>
+          <strong>{previous.label}</strong>
+          <p>{previous.body}</p>
+        </article>
+        <article className="active">
+          <span>当前任务</span>
+          <strong>{current.label}</strong>
+          <p>{current.body}</p>
+        </article>
+        <article>
+          <span>下一步</span>
+          <strong>{next.label}</strong>
+          <p>{next.body}</p>
+        </article>
+      </div>
+    </section>
+  );
+}
+
 function ResponseForm({
   stepId,
   title,
@@ -5136,40 +7528,89 @@ function ResponseForm({
     : "我看到：\n它说明：\n下一步：";
   const evidencePattern =
     /Network|日志|数据库|代码|测试|SELECT|POST|GET|201|错误|状态码|Diff|回归|验收|证据/;
+  const hasSectionValue = (labels: string[], minimumLength = 8) =>
+    labels.some((label) => {
+      const escaped = label.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      const match = text.match(new RegExp(`${escaped}[：:]\\s*([^\\n]+)`, "i"));
+      return Boolean(match?.[1] && match[1].trim().length >= minimumLength);
+    });
   const answerChecks = isAgentBrief
     ? [
         {
           label: "写出背景和现象",
-          done: text.includes("背景") || text.includes("现象"),
+          done: hasSectionValue(["背景", "现象"]),
         },
         {
           label: "写出范围和约束",
-          done: text.includes("约束") || text.includes("不得"),
+          done: hasSectionValue(["范围", "约束", "不得", "不能"]),
         },
         {
           label: "写出验收标准",
-          done: text.includes("验收") || text.includes("测试"),
+          done: hasSectionValue(["验收标准", "验收", "测试", "浏览器"]),
         },
       ]
     : [
         {
           label: "写出至少一条证据",
-          done: evidencePattern.test(text),
+          done: evidencePattern.test(text) && text.trim().length >= 18,
         },
         {
           label: "说明这条证据能证明什么",
-          done: text.includes("证明") || text.includes("说明"),
+          done:
+            text.trim().length >= 30 && /证明|说明|意味着|因为|所以/.test(text),
         },
         {
           label: "写出下一步验证动作",
           done:
-            text.includes("下一步") ||
-            text.includes("验证") ||
-            text.includes("修好"),
+            (/下一步[：:]\s*\S{6,}/.test(text) ||
+              /验证|复测|查询|检查|对照|运行|定位|修改|复现/.test(text)) &&
+            text.trim().length >= 40,
         },
       ];
   const completedAnswerChecks = answerChecks.filter((item) => item.done).length;
   const nextMissingAnswerCheck = answerChecks.find((item) => !item.done);
+  const primerCards = isAgentBrief
+    ? [
+        {
+          label: "这题到底在问什么",
+          body: "把一段模糊愿望改写成 Agent 能执行、能停下、能交证据的任务。",
+        },
+        {
+          label: "先看哪里",
+          body: "先看现场材料和失败证据，再写目标；不要让 Agent 自己猜范围。",
+        },
+        {
+          label: "不要怎么写",
+          body: "不要写“你看着办”。必须写背景、边界、验收、风险和交付格式。",
+        },
+      ]
+    : [
+        {
+          label: "这题到底在问什么",
+          body: "不是问你背概念，而是问你能不能用一份证据解释当前流程卡在哪里。",
+        },
+        {
+          label: "先看哪里",
+          body: "先看下面材料导览里的 Network、日志、数据库、代码或测试结果，挑一条最能说明问题的证据。",
+        },
+        {
+          label: "不要怎么写",
+          body: "不要只写“有问题 / 修好了”。要写清证据、证据含义和下一步验证。",
+        },
+      ];
+  const expressionExample = isAgentBrief
+    ? {
+        lead: "可照着这个顺序写委托",
+        evidence: "背景：保存后刷新数据消失，Network 曾返回成功。",
+        meaning: "目标：请只检查保存链路，不要改无关页面或执行危险命令。",
+        next: "验收：给出测试报告、手动路径、仍有风险和回滚方式。",
+      }
+    : {
+        lead: "可照着这个顺序写判断",
+        evidence: "我看到：前端发出了 POST，并且 response.ok 后显示 saved。",
+        meaning: "它说明：页面收到成功信号，但还不能证明数据库真的写入。",
+        next: "下一步：继续查后端日志和 SELECT 结果，确认记录能否被刷新读回。",
+      };
 
   const save = async () => {
     setSaving(true);
@@ -5208,6 +7649,20 @@ function ResponseForm({
     <section className="lab-card response-card">
       <span className="mini-label">{title}</span>
       <h2>{prompt}</h2>
+      <div className="beginner-primer" aria-label="新手先读卡">
+        <header>
+          <span>新手先读卡</span>
+          <strong>先把题目翻译成人话，再看材料</strong>
+        </header>
+        <div>
+          {primerCards.map((card) => (
+            <article key={card.label}>
+              <span>{card.label}</span>
+              <p>{card.body}</p>
+            </article>
+          ))}
+        </div>
+      </div>
       {children}
       <div className="answer-ritual" aria-label="作答支架">
         <div className="answer-ritual-heading">
@@ -5240,6 +7695,13 @@ function ResponseForm({
               : "最后写你要继续查哪里，或怎样证明已经修好。"}
           </p>
         </div>
+      </div>
+      <div className="answer-example-card" aria-label="证据表达示范卡">
+        <span>证据表达示范卡</span>
+        <strong>{expressionExample.lead}</strong>
+        <p>{expressionExample.evidence}</p>
+        <p>{expressionExample.meaning}</p>
+        <p>{expressionExample.next}</p>
       </div>
       <textarea
         value={text}
@@ -5292,7 +7754,7 @@ function ResponseForm({
   );
 }
 
-function VerificationPanel({
+export function VerificationPanel({
   attempt,
   onVerify,
   config,
@@ -5315,6 +7777,33 @@ function VerificationPanel({
     }
   };
   const status = attempt.verificationStatus;
+  const failedTests =
+    attempt.latestVerification?.report.tests?.filter(
+      (test) => test.status === "failed",
+    ) ?? [];
+  const passedTests =
+    attempt.latestVerification?.report.tests?.filter(
+      (test) => test.status === "passed",
+    ) ?? [];
+  const reportMessage = attempt.latestVerification?.report.message;
+  const reportGeneratedAt = attempt.latestVerification?.report.generatedAt;
+  const reportSourceHash = attempt.latestVerification?.report.sourceHash;
+  const reportSummary = attempt.latestVerification?.report.summary;
+  const hasReport = Boolean(attempt.latestVerification);
+  const passedCount = reportSummary?.passed ?? passedTests.length;
+  const failedCount = reportSummary?.failed ?? failedTests.length;
+  const shortSourceHash = reportSourceHash
+    ? reportSourceHash.slice(0, 10)
+    : "未提供";
+  const generatedTimeLabel = reportGeneratedAt
+    ? new Date(reportGeneratedAt).toLocaleString("zh-CN", {
+        hour12: false,
+      })
+    : "未提供";
+  const failedTestClues = failedTests.map((test) => ({
+    test,
+    clue: buildVerificationClue(test, config),
+  }));
 
   return (
     <section className="lab-card practical-card">
@@ -5327,6 +7816,20 @@ function VerificationPanel({
           <h2>{config.practical.title}</h2>
         </div>
       </div>
+      <section className="verification-brief" aria-label="本次验收目标">
+        <div>
+          <span>你现在要证明</span>
+          <strong>修复不是“看起来对”，而是测试能复现、能通过</strong>
+          <p>
+            你会在独立沙盒里改代码，再把测试报告带回来。报告通过，才代表这条工作链路有证据；失败也不是扣分，而是告诉你下一处该查哪里。
+          </p>
+        </div>
+        <div>
+          <span>通过后会发生什么</span>
+          <strong>解锁下一棒，并把这份证据写入成长档案</strong>
+          <p>{config.practical.statusPassed}</p>
+        </div>
+      </section>
       <div className="safety-callout">
         <ShieldCheck size={18} />
         <p>
@@ -5391,21 +7894,117 @@ function VerificationPanel({
         </div>
         <button className="v2-button dark" onClick={verify} disabled={checking}>
           {checking ? <LoaderCircle className="spin" /> : <RefreshCw />}
-          读取测试报告
+          读取结果
         </button>
       </div>
+      {hasReport && (
+        <section className="verification-report" aria-label="测试报告译文">
+          <header>
+            <span>测试报告译文</span>
+            <strong>
+              {status === "passed"
+                ? `全部通过 · ${passedCount} 项证据`
+                : failedTests.length > 0
+                  ? `还有 ${failedTests.length} 个红灯`
+                  : "报告还不能作为通过证据"}
+            </strong>
+          </header>
+          {reportMessage && <p>{reportMessage}</p>}
+          {status === "passed" && passedTests.length > 0 && (
+            <div className="verification-passed-proof">
+              <span>这份报告证明</span>
+              <strong>
+                你已经把修复后的行为交给测试复核，不再只凭页面提示判断完成。
+              </strong>
+              <div
+                className="verification-proof-passport"
+                aria-label="报告证据护照"
+              >
+                <article>
+                  <b>生成时间</b>
+                  <span>{generatedTimeLabel}</span>
+                </article>
+                <article>
+                  <b>源码指纹</b>
+                  <span>{shortSourceHash}</span>
+                </article>
+                <article>
+                  <b>测试汇总</b>
+                  <span>
+                    {passedCount} 通过 / {failedCount} 失败
+                  </span>
+                </article>
+                <article>
+                  <b>仍要说明</b>
+                  <span>哪些路径没覆盖、哪些风险要继续人工复测</span>
+                </article>
+              </div>
+              <ul>
+                {passedTests.slice(0, 5).map((test) => (
+                  <li key={test.name}>{test.name}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+          {failedTests.length > 0 && (
+            <div>
+              {failedTestClues.slice(0, 3).map(({ test, clue }) => (
+                <article key={test.name}>
+                  <span>红灯测试</span>
+                  <strong>{test.name}</strong>
+                  {test.message && <p>{test.message}</p>}
+                  <dl>
+                    <div>
+                      <dt>流程断点</dt>
+                      <dd>{clue.breakPoint}</dd>
+                    </div>
+                    <div>
+                      <dt>先查材料</dt>
+                      <dd>{clue.material}</dd>
+                    </div>
+                    <div>
+                      <dt>下一步</dt>
+                      <dd>{clue.nextAction}</dd>
+                    </div>
+                  </dl>
+                </article>
+              ))}
+            </div>
+          )}
+        </section>
+      )}
       {error && <p className="form-error">{error}</p>}
     </section>
   );
 }
 
-function CareerDossier({
+export function CareerDossier({
   hintLevel,
   config,
+  onBackToRoadmap,
 }: {
   hintLevel: number;
   config: LabConfig;
+  onBackToRoadmap?: () => void;
 }) {
+  const transferCards = [
+    {
+      label: "工作复盘",
+      title: "这次问题可以怎样讲清楚",
+      body: config.result.proved,
+    },
+    {
+      label: "Agent 委托",
+      title: "下一次交给 Agent 时要写什么",
+      body: `背景写清「${config.missionTitle}」，验收要求它交出：${config.result.recorded}。`,
+    },
+    {
+      label: "面试讲法",
+      title: "这一关能证明哪种能力",
+      body: config.result.nextItems[0] ?? config.result.nextTitle,
+    },
+  ];
+
   return (
     <main
       className="quest-shell career-dossier-gate"
@@ -5454,6 +8053,21 @@ function CareerDossier({
             </span>
           </div>
         </div>
+        <section className="career-transfer-cards" aria-label="迁移口令">
+          <header>
+            <span>迁移口令</span>
+            <strong>把这次通关转成工作、Agent 和面试表达</strong>
+          </header>
+          <div>
+            {transferCards.map((card) => (
+              <article key={card.label}>
+                <span>{card.label}</span>
+                <strong>{card.title}</strong>
+                <p>{card.body}</p>
+              </article>
+            ))}
+          </div>
+        </section>
         <div className="rubric-box">
           <h2>{config.result.nextTitle}</h2>
           <ul>
@@ -5463,6 +8077,20 @@ function CareerDossier({
             <li>本次提示等级为 {hintLevel}，后续尽量减少提示依赖。</li>
           </ul>
         </div>
+        {onBackToRoadmap && (
+          <div className="career-dossier-actions" aria-label="结案后下一步">
+            <button
+              className="dialogue-next"
+              onClick={onBackToRoadmap}
+              type="button"
+            >
+              回到路线图，继续冒险 <ArrowRight size={17} />
+            </button>
+            <p>
+              你可以继续下一章，也可以打开面试复盘册，把这次证据整理成回答草稿。
+            </p>
+          </div>
+        )}
       </section>
     </main>
   );
@@ -5471,96 +8099,245 @@ function CareerDossier({
 function ChapterRewardGate({
   developer,
   reward,
+  nextChapter,
   onBackToRoadmap,
+  onContinueToLab,
 }: {
   developer: DeveloperProfile;
   reward: ChapterReward;
+  nextChapter: CareerChapter | undefined;
   onBackToRoadmap: () => void;
+  onContinueToLab: () => void;
 }) {
   const unlock = reward.chapter.companionUnlock;
   const portrait = companionPortraits[unlock.name];
+  const guide = getChapterGuide(reward.chapter);
+  const usesGuidePortrait = unlock.type === "装备";
+  const stagePortrait = usesGuidePortrait ? guide.image : portrait;
+  const stageName = usesGuidePortrait ? guide.name : unlock.name;
   const nextRank = getNextRank(developer.xp);
   const rankChanged = reward.beforeRank !== reward.afterRank;
+  const levelChanged = reward.beforeLevel !== reward.afterLevel;
+  const earned = reward.phase === "earned";
+  const stageBackground = getChapterDossierBackground(reward.chapter);
+  const adventureProgress = getAdventureProgress(developer.xp);
 
   return (
     <main
-      className="quest-shell chapter-reward-gate"
-      style={{ "--quest-bg": `url(${questArchive})` } as CSSProperties}
+      className={`quest-shell chapter-reward-gate ${earned ? "reward-earned" : "reward-rendezvous"}`}
+      style={{ "--quest-bg": `url(${stageBackground})` } as CSSProperties}
     >
       <div className="quest-camera" />
       <header className="quest-hud" aria-label="章节结算">
         <div>
-          <span>{developer.rank}</span>
+          <span>
+            Lv.{adventureProgress.level} · {developer.rank}
+          </span>
           <strong>{developer.xp} XP</strong>
         </div>
         <div>
           <span>主线</span>
-          <strong>第 {reward.chapter.id} 章</strong>
+          <strong>第 {displayChapterNumber(reward.chapter)} 章</strong>
         </div>
       </header>
 
       <section className="chapter-reward-stage">
         <div className="reward-portrait-card">
-          {portrait ? (
-            <img src={portrait} alt={unlock.name} />
+          {stagePortrait ? (
+            <img src={stagePortrait} alt={stageName} />
           ) : (
             <div className="reward-portrait-fallback">
-              {unlock.name.slice(0, 1)}
+              {stageName.slice(0, 1)}
             </div>
           )}
-          <span>{unlock.type}解锁</span>
-          <strong>{unlock.name}</strong>
-          <p>{unlock.description}</p>
+          <span>
+            {usesGuidePortrait
+              ? earned
+                ? `${unlock.name}已交付`
+                : `${guide.name}会合`
+              : earned
+                ? `${unlock.type}正式归队`
+                : `${unlock.type}会合`}
+          </span>
+          <strong>{stageName}</strong>
+          <p>
+            {unlock.description}
+            {!earned &&
+              (usesGuidePortrait
+                ? ` 完成实战证据链后，由他把装备「${unlock.name}」交给你。`
+                : " 完成实战证据链后，伙伴才会正式加入收藏。")}
+          </p>
         </div>
 
         <div className="mission-dossier reward-dossier">
-          <span>章节结算 · {reward.chapter.world}</span>
+          <span>
+            {earned ? "实战结算" : "实战前会合"} · {reward.chapter.world}
+          </span>
           <h1>
-            第 {reward.chapter.id} 章已通关：{reward.chapter.theme}
+            {earned
+              ? `第 ${displayChapterNumber(reward.chapter)} 章实战已通过：${reward.chapter.theme}`
+              : `第 ${displayChapterNumber(reward.chapter)} 章路线已解读：${reward.chapter.theme}`}
           </h1>
-          <p>{reward.chapter.summary}</p>
-          <blockquote>{reward.chapter.interviewReview}</blockquote>
-
-          <div className="reward-ledger" aria-label="本章奖励">
-            <div>
-              <b>XP</b>
+          <p>
+            {earned
+              ? reward.chapter.summary
+              : "你已经看懂事故、流程和证据边界。现在要进入真实沙盒，把理解变成可验证的工程证据。"}
+          </p>
+          <div
+            className={`adventure-level-track ${adventureProgress.isMaxLevel ? "maxed" : ""}`}
+            aria-label="冒险等级进度"
+          >
+            <div className="adventure-level-heading">
+              <span>成长星轨</span>
+              <strong>Lv.{adventureProgress.level}</strong>
+              <b>{developer.rank}</b>
+            </div>
+            <div
+              className="adventure-level-bar"
+              role="progressbar"
+              aria-label="当前冒险等级经验"
+              aria-valuemin={0}
+              aria-valuemax={adventureProgress.xpPerLevel}
+              aria-valuenow={adventureProgress.currentLevelXp}
+            >
+              <i style={{ width: `${adventureProgress.percent}%` }} />
+            </div>
+            <p>
+              {adventureProgress.isMaxLevel
+                ? "Lv.16 主线星轨已点亮，继续用延迟复测和作品集证明迁移能力。"
+                : `再获得 ${adventureProgress.xpToNextLevel} XP 升到 Lv.${adventureProgress.level + 1}。`}
+            </p>
+          </div>
+          {earned && (levelChanged || rankChanged) && (
+            <div className="adventure-promotion" role="status">
+              <span>{rankChanged ? "阶位晋升" : "冒险等级提升"}</span>
               <strong>
-                {reward.wasAlreadyCleared ? "复习完成" : `+${reward.xpGained}`}
+                Lv.{reward.beforeLevel} → Lv.{reward.afterLevel}
+                {rankChanged
+                  ? ` · ${reward.beforeRank} → ${reward.afterRank}`
+                  : ""}
               </strong>
-              <span>
-                {reward.wasAlreadyCleared
-                  ? "已通关章节不重复刷能力分"
-                  : rankChanged
-                    ? `阶位提升：${reward.beforeRank} → ${reward.afterRank}`
-                    : nextRank
-                      ? `距离 ${nextRank.name} 还差 ${nextRank.need} XP`
-                      : "已到当前最高阶位"}
-              </span>
+              <p>称号记录训练进度，真实工作能力仍以本章证据和复测结果为准。</p>
             </div>
-            <div>
-              <b>能力印记</b>
-              <strong>{reward.chapter.learn}</strong>
-              <span>{reward.chapter.validation}</span>
-            </div>
-          </div>
+          )}
+          {earned && (
+            <>
+              <blockquote>{reward.chapter.interviewReview}</blockquote>
+              <div className="reward-ledger" aria-label="本章奖励">
+                <div>
+                  <b>XP</b>
+                  <strong>
+                    {reward.wasAlreadyCleared
+                      ? "复习完成"
+                      : `+${reward.xpGained}`}
+                  </strong>
+                  <span>
+                    {reward.wasAlreadyCleared
+                      ? "已通关章节不重复刷能力分"
+                      : rankChanged
+                        ? `阶位提升：${reward.beforeRank} → ${reward.afterRank}`
+                        : nextRank
+                          ? `距离 ${nextRank.name} 还差 ${nextRank.need} XP`
+                          : "已到当前最高阶位"}
+                  </span>
+                </div>
+                <div>
+                  <b>能力印记</b>
+                  <strong>{reward.chapter.learn}</strong>
+                  <span>{reward.chapter.validation}</span>
+                </div>
+              </div>
+            </>
+          )}
 
-          <div className="reward-chip-grid" aria-label="本章收获">
-            {reward.chapter.rewards.map((item) => (
-              <span key={item}>{item}</span>
-            ))}
-          </div>
+          {earned ? (
+            <>
+              <div className="reward-chip-grid" aria-label="本章收获">
+                {reward.chapter.rewards.map((item) => (
+                  <span key={item}>{item}</span>
+                ))}
+              </div>
+
+              <div className="reward-interview-cards" aria-label="本章面试素材">
+                <article>
+                  <span>工作能力</span>
+                  <strong>{reward.chapter.validation}</strong>
+                  <p>{reward.chapter.workBackground}</p>
+                </article>
+                <article>
+                  <span>Agent 委托口令</span>
+                  <strong>{reward.chapter.agentCollaboration}</strong>
+                  <p>把背景、边界和验收证据写清楚，才算能把任务交给 Agent。</p>
+                </article>
+                <article>
+                  <span>面试一句话</span>
+                  <strong>{reward.chapter.interviewReview}</strong>
+                  <p>这是本章通关后可以放进作品集或面试复盘的表达雏形。</p>
+                </article>
+              </div>
+
+              <div className="reward-next-quest" aria-label="下一步选择">
+                <div>
+                  <span>下一步</span>
+                  <strong>打开成长档案，整理本次证据</strong>
+                  <p>把本章证据带进工作复盘、Agent 委托和面试表达。</p>
+                </div>
+                {nextChapter ? (
+                  <div>
+                    <span>下一章预告</span>
+                    <strong>
+                      第 {nextChapter.id} 章 · {nextChapter.theme}
+                    </strong>
+                    <p>{nextChapter.storyScene}</p>
+                  </div>
+                ) : (
+                  <div>
+                    <span>终章之后</span>
+                    <strong>整理作品集与面试复盘</strong>
+                    <p>
+                      你可以回路线图打开面试作品集，把十五章证据整理成回答。
+                    </p>
+                  </div>
+                )}
+              </div>
+            </>
+          ) : (
+            <div className="rendezvous-brief" aria-label="实战会合简报">
+              <article>
+                <span>现在只做一件事</span>
+                <strong>{reward.chapter.validation}</strong>
+              </article>
+              <article>
+                <span>通关门槛</span>
+                <strong>测试通过 + 必填作答 + 提交成长档案</strong>
+              </article>
+              <article>
+                <span>通过后领取</span>
+                <strong>
+                  +{reward.xpGained} XP · {unlock.name}正式归队
+                </strong>
+              </article>
+            </div>
+          )}
 
           <div className="reward-boundary">
             <ShieldCheck size={17} />
             <p>
-              本章剧情教学证明你看懂了路线和证据边界。要证明真实工程能力，
-              后续还需要完成独立沙盒、测试报告和复盘迁移。
+              {earned
+                ? "系统只在真实测试通过、必填作答完成并提交成长档案后结算；这仍不等于真人学习效果已经验证。"
+                : "当前只证明你走完了剧情教学，不代表已经掌握。XP、阶位和伙伴收藏都要等实战证据通过后结算。"}
             </p>
           </div>
 
-          <button className="dialogue-next" onClick={onBackToRoadmap}>
-            回到路线图，查看伙伴图鉴 <ArrowRight size={17} />
-          </button>
+          <div className="chapter-reward-actions">
+            <button className="dialogue-next" onClick={onContinueToLab}>
+              {earned ? "打开成长档案" : "与伙伴进入实战"}{" "}
+              <ArrowRight size={17} />
+            </button>
+            <button className="novel-back" onClick={onBackToRoadmap}>
+              {earned ? "回到路线图，查看伙伴图鉴" : "暂回路线图"}
+            </button>
+          </div>
         </div>
       </section>
     </main>
@@ -5584,9 +8361,11 @@ function CompanionArchive({ entries }: { entries: CompanionArchiveEntry[] }) {
         : true,
   );
   const selected =
-    entries.find((entry) => entry.chapter.id === selectedChapterId) ??
+    filteredEntries.find((entry) => entry.chapter.id === selectedChapterId) ??
+    filteredEntries[0] ??
     defaultEntry;
   const collectedCount = entries.filter((entry) => entry.collected).length;
+  const nextUnlock = entries.find((entry) => !entry.collected);
 
   return (
     <section className="companion-archive" aria-label="伙伴背包">
@@ -5596,7 +8375,19 @@ function CompanionArchive({ entries }: { entries: CompanionArchiveEntry[] }) {
           <strong>
             已收集能力 {collectedCount}/{entries.length}
           </strong>
-          <p>每个解锁物都对应一章工程能力，也对应一段可复盘的面试素材。</p>
+          <p>
+            收集角色、宠物与装备。每个解锁物都对应一章工程能力，也对应一段可复盘的面试素材。
+          </p>
+          {nextUnlock && (
+            <div className="archive-next-unlock" aria-label="下一件可解锁伙伴">
+              <span>下一站会遇见</span>
+              <strong>
+                第 {displayChapterNumber(nextUnlock.chapter)} 章 ·{" "}
+                {nextUnlock.chapter.companionUnlock.name}
+              </strong>
+              <small>{nextUnlock.chapter.companionUnlock.description}</small>
+            </div>
+          )}
         </div>
         <div className="archive-filter" role="group" aria-label="收藏筛选">
           {[
@@ -5616,6 +8407,22 @@ function CompanionArchive({ entries }: { entries: CompanionArchiveEntry[] }) {
         </div>
       </header>
 
+      <label className="archive-select-label">
+        <span>选择要查看的伙伴</span>
+        <select
+          aria-label="选择伙伴或收藏物"
+          onChange={(event) => setSelectedChapterId(event.target.value)}
+          value={selected?.chapter.id ?? "1"}
+        >
+          {filteredEntries.map((entry) => (
+            <option key={entry.chapter.id} value={entry.chapter.id}>
+              第 {displayChapterNumber(entry.chapter)} 章 ·{" "}
+              {entry.chapter.companionUnlock.name} · {entry.status}
+            </option>
+          ))}
+        </select>
+      </label>
+
       <div className="companion-archive-grid">
         <div className="archive-list" aria-label="解锁物列表">
           {filteredEntries.map((entry) => (
@@ -5628,17 +8435,25 @@ function CompanionArchive({ entries }: { entries: CompanionArchiveEntry[] }) {
               type="button"
             >
               {entry.portrait ? (
-                <img src={entry.portrait} alt="" />
+                <img
+                  className={entry.collected ? "" : "archive-locked-portrait"}
+                  src={entry.portrait}
+                  alt=""
+                />
               ) : (
-                <i>{entry.chapter.companionUnlock.name.slice(0, 1)}</i>
+                <i className="archive-silhouette" aria-hidden="true">
+                  {entry.collected
+                    ? entry.chapter.companionUnlock.name.slice(0, 1)
+                    : "?"}
+                </i>
               )}
               <span>
                 <small>
-                  第 {entry.chapter.id} 章 ·{" "}
+                  第 {displayChapterNumber(entry.chapter)} 章 ·{" "}
                   {entry.chapter.companionUnlock.type}
                 </small>
                 <strong>{entry.chapter.companionUnlock.name}</strong>
-                <b>{entry.status}</b>
+                <b>{entry.collected ? "已归队" : "完成本章后揭晓"}</b>
               </span>
             </button>
           ))}
@@ -5651,11 +8466,16 @@ function CompanionArchive({ entries }: { entries: CompanionArchiveEntry[] }) {
             <div className="archive-detail-portrait">
               {selected.portrait ? (
                 <img
+                  className={
+                    selected.collected ? "" : "archive-locked-portrait"
+                  }
                   src={selected.portrait}
                   alt={selected.chapter.companionUnlock.name}
                 />
               ) : (
-                <i>{selected.chapter.companionUnlock.name.slice(0, 1)}</i>
+                <i className="archive-silhouette" aria-hidden="true">
+                  ?
+                </i>
               )}
             </div>
             <div className="archive-detail-body">
@@ -5664,19 +8484,33 @@ function CompanionArchive({ entries }: { entries: CompanionArchiveEntry[] }) {
                 {selected.chapter.world}
               </span>
               <h2>{selected.chapter.companionUnlock.name}</h2>
-              <p>{selected.chapter.companionUnlock.description}</p>
+              <p>
+                {selected.collected
+                  ? selected.chapter.companionUnlock.description
+                  : `完成第 ${displayChapterNumber(selected.chapter)} 章的实战证据后，这位同行者才会显露身份。现在先记住：${selected.chapter.learn}`}
+              </p>
               <dl>
                 <div>
                   <dt>能力印记</dt>
-                  <dd>{selected.chapter.learn}</dd>
+                  <dd>
+                    {selected.collected ? selected.chapter.learn : "通关后解锁"}
+                  </dd>
                 </div>
                 <div>
                   <dt>工作场景</dt>
-                  <dd>{selected.chapter.workBackground}</dd>
+                  <dd>
+                    {selected.collected
+                      ? selected.chapter.workBackground
+                      : "完成关卡后查看真实工作场景"}
+                  </dd>
                 </div>
                 <div>
                   <dt>面试复盘</dt>
-                  <dd>{selected.chapter.interviewReview}</dd>
+                  <dd>
+                    {selected.collected
+                      ? selected.chapter.interviewReview
+                      : "完成关卡后生成你的复盘素材"}
+                  </dd>
                 </div>
               </dl>
             </div>
@@ -5754,7 +8588,8 @@ function InterviewDossierBook({
         >
           {entries.map((entry) => (
             <option key={entry.chapter.id} value={entry.chapter.id}>
-              第 {entry.chapter.id} 章 · {entry.chapter.theme}
+              第 {displayChapterNumber(entry.chapter)} 章 ·{" "}
+              {entry.chapter.theme}
             </option>
           ))}
         </select>
@@ -5779,7 +8614,8 @@ function InterviewDossierBook({
       <article className="dossier-book-card">
         <div className="dossier-book-title">
           <small>
-            第 {chapter.id} 章 · {selected.collected ? "已通关" : "待练习"}
+            第 {displayChapterNumber(chapter)} 章 ·{" "}
+            {selected.collected ? "已通关" : "待练习"}
           </small>
           <h2>{chapter.title}</h2>
           <p>{chapter.validation}</p>
@@ -5826,11 +8662,13 @@ function LearningBackupCard({ onOpen }: { onOpen: () => void }) {
 function InterviewPortfolio({
   attempt,
   developer,
+  learningRecalls,
   onBack,
   onOpenDossier,
 }: {
   attempt: Attempt;
   developer: DeveloperProfile;
+  learningRecalls: LearningRecall[];
   onBack: () => void;
   onOpenDossier: (chapterId: string) => void;
 }) {
@@ -5845,8 +8683,8 @@ function InterviewPortfolio({
     "idle",
   );
   const markdown = useMemo(
-    () => buildInterviewPortfolioMarkdown(developer, response),
-    [developer, response],
+    () => buildInterviewPortfolioMarkdown(developer, response, learningRecalls),
+    [developer, learningRecalls, response],
   );
   const chapters = aiCareerRoadmap.map((chapter) => {
     const saved = readDossierFields(response, chapter.id);
@@ -5859,6 +8697,11 @@ function InterviewPortfolio({
     chapters.find((entry) => entry.chapter.id === selectedChapterId) ??
     chapters[0];
   const selectedReference = getDossierReferenceFields(selected.chapter);
+  const selectedRecalls = getChapterLearningRecalls(
+    learningRecalls,
+    selected.chapter.id,
+  );
+  const recallCount = learningRecalls.length;
   const totalFilled = chapters.reduce(
     (sum, entry) => sum + entry.filledCount,
     0,
@@ -5934,9 +8777,28 @@ function InterviewPortfolio({
             <span>当前身份</span>
             <strong>{developer.rank}</strong>
           </div>
+          <div>
+            <span>我的原话</span>
+            <strong>{recallCount}</strong>
+          </div>
         </div>
 
         <div className="portfolio-layout">
+          <label className="portfolio-mobile-select">
+            <span>选择作品集章节</span>
+            <select
+              aria-label="选择作品集章节"
+              onChange={(event) => setSelectedChapterId(event.target.value)}
+              value={selected.chapter.id}
+            >
+              {chapters.map((entry) => (
+                <option key={entry.chapter.id} value={entry.chapter.id}>
+                  第 {displayChapterNumber(entry.chapter)} 章 ·{" "}
+                  {entry.chapter.theme} · {entry.filledCount}/5 段
+                </option>
+              ))}
+            </select>
+          </label>
           <aside className="portfolio-chapter-list" aria-label="作品集章节">
             {chapters.map((entry) => (
               <button
@@ -5948,7 +8810,7 @@ function InterviewPortfolio({
                 onClick={() => setSelectedChapterId(entry.chapter.id)}
                 type="button"
               >
-                <span>第 {entry.chapter.id} 章</span>
+                <span>第 {displayChapterNumber(entry.chapter)} 章</span>
                 <strong>{entry.chapter.theme}</strong>
                 <small>{entry.filledCount}/5 段复盘</small>
               </button>
@@ -5959,6 +8821,21 @@ function InterviewPortfolio({
             <span>当前章节预览</span>
             <h2>{selected.chapter.title}</h2>
             <p>{selected.chapter.workBackground}</p>
+            <div
+              className="portfolio-recall-evidence"
+              aria-label="我的原始复述"
+            >
+              <span>我的原始复述 · 来自教学记录</span>
+              <blockquote>
+                {selectedRecalls.flow?.activeRecall ??
+                  "本章还没有流程复述。完成流程地图后，你自己的原话会出现在这里。"}
+              </blockquote>
+              <blockquote>
+                {selectedRecalls.acceptance?.activeRecall ??
+                  "本章还没有验收复述。完成章节结案后，你自己的原话会出现在这里。"}
+              </blockquote>
+              <small>这些是原始学习表达，不等于系统已经判定掌握。</small>
+            </div>
             <div className="portfolio-field-grid">
               {interviewDossierFields.map((field) => {
                 const saved = selected.saved[field.id].trim();
@@ -5997,6 +8874,7 @@ function LearningBackupVault({
   const [backupText, setBackupText] = useState("");
   const [status, setStatus] = useState("");
   const [busy, setBusy] = useState(false);
+  const [restoreConfirmed, setRestoreConfirmed] = useState(false);
   const [summary, setSummary] = useState<{
     exportedAt: string;
     tableCount: number;
@@ -6014,6 +8892,7 @@ function LearningBackupVault({
       };
       const text = JSON.stringify(backup, null, 2);
       setBackupText(text);
+      setRestoreConfirmed(false);
       const rowCount = Object.values(backup.tables).reduce(
         (total, rows) => total + rows.length,
         0,
@@ -6091,8 +8970,8 @@ function LearningBackupVault({
       );
       setStatus(
         restoredProfile
-          ? `已恢复学习记录：${rowCount} 条记录已合并，成长档案已同步。`
-          : `已恢复学习记录：${rowCount} 条记录已合并。`,
+          ? `已覆盖恢复学习记录：${rowCount} 条记录已写入，成长档案已同步。`
+          : `已覆盖恢复学习记录：${rowCount} 条记录已写入。`,
       );
       onImported(restoredProfile ?? undefined);
     } catch (cause) {
@@ -6152,8 +9031,11 @@ function LearningBackupVault({
               <Save size={19} />
               <div>
                 <span>恢复方式</span>
-                <strong>粘贴 JSON 合并恢复</strong>
-                <p>恢复会合并白名单学习表，不会执行任意 SQL。</p>
+                <strong>粘贴 JSON 覆盖恢复</strong>
+                <p>
+                  恢复会先清空本地学习记录表，再按备份重建白名单学习表；不会执行任意
+                  SQL。
+                </p>
               </div>
             </section>
           </aside>
@@ -6209,7 +9091,10 @@ function LearningBackupVault({
               <span>备份 JSON</span>
               <textarea
                 aria-label="备份 JSON"
-                onChange={(event) => setBackupText(event.target.value)}
+                onChange={(event) => {
+                  setBackupText(event.target.value);
+                  setRestoreConfirmed(false);
+                }}
                 placeholder="点击“生成备份 JSON”，或粘贴之前保存的 code-quest-learning-backup JSON。"
                 spellCheck={false}
                 value={backupText}
@@ -6217,9 +9102,19 @@ function LearningBackupVault({
             </label>
 
             <div className="backup-vault-restore">
+              <label className="backup-overwrite-confirm">
+                <input
+                  checked={restoreConfirmed}
+                  onChange={(event) =>
+                    setRestoreConfirmed(event.currentTarget.checked)
+                  }
+                  type="checkbox"
+                />
+                <span>我知道恢复会覆盖当前本地学习记录。</span>
+              </label>
               <button
                 className="dossier-book-open"
-                disabled={busy}
+                disabled={busy || !restoreConfirmed}
                 onClick={() => void importBackup()}
                 type="button"
               >
@@ -6227,7 +9122,7 @@ function LearningBackupVault({
               </button>
               <p>
                 恢复前会校验备份格式、schema 版本、场景 ID、步骤 ID 和 JSON
-                字段。校验失败不会写入数据库。
+                字段。校验失败不会写入数据库；校验通过后会用这份备份覆盖当前本地学习记录。
               </p>
             </div>
 
@@ -6258,10 +9153,11 @@ function normalizeBackupDeveloperProfile(
   const clearedChapterIds = Array.from(
     new Set(record.clearedChapterIds.map((chapterId) => String(chapterId))),
   ).sort((a, b) => Number(a) - Number(b));
-  const unlockedCompanionNames = Array.from(
-    new Set(record.unlockedCompanionNames.map((name) => String(name))),
+  const unlockedCompanionNames = reconcileCompanionUnlocks(
+    clearedChapterIds,
+    record.unlockedCompanionNames,
   );
-  const xp = Number(record.xp);
+  const xp = reconcileCareerXp(Number(record.xp), clearedChapterIds);
   return {
     name: record.name,
     xp,
@@ -6277,12 +9173,14 @@ function InterviewDossierRoom({
   attempt,
   chapterId,
   developer,
+  learningRecalls,
   onBack,
   setAttempt,
 }: {
   attempt: Attempt;
   chapterId: string;
   developer: DeveloperProfile;
+  learningRecalls: LearningRecall[];
   onBack: () => void;
   setAttempt: React.Dispatch<React.SetStateAction<Attempt | null>>;
 }) {
@@ -6300,6 +9198,10 @@ function InterviewDossierRoom({
   const selectedChapter =
     aiCareerRoadmap.find((chapter) => chapter.id === selectedChapterId) ??
     currentChapter;
+  const selectedRecalls = getChapterLearningRecalls(
+    learningRecalls,
+    selectedChapterId,
+  );
   const filledCount = interviewDossierFields.filter(
     (field) => fields[field.id].trim().length > 0,
   ).length;
@@ -6386,7 +9288,7 @@ function InterviewDossierRoom({
               >
                 {aiCareerRoadmap.map((chapter) => (
                   <option key={chapter.id} value={chapter.id}>
-                    第 {chapter.id} 章 · {chapter.theme}
+                    第 {displayChapterNumber(chapter)} 章 · {chapter.theme}
                   </option>
                 ))}
               </select>
@@ -6409,6 +9311,22 @@ function InterviewDossierRoom({
                   <dd>{selectedChapter.interviewReview}</dd>
                 </div>
               </dl>
+            </div>
+            <div
+              className="dossier-room-card learner-recall-card"
+              aria-label="我的原始复述"
+            >
+              <span>我的原始复述</span>
+              <h2>先听自己怎么说，再看路线参考</h2>
+              <blockquote>
+                {selectedRecalls.flow?.activeRecall ??
+                  "尚未保存流程复述；完成本章流程地图后会自动带到这里。"}
+              </blockquote>
+              <blockquote>
+                {selectedRecalls.acceptance?.activeRecall ??
+                  "尚未保存验收复述；完成本章结案后会自动带到这里。"}
+              </blockquote>
+              <small>原话不评分，也不会因为写得长就自动晋级。</small>
             </div>
           </aside>
 
@@ -6460,14 +9378,18 @@ function InterviewDossierRoom({
   );
 }
 
-function Lab({
+export function Lab({
   attempt,
   artifacts,
   setAttempt,
+  onBackToRoadmap,
+  onSubmitted,
 }: {
   attempt: Attempt;
   artifacts: Artifact[];
   setAttempt: React.Dispatch<React.SetStateAction<Attempt | null>>;
+  onBackToRoadmap: () => void;
+  onSubmitted: (options?: LabSubmissionOptions) => void;
 }) {
   const config = getLabConfig(attempt.scenarioId);
   const firstIncompleteIndex = useMemo(() => {
@@ -6482,6 +9404,7 @@ function Lab({
   const [activeIndex, setActiveIndex] = useState(firstIncompleteIndex);
   const [hintBusy, setHintBusy] = useState(false);
   const [submitError, setSubmitError] = useState("");
+  const [lastSavedStep, setLastSavedStep] = useState<LabStep | null>(null);
   const activeStep = config.steps[activeIndex] ?? config.steps[0];
 
   const saveStep = async (stepId: string, text: string) => {
@@ -6494,6 +9417,10 @@ function Lab({
     );
     setAttempt(updated);
     const index = config.steps.findIndex((step) => step.id === stepId);
+    const savedStep = config.steps[index];
+    if (savedStep) {
+      setLastSavedStep(savedStep);
+    }
     if (index >= 0 && index < config.steps.length - 1) {
       setActiveIndex(index + 1);
     }
@@ -6528,19 +9455,39 @@ function Lab({
         body: "{}",
       });
       setAttempt(updated);
+      onSubmitted({ showReward: true });
     } catch (cause) {
       setSubmitError(cause instanceof Error ? cause.message : "结算失败");
     }
   };
 
+  useEffect(() => {
+    if (attempt.status === "submitted") {
+      onSubmitted({ showReward: false });
+    }
+  }, [attempt.status, onSubmitted]);
+
   if (attempt.status === "submitted") {
-    return <CareerDossier hintLevel={attempt.hintLevel} config={config} />;
+    return (
+      <CareerDossier
+        hintLevel={attempt.hintLevel}
+        config={config}
+        onBackToRoadmap={onBackToRoadmap}
+      />
+    );
   }
+
+  const activeScene = getLabStepScene(config, activeStep);
 
   return (
     <div
       className="lab-shell lab-rpg-shell"
-      style={{ "--lab-bg": `url(${config.backgroundImage})` } as CSSProperties}
+      style={
+        {
+          "--lab-bg": `url(${activeScene.image})`,
+          "--lab-scene-bg": `url(${activeScene.image})`,
+        } as CSSProperties
+      }
     >
       <div className="lab-rpg-backdrop" />
       <aside className="lab-sidebar">
@@ -6564,7 +9511,10 @@ function Lab({
               <button
                 key={step.id}
                 className={`${activeIndex === index ? "active" : ""} ${done ? "done" : ""}`}
-                onClick={() => setActiveIndex(index)}
+                onClick={() => {
+                  setActiveIndex(index);
+                  setLastSavedStep(null);
+                }}
               >
                 <span>{done ? <Check size={15} /> : <Icon size={15} />}</span>
                 <b>{step.label}</b>
@@ -6587,9 +9537,70 @@ function Lab({
           </div>
         </header>
         <div className="lab-content">
+          <QuestLog
+            title={`${config.missionLabel} 实战追踪`}
+            previous={{
+              label:
+                activeIndex === 0
+                  ? "章节剧情已交接"
+                  : (config.steps[activeIndex - 1]?.label ?? "章节剧情已交接"),
+              body:
+                activeIndex === 0
+                  ? "你已经看过本章事故现场，接下来要把剧情线索变成真实项目证据。"
+                  : "上一题已经收录到本地成长档案草稿，现在继续把证据链补完整。",
+            }}
+            current={{
+              label: activeStep.label,
+              body:
+                activeStep.kind === "response" && activeStep.response
+                  ? activeStep.response.prompt
+                  : activeStep.kind === "verification"
+                    ? "运行本章验收，确认测试报告、失败原因和修复证据是否对得上。"
+                    : config.baseline.body,
+            }}
+            next={{
+              label:
+                config.steps[activeIndex + 1]?.label ?? config.result.nextTitle,
+              body:
+                config.steps[activeIndex + 1]?.kind === "verification"
+                  ? "下一步用测试报告证明自己不是凭感觉判断。"
+                  : config.steps[activeIndex + 1]
+                    ? "下一步继续补一段可复述的证据解释。"
+                    : "最后生成成长档案，把本关产出整理成工作、Agent 和面试三种表达。",
+            }}
+          />
+          <LabSceneGuide
+            activeIndex={activeIndex}
+            activeStep={activeStep}
+            config={config}
+          />
+          <LabStepQuestBrief
+            activeIndex={activeIndex}
+            activeStep={activeStep}
+            config={config}
+          />
+          <LabFlowDialogue
+            activeIndex={activeIndex}
+            activeStep={activeStep}
+            config={config}
+          />
+          <LabAbilityMark activeStep={activeStep} config={config} />
+          {lastSavedStep && lastSavedStep.id !== activeStep.id && (
+            <LabStepReceipt
+              config={config}
+              nextStep={activeStep}
+              savedStep={lastSavedStep}
+            />
+          )}
           <LabFlowMap
             activeIndex={activeIndex}
             activeStepLabel={activeStep.label}
+            config={config}
+          />
+          <LabCaseRouteBoard config={config} />
+          <LabRelayBoard
+            activeIndex={activeIndex}
+            activeStep={activeStep}
             config={config}
           />
           {activeStep.kind === "baseline" && (
@@ -6602,7 +9613,10 @@ function Lab({
               <p>{config.baseline.body}</p>
               <button
                 className="v2-button primary"
-                onClick={() => setActiveIndex(1)}
+                onClick={() => {
+                  setActiveIndex(1);
+                  setLastSavedStep(null);
+                }}
               >
                 {config.baseline.action} <ArrowRight size={17} />
               </button>
@@ -6733,12 +9747,19 @@ export default function App() {
   const [teachingComplete, setTeachingComplete] = useState(false);
   const [developer, setDeveloper] = useState<DeveloperProfile>(loadDeveloper);
   const [currentMission, setCurrentMission] = useState(1);
+  const [activeScenarioId, setActiveScenarioId] = useState(SCENARIO_ID);
   const [chapterReward, setChapterReward] = useState<ChapterReward | null>(
     null,
   );
   const [showInterviewDossier, setShowInterviewDossier] = useState(false);
   const [showInterviewPortfolio, setShowInterviewPortfolio] = useState(false);
+  const [learningRecalls, setLearningRecalls] = useState<LearningRecall[]>([]);
   const [showBackupVault, setShowBackupVault] = useState(false);
+  const [activeTransferRetestSource, setActiveTransferRetestSource] =
+    useState<TransferRetestSourceId | null>(null);
+  const [transferRetestStatuses, setTransferRetestStatuses] = useState<
+    Partial<Record<TransferRetestSourceId, TransferRetestStatus>>
+  >({});
   const [dossierChapterId, setDossierChapterId] = useState("1");
   const [showMissionSelect, setShowMissionSelect] = useState(false);
   const [showGameIntro, setShowGameIntro] = useState(true);
@@ -6746,13 +9767,13 @@ export default function App() {
   const [selectedRouteId, setSelectedRouteId] = useState<CareerRoute["id"]>(
     careerRoutes[0].id,
   );
-  const [selectedChapterId, setSelectedChapterId] = useState("3");
+  const [selectedChapterId, setSelectedChapterId] = useState<string | null>(
+    null,
+  );
   const [briefingRoom, setBriefingRoom] = useState<
     "mission" | "companions" | "interview" | "backup"
   >("mission");
-  const [storyChoice, setStoryChoice] = useState<
-    "rush" | "evidence" | "agent" | null
-  >(null);
+  const [storyChoice, setStoryChoice] = useState<OpeningChoice | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -6761,15 +9782,31 @@ export default function App() {
       setError("");
       try {
         await api("/api/health");
-        const session = await api<Diagnostic>("/api/diagnostic-sessions", {
-          method: "POST",
-          body: "{}",
-        });
+        const [session, ...retestStatuses] = await Promise.all([
+          api<Diagnostic>("/api/diagnostic-sessions", {
+            method: "POST",
+            body: "{}",
+          }),
+          ...transferRetestSourceIds.map((sourceScenarioId) =>
+            api<TransferRetestStatus>(
+              `/api/transfer-retests/${sourceScenarioId}`,
+            ).catch(() => null),
+          ),
+        ]);
         if (cancelled) return;
         setDiagnostic(session);
-        const restoredChapter = readChapterHash();
+        setTransferRetestStatuses(
+          Object.fromEntries(
+            transferRetestSourceIds.flatMap((sourceScenarioId, index) => {
+              const status = retestStatuses[index];
+              return status ? [[sourceScenarioId, status]] : [];
+            }),
+          ),
+        );
+        const restoredChapter = readRouteChapterHash();
         if (restoredChapter) {
-          const scenarioId = getScenarioIdForChapter(restoredChapter);
+          const scenarioId = restoredChapter.scenarioId;
+          setActiveScenarioId(scenarioId);
           if (session.status === "active") {
             const saved = await api<Diagnostic>(
               `/api/diagnostic-sessions/${session.id}`,
@@ -6793,8 +9830,11 @@ export default function App() {
           ]);
           if (cancelled) return;
           setAttempt(currentAttempt);
+          setStoryChoice(readOpeningChoice(currentAttempt));
           setArtifacts(scenario.artifacts);
-          setCurrentMission(restoredChapter);
+          setSelectedRouteId(restoredChapter.routeId);
+          setSelectedChapterId(restoredChapter.chapterId);
+          setCurrentMission(restoredChapter.chapterNumber);
           setShowGameIntro(false);
           setShowMissionSelect(false);
           setTeachingComplete(false);
@@ -6811,11 +9851,17 @@ export default function App() {
           ]);
           if (cancelled) return;
           setAttempt(currentAttempt);
+          setActiveScenarioId(SCENARIO_ID);
+          setStoryChoice(readOpeningChoice(currentAttempt));
           setArtifacts(scenario.artifacts);
           // 恢复时检查教学进度
           try {
             const teaching = await api<
-              Array<{ stepId: string; completed: boolean }>
+              Array<{
+                stepId: string;
+                completed: boolean;
+                teachingResponse?: Record<string, unknown>;
+              }>
             >(`/api/attempts/${currentAttempt.id}/teaching`);
             const allSteps = teachingScenario.steps;
             const allDone =
@@ -6823,7 +9869,20 @@ export default function App() {
               allSteps.every((step) =>
                 teaching.find((t) => t.stepId === step.id && t.completed),
               );
-            if (allDone) setTeachingComplete(true);
+            if (allDone) {
+              setTeachingComplete(true);
+            } else if (
+              teaching.some(
+                (item) =>
+                  item.completed || item.stepId === "canvasstorm-investigation",
+              )
+            ) {
+              // 根地址也能继续最近一次委托，避免用户以为刷新后学习丢失。
+              setCurrentMission(1);
+              setSelectedChapterId("1");
+              setShowMissionSelect(false);
+              setShowGameIntro(false);
+            }
           } catch {
             // 新 schema 下没有 teaching_progress 记录=未完成教学
           }
@@ -6844,19 +9903,38 @@ export default function App() {
     };
   }, [reloadKey]);
 
-  const prepareRouteAttempt = async (scenarioId = SCENARIO_ID) => {
+  const refreshTransferRetestStatus = async (
+    sourceScenarioId: TransferRetestSourceId,
+  ) => {
+    const status = await api<TransferRetestStatus>(
+      `/api/transfer-retests/${sourceScenarioId}`,
+    );
+    setTransferRetestStatuses((current) => ({
+      ...current,
+      [sourceScenarioId]: status,
+    }));
+    return status;
+  };
+
+  const prepareRouteAttempt = async (
+    scenarioId = SCENARIO_ID,
+    openingChoice?: OpeningChoice | null,
+  ) => {
     if (!diagnostic) return;
+
+    setActiveScenarioId(scenarioId);
 
     if (attempt?.scenarioId === scenarioId) return;
 
     try {
+      const baselineRecord = getRouteBaselineRecord(openingChoice);
       if (diagnostic.status === "active") {
         const saved = await api<Diagnostic>(
           `/api/diagnostic-sessions/${diagnostic.id}`,
           {
             method: "PATCH",
             body: JSON.stringify({
-              baseline: routeBaselineRecord,
+              baseline: baselineRecord,
               completed: true,
             }),
           },
@@ -6876,7 +9954,7 @@ export default function App() {
           `/api/attempts/${currentAttempt.id}/steps/baseline-plan`,
           {
             method: "PATCH",
-            body: JSON.stringify({ response: routeBaselineRecord }),
+            body: JSON.stringify({ response: baselineRecord }),
           },
         );
         setAttempt(withRouteRecord);
@@ -6891,17 +9969,19 @@ export default function App() {
 
   const startMissionOne = async () => {
     scrollPageToTop();
+    setActiveScenarioId(SCENARIO_ID);
     writeChapterHash(1);
     setShowGameIntro(false);
     setChapterReward(null);
     setCurrentMission(1);
-    await prepareRouteAttempt();
+    await prepareRouteAttempt(SCENARIO_ID, storyChoice ?? "evidence");
   };
 
   const startChapter = async (
     chapter: 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15,
   ) => {
     scrollPageToTop();
+    setActiveScenarioId(getScenarioIdForChapter(chapter));
     writeChapterHash(chapter);
     setShowGameIntro(false);
     setShowMissionSelect(false);
@@ -6911,11 +9991,135 @@ export default function App() {
     await prepareRouteAttempt(getScenarioIdForChapter(chapter));
   };
 
+  const startJavaRoute = async () => {
+    scrollPageToTop();
+    setActiveScenarioId(JAVA_SCENARIO_ID);
+    writeRouteChapterHashById("java-backend", "java-1");
+    setShowGameIntro(false);
+    setShowMissionSelect(false);
+    setTeachingComplete(false);
+    setChapterReward(null);
+    setCurrentMission(1);
+    await prepareRouteAttempt(JAVA_SCENARIO_ID);
+  };
+
+  const startJavaTransactionChapter = async () => {
+    scrollPageToTop();
+    setActiveScenarioId(JAVA_TRANSACTION_SCENARIO_ID);
+    writeRouteChapterHashById("java-backend", "java-2");
+    setShowGameIntro(false);
+    setShowMissionSelect(false);
+    setTeachingComplete(false);
+    setChapterReward(null);
+    setCurrentMission(2);
+    await prepareRouteAttempt(JAVA_TRANSACTION_SCENARIO_ID);
+  };
+
+  const startJavaCacheChapter = async () => {
+    scrollPageToTop();
+    setActiveScenarioId(JAVA_CACHE_SCENARIO_ID);
+    writeRouteChapterHashById("java-backend", "java-3");
+    setShowGameIntro(false);
+    setShowMissionSelect(false);
+    setTeachingComplete(false);
+    setChapterReward(null);
+    setCurrentMission(3);
+    await prepareRouteAttempt(JAVA_CACHE_SCENARIO_ID);
+  };
+
+  const startJavaReleaseChapter = async () => {
+    scrollPageToTop();
+    setActiveScenarioId(JAVA_RELEASE_SCENARIO_ID);
+    writeRouteChapterHashById("java-backend", "java-4");
+    setShowGameIntro(false);
+    setShowMissionSelect(false);
+    setTeachingComplete(false);
+    setChapterReward(null);
+    setCurrentMission(4);
+    await prepareRouteAttempt(JAVA_RELEASE_SCENARIO_ID);
+  };
+
+  const startJavaIncidentChapter = async () => {
+    scrollPageToTop();
+    setActiveScenarioId(JAVA_INCIDENT_SCENARIO_ID);
+    writeRouteChapterHashById("java-backend", "java-5");
+    setShowGameIntro(false);
+    setShowMissionSelect(false);
+    setTeachingComplete(false);
+    setChapterReward(null);
+    setCurrentMission(5);
+    await prepareRouteAttempt(JAVA_INCIDENT_SCENARIO_ID);
+  };
+
+  const startFrontendRoute = async () => {
+    scrollPageToTop();
+    setActiveScenarioId(FRONTEND_SCENARIO_ID);
+    writeRouteChapterHashById("frontend-engineering", "frontend-1");
+    setShowGameIntro(false);
+    setShowMissionSelect(false);
+    setTeachingComplete(false);
+    setChapterReward(null);
+    setCurrentMission(1);
+    await prepareRouteAttempt(FRONTEND_SCENARIO_ID);
+  };
+
+  const startFrontendRequestStatesChapter = async () => {
+    scrollPageToTop();
+    setActiveScenarioId(FRONTEND_REQUEST_STATES_SCENARIO_ID);
+    writeRouteChapterHashById("frontend-engineering", "frontend-2");
+    setShowGameIntro(false);
+    setShowMissionSelect(false);
+    setTeachingComplete(false);
+    setChapterReward(null);
+    setCurrentMission(2);
+    await prepareRouteAttempt(FRONTEND_REQUEST_STATES_SCENARIO_ID);
+  };
+
+  const startFrontendPerformanceChapter = async () => {
+    scrollPageToTop();
+    setActiveScenarioId(FRONTEND_PERFORMANCE_SCENARIO_ID);
+    writeRouteChapterHashById("frontend-engineering", "frontend-3");
+    setShowGameIntro(false);
+    setShowMissionSelect(false);
+    setTeachingComplete(false);
+    setChapterReward(null);
+    setCurrentMission(3);
+    await prepareRouteAttempt(FRONTEND_PERFORMANCE_SCENARIO_ID);
+  };
+
+  const startFrontendAccessibilityChapter = async () => {
+    scrollPageToTop();
+    setActiveScenarioId(FRONTEND_ACCESSIBILITY_SCENARIO_ID);
+    writeRouteChapterHashById("frontend-engineering", "frontend-4");
+    setShowGameIntro(false);
+    setShowMissionSelect(false);
+    setTeachingComplete(false);
+    setChapterReward(null);
+    setCurrentMission(4);
+    await prepareRouteAttempt(FRONTEND_ACCESSIBILITY_SCENARIO_ID);
+  };
+
+  const startFrontendTestingChapter = async () => {
+    scrollPageToTop();
+    setActiveScenarioId(FRONTEND_TESTING_SCENARIO_ID);
+    writeRouteChapterHashById("frontend-engineering", "frontend-5");
+    setShowGameIntro(false);
+    setShowMissionSelect(false);
+    setTeachingComplete(false);
+    setChapterReward(null);
+    setCurrentMission(5);
+    await prepareRouteAttempt(FRONTEND_TESTING_SCENARIO_ID);
+  };
+
   const openInterviewDossier = async (chapterId: string) => {
     scrollPageToTop();
     clearChapterHash();
     setDossierChapterId(chapterId);
-    await prepareRouteAttempt();
+    const [, recallResult] = await Promise.all([
+      prepareRouteAttempt(),
+      api<{ recalls: LearningRecall[] }>("/api/learning-recalls"),
+    ]);
+    setLearningRecalls(recallResult.recalls);
     setShowInterviewPortfolio(false);
     setShowInterviewDossier(true);
   };
@@ -6923,7 +10127,13 @@ export default function App() {
   const openInterviewPortfolio = async () => {
     scrollPageToTop();
     clearChapterHash();
-    if (!attempt) await prepareRouteAttempt();
+    const tasks: Promise<unknown>[] = [
+      api<{ recalls: LearningRecall[] }>("/api/learning-recalls").then(
+        (result) => setLearningRecalls(result.recalls),
+      ),
+    ];
+    if (!attempt) tasks.push(prepareRouteAttempt());
+    await Promise.all(tasks);
     setShowInterviewDossier(false);
     setShowInterviewPortfolio(true);
   };
@@ -6954,6 +10164,7 @@ export default function App() {
         attempt={attempt}
         chapterId={dossierChapterId}
         developer={developer}
+        learningRecalls={learningRecalls}
         onBack={() => {
           scrollPageToTop();
           clearChapterHash();
@@ -6973,6 +10184,7 @@ export default function App() {
       <InterviewPortfolio
         attempt={attempt}
         developer={developer}
+        learningRecalls={learningRecalls}
         onBack={() => {
           scrollPageToTop();
           clearChapterHash();
@@ -7005,15 +10217,83 @@ export default function App() {
     );
   }
 
+  if (activeTransferRetestSource) {
+    const activeRetestConfig = getTransferRetestConfig(
+      activeTransferRetestSource,
+    );
+    return (
+      <Suspense
+        fallback={
+          <main className="retest-loading" aria-live="polite">
+            <LoaderCircle className="spin" />
+            <p>正在进入{activeRetestConfig.location}...</p>
+          </main>
+        }
+      >
+        <TransferRetestLab
+          sourceScenarioId={activeTransferRetestSource}
+          onBack={() => {
+            scrollPageToTop();
+            void refreshTransferRetestStatus(activeTransferRetestSource);
+            setActiveTransferRetestSource(null);
+          }}
+          onCompleted={async () => {
+            await refreshTransferRetestStatus(activeTransferRetestSource);
+            scrollPageToTop();
+            setActiveTransferRetestSource(null);
+            setShowGameIntro(true);
+            setIntroScene(2);
+          }}
+        />
+      </Suspense>
+    );
+  }
+
   // 职业路线封面 — 最先展示
   if (showGameIntro) {
     const selectedRoute =
       careerRoutes.find((route) => route.id === selectedRouteId) ??
       careerRoutes[0];
-    const selectedChapter =
-      aiCareerRoadmap.find((chapter) => chapter.id === selectedChapterId) ??
-      aiCareerRoadmap[2] ??
+    const companionCodex = selectedRoute.chapters.map((chapter) => {
+      const collected = isChapterCleared(developer, chapter.id);
+      const playable = selectedRoute.status === "可进入";
+      return {
+        chapter,
+        collected,
+        status: collected ? "已收集" : playable ? "可获取" : "待解锁",
+        portrait: companionPortraits[chapter.companionUnlock.name],
+      };
+    });
+    const selectedRouteClearedCount = selectedRoute.chapters.filter((chapter) =>
+      isChapterCleared(developer, chapter.id),
+    ).length;
+    const nextRankGoal = getNextRank(developer.xp);
+    const adventureProgress = getAdventureProgress(developer.xp);
+    const nextUnlockEntry = companionCodex.find((entry) => !entry.collected);
+    const collectedCompanionCount = companionCodex.filter(
+      (entry) => entry.collected,
+    ).length;
+    const selectedRoutePlayable = selectedRoute.status === "可进入";
+    const firstUnclearedChapter = selectedRoute.chapters.find(
+      (chapter) => !isChapterCleared(developer, chapter.id),
+    );
+    const routeCompleted =
+      selectedRoutePlayable &&
+      selectedRoute.chapters.length > 0 &&
+      firstUnclearedChapter === undefined;
+    const nextQuestChapter =
+      firstUnclearedChapter ??
+      selectedRoute.chapters[selectedRoute.chapters.length - 1] ??
       currentChapter;
+    const routeMissionChapter =
+      selectedRoute.id === "java-backend" ||
+      selectedRoute.id === "frontend-engineering"
+        ? nextQuestChapter
+        : currentChapter;
+    const selectedChapter =
+      selectedRoute.chapters.find(
+        (chapter) => chapter.id === (selectedChapterId ?? nextQuestChapter.id),
+      ) ?? nextQuestChapter;
     const playableChapter =
       selectedChapter.id === "2"
         ? 2
@@ -7044,32 +10324,52 @@ export default function App() {
                                 : selectedChapter.id === "15"
                                   ? 15
                                   : null;
-    const companionCodex = aiCareerRoadmap.map((chapter) => {
-      const collected = isChapterCleared(developer, chapter.id);
-      const playable = [
-        "1",
-        "2",
-        "3",
-        "4",
-        "5",
-        "6",
-        "7",
-        "8",
-        "9",
-        "10",
-        "11",
-        "12",
-        "13",
-        "14",
-        "15",
-      ].includes(chapter.id);
-      return {
-        chapter,
-        collected,
-        status: collected ? "已收集" : playable ? "可获取" : "待解锁",
-        portrait: companionPortraits[chapter.companionUnlock.name],
-      };
-    });
+    const nextQuestPlayableChapter = toRouteChapterNumber(nextQuestChapter.id);
+    const javaFirstChapterSelected =
+      selectedRoute.id === "java-backend" && selectedChapter.id === "java-1";
+    const javaSecondChapterSelected =
+      selectedRoute.id === "java-backend" && selectedChapter.id === "java-2";
+    const javaThirdChapterSelected =
+      selectedRoute.id === "java-backend" && selectedChapter.id === "java-3";
+    const javaFourthChapterSelected =
+      selectedRoute.id === "java-backend" && selectedChapter.id === "java-4";
+    const javaFifthChapterSelected =
+      selectedRoute.id === "java-backend" && selectedChapter.id === "java-5";
+    const frontendFirstChapterSelected =
+      selectedRoute.id === "frontend-engineering" &&
+      selectedChapter.id === "frontend-1";
+    const frontendSecondChapterSelected =
+      selectedRoute.id === "frontend-engineering" &&
+      selectedChapter.id === "frontend-2";
+    const frontendThirdChapterSelected =
+      selectedRoute.id === "frontend-engineering" &&
+      selectedChapter.id === "frontend-3";
+    const frontendFourthChapterSelected =
+      selectedRoute.id === "frontend-engineering" &&
+      selectedChapter.id === "frontend-4";
+    const frontendFifthChapterSelected =
+      selectedRoute.id === "frontend-engineering" &&
+      selectedChapter.id === "frontend-5";
+    const nextQuestGuide = getChapterGuide(nextQuestChapter);
+    const isReturningPlayer = developer.missionsCleared > 0;
+    const homecomingGuide = routeCompleted
+      ? {
+          image: interviewCouncilorPortrait,
+          name: "终章答辩官",
+        }
+      : nextQuestGuide;
+    const introSceneBackground =
+      introScene === 0
+        ? isReturningPlayer
+          ? routeCompleted
+            ? interviewDefenseHallScene
+            : getChapterDossierBackground(nextQuestChapter)
+          : archiveNight
+        : introScene === 1
+          ? questPortal
+          : selectedRoutePlayable
+            ? getChapterDossierBackground(nextQuestChapter)
+            : questStage;
     const choiceFeedback = {
       rush: "你冲向代码仓库，向导拦住你：灯亮只是舞台效果，不能证明档案馆真的写入了记录。",
       evidence:
@@ -7077,68 +10377,168 @@ export default function App() {
       agent:
         "你召唤副官。它可以帮你执行任务，但前提是你写清楚目标、边界和验收方式。",
     }[storyChoice ?? "evidence"];
+    const openingChoiceRecord = {
+      rush: {
+        label: "先改后查",
+        title: "冲锋型调试师",
+        lesson:
+          "这一关会提醒你：先拿 Network、日志和数据库证据，再决定改哪一行。",
+      },
+      evidence: {
+        label: "证据优先",
+        title: "现场型调试师",
+        lesson: "你的优势是先找事实；接下来要把事实串成根因和修复验证。",
+      },
+      agent: {
+        label: "委托副官",
+        title: "指挥型调试师",
+        lesson:
+          "你的优势是会借力；接下来要把目标、边界和验收写成副官能执行的任务。",
+      },
+    }[storyChoice ?? "evidence"];
     const selectedChapterGuide = getChapterGuide(selectedChapter);
     const selectedChapterStageImage =
       getChapterDossierBackground(selectedChapter);
     const selectedChapterFlowSteps = getChapterFlowSteps(selectedChapter);
     const selectedChapterHandoffs = getChapterHandoffs(selectedChapter);
     const selectedChapterPlayerGoal = getChapterPlayerGoal(selectedChapter);
-
     return (
       <section
         className={`intro visual-novel scene-${introScene}`}
-        style={{ "--scene-image": `url(${archiveNight})` } as CSSProperties}
+        style={
+          { "--scene-image": `url(${introSceneBackground})` } as CSSProperties
+        }
       >
         <div className="novel-backdrop" />
         <div className="novel-topbar">
           <div className="intro-profile">
             <Code2 size={15} />
-            <span>{developer.rank}</span>
+            <span>
+              Lv.{adventureProgress.level} · {developer.rank}
+            </span>
             <span>{developer.xp} XP</span>
           </div>
           <div className="intro-vitals" aria-label="路线状态">
             <span>
-              <b>01</b> 当前章节
+              <b>
+                {selectedRoutePlayable
+                  ? routeCompleted
+                    ? `${selectedRoute.chapters.length}/${selectedRoute.chapters.length}`
+                    : String(displayChapterNumber(nextQuestChapter)).padStart(
+                        2,
+                        "0",
+                      )
+                  : "预告"}
+              </b>{" "}
+              {selectedRoutePlayable
+                ? routeCompleted
+                  ? "主线完成"
+                  : "下一章"
+                : "未开放"}
             </span>
             <span>
-              <b>{developer.missionsCleared}</b> 已通关
+              <b>{selectedRouteClearedCount}</b> 已通关
             </span>
           </div>
         </div>
 
-        {introScene === 0 && (
-          <div className="novel-scene opening-scene">
-            <div className="novel-title-block">
-              <p className="intro-badge">AI 应用开发 · 序章 · 代码城失忆夜</p>
-              <h1 className="intro-title">
-                码上冒险：<span>代码城失去了记忆</span>
-              </h1>
+        {introScene === 0 &&
+          (isReturningPlayer ? (
+            <div className="novel-scene opening-scene homecoming-scene">
+              <div className="novel-title-block">
+                <p className="intro-badge">
+                  {routeCompleted
+                    ? "AI 工程主线 · 终章归城记录"
+                    : `${selectedRoute.label} · 第 ${displayChapterNumber(nextQuestChapter)} 章待续 · ${nextQuestChapter.world}`}
+                </p>
+                <h1 className="intro-title">
+                  欢迎归队，<span>{developer.rank}</span>
+                </h1>
+              </div>
+              <section className="homecoming-brief" aria-label="归城继续冒险">
+                <img src={homecomingGuide.image} alt={homecomingGuide.name} />
+                <div>
+                  <span className="speaker">{homecomingGuide.name}</span>
+                  <strong>
+                    {routeCompleted
+                      ? "十五章证据已经归档，职业档案正在等待你。"
+                      : `你已经完成 ${selectedRouteClearedCount} 章，第 ${displayChapterNumber(nextQuestChapter)} 章卷宗已在${nextQuestChapter.world}展开。`}
+                  </strong>
+                  <p>
+                    {routeCompleted
+                      ? "不必重演第一次进入代码城的选择。现在直接整理面试复盘、打开作品集，或进入新的无提示变式案件。"
+                      : `上次的证据没有丢失。下一步只需要继续「${nextQuestChapter.theme}」：${getChapterValidation(nextQuestChapter)}。`}
+                  </p>
+                  <div className="homecoming-progress" aria-label="归城进度">
+                    <span>
+                      <b>Lv.{adventureProgress.level}</b>{" "}
+                      {adventureProgress.isMaxLevel ? "主线满级" : "冒险等级"}
+                    </span>
+                    <span>
+                      <b>{selectedRouteClearedCount}</b> 章已归档
+                    </span>
+                    <span>
+                      <b>{developer.unlockedCompanionNames.length}</b>{" "}
+                      位伙伴已归队
+                    </span>
+                  </div>
+                  <button
+                    className="dialogue-next"
+                    onClick={() => {
+                      scrollPageToTop();
+                      setIntroScene(2);
+                    }}
+                  >
+                    {routeCompleted
+                      ? "打开职业档案"
+                      : `继续第 ${displayChapterNumber(nextQuestChapter)} 章委托`}
+                    <ArrowRight size={17} />
+                  </button>
+                </div>
+              </section>
             </div>
-            <div className="dialogue-box">
-              <span className="speaker">档案馆警报</span>
-              <p>
-                02:17，代码城的档案馆突然变空。市民明明按下了“保存”，灯也亮了；
-                但第二天醒来，所有记录都像从没存在过。
-              </p>
-              <button
-                className="dialogue-next"
-                onClick={() => {
-                  scrollPageToTop();
-                  setIntroScene(1);
-                }}
-              >
-                走进档案馆 <ArrowRight size={17} />
-              </button>
+          ) : (
+            <div className="novel-scene opening-scene">
+              <div className="novel-title-block">
+                <p className="intro-badge">AI 应用开发 · 序章 · 代码城失忆夜</p>
+                <h1 className="intro-title">
+                  码上冒险：<span>代码城失去了记忆</span>
+                </h1>
+              </div>
+              <div className="dialogue-box">
+                <img
+                  className="opening-guide-portrait"
+                  src={archiveKeeperPortrait}
+                  alt="档案馆记录员"
+                />
+                <span className="speaker">档案馆警报</span>
+                <p>
+                  02:17，代码城的档案馆突然变空。市民明明按下了“保存”，灯也亮了；
+                  但第二天醒来，所有记录都像从没存在过。
+                </p>
+                <button
+                  className="dialogue-next"
+                  onClick={() => {
+                    scrollPageToTop();
+                    setIntroScene(1);
+                  }}
+                >
+                  走进档案馆 <ArrowRight size={17} />
+                </button>
+              </div>
             </div>
-          </div>
-        )}
+          ))}
 
         {introScene === 1 && (
           <div className="novel-scene choice-scene">
             <div className="mentor-panel">
-              <RoleAvatar />
+              <img
+                className="mentor-panel-portrait"
+                src={archiveKeeperPortrait}
+                alt="档案馆记录员"
+              />
               <div>
-                <span>向导</span>
+                <span>档案馆记录员 · 向导</span>
                 <strong>你被临时召回为见习 AI 调试师。</strong>
                 <p>
                   别急着改代码。眼前这座城由舞台、传送门、档案馆和副官组成。
@@ -7192,14 +10592,29 @@ export default function App() {
         {introScene === 2 && (
           <div className="novel-scene briefing-scene">
             <div className="intro-hud">
-              <button className="novel-back" onClick={() => setIntroScene(1)}>
-                返回选择
+              <button
+                className="novel-back"
+                onClick={() => setIntroScene(isReturningPlayer ? 0 : 1)}
+              >
+                {isReturningPlayer ? "返回归城页" : "返回选择"}
               </button>
             </div>
-            <div className="briefing-layout">
+            <div
+              className={`briefing-layout ${
+                briefingRoom === "mission" ? "" : "briefing-layout-focus"
+              } ${routeCompleted ? "briefing-layout-completed" : ""} ${
+                selectedRoutePlayable ? "" : "briefing-layout-locked"
+              }`}
+            >
               <div className="briefing-left">
                 <p className="intro-badge">任务简报 · {selectedRoute.label}</p>
-                <h1 className="briefing-title">先看懂这座城，再修复它。</h1>
+                <h1 className="briefing-title">
+                  {routeCompleted
+                    ? "十五章已归档，把证据带向真实世界。"
+                    : selectedRoutePlayable
+                      ? "先看懂这座城，再修复它。"
+                      : "先预览未来路线，再继续当前主线。"}
+                </h1>
                 <div className="career-selector" aria-label="岗位路线选择">
                   {careerRoutes.map((route) => (
                     <button
@@ -7208,7 +10623,11 @@ export default function App() {
                         selectedRoute.id === route.id ? "active" : ""
                       } ${route.status !== "可进入" ? "locked" : ""}`}
                       key={route.id}
-                      onClick={() => setSelectedRouteId(route.id)}
+                      onClick={() => {
+                        scrollPageToTop();
+                        setSelectedRouteId(route.id);
+                        setSelectedChapterId(null);
+                      }}
                       type="button"
                     >
                       <span>{route.label}</span>
@@ -7220,138 +10639,319 @@ export default function App() {
                   <span>{selectedRoute.role}</span>
                   <strong>{selectedRoute.promise}</strong>
                   <p>{selectedRoute.summary}</p>
-                  <div>
-                    {selectedRoute.coreSkills.map((skill) => (
-                      <b key={skill}>{skill}</b>
-                    ))}
-                  </div>
-                  {selectedRoute.status !== "可进入" && (
-                    <ul>
-                      {selectedRoute.previewChapters.map((chapter) => (
-                        <li key={chapter}>{chapter}</li>
-                      ))}
-                    </ul>
+                  {!selectedRoutePlayable && (
+                    <small className="route-status-note">
+                      路线尚未开放 · 当前只预览，不会切换你的学习进度
+                    </small>
                   )}
-                </section>
-                <div className="analogy-grid" aria-label="本关比喻地图">
-                  {[
-                    [
-                      "前端",
-                      "舞台",
-                      "观众看到灯亮，但不代表后台真的存了道具。",
-                    ],
-                    [
-                      "接口",
-                      "传送门",
-                      "它负责把请求送进城里，只返回成功不等于任务完成。",
-                    ],
-                    [
-                      "数据库",
-                      "档案馆",
-                      "只有写进档案馆，刷新和重启后记忆才不会消失。",
-                    ],
-                    [
-                      "Agent",
-                      "副官",
-                      "副官能执行命令，但你要会写清目标和验收标准。",
-                    ],
-                  ].map(([term, metaphor, desc]) => (
-                    <div className="analogy-card" key={term}>
-                      <span>{term}</span>
-                      <strong>{metaphor}</strong>
-                      <p>{desc}</p>
+                  {selectedRoutePlayable ? (
+                    <SharedCoreTrail route={selectedRoute} />
+                  ) : (
+                    <div
+                      className="route-preview-skills"
+                      aria-label="未来岗位技能"
+                    >
+                      {selectedRoute.coreSkills.map((skill) => (
+                        <span key={skill}>{skill}</span>
+                      ))}
                     </div>
-                  ))}
-                </div>
-                <div className="briefing-room-tabs" aria-label="简报房间">
-                  {[
-                    ["mission", "当前委托"],
-                    ["companions", "伙伴图鉴"],
-                    ["interview", "面试复盘"],
-                    ["backup", "本地备份"],
-                  ].map(([id, label]) => (
+                  )}
+                  {selectedRoute.status !== "可进入" && (
                     <button
-                      aria-pressed={briefingRoom === id}
-                      className={briefingRoom === id ? "active" : ""}
-                      key={id}
-                      onClick={() => setBriefingRoom(id as typeof briefingRoom)}
+                      className="shared-route-return"
+                      onClick={() => setSelectedRouteId("ai-development")}
                       type="button"
                     >
-                      {label}
+                      回到 AI 应用开发主线 <ArrowRight size={16} />
                     </button>
-                  ))}
-                </div>
-                {briefingRoom === "mission" && (
+                  )}
+                </section>
+                {selectedRoutePlayable && !routeCompleted && (
+                  <details className="briefing-optional-section analogy-disclosure">
+                    <summary>
+                      <span>先记住四个角色</span>
+                      <strong>
+                        用故事里的比喻理解前端、接口、数据库和 Agent
+                      </strong>
+                      <small>看不懂名词时再打开</small>
+                    </summary>
+                    <div className="analogy-grid" aria-label="本关比喻地图">
+                      {[
+                        [
+                          "前端",
+                          "舞台",
+                          "观众看到灯亮，但不代表后台真的存了道具。",
+                        ],
+                        [
+                          "接口",
+                          "传送门",
+                          "它负责把请求送进城里，只返回成功不等于任务完成。",
+                        ],
+                        [
+                          "数据库",
+                          "档案馆",
+                          "只有写进档案馆，刷新和重启后记忆才不会消失。",
+                        ],
+                        [
+                          "Agent",
+                          "副官",
+                          "副官能执行命令，但你要会写清目标和验收标准。",
+                        ],
+                      ].map(([term, metaphor, desc]) => (
+                        <div className="analogy-card" key={term}>
+                          <span>{term}</span>
+                          <strong>{metaphor}</strong>
+                          <p>{desc}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </details>
+                )}
+                {selectedRoutePlayable && (
+                  <div className="briefing-room-tabs" aria-label="简报房间">
+                    {[
+                      ["mission", "当前委托"],
+                      ["companions", "伙伴图鉴"],
+                      ["interview", "面试复盘"],
+                      ["backup", "本地备份"],
+                    ].map(([id, label]) => (
+                      <button
+                        aria-pressed={briefingRoom === id}
+                        className={briefingRoom === id ? "active" : ""}
+                        key={id}
+                        onClick={() =>
+                          setBriefingRoom(id as typeof briefingRoom)
+                        }
+                        type="button"
+                      >
+                        {label}
+                      </button>
+                    ))}
+                  </div>
+                )}
+                {selectedRoutePlayable && briefingRoom === "mission" && (
                   <section
                     className="briefing-focus-room"
                     aria-label="当前委托说明"
                   >
-                    <span>当前委托</span>
-                    <strong>先破第一起“保存消失”事故。</strong>
-                    <p>
-                      这一关只要求你看清一条数据旅行路线：用户点击保存，
-                      前端把请求交给后端，后端再把数据交给数据库。你不需要一次吃下全部
-                      15 章。
-                    </p>
-                    <div>
-                      <b>本章目标：{currentChapter.validation}</b>
-                      <b>本章奖励：{currentChapter.companionUnlock.name}</b>
-                    </div>
-                    <button className="dialogue-next" onClick={startMissionOne}>
-                      {developer.missionsCleared >= 1
-                        ? "重新练习第一章"
-                        : "进入第一章主线"}
-                      <ArrowRight size={17} />
-                    </button>
+                    {routeCompleted ? (
+                      <CareerGraduationRoom
+                        developer={developer}
+                        transferRetestStatuses={transferRetestStatuses}
+                        onOpenInterview={() => setBriefingRoom("interview")}
+                        onOpenPortfolio={() => {
+                          void openInterviewPortfolio();
+                        }}
+                        onOpenRetest={(sourceScenarioId) => {
+                          scrollPageToTop();
+                          setActiveTransferRetestSource(sourceScenarioId);
+                        }}
+                      />
+                    ) : (
+                      <>
+                        <span>当前委托</span>
+                        <strong>
+                          下一章主线：第{" "}
+                          {displayChapterNumber(nextQuestChapter)} 章 ·{" "}
+                          {nextQuestChapter.theme}
+                        </strong>
+                        <p>
+                          {nextQuestChapter.storyScene}
+                          你这次只需要完成这一章的证据链，不需要一次吃下全部{" "}
+                          {selectedRoute.chapters.length} 章。
+                        </p>
+                        <div className="current-quest-npc">
+                          <img
+                            src={nextQuestGuide.image}
+                            alt={nextQuestGuide.name}
+                          />
+                          <blockquote>
+                            <b>{nextQuestGuide.name}</b>
+                            <span>
+                              “先记住你在哪里：{nextQuestChapter.world}
+                              。这一关不是背名词，而是把「
+                              {nextQuestChapter.theme}
+                              」追成一条能复述、能验收、能面试讲清楚的证据线。”
+                            </span>
+                          </blockquote>
+                        </div>
+                        {storyChoice && (
+                          <div
+                            className="opening-choice-record"
+                            aria-label="开场选择记录"
+                          >
+                            <span>
+                              开场选择已记入冒险档案 ·{" "}
+                              {openingChoiceRecord.label}
+                            </span>
+                            <strong>{openingChoiceRecord.title}</strong>
+                            <p>{openingChoiceRecord.lesson}</p>
+                          </div>
+                        )}
+                        <div
+                          className="main-quest-panel"
+                          role="region"
+                          aria-label="下一章主线"
+                        >
+                          <article>
+                            <span>为什么要去</span>
+                            <p>{nextQuestChapter.workBackground}</p>
+                          </article>
+                          <article>
+                            <span>谁把什么交给谁</span>
+                            <p>{nextQuestChapter.flow}</p>
+                          </article>
+                          <article>
+                            <span>通关产出</span>
+                            <p>{nextQuestChapter.validation}</p>
+                          </article>
+                        </div>
+                        <div>
+                          <b>本章目标：{nextQuestChapter.validation}</b>
+                          <b>
+                            解锁奖励：{nextQuestChapter.companionUnlock.type} ·{" "}
+                            {nextQuestChapter.companionUnlock.name}
+                          </b>
+                        </div>
+                        <QuestLog
+                          title="当前主线追踪"
+                          previous={{
+                            label:
+                              developer.missionsCleared > 0
+                                ? `已通关 ${selectedRouteClearedCount} 章`
+                                : "序章委托已领取",
+                            body:
+                              developer.missionsCleared > 0
+                                ? "成长档案已经记录前面章节的证据、解锁物和复盘材料。"
+                                : "你已经知道自己是见习 AI 调试师，目标不是背课，而是沿证据修复代码城。",
+                          }}
+                          current={{
+                            label: `第 ${displayChapterNumber(nextQuestChapter)} 章：${nextQuestChapter.title}`,
+                            body: `先弄清「${nextQuestChapter.theme}」为什么会发生，再按流程找证据：${nextQuestChapter.flow}`,
+                          }}
+                          next={{
+                            label: "通关后写入成长档案",
+                            body: `本章会沉淀成工作复盘、Agent 委托和面试表达：${nextQuestChapter.validation}`,
+                          }}
+                        />
+                        <span>成长契约</span>
+                        <div className="growth-contract" aria-label="成长契约">
+                          <article className="growth-contract-level">
+                            <span>当前身份 · Lv.{adventureProgress.level}</span>
+                            <strong>{developer.rank}</strong>
+                            <div
+                              className="adventure-level-bar"
+                              role="progressbar"
+                              aria-label="首页冒险等级经验"
+                              aria-valuemin={0}
+                              aria-valuemax={adventureProgress.xpPerLevel}
+                              aria-valuenow={adventureProgress.currentLevelXp}
+                            >
+                              <i
+                                style={{
+                                  width: `${adventureProgress.percent}%`,
+                                }}
+                              />
+                            </div>
+                            <p>
+                              {adventureProgress.isMaxLevel
+                                ? "主线星轨已点亮，下一步用复测和作品集证明迁移能力。"
+                                : `再获得 ${adventureProgress.xpToNextLevel} XP 升到 Lv.${adventureProgress.level + 1}。${
+                                    nextRankGoal
+                                      ? ` 距离「${nextRankGoal.name}」还差 ${nextRankGoal.need} XP。`
+                                      : ""
+                                  }`}
+                            </p>
+                          </article>
+                          <article>
+                            <span>收集进度</span>
+                            <strong>
+                              {collectedCompanionCount}/
+                              {selectedRoute.chapters.length}
+                            </strong>
+                            <p>
+                              下一位可解锁：
+                              {nextUnlockEntry?.chapter.companionUnlock.name ??
+                                "全部伙伴已收集"}
+                            </p>
+                          </article>
+                        </div>
+                        <details className="briefing-optional-section">
+                          <summary>
+                            <span>迁移能力复测</span>
+                            <strong>
+                              完成主线后，再换一座地图证明你真的会了
+                            </strong>
+                            <small>
+                              当前先专注第{" "}
+                              {displayChapterNumber(nextQuestChapter)} 章
+                            </small>
+                          </summary>
+                          <TransferRetestCollection
+                            statuses={transferRetestStatuses}
+                            onOpen={(sourceScenarioId) => {
+                              scrollPageToTop();
+                              setActiveTransferRetestSource(sourceScenarioId);
+                            }}
+                          />
+                        </details>
+                        <button
+                          className="dialogue-next"
+                          onClick={() => {
+                            if (selectedRoute.id === "java-backend") {
+                              if (routeMissionChapter.id === "java-2") {
+                                void startJavaTransactionChapter();
+                              } else if (routeMissionChapter.id === "java-3") {
+                                void startJavaCacheChapter();
+                              } else if (routeMissionChapter.id === "java-4") {
+                                void startJavaReleaseChapter();
+                              } else if (routeMissionChapter.id === "java-5") {
+                                void startJavaIncidentChapter();
+                              } else {
+                                void startJavaRoute();
+                              }
+                              return;
+                            }
+                            if (selectedRoute.id === "frontend-engineering") {
+                              if (routeMissionChapter.id === "frontend-2") {
+                                void startFrontendRequestStatesChapter();
+                              } else if (
+                                routeMissionChapter.id === "frontend-3"
+                              ) {
+                                void startFrontendPerformanceChapter();
+                              } else if (
+                                routeMissionChapter.id === "frontend-4"
+                              ) {
+                                void startFrontendAccessibilityChapter();
+                              } else if (
+                                routeMissionChapter.id === "frontend-5"
+                              ) {
+                                void startFrontendTestingChapter();
+                              } else {
+                                void startFrontendRoute();
+                              }
+                              return;
+                            }
+                            if (nextQuestChapter.id === "1") {
+                              void startMissionOne();
+                              return;
+                            }
+                            if (nextQuestPlayableChapter) {
+                              void startChapter(nextQuestPlayableChapter);
+                            }
+                          }}
+                        >
+                          进入第 {displayChapterNumber(nextQuestChapter)} 章主线
+                          <ArrowRight size={17} />
+                        </button>
+                      </>
+                    )}
                   </section>
                 )}
-                {briefingRoom === "companions" && (
-                  <>
-                    <section className="companion-codex" aria-label="伙伴图鉴">
-                      <div className="companion-codex-head">
-                        <span>伙伴图鉴</span>
-                        <strong>收集角色、宠物与装备</strong>
-                        <p>
-                          每章通关都会留下一个可复盘的能力印记，也会解锁一位同伴或一件装备。
-                        </p>
-                      </div>
-                      <div className="companion-codex-grid">
-                        {companionCodex.map(
-                          ({ chapter, collected, status, portrait }) => (
-                            <article
-                              className={`companion-card ${
-                                collected ? "collected" : ""
-                              }`}
-                              key={chapter.id}
-                            >
-                              {portrait ? (
-                                <img
-                                  src={portrait}
-                                  alt=""
-                                  className="companion-card-portrait"
-                                />
-                              ) : (
-                                <div className="companion-card-sigil">
-                                  {chapter.companionUnlock.name.slice(0, 1)}
-                                </div>
-                              )}
-                              <div>
-                                <small>
-                                  第 {chapter.id} 章 ·{" "}
-                                  {chapter.companionUnlock.type}
-                                </small>
-                                <strong>{chapter.companionUnlock.name}</strong>
-                                <span>{status}</span>
-                              </div>
-                            </article>
-                          ),
-                        )}
-                      </div>
-                    </section>
-                    <CompanionArchive entries={companionCodex} />
-                  </>
+                {selectedRoutePlayable && briefingRoom === "companions" && (
+                  <CompanionArchive entries={companionCodex} />
                 )}
-                {briefingRoom === "interview" && (
+                {selectedRoutePlayable && briefingRoom === "interview" && (
                   <InterviewDossierBook
                     entries={companionCodex}
                     onOpenDossier={(chapterId) => {
@@ -7362,278 +10962,465 @@ export default function App() {
                     }}
                   />
                 )}
-                {briefingRoom === "backup" && (
+                {selectedRoutePlayable && briefingRoom === "backup" && (
                   <LearningBackupCard onOpen={openBackupVault} />
                 )}
               </div>
-              <div className="intro-panel">
-                <div className="roadmap-summary">
-                  <span>{selectedRoute.label}成长主线</span>
-                  <strong>
-                    {selectedRoute.chapters.length > 0
-                      ? `${selectedRoute.chapters.length} 章`
-                      : "规划中"}
-                  </strong>
-                </div>
-                <div className="world-map" aria-label="AI 开发世界地图">
-                  <div className="world-map-line" />
-                  {selectedRoute.chapters.length > 0
-                    ? selectedRoute.chapters.map((chapter) => (
-                        <div
-                          className={`world-node ${
-                            chapter.status === "当前" ? "active" : ""
-                          } ${chapter.status === "预览" ? "preview" : ""}`}
-                          key={chapter.id}
-                        >
-                          <span>{chapter.id}</span>
-                          <strong>{chapter.world}</strong>
-                          <small>{chapter.status}</small>
-                        </div>
-                      ))
-                    : selectedRoute.previewChapters.map((chapter, index) => (
-                        <div
-                          className="world-node locked-preview"
-                          key={chapter}
-                        >
-                          <span>{String(index + 1).padStart(2, "0")}</span>
-                          <strong>{chapter}</strong>
-                          <small>即将解锁</small>
-                        </div>
-                      ))}
-                </div>
-                <div className="intro-panel-head">
-                  <span>
-                    {selectedRoute.status === "可进入"
-                      ? "任务板"
-                      : "当前可玩任务板"}
-                  </span>
-                  <strong>
-                    {selectedRoute.status === "可进入"
-                      ? "打开就从这里开始"
-                      : "这条路线未开放，先从 AI 主线训练共通能力"}
-                  </strong>
-                </div>
+              {briefingRoom === "mission" && (
                 <div
-                  className={`intro-mission active ${
-                    developer.missionsCleared >= 1 ? "solved" : ""
-                  }`}
+                  className="intro-panel"
+                  role="region"
+                  aria-label={
+                    selectedRoutePlayable ? "当前路线地图" : "未来路线预告"
+                  }
                 >
-                  <div className="mission-index">{currentChapter.id}</div>
-                  <div className="intro-mission-main">
-                    <div className="intro-mission-kicker">
-                      <span>
-                        第 {currentChapter.id} 章 · {currentChapter.theme}
-                      </span>
-                      {developer.missionsCleared >= 1 && (
-                        <b>
-                          <CheckCircle2 size={14} /> 已通关
-                        </b>
-                      )}
-                    </div>
-                    <strong>{currentChapter.title}</strong>
-                    <p>{currentChapter.summary}</p>
-                    <div className="mission-contract">
-                      <span>验收目标</span>
-                      <strong>{currentChapter.validation}</strong>
-                    </div>
-                    <div className="mission-rewards">
-                      {currentChapter.rewards.map((reward) => (
-                        <span key={reward}>{reward}</span>
-                      ))}
-                    </div>
-                    <div className="mission-companion">
-                      <span>{currentChapter.companionUnlock.type}解锁</span>
-                      <strong>{currentChapter.companionUnlock.name}</strong>
-                    </div>
+                  <div className="roadmap-summary">
+                    <span>{selectedRoute.label}成长主线</span>
+                    <strong>
+                      {selectedRoute.chapters.length > 0
+                        ? `${selectedRoute.chapters.length} 章`
+                        : "规划中"}
+                    </strong>
                   </div>
-                  <button
-                    className="intro-mission-action"
-                    onClick={startMissionOne}
+                  {selectedRoutePlayable && (
+                    <p className="roadmap-summary-hint">
+                      点击章节查看卷宗；只有当前章节可以进入实战。
+                    </p>
+                  )}
+                  <div
+                    className="world-map"
+                    aria-label={`${selectedRoute.label}世界地图`}
                   >
-                    {developer.missionsCleared >= 1 ? "重新练习" : "进入主线"}
-                    <ArrowRight size={16} />
-                  </button>
-                </div>
-                <div className="mission-roadmap" aria-label="后续主线关卡">
-                  {aiCareerRoadmap.slice(1).map((mission) => (
-                    <button
-                      aria-pressed={selectedChapter.id === mission.id}
-                      className={`intro-mission roadmap-preview ${
-                        mission.status === "预览" ? "preview" : "locked"
-                      } ${selectedChapter.id === mission.id ? "selected" : ""}`}
-                      key={mission.id}
-                      onClick={() => {
-                        setSelectedChapterId(mission.id);
-                        scrollChapterDossierIntoView();
-                      }}
-                      type="button"
-                    >
-                      <div className="mission-index">{mission.id}</div>
-                      <div className="intro-mission-main">
-                        <div className="intro-mission-kicker">
-                          <span>
-                            第 {mission.id} 章 · {mission.theme}
-                          </span>
-                          <b>
-                            <LockKeyhole size={13} />
-                            {mission.status}
-                          </b>
-                        </div>
-                        <strong>{mission.title}</strong>
-                        <p>{mission.workBackground}</p>
-                        <div className="mission-contract">
-                          <span>学会</span>
-                          <strong>{mission.learn}</strong>
-                          <span>验收</span>
-                          <strong>{mission.validation}</strong>
-                        </div>
-                        <div className="mission-rewards">
-                          {mission.rewards.map((reward) => (
-                            <span key={reward}>{reward}</span>
-                          ))}
-                        </div>
-                        <div className="mission-companion">
-                          <span>{mission.companionUnlock.type}解锁</span>
-                          <strong>{mission.companionUnlock.name}</strong>
-                        </div>
-                      </div>
-                      <span className="intro-mission-status">路线规划</span>
-                    </button>
-                  ))}
-                </div>
-                <section className="chapter-dossier" aria-label="选中章节卷宗">
-                  <div className="chapter-dossier-head">
+                    <div className="world-map-line" />
+                    {selectedRoute.status === "可进入" &&
+                    selectedRoute.chapters.length > 0
+                      ? selectedRoute.chapters.map((chapter) => {
+                          const completed = isChapterCleared(
+                            developer,
+                            chapter.id,
+                          );
+                          const active =
+                            !routeCompleted &&
+                            chapter.id === nextQuestChapter.id;
+                          return (
+                            <button
+                              type="button"
+                              aria-pressed={selectedChapter.id === chapter.id}
+                              className={`world-node ${
+                                completed ? "solved" : active ? "active" : ""
+                              } ${!completed && !active ? "locked" : ""} ${
+                                selectedChapter.id === chapter.id
+                                  ? "selected"
+                                  : ""
+                              }`}
+                              key={chapter.id}
+                              onClick={() => {
+                                setSelectedChapterId(chapter.id);
+                                scrollChapterDossierIntoView();
+                              }}
+                            >
+                              <span>{displayChapterNumber(chapter)}</span>
+                              <strong>{chapter.world}</strong>
+                              <small>
+                                {completed
+                                  ? "已通关"
+                                  : active
+                                    ? "当前"
+                                    : "待练习"}
+                              </small>
+                            </button>
+                          );
+                        })
+                      : selectedRoute.previewChapters.map((chapter, index) => (
+                          <div
+                            className="world-node locked-preview"
+                            key={chapter}
+                          >
+                            <span>{String(index + 1).padStart(2, "0")}</span>
+                            <strong>{chapter}</strong>
+                            <small>即将解锁</small>
+                          </div>
+                        ))}
+                  </div>
+                  {!selectedRoutePlayable && (
+                    <SharedCoreTrail route={selectedRoute} detailed />
+                  )}
+                  <div className="intro-panel-head">
                     <span>
-                      第 {selectedChapter.id} 章 · {selectedChapter.status}
+                      {selectedRoute.status === "可进入"
+                        ? "任务板"
+                        : "当前可玩任务板"}
                     </span>
-                    <strong>{selectedChapter.title}</strong>
-                    <p>{selectedChapter.summary}</p>
+                    <strong>
+                      {selectedRoute.status === "可进入"
+                        ? "打开就从这里开始"
+                        : "这条路线未开放，先从 AI 主线训练共通能力"}
+                    </strong>
                   </div>
                   <div
-                    className="chapter-dossier-stage"
-                    style={
-                      {
-                        "--chapter-scene": `url(${selectedChapterStageImage})`,
-                      } as CSSProperties
-                    }
+                    className={`intro-mission active ${
+                      isChapterCleared(developer, routeMissionChapter.id)
+                        ? "solved"
+                        : ""
+                    }`}
                   >
-                    <div className="chapter-stage-portrait">
-                      {selectedChapterGuide.image ? (
-                        <img
-                          src={selectedChapterGuide.image}
-                          alt={selectedChapterGuide.name}
-                        />
-                      ) : (
-                        <i>{selectedChapterGuide.name.slice(0, 1)}</i>
-                      )}
+                    <div className="mission-index">
+                      {displayChapterNumber(routeMissionChapter)}
                     </div>
-                    <div className="chapter-stage-copy">
-                      <span>剧情舞台 · {selectedChapter.world}</span>
-                      <h2>
-                        第 {selectedChapter.id} 章现场：{selectedChapter.world}
-                      </h2>
-                      <p>
-                        先看事故为什么发生，再沿流程追证据；每一步都要能说清楚谁把什么交给谁。
-                      </p>
-                      <blockquote className="chapter-stage-dialogue">
-                        <b>{selectedChapterGuide.name}</b>
+                    <div className="intro-mission-main">
+                      <div className="intro-mission-kicker">
                         <span>
-                          “{selectedChapter.world}
-                          已经开场。先别急着冲进代码，把「
-                          {selectedChapter.theme}」拆成可验证的证据接力。”
+                          第 {displayChapterNumber(routeMissionChapter)} 章 ·{" "}
+                          {routeMissionChapter.theme}
                         </span>
-                      </blockquote>
-                      <div className="chapter-player-goal">
-                        <span>玩家目标</span>
-                        <strong>{selectedChapterPlayerGoal}</strong>
+                        {isChapterCleared(
+                          developer,
+                          routeMissionChapter.id,
+                        ) && (
+                          <b>
+                            <CheckCircle2 size={14} /> 已通关
+                          </b>
+                        )}
                       </div>
-                      <div className="chapter-stage-companion">
-                        <b>
-                          {selectedChapter.companionUnlock.type} ·{" "}
-                          {selectedChapter.companionUnlock.name}
-                        </b>
-                        <small>
-                          {selectedChapter.companionUnlock.description}
-                        </small>
+                      <strong>{routeMissionChapter.title}</strong>
+                      <p>{routeMissionChapter.summary}</p>
+                      <div className="mission-contract">
+                        <span>验收目标</span>
+                        <strong>{routeMissionChapter.validation}</strong>
                       </div>
-                    </div>
-                    <div className="chapter-handoff-board">
-                      <span>谁把什么交给谁</span>
-                      <div>
-                        {selectedChapterHandoffs.map((handoff) => (
-                          <article
-                            key={`${selectedChapter.id}-${handoff.from}-${handoff.to}`}
-                          >
-                            <b>
-                              {handoff.from} <ArrowRight size={13} />{" "}
-                              {handoff.to}
-                            </b>
-                            <strong>交接物：{handoff.payload}</strong>
-                            <small>{handoff.proof}</small>
-                          </article>
+                      <div className="mission-rewards">
+                        {routeMissionChapter.rewards.map((reward) => (
+                          <span key={reward}>{reward}</span>
                         ))}
                       </div>
-                    </div>
-                    <ol
-                      className="chapter-stage-flow"
-                      aria-label="本章流程接力"
-                    >
-                      {selectedChapterFlowSteps.map((step, index) => (
-                        <li key={`${selectedChapter.id}-${step.label}`}>
-                          <b>{String(index + 1).padStart(2, "0")}</b>
-                          <span>{step.label}</span>
-                          <small>{step.note}</small>
-                        </li>
-                      ))}
-                    </ol>
-                  </div>
-                  <div className="chapter-dossier-grid">
-                    {[
-                      ["剧情场景", selectedChapter.storyScene],
-                      ["工作背景", selectedChapter.workBackground],
-                      ["完整流程图", selectedChapter.flow],
-                      ["关键代码", selectedChapter.codeFocus],
-                      ["证据任务", selectedChapter.evidenceTask],
-                      ["Agent 协作", selectedChapter.agentCollaboration],
-                      ["验收动作", selectedChapter.acceptanceAction],
-                      ["面试复盘", selectedChapter.interviewReview],
-                      [
-                        "伙伴/宠物解锁",
-                        `${selectedChapter.companionUnlock.type} · ${selectedChapter.companionUnlock.name}：${selectedChapter.companionUnlock.description}`,
-                      ],
-                    ].map(([label, value]) => (
-                      <div className="chapter-dossier-item" key={label}>
-                        <span>{label}</span>
-                        <p>{value}</p>
-                      </div>
-                    ))}
-                    <div className="chapter-dossier-item glossary">
-                      <span>名词小抄</span>
-                      <div>
-                        {selectedChapter.glossary.map((term) => (
-                          <b key={term}>{term}</b>
-                        ))}
+                      <div className="mission-companion">
+                        <span>
+                          {routeMissionChapter.companionUnlock.type}解锁
+                        </span>
+                        <strong>
+                          {routeMissionChapter.companionUnlock.name}
+                        </strong>
                       </div>
                     </div>
-                  </div>
-                  {playableChapter && (
                     <button
-                      className="dialogue-next chapter-dossier-action"
-                      onClick={() => startChapter(playableChapter)}
-                      type="button"
+                      className="intro-mission-action"
+                      onClick={() => {
+                        if (selectedRoute.id === "java-backend") {
+                          if (routeMissionChapter.id === "java-2") {
+                            void startJavaTransactionChapter();
+                          } else if (routeMissionChapter.id === "java-3") {
+                            void startJavaCacheChapter();
+                          } else if (routeMissionChapter.id === "java-4") {
+                            void startJavaReleaseChapter();
+                          } else if (routeMissionChapter.id === "java-5") {
+                            void startJavaIncidentChapter();
+                          } else {
+                            void startJavaRoute();
+                          }
+                        } else if (
+                          selectedRoute.id === "frontend-engineering"
+                        ) {
+                          if (routeMissionChapter.id === "frontend-2") {
+                            void startFrontendRequestStatesChapter();
+                          } else if (routeMissionChapter.id === "frontend-3") {
+                            void startFrontendPerformanceChapter();
+                          } else if (routeMissionChapter.id === "frontend-4") {
+                            void startFrontendAccessibilityChapter();
+                          } else if (routeMissionChapter.id === "frontend-5") {
+                            void startFrontendTestingChapter();
+                          } else {
+                            void startFrontendRoute();
+                          }
+                        } else {
+                          void startMissionOne();
+                        }
+                      }}
                     >
-                      进入第 {selectedChapter.id} 章教学关卡{" "}
-                      <ArrowRight size={17} />
+                      {isChapterCleared(developer, routeMissionChapter.id)
+                        ? "重新练习当前委托"
+                        : "进入当前委托"}
+                      <ArrowRight size={16} />
                     </button>
-                  )}
-                </section>
-                <div className="intro-safety-strip">
-                  <ShieldCheck size={15} />
-                  <span>
-                    本地沙盒 + 手动测试 + 成长档案。系统不会执行你的终端命令。
-                  </span>
+                  </div>
+                  <details className="briefing-optional-section roadmap-disclosure">
+                    <summary>
+                      <span>后续主线关卡</span>
+                      <strong>
+                        查看第 2 至 {selectedRoute.chapters.length}{" "}
+                        章的完整成长地图
+                      </strong>
+                      <small>现在只需要完成当前委托</small>
+                    </summary>
+                    <div className="mission-roadmap" aria-label="后续主线关卡">
+                      {selectedRoute.chapters.slice(1).map((mission) => {
+                        const completed = isChapterCleared(
+                          developer,
+                          mission.id,
+                        );
+                        const active =
+                          !routeCompleted && mission.id === nextQuestChapter.id;
+                        return (
+                          <button
+                            aria-pressed={selectedChapter.id === mission.id}
+                            className={`intro-mission roadmap-preview ${
+                              completed
+                                ? "solved"
+                                : active
+                                  ? "preview active"
+                                  : "locked"
+                            } ${selectedChapter.id === mission.id ? "selected" : ""}`}
+                            key={mission.id}
+                            onClick={() => {
+                              setSelectedChapterId(mission.id);
+                              scrollChapterDossierIntoView();
+                            }}
+                            type="button"
+                          >
+                            <div className="mission-index">
+                              {displayChapterNumber(mission)}
+                            </div>
+                            <div className="intro-mission-main">
+                              <div className="intro-mission-kicker">
+                                <span>
+                                  第 {displayChapterNumber(mission)} 章 ·{" "}
+                                  {mission.theme}
+                                </span>
+                                <b>
+                                  {completed ? (
+                                    <CheckCircle2 size={13} />
+                                  ) : active ? (
+                                    <CircleDot size={13} />
+                                  ) : (
+                                    <LockKeyhole size={13} />
+                                  )}
+                                  {completed
+                                    ? "已通关"
+                                    : active
+                                      ? "当前"
+                                      : "待练习"}
+                                </b>
+                              </div>
+                              <strong>{mission.title}</strong>
+                              <p>{mission.workBackground}</p>
+                              <div className="mission-contract">
+                                <span>学会</span>
+                                <strong>{mission.learn}</strong>
+                                <span>验收</span>
+                                <strong>{mission.validation}</strong>
+                              </div>
+                              <div className="mission-rewards">
+                                {mission.rewards.map((reward) => (
+                                  <span key={reward}>{reward}</span>
+                                ))}
+                              </div>
+                              <div className="mission-companion">
+                                <span>{mission.companionUnlock.type}解锁</span>
+                                <strong>{mission.companionUnlock.name}</strong>
+                              </div>
+                            </div>
+                            <span className="intro-mission-status">
+                              {completed
+                                ? "证据已归档"
+                                : active
+                                  ? "现在进入"
+                                  : "路线规划"}
+                            </span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </details>
+                  <section
+                    className="chapter-dossier"
+                    aria-label="选中章节卷宗"
+                  >
+                    <div className="chapter-dossier-head">
+                      <span>
+                        第 {displayChapterNumber(selectedChapter)} 章 ·{" "}
+                        {isChapterCleared(developer, selectedChapter.id)
+                          ? "已通关"
+                          : selectedChapter.id === nextQuestChapter.id
+                            ? "当前"
+                            : "待练习"}
+                      </span>
+                      <strong>{selectedChapter.title}</strong>
+                      <p>{selectedChapter.summary}</p>
+                    </div>
+                    <div
+                      className="chapter-dossier-stage"
+                      style={
+                        {
+                          "--chapter-scene": `url(${selectedChapterStageImage})`,
+                        } as CSSProperties
+                      }
+                    >
+                      <div className="chapter-stage-portrait">
+                        {selectedChapterGuide.image ? (
+                          <img
+                            src={selectedChapterGuide.image}
+                            alt={selectedChapterGuide.name}
+                          />
+                        ) : (
+                          <i>{selectedChapterGuide.name.slice(0, 1)}</i>
+                        )}
+                      </div>
+                      <div className="chapter-stage-copy">
+                        <span>剧情舞台 · {selectedChapter.world}</span>
+                        <h2>
+                          第 {displayChapterNumber(selectedChapter)} 章现场：
+                          {selectedChapter.world}
+                        </h2>
+                        <p>
+                          先看事故为什么发生，再沿流程追证据；每一步都要能说清楚谁把什么交给谁。
+                        </p>
+                        <blockquote className="chapter-stage-dialogue">
+                          <b>{selectedChapterGuide.name}</b>
+                          <span>
+                            “{selectedChapter.world}
+                            已经开场。先别急着冲进代码，把「
+                            {selectedChapter.theme}」拆成可验证的证据接力。”
+                          </span>
+                        </blockquote>
+                        <div className="chapter-player-goal">
+                          <span>玩家目标</span>
+                          <strong>{selectedChapterPlayerGoal}</strong>
+                        </div>
+                        <div className="chapter-stage-companion">
+                          <b>
+                            {selectedChapter.companionUnlock.type} ·{" "}
+                            {selectedChapter.companionUnlock.name}
+                          </b>
+                          <small>
+                            {selectedChapter.companionUnlock.description}
+                          </small>
+                        </div>
+                      </div>
+                    </div>
+                    {(playableChapter ||
+                      javaFirstChapterSelected ||
+                      javaSecondChapterSelected ||
+                      javaThirdChapterSelected ||
+                      javaFourthChapterSelected ||
+                      javaFifthChapterSelected ||
+                      frontendFirstChapterSelected ||
+                      frontendSecondChapterSelected ||
+                      frontendThirdChapterSelected ||
+                      frontendFourthChapterSelected ||
+                      frontendFifthChapterSelected) && (
+                      <button
+                        className="dialogue-next chapter-dossier-action"
+                        onClick={() => {
+                          if (javaFirstChapterSelected) {
+                            void startJavaRoute();
+                          } else if (javaSecondChapterSelected) {
+                            void startJavaTransactionChapter();
+                          } else if (javaThirdChapterSelected) {
+                            void startJavaCacheChapter();
+                          } else if (javaFourthChapterSelected) {
+                            void startJavaReleaseChapter();
+                          } else if (javaFifthChapterSelected) {
+                            void startJavaIncidentChapter();
+                          } else if (frontendSecondChapterSelected) {
+                            void startFrontendRequestStatesChapter();
+                          } else if (frontendThirdChapterSelected) {
+                            void startFrontendPerformanceChapter();
+                          } else if (frontendFourthChapterSelected) {
+                            void startFrontendAccessibilityChapter();
+                          } else if (frontendFifthChapterSelected) {
+                            void startFrontendTestingChapter();
+                          } else if (frontendFirstChapterSelected) {
+                            void startFrontendRoute();
+                          } else if (playableChapter) {
+                            void startChapter(playableChapter);
+                          }
+                        }}
+                        type="button"
+                      >
+                        进入第 {displayChapterNumber(selectedChapter)}{" "}
+                        章教学关卡 <ArrowRight size={17} />
+                      </button>
+                    )}
+                    <details className="chapter-evidence-drawer">
+                      <summary>
+                        <span>流程证据</span>
+                        <strong>展开“谁把什么交给谁”</strong>
+                        <small>需要理解完整链路时再打开</small>
+                      </summary>
+                      <div className="chapter-handoff-board">
+                        <span>谁把什么交给谁</span>
+                        <div>
+                          {selectedChapterHandoffs.map((handoff) => (
+                            <article
+                              key={`${selectedChapter.id}-${handoff.from}-${handoff.to}`}
+                            >
+                              <b>
+                                {handoff.from} <ArrowRight size={13} />{" "}
+                                {handoff.to}
+                              </b>
+                              <strong>交接物：{handoff.payload}</strong>
+                              <small>{handoff.proof}</small>
+                            </article>
+                          ))}
+                        </div>
+                      </div>
+                      <ol
+                        className="chapter-stage-flow"
+                        aria-label="本章流程接力"
+                      >
+                        {selectedChapterFlowSteps.map((step, index) => (
+                          <li key={`${selectedChapter.id}-${step.label}`}>
+                            <b>{String(index + 1).padStart(2, "0")}</b>
+                            <span>{step.label}</span>
+                            <small>{step.note}</small>
+                          </li>
+                        ))}
+                      </ol>
+                    </details>
+                    <details className="chapter-evidence-drawer secondary">
+                      <summary>
+                        <span>工作锦囊</span>
+                        <strong>展开代码、证据与面试资料</strong>
+                        <small>进入教学前可以先略过</small>
+                      </summary>
+                      <div className="chapter-dossier-grid">
+                        {[
+                          ["剧情场景", selectedChapter.storyScene],
+                          ["工作背景", selectedChapter.workBackground],
+                          ["完整流程图", selectedChapter.flow],
+                          ["关键代码", selectedChapter.codeFocus],
+                          ["证据任务", selectedChapter.evidenceTask],
+                          ["Agent 协作", selectedChapter.agentCollaboration],
+                          ["验收动作", selectedChapter.acceptanceAction],
+                          ["面试复盘", selectedChapter.interviewReview],
+                          [
+                            "伙伴/宠物解锁",
+                            `${selectedChapter.companionUnlock.type} · ${selectedChapter.companionUnlock.name}：${selectedChapter.companionUnlock.description}`,
+                          ],
+                        ].map(([label, value]) => (
+                          <div className="chapter-dossier-item" key={label}>
+                            <span>{label}</span>
+                            <p>{value}</p>
+                          </div>
+                        ))}
+                        <div className="chapter-dossier-item glossary">
+                          <span>名词小抄</span>
+                          <div>
+                            {selectedChapter.glossary.map((term) => (
+                              <b key={term}>{term}</b>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    </details>
+                  </section>
+                  <div className="intro-safety-strip">
+                    <ShieldCheck size={15} />
+                    <span>
+                      本地沙盒 + 手动测试 + 成长档案。系统不会执行你的终端命令。
+                    </span>
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
           </div>
         )}
@@ -7647,89 +11434,105 @@ export default function App() {
   if (!attempt) return <Loading message="正在恢复真实项目练习…" />;
   if (!teachingComplete) {
     const scenario =
-      currentMission === 1
-        ? teachingScenario
-        : currentMission === 3
-          ? case03Scenario
-          : currentMission === 4
-            ? case04Scenario
-            : currentMission === 5
-              ? case05Scenario
-              : currentMission === 6
-                ? case06Scenario
-                : currentMission === 7
-                  ? case07Scenario
-                  : currentMission === 8
-                    ? case08Scenario
-                    : currentMission === 9
-                      ? case09Scenario
-                      : currentMission === 10
-                        ? case10Scenario
-                        : currentMission === 11
-                          ? case11Scenario
-                          : currentMission === 12
-                            ? case12Scenario
-                            : currentMission === 13
-                              ? case13Scenario
-                              : currentMission === 14
-                                ? case14Scenario
-                                : currentMission === 15
-                                  ? case15Scenario
-                                  : case02Scenario;
+      activeScenarioId === JAVA_SCENARIO_ID
+        ? javaLayeredScenario
+        : activeScenarioId === JAVA_TRANSACTION_SCENARIO_ID
+          ? javaTransactionConsistencyScenario
+          : activeScenarioId === JAVA_CACHE_SCENARIO_ID
+            ? javaCacheObservabilityScenario
+            : activeScenarioId === JAVA_RELEASE_SCENARIO_ID
+              ? javaReleaseHarborScenario
+              : activeScenarioId === JAVA_INCIDENT_SCENARIO_ID
+                ? javaProductionIncidentScenario
+                : activeScenarioId === FRONTEND_ACCESSIBILITY_SCENARIO_ID
+                  ? frontendAccessibilityProofScenario
+                  : activeScenarioId === FRONTEND_TESTING_SCENARIO_ID
+                    ? frontendTestingProofScenario
+                    : activeScenarioId === FRONTEND_PERFORMANCE_SCENARIO_ID
+                      ? frontendPerformanceProofScenario
+                      : activeScenarioId === FRONTEND_REQUEST_STATES_SCENARIO_ID
+                        ? frontendRequestStatesScenario
+                        : activeScenarioId === FRONTEND_SCENARIO_ID
+                          ? frontendComponentStateScenario
+                          : currentMission === 1
+                            ? teachingScenario
+                            : currentMission === 3
+                              ? case03Scenario
+                              : currentMission === 4
+                                ? case04Scenario
+                                : currentMission === 5
+                                  ? case05Scenario
+                                  : currentMission === 6
+                                    ? case06Scenario
+                                    : currentMission === 7
+                                      ? case07Scenario
+                                      : currentMission === 8
+                                        ? case08Scenario
+                                        : currentMission === 9
+                                          ? case09Scenario
+                                          : currentMission === 10
+                                            ? case10Scenario
+                                            : currentMission === 11
+                                              ? case11Scenario
+                                              : currentMission === 12
+                                                ? case12Scenario
+                                                : currentMission === 13
+                                                  ? case13Scenario
+                                                  : currentMission === 14
+                                                    ? case14Scenario
+                                                    : currentMission === 15
+                                                      ? case15Scenario
+                                                      : case02Scenario;
     const handleTeachingComplete = () => {
+      scrollPageToTop();
+      const activeRoute = careerRoutes.find((route) =>
+        activeScenarioId === JAVA_SCENARIO_ID ||
+        activeScenarioId === JAVA_TRANSACTION_SCENARIO_ID ||
+        activeScenarioId === JAVA_CACHE_SCENARIO_ID ||
+        activeScenarioId === JAVA_RELEASE_SCENARIO_ID ||
+        activeScenarioId === JAVA_INCIDENT_SCENARIO_ID
+          ? route.id === "java-backend"
+          : activeScenarioId === FRONTEND_ACCESSIBILITY_SCENARIO_ID ||
+              activeScenarioId === FRONTEND_TESTING_SCENARIO_ID ||
+              activeScenarioId === FRONTEND_PERFORMANCE_SCENARIO_ID ||
+              activeScenarioId === FRONTEND_REQUEST_STATES_SCENARIO_ID ||
+              activeScenarioId === FRONTEND_SCENARIO_ID
+            ? route.id === "frontend-engineering"
+            : route.id === "ai-development",
+      );
       const chapter =
+        activeRoute?.chapters.find(
+          (routeChapter) => routeChapter.chapter === currentMission,
+        ) ??
         aiCareerRoadmap.find(
           (roadmapChapter) => roadmapChapter.id === String(currentMission),
-        ) ?? currentChapter;
+        ) ??
+        currentChapter;
       const wasAlreadyCleared = isChapterCleared(developer, chapter.id);
-      const xpGained = currentMission === 1 ? 150 : 120;
+      const xpGained = getChapterXp(chapter.id);
       const beforeRank = developer.rank;
-      const rewarded = wasAlreadyCleared
-        ? developer
-        : awardXP(developer, xpGained);
-      const updated = completeChapter(
-        rewarded,
-        chapter.id,
-        chapter.companionUnlock.name,
-      );
-      if (currentMission === 1) {
-        setDeveloper(updated);
-        setShowMissionSelect(true);
-      } else if (
-        currentMission === 2 ||
-        currentMission === 3 ||
-        currentMission === 4 ||
-        currentMission === 5 ||
-        currentMission === 6 ||
-        currentMission === 7 ||
-        currentMission === 8 ||
-        currentMission === 9 ||
-        currentMission === 10 ||
-        currentMission === 11 ||
-        currentMission === 12 ||
-        currentMission === 13 ||
-        currentMission === 14 ||
-        currentMission === 15
-      ) {
-        setDeveloper(updated);
-        setTeachingComplete(true);
-      } else {
-        setDeveloper(updated);
-        setChapterReward({
-          chapter,
-          xpGained,
-          wasAlreadyCleared,
-          beforeRank,
-          afterRank: updated.rank,
-        });
-        setTeachingComplete(true);
-      }
+      const beforeLevel = getAdventureProgress(developer.xp).level;
+      setChapterReward({
+        phase: "rendezvous",
+        chapter,
+        xpGained,
+        wasAlreadyCleared,
+        beforeRank,
+        afterRank: beforeRank,
+        beforeLevel,
+        afterLevel: beforeLevel,
+      });
+      setTeachingComplete(true);
     };
     if (showMissionSelect) {
+      const firstChapter = aiCareerRoadmap[0];
+      const nextChapter = aiCareerRoadmap[1];
+      const firstUnlock = firstChapter.companionUnlock;
+      const firstPortrait = companionPortraits[firstUnlock.name];
       return (
         <main
           className="quest-shell case-complete-gate"
-          style={{ "--quest-bg": `url(${questWorkbench})` } as CSSProperties}
+          style={{ "--quest-bg": `url(${questArchive})` } as CSSProperties}
         >
           <div className="quest-camera" />
           <header className="quest-hud" aria-label="结案状态">
@@ -7743,7 +11546,19 @@ export default function App() {
             </div>
           </header>
 
-          <section className="mission-gate-stage case-complete-stage">
+          <section className="chapter-reward-stage case-complete-stage">
+            <div className="reward-portrait-card case-complete-portrait">
+              {firstPortrait ? (
+                <img src={firstPortrait} alt={firstUnlock.name} />
+              ) : (
+                <div className="reward-portrait-fallback">
+                  {firstUnlock.name.slice(0, 1)}
+                </div>
+              )}
+              <span>{firstUnlock.type}解锁</span>
+              <strong>{firstUnlock.name}</strong>
+              <p>{firstUnlock.description}</p>
+            </div>
             <div className="mission-dossier">
               <span>结案卷宗 · 数据消失事件</span>
               <h1>主线 1-1 已结案</h1>
@@ -7761,6 +11576,41 @@ export default function App() {
                 <strong>内存 vs 持久化</strong>
                 <b>产出</b>
                 <strong>一段可面试复盘的排障故事</strong>
+              </div>
+              <div className="reward-interview-cards" aria-label="本章面试素材">
+                <article>
+                  <span>工作能力</span>
+                  <strong>{firstChapter.validation}</strong>
+                  <p>{firstChapter.workBackground}</p>
+                </article>
+                <article>
+                  <span>Agent 委托口令</span>
+                  <strong>{firstChapter.agentCollaboration}</strong>
+                  <p>
+                    让 Agent 沿复现、证据、修复和验收走，不让它只报“已完成”。
+                  </p>
+                </article>
+                <article>
+                  <span>面试一句话</span>
+                  <strong>{firstChapter.interviewReview}</strong>
+                  <p>把现象、证据冲突、根因和验收结果压成一段可追问的经历。</p>
+                </article>
+              </div>
+              <div className="reward-next-quest" aria-label="下一步选择">
+                <div>
+                  <span>解锁能力</span>
+                  <strong>{firstChapter.validation}</strong>
+                  <p>
+                    你已经学会不只看绿色成功提示，而是沿前端、接口、数据层和数据库找证据。
+                  </p>
+                </div>
+                <div>
+                  <span>下一章预告</span>
+                  <strong>
+                    第 {nextChapter.id} 章 · {nextChapter.theme}
+                  </strong>
+                  <p>{nextChapter.storyScene}</p>
+                </div>
               </div>
               <div className="case-complete-actions">
                 <button
@@ -7790,21 +11640,83 @@ export default function App() {
       );
     }
     return (
-      <TeachingBridge
-        attemptId={attempt.id}
-        scenario={scenario}
-        developer={developer}
-        onComplete={handleTeachingComplete}
-      />
+      <Suspense
+        fallback={
+          <TeachingBridgeLoading
+            mission={getLabConfig(activeScenarioId).missionLabel}
+            title={getLabConfig(activeScenarioId).missionTitle}
+            location={getLabConfig(activeScenarioId).baseline.action}
+            flow={getLabConfig(activeScenarioId).flowTitle}
+            backgroundImage={getLabConfig(activeScenarioId).backgroundImage}
+          />
+        }
+      >
+        <TeachingBridge
+          attemptId={attempt.id}
+          scenario={scenario}
+          developer={developer}
+          workBackground={
+            activeScenarioId === JAVA_SCENARIO_ID ||
+            activeScenarioId === JAVA_TRANSACTION_SCENARIO_ID ||
+            activeScenarioId === JAVA_CACHE_SCENARIO_ID ||
+            activeScenarioId === JAVA_RELEASE_SCENARIO_ID ||
+            activeScenarioId === JAVA_INCIDENT_SCENARIO_ID
+              ? careerRoutes
+                  .find((route) => route.id === "java-backend")
+                  ?.chapters.find(
+                    (chapter) => chapter.chapter === currentMission,
+                  )?.workBackground
+              : activeScenarioId === FRONTEND_ACCESSIBILITY_SCENARIO_ID ||
+                  activeScenarioId === FRONTEND_TESTING_SCENARIO_ID ||
+                  activeScenarioId === FRONTEND_PERFORMANCE_SCENARIO_ID ||
+                  activeScenarioId === FRONTEND_REQUEST_STATES_SCENARIO_ID ||
+                  activeScenarioId === FRONTEND_SCENARIO_ID
+                ? careerRoutes
+                    .find((route) => route.id === "frontend-engineering")
+                    ?.chapters.find(
+                      (chapter) => chapter.chapter === currentMission,
+                    )?.workBackground
+                : aiCareerRoadmap.find(
+                    (chapter) => Number(chapter.id) === currentMission,
+                  )?.workBackground
+          }
+          onComplete={handleTeachingComplete}
+        />
+      </Suspense>
     );
   }
   if (chapterReward) {
+    const activeRoute = careerRoutes.find((route) =>
+      activeScenarioId === JAVA_SCENARIO_ID ||
+      activeScenarioId === JAVA_TRANSACTION_SCENARIO_ID ||
+      activeScenarioId === JAVA_CACHE_SCENARIO_ID ||
+      activeScenarioId === JAVA_RELEASE_SCENARIO_ID ||
+      activeScenarioId === JAVA_INCIDENT_SCENARIO_ID
+        ? route.id === "java-backend"
+        : activeScenarioId === FRONTEND_ACCESSIBILITY_SCENARIO_ID ||
+            activeScenarioId === FRONTEND_TESTING_SCENARIO_ID ||
+            activeScenarioId === FRONTEND_PERFORMANCE_SCENARIO_ID ||
+            activeScenarioId === FRONTEND_REQUEST_STATES_SCENARIO_ID ||
+            activeScenarioId === FRONTEND_SCENARIO_ID
+          ? route.id === "frontend-engineering"
+          : route.id === "ai-development",
+    );
+    const routeChapters = activeRoute?.chapters ?? aiCareerRoadmap;
+    const currentChapterIndex = routeChapters.findIndex(
+      (chapter) => chapter.id === chapterReward.chapter.id,
+    );
+    const nextChapter =
+      currentChapterIndex >= 0
+        ? routeChapters[currentChapterIndex + 1]
+        : undefined;
     return (
       <ChapterRewardGate
         developer={developer}
         reward={chapterReward}
+        nextChapter={nextChapter}
         onBackToRoadmap={() => {
           scrollPageToTop();
+          clearChapterHash();
           setChapterReward(null);
           setTeachingComplete(false);
           setShowMissionSelect(false);
@@ -7812,10 +11724,82 @@ export default function App() {
           setIntroScene(2);
           setSelectedChapterId(chapterReward.chapter.id);
         }}
+        onContinueToLab={() => {
+          scrollPageToTop();
+          clearChapterHash();
+          setChapterReward(null);
+          setTeachingComplete(true);
+        }}
       />
     );
   }
   return (
-    <Lab attempt={attempt} artifacts={artifacts} setAttempt={setAttempt} />
+    <Lab
+      attempt={attempt}
+      artifacts={artifacts}
+      setAttempt={setAttempt}
+      onBackToRoadmap={() => {
+        scrollPageToTop();
+        clearChapterHash();
+        setTeachingComplete(false);
+        setChapterReward(null);
+        setShowMissionSelect(false);
+        setShowGameIntro(true);
+        setIntroScene(2);
+        setSelectedChapterId(String(currentMission));
+      }}
+      onSubmitted={(options = { showReward: true }) => {
+        scrollPageToTop();
+        const activeRoute = careerRoutes.find((route) =>
+          activeScenarioId === JAVA_SCENARIO_ID ||
+          activeScenarioId === JAVA_TRANSACTION_SCENARIO_ID ||
+          activeScenarioId === JAVA_CACHE_SCENARIO_ID ||
+          activeScenarioId === JAVA_RELEASE_SCENARIO_ID ||
+          activeScenarioId === JAVA_INCIDENT_SCENARIO_ID
+            ? route.id === "java-backend"
+            : activeScenarioId === FRONTEND_ACCESSIBILITY_SCENARIO_ID ||
+                activeScenarioId === FRONTEND_TESTING_SCENARIO_ID ||
+                activeScenarioId === FRONTEND_PERFORMANCE_SCENARIO_ID ||
+                activeScenarioId === FRONTEND_REQUEST_STATES_SCENARIO_ID ||
+                activeScenarioId === FRONTEND_SCENARIO_ID
+              ? route.id === "frontend-engineering"
+              : route.id === "ai-development",
+        );
+        const chapter =
+          activeRoute?.chapters.find(
+            (routeChapter) => routeChapter.chapter === currentMission,
+          ) ??
+          aiCareerRoadmap.find(
+            (roadmapChapter) => roadmapChapter.id === String(currentMission),
+          ) ??
+          currentChapter;
+        const wasAlreadyCleared = isChapterCleared(developer, chapter.id);
+        const xpGained = getChapterXp(chapter.id);
+        const beforeRank = developer.rank;
+        const beforeLevel = getAdventureProgress(developer.xp).level;
+        const updated = wasAlreadyCleared
+          ? developer
+          : completeChapter(
+              awardXP(developer, xpGained),
+              chapter.id,
+              chapter.companionUnlock.name,
+            );
+        if (!wasAlreadyCleared) {
+          setDeveloper(updated);
+        }
+        if (options.showReward ?? true) {
+          setChapterReward({
+            phase: "earned",
+            chapter,
+            xpGained,
+            wasAlreadyCleared,
+            beforeRank,
+            afterRank: updated.rank,
+            beforeLevel,
+            afterLevel: getAdventureProgress(updated.xp).level,
+          });
+        }
+      }}
+    />
   );
 }

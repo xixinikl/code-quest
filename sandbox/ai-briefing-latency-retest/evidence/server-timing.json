@@ -1,0 +1,9 @@
+{
+  "requestId": "req-dawn-101",
+  "header": "data;dur=82, model;dur=3210, total;dur=3292",
+  "segments": [
+    { "name": "data", "durationMs": 82, "meaning": "读取客服事件" },
+    { "name": "model", "durationMs": 3210, "meaning": "等待模型返回第一字" },
+    { "name": "total", "durationMs": 3292, "meaning": "服务端总耗时" }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "requestId": "req-tool-2048",
+  "tool": "readOrder",
+  "args": {
+    "orderId": "ord-2048",
+    "path": "/internal/secrets"
+  },
+  "intent": "查询订单状态",
+  "risk": "把内部路径混进了订单查询工具请求"
+}

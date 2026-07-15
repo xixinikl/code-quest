@@ -1,0 +1,6 @@
+{
+  "status": 403,
+  "error": "TOOL_DENIED",
+  "requestId": "req-tool-2048",
+  "userMessage": "这个查询暂时不能完成，请联系值班人员并提供请求编号。"
+}

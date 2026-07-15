@@ -1,0 +1,4 @@
+sqlite> SELECT id, avatar_url, updated_at FROM profiles WHERE id = 'user_01';
+user_01|/avatars/old-sun.webp|2026-07-01T00:00:00.000Z
+
+结论：上传接口返回新地址后，SQLite 中的头像地址和更新时间均未改变。

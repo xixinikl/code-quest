@@ -1,0 +1,4 @@
+sqlite> SELECT id, user_id, revoked_at FROM refresh_sessions;
+-- 0 rows
+
+浏览器拿到了 refreshToken，但数据库没有对应刷新会话。

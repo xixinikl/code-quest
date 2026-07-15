@@ -1,0 +1,15 @@
+{
+  "request": {
+    "method": "PUT",
+    "url": "/api/profile/avatar",
+    "body": { "avatarUrl": "/avatars/new-moon.webp" }
+  },
+  "response": {
+    "status": 200,
+    "body": {
+      "userId": "user_01",
+      "avatarUrl": "/avatars/new-moon.webp"
+    }
+  },
+  "observed": "当前页面立即显示新头像"
+}

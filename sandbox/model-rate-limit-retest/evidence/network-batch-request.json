@@ -1,0 +1,17 @@
+{
+  "request": {
+    "method": "POST",
+    "url": "/api/support-summaries/batches",
+    "headers": {
+      "content-type": "application/json",
+      "x-request-id": "req-night-429"
+    },
+    "body": {
+      "conversations": [
+        { "id": "chat-101", "messages": 18 },
+        { "id": "chat-102", "messages": 11 }
+      ]
+    }
+  },
+  "observed": "请求体完整，浏览器等待 1.2 秒后收到 500"
+}

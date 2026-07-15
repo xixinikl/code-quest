@@ -1,0 +1,11 @@
+{
+  "request": { "method": "GET", "url": "/api/profile" },
+  "response": {
+    "status": 200,
+    "body": {
+      "userId": "user_01",
+      "avatarUrl": "/avatars/old-sun.webp"
+    }
+  },
+  "observed": "退出并重新登录后恢复旧头像"
+}

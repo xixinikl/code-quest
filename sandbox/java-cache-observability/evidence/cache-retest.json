@@ -1,0 +1,15 @@
+{
+  "scenario": "reload same project list twice",
+  "firstVisit": {
+    "xCache": "MISS",
+    "apiDurationMs": 1672,
+    "databaseQueryCount": 1
+  },
+  "secondVisit": {
+    "xCache": "MISS",
+    "apiDurationMs": 1653,
+    "databaseQueryCount": 2
+  },
+  "expected": "第二次访问应该 HIT，或者至少有请求去重/短缓存证明不是重复查库。",
+  "observation": "当前实现写入了缓存，但读取永远返回 undefined，所以复测没有变快。"
+}

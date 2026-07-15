@@ -1,9 +1,29 @@
-import { render, screen } from "@testing-library/react";
+import {
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+  within,
+} from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import App from "./App";
-import { GuidedCodeTour, TeachingBridge } from "./TeachingBridge";
-import { case02Scenario } from "./teaching";
+import App, {
+  CareerDossier,
+  getLabConfig,
+  Lab,
+  VerificationPanel,
+} from "./App";
+import {
+  getTeachingStorySceneImages,
+  GuidedCodeTour,
+  TeachingBridge,
+} from "./TeachingBridge";
+import {
+  case02Scenario,
+  frontendPerformanceProofScenario,
+  javaTransactionConsistencyScenario,
+  teachingScenario,
+} from "./teaching";
 
 const diagnosticActive = {
   id: "diagnostic-001",
@@ -16,6 +36,195 @@ const diagnosticCompleted = {
   status: "completed",
   baseline: { firstChecks: "先复现并查看 Network" },
 };
+
+describe("岗位路线实战场景契约", () => {
+  it("AI 主线十五章和岗位路线都具备完整实战九件套", () => {
+    const scenarioIds = [
+      "canvas-save-persistence",
+      "canvasstorm-product-brief",
+      "identity-session-corridor",
+      "api-error-court",
+      "data-consistency-forge",
+      "performance-fog-lab",
+      "ai-api-key-vault",
+      "hallucination-mirror-hall",
+      "rag-knowledge-maze",
+      "agent-tool-tower",
+      "verification-trial-arena",
+      "agent-brief-forge",
+      "delivery-review-court",
+      "release-readiness-gate",
+      "interview-answer-forge",
+      "java-layered-request",
+      "java-transaction-consistency",
+      "java-cache-observability",
+      "java-release-harbor",
+      "java-production-incident",
+      "frontend-component-state",
+      "frontend-request-states",
+      "frontend-performance-proof",
+      "frontend-accessibility-proof",
+      "frontend-testing-proof",
+    ];
+
+    const configs = scenarioIds.map((scenarioId) => getLabConfig(scenarioId));
+
+    expect(configs.map((config) => config.scenarioId)).toEqual(scenarioIds);
+    for (const config of configs) {
+      expect(config.backgroundImage).toBeTruthy();
+      expect(config.flowItems.length).toBeGreaterThanOrEqual(4);
+      expect(config.baseline.body).toBeTruthy();
+      expect(config.practical.sandboxPath).toMatch(/^sandbox\//);
+      expect(config.result.proved).toBeTruthy();
+      expect(config.result.recorded).toBeTruthy();
+      expect(config.result.nextItems.length).toBeGreaterThanOrEqual(3);
+      expect(config.steps.some((step) => step.kind === "verification")).toBe(
+        true,
+      );
+      expect(config.requiredResponseStepIds.length).toBeGreaterThanOrEqual(3);
+      expect(
+        config.requiredResponseStepIds.every((stepId) =>
+          config.steps.some((step) => step.id === stepId),
+        ),
+      ).toBe(true);
+      expect(Object.keys(config.artifactGuides).length).toBeGreaterThanOrEqual(
+        4,
+      );
+    }
+  });
+
+  it("每条岗位路线的关卡有独立实战场景，不回退到默认关卡", () => {
+    const routeScenes = {
+      java: [
+        "java-layered-request",
+        "java-transaction-consistency",
+        "java-cache-observability",
+        "java-release-harbor",
+        "java-production-incident",
+      ],
+      frontend: [
+        "frontend-component-state",
+        "frontend-request-states",
+        "frontend-performance-proof",
+        "frontend-accessibility-proof",
+        "frontend-testing-proof",
+      ],
+    };
+
+    for (const scenarioIds of Object.values(routeScenes)) {
+      const configs = scenarioIds.map((scenarioId) => getLabConfig(scenarioId));
+      expect(configs.map((config) => config.scenarioId)).toEqual(scenarioIds);
+      expect(
+        new Set(configs.map((config) => config.backgroundImage)).size,
+      ).toBe(scenarioIds.length);
+      expect(configs.every((config) => config.practical.sandboxPath)).toBe(
+        true,
+      );
+    }
+  });
+
+  it("Java 事务和前端性能教学桥使用岗位专属角色与地点", async () => {
+    const user = userEvent.setup();
+    vi.stubGlobal(
+      "fetch",
+      vi.fn((input: RequestInfo | URL) => {
+        const url = String(input);
+        if (url.includes("/teaching")) return response([]);
+        return response({ error: "NOT_FOUND", message: "unexpected" }, 404);
+      }),
+    );
+
+    const developer = {
+      name: "见习开发者",
+      rank: "见习开发者" as const,
+      xp: 0,
+      missionsCleared: 0,
+      clearedChapterIds: [],
+      unlockedCompanionNames: [],
+      joinedAt: "2026-07-05T00:00:00.000Z",
+    };
+
+    const { unmount } = render(
+      <TeachingBridge
+        attemptId="attempt-java-transaction-scene"
+        scenario={javaTransactionConsistencyScenario}
+        developer={developer}
+        onComplete={vi.fn()}
+      />,
+    );
+    await user.click(await screen.findByRole("button", { name: /开始闯关/ }));
+    expect(await screen.findByLabelText("剧情角色")).toHaveTextContent(
+      "订单值守官",
+    );
+    expect(screen.getByLabelText("本章地点航线")).toHaveTextContent(
+      "订单锻造台",
+    );
+    expect(screen.getByLabelText("剧情角色")).toHaveTextContent("订单锻造台");
+    expect(
+      screen.getByLabelText("剧情角色").querySelector("img"),
+    ).toHaveAttribute("src", expect.stringContaining("portrait-api-clerk-v2"));
+
+    unmount();
+    render(
+      <TeachingBridge
+        attemptId="attempt-frontend-performance-scene"
+        scenario={frontendPerformanceProofScenario}
+        developer={developer}
+        onComplete={vi.fn()}
+      />,
+    );
+    await user.click(await screen.findByRole("button", { name: /开始闯关/ }));
+    expect(await screen.findByLabelText("剧情角色")).toHaveTextContent(
+      "时序领航员",
+    );
+    expect(screen.getByLabelText("本章地点航线")).toHaveTextContent(
+      "首屏计时港",
+    );
+    expect(screen.getByLabelText("剧情角色")).toHaveTextContent("首屏计时港");
+    expect(
+      screen.getByLabelText("剧情角色").querySelector("img"),
+    ).toHaveAttribute(
+      "src",
+      expect.stringContaining("portrait-timing-navigator"),
+    );
+  });
+
+  it("每个剧情关卡的地点都使用不同背景，避免换地点却停在原地", () => {
+    const scenarioIds = [
+      "canvas-save-persistence",
+      "case-002",
+      "case-003-login-state",
+      "case-004-api-error",
+      "case-005-data-consistency",
+      "case-006-performance",
+      "case-007-ai-api",
+      "case-008-hallucination",
+      "case-009-rag",
+      "case-010-agent-tools",
+      "case-011-testing-proof",
+      "case-012-agent-brief",
+      "case-013-delivery-review",
+      "case-014-release-readiness",
+      "case-015-interview-review",
+      "java-layered-request",
+      "java-transaction-consistency",
+      "java-cache-observability",
+      "java-release-harbor",
+      "java-production-incident",
+      "frontend-component-state",
+      "frontend-request-states",
+      "frontend-performance-proof",
+      "frontend-accessibility-proof",
+      "frontend-testing-proof",
+    ];
+
+    for (const scenarioId of scenarioIds) {
+      const images = getTeachingStorySceneImages(scenarioId);
+      expect(images.length).toBeGreaterThanOrEqual(4);
+      expect(new Set(images).size).toBe(images.length);
+    }
+  });
+});
 
 const attempt = {
   id: "attempt-001",
@@ -875,6 +1084,7 @@ function response(body: unknown, status = 200) {
 async function enterMainQuest(user: ReturnType<typeof userEvent.setup>) {
   await screen.findByRole("heading", { name: /码上冒险/ }, { timeout: 3000 });
   expect(screen.getByText(/代码城失去了记忆/)).toBeInTheDocument();
+  expect(screen.getByRole("img", { name: "档案馆记录员" })).toBeInTheDocument();
 
   await user.click(screen.getByRole("button", { name: /走进档案馆/ }));
   await user.click(screen.getByRole("button", { name: /调取现场证据/ }));
@@ -883,39 +1093,136 @@ async function enterMainQuest(user: ReturnType<typeof userEvent.setup>) {
   await user.click(screen.getByRole("button", { name: /领取委托/ }));
   expect(screen.getAllByText(/15 章/).length).toBeGreaterThan(0);
   expect(
+    screen.getByText("点击章节查看卷宗；只有当前章节可以进入实战。"),
+  ).toBeInTheDocument();
+  expect(
     screen.getByRole("button", { name: /AI 应用开发.*可进入/ }),
   ).toBeInTheDocument();
   expect(
-    screen.getByRole("button", { name: /Java 后端.*即将解锁/ }),
+    screen.getByRole("button", { name: /Java 后端.*可进入/ }),
   ).toBeInTheDocument();
   expect(
-    screen.getByRole("button", { name: /前端工程.*即将解锁/ }),
+    screen.getByRole("button", { name: /前端工程.*可进入/ }),
   ).toBeInTheDocument();
-  await user.click(screen.getByRole("button", { name: /Java 后端.*即将解锁/ }));
+  const sharedCoreTrail = screen.getByRole("region", {
+    name: /跨岗位核心能力/,
+  });
+  expect(sharedCoreTrail).toHaveTextContent("7 项可迁移工程能力");
+  expect(sharedCoreTrail).toHaveTextContent("读懂项目");
+  expect(sharedCoreTrail).toHaveTextContent("验收交付");
+  await user.click(screen.getByRole("button", { name: /Java 后端.*可进入/ }));
   expect(
-    screen.getByText(/规划路线：让用户能读懂后端服务/),
+    screen.getAllByText(/规划路线：让用户能读懂后端服务/).length,
+  ).toBeGreaterThan(0);
+  expect(screen.getByText("5 章")).toBeInTheDocument();
+  expect(screen.getAllByText(/事务熔炉|事务和锁/).length).toBeGreaterThan(0);
+  expect(screen.getByLabelText("路线状态")).toHaveTextContent("下一章");
+  const lockedRouteSummary = screen.getByRole("region", {
+    name: /当前路线目标/,
+  });
+  expect(lockedRouteSummary).toHaveTextContent("从请求、业务、数据到上线");
+  expect(
+    screen.getByRole("button", { name: /进入第 1 章教学关卡/ }),
   ).toBeInTheDocument();
-  expect(screen.getByText(/这条路线未开放/)).toBeInTheDocument();
-  expect(screen.getAllByText(/事务和锁/).length).toBeGreaterThan(0);
   await user.click(screen.getByRole("button", { name: /AI 应用开发.*可进入/ }));
   expect(screen.getAllByText(/找回消失的登录状态/).length).toBeGreaterThan(0);
   expect(screen.getAllByText(/安全接入 AI API/).length).toBeGreaterThan(0);
   expect(screen.getByText(/让资料进入 AI 回答/)).toBeInTheDocument();
   expect(screen.getByText(/把项目经历讲成面试回答/)).toBeInTheDocument();
+  const firstChapterDossier = screen.getByRole("region", {
+    name: /选中章节卷宗/,
+  });
+  expect(firstChapterDossier).toHaveTextContent("第 1 章现场：数据断层");
+  expect(firstChapterDossier).toHaveTextContent(
+    "交接物：POST /api/canvases + 草稿 JSON",
+  );
+  expect(firstChapterDossier).toHaveTextContent("交接物：INSERT 写入动作");
+  expect(firstChapterDossier).toHaveTextContent(
+    "收到「POST /api/canvases + 草稿 JSON」",
+  );
+  const secondMapNode = screen.getByRole("button", {
+    name: /2产品密室待练习/,
+  });
+  expect(secondMapNode).toHaveAttribute("aria-pressed", "false");
+  await user.click(secondMapNode);
+  expect(
+    screen.getByRole("region", { name: /选中章节卷宗/ }),
+  ).toHaveTextContent("第 2 章现场：产品密室");
+  expect(secondMapNode).toHaveAttribute("aria-pressed", "true");
+  expect(secondMapNode).toHaveClass("selected");
+  const evidenceDrawer = within(firstChapterDossier)
+    .getByText(/展开“谁把什么交给谁”/)
+    .closest("details");
+  const workDrawer = within(firstChapterDossier)
+    .getByText(/展开代码、证据与面试资料/)
+    .closest("details");
+  expect(evidenceDrawer).not.toHaveAttribute("open");
+  expect(workDrawer).not.toHaveAttribute("open");
+  await user.click(
+    screen.getByRole("button", { name: /第 2 章 · AI 点子为什么空泛/ }),
+  );
+  expect(screen.getByAltText("传送门书记官")).toHaveAttribute(
+    "src",
+    expect.stringContaining("portrait-portal-scribe-v2"),
+  );
+  await user.click(
+    screen.getByRole("button", { name: /第 3 章 · 登录状态为什么丢/ }),
+  );
   expect(screen.getByText(/身份回廊的门牌一刷新就掉落/)).toBeInTheDocument();
   expect(screen.getByText(/登录表单 → 后端校验/)).toBeInTheDocument();
+  expect(
+    screen.getByRole("region", { name: /选中章节卷宗/ }),
+  ).toHaveTextContent("交接物：Token 或 Set-Cookie");
   expect(screen.getByText(/Application、Network/)).toBeInTheDocument();
   expect(screen.getAllByText(/当前委托/).length).toBeGreaterThan(0);
-  expect(screen.getByText(/先破第一起“保存消失”事故/)).toBeInTheDocument();
-  expect(screen.getByText(/你不需要一次吃下全部 15 章/)).toBeInTheDocument();
+  expect(screen.getByText(/下一章主线：第 1 章/)).toBeInTheDocument();
+  expect(
+    screen.getByRole("region", { name: /下一章主线/ }),
+  ).toBeInTheDocument();
+  expect(screen.getByText(/为什么要去/)).toBeInTheDocument();
+  expect(screen.getAllByText(/谁把什么交给谁/).length).toBeGreaterThan(0);
+  expect(screen.getByText(/通关产出/)).toBeInTheDocument();
+  expect(
+    screen.getAllByText(/用户 → 前端页面 → 后端接口/).length,
+  ).toBeGreaterThan(0);
+  expect(screen.getByText(/只需要完成这一章的证据链/)).toBeInTheDocument();
+  expect(screen.getByText(/成长契约/)).toBeInTheDocument();
+  expect(screen.getByText(/当前身份/)).toBeInTheDocument();
+  expect(screen.getByText(/下一位可解锁：档案馆记录员/)).toBeInTheDocument();
+  expect(screen.getByAltText("档案馆记录员")).toBeInTheDocument();
+  expect(screen.getByText(/先记住你在哪里：数据断层/)).toBeInTheDocument();
+  expect(
+    document.querySelector(".visual-novel")?.getAttribute("style"),
+  ).toContain("quest-archive");
   expect(screen.queryByRole("region", { name: /伙伴背包/ })).toBeNull();
   await user.click(screen.getByRole("button", { name: /伙伴图鉴/ }));
   expect(screen.getAllByText(/伙伴图鉴/).length).toBeGreaterThan(0);
   expect(screen.getByText(/收集角色、宠物与装备/)).toBeInTheDocument();
   expect(screen.getByText(/伙伴背包/)).toBeInTheDocument();
   expect(screen.getByText(/已收集能力 0\/15/)).toBeInTheDocument();
+  expect(
+    screen.getByRole("combobox", { name: /选择伙伴或收藏物/ }),
+  ).toBeInTheDocument();
   expect(screen.getAllByText(/能力印记/).length).toBeGreaterThan(0);
   expect(screen.getAllByText(/面试复盘/).length).toBeGreaterThan(0);
+  expect(
+    screen.queryByRole("region", { name: /选中章节卷宗/ }),
+  ).not.toBeInTheDocument();
+  await user.click(
+    screen.getByRole("button", { name: /第 2 章 · 宠物.*灵感萤火/ }),
+  );
+  expect(screen.getByAltText("灵感萤火")).toHaveAttribute(
+    "src",
+    expect.stringContaining("pet-inspiration-glow-v2"),
+  );
+  await user.selectOptions(
+    screen.getByRole("combobox", { name: /选择伙伴或收藏物/ }),
+    "9",
+  );
+  expect(screen.getByAltText("检索狐")).toHaveAttribute(
+    "src",
+    expect.stringContaining("pet-retrieval-fox-v2"),
+  );
   await user.click(screen.getByRole("button", { name: /面试复盘/ }));
   expect(screen.getAllByText(/面试复盘册/).length).toBeGreaterThan(0);
   expect(screen.getAllByText(/现象/).length).toBeGreaterThan(0);
@@ -926,7 +1233,14 @@ async function enterMainQuest(user: ReturnType<typeof userEvent.setup>) {
   expect(
     screen.getByRole("button", { name: /进入复盘房间/ }),
   ).toBeInTheDocument();
-  expect(screen.getAllByText(/审判庭书记员/).length).toBeGreaterThan(0);
+  expect(
+    screen.queryByRole("region", { name: /选中章节卷宗/ }),
+  ).not.toBeInTheDocument();
+
+  await user.click(screen.getByRole("button", { name: /当前委托/ }));
+  expect(
+    screen.getByRole("region", { name: /选中章节卷宗/ }),
+  ).toBeInTheDocument();
 
   await user.click(
     screen.getByRole("button", { name: /第 5 章 · 数据为什么重复/ }),
@@ -935,7 +1249,7 @@ async function enterMainQuest(user: ReturnType<typeof userEvent.setup>) {
   expect(screen.getByText(/唯一索引、提交按钮锁定/)).toBeInTheDocument();
   expect(screen.getByText(/连续点击、刷新重试和并发请求/)).toBeInTheDocument();
 
-  await user.click(screen.getByRole("button", { name: /进入主线/ }));
+  await user.click(screen.getByRole("button", { name: /进入当前委托/ }));
 }
 
 afterEach(() => {
@@ -945,7 +1259,324 @@ afterEach(() => {
 });
 
 describe("AI 职业路线入口", () => {
-  it("代码导读会把关键行翻译成新手能懂的流程和证据边界", () => {
+  it("启动连接本地学习记录时显示统一的暗色状态屏内容", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(() => new Promise(() => undefined)),
+    );
+
+    render(<App />);
+
+    expect(screen.getByText("码上冒险")).toBeInTheDocument();
+    expect(screen.getByText("AI CAREER RPG")).toBeInTheDocument();
+    expect(screen.getByText(/正在连接本地学习记录/)).toBeInTheDocument();
+  });
+
+  it("岗位路线大厅的当前委托和后续地图不会串回 AI 十五章", async () => {
+    const user = userEvent.setup();
+    vi.stubGlobal(
+      "fetch",
+      vi.fn((input: RequestInfo | URL) => {
+        const url = String(input);
+        if (url === "/api/health") return response({ status: "ok" });
+        if (url === "/api/diagnostic-sessions") {
+          return response(diagnosticActive, 201);
+        }
+        if (url.includes("/teaching")) return response([]);
+        return response({ error: "NOT_FOUND", message: "unexpected" }, 404);
+      }),
+    );
+
+    render(<App />);
+
+    await screen.findByRole("heading", { name: /码上冒险/ }, { timeout: 3000 });
+    await user.click(screen.getByRole("button", { name: /走进档案馆/ }));
+    await user.click(screen.getByRole("button", { name: /调取现场证据/ }));
+    await user.click(screen.getByRole("button", { name: /领取委托/ }));
+
+    await user.click(screen.getByRole("button", { name: /Java 后端.*可进入/ }));
+    expect(screen.getByText(/Java 后端成长主线/)).toBeInTheDocument();
+    expect(screen.getByText(/不需要一次吃下全部 5 章/)).toBeInTheDocument();
+    expect(screen.getByText(/查看第 2 至 5 章/)).toBeInTheDocument();
+    expect(screen.getByLabelText("Java 后端世界地图")).toHaveTextContent(
+      "事故回声塔",
+    );
+    expect(screen.queryByText(/查看第 2 至 15 章/)).toBeNull();
+    expect(screen.queryByText("面试议会")).toBeNull();
+    const javaMap = screen.getByLabelText("Java 后端世界地图");
+    for (const [nodeName, dossierText] of [
+      [/2事务熔炉待练习/, "第 2 章现场：事务熔炉"],
+      [/3缓存风廊待练习/, "第 3 章现场：缓存风廊"],
+      [/4服务上线港待练习/, "第 4 章现场：服务上线港"],
+      [/5事故回声塔待练习/, "第 5 章现场：事故回声塔"],
+    ] as const) {
+      await user.click(within(javaMap).getByRole("button", { name: nodeName }));
+      const javaDossier = screen.getByRole("region", {
+        name: /选中章节卷宗/,
+      });
+      expect(javaDossier).toHaveTextContent(dossierText);
+      expect(javaDossier).not.toHaveTextContent("产品密室");
+      expect(javaDossier).not.toHaveTextContent("面试议会");
+    }
+
+    await user.click(screen.getByRole("button", { name: /前端工程.*可进入/ }));
+    expect(screen.getByText(/前端工程成长主线/)).toBeInTheDocument();
+    expect(screen.getByText(/不需要一次吃下全部 5 章/)).toBeInTheDocument();
+    expect(screen.getByText(/查看第 2 至 5 章/)).toBeInTheDocument();
+    expect(screen.getByLabelText("前端工程世界地图")).toHaveTextContent(
+      "回归试炼场",
+    );
+    expect(screen.queryByText(/查看第 2 至 15 章/)).toBeNull();
+    expect(screen.queryByText("面试议会")).toBeNull();
+    const frontendMap = screen.getByLabelText("前端工程世界地图");
+    for (const [nodeName, dossierText] of [
+      [/2表单传送厅待练习/, "第 2 章现场：表单传送厅"],
+      [/3首屏观测塔待练习/, "第 3 章现场：首屏观测塔"],
+      [/4无障碍交付庭待练习/, "第 4 章现场：无障碍交付庭"],
+      [/5回归试炼场待练习/, "第 5 章现场：回归试炼场"],
+    ] as const) {
+      await user.click(
+        within(frontendMap).getByRole("button", { name: nodeName }),
+      );
+      const frontendDossier = screen.getByRole("region", {
+        name: /选中章节卷宗/,
+      });
+      expect(frontendDossier).toHaveTextContent(dossierText);
+      expect(frontendDossier).not.toHaveTextContent("产品密室");
+      expect(frontendDossier).not.toHaveTextContent("面试议会");
+    }
+  });
+
+  it.each([
+    {
+      hash: "#chapter-java-2",
+      scenarioId: "java-transaction-consistency",
+      title: /事务熔炉：两张表不能只成功一张/,
+      routeText: /最后用失败复测证明系统没有留下半成品/,
+      routePrefix: /Java 后端成长路线 · Java 后端 · 第 2 关/,
+      forbiddenText: /AI 点子为什么会空泛/,
+    },
+    {
+      hash: "#chapter-frontend-4",
+      scenarioId: "frontend-accessibility-proof",
+      title: /无障碍交付庭：漂亮的页面是否真的可用/,
+      routeText: /键盘操作、读屏反馈、焦点可见性和 390px 移动端回归/,
+      routePrefix: /前端工程成长路线 · 前端工程 · 第 4 关/,
+      forbiddenText: /事务熔炉：两张表不能只成功一张/,
+    },
+  ])(
+    "岗位章节深链 $hash 直接进入对应 TeachingBridge，不跳回 AI 主线",
+    async ({
+      hash,
+      scenarioId,
+      title,
+      routeText,
+      routePrefix,
+      forbiddenText,
+    }) => {
+      window.history.replaceState(null, "", `/${hash}`);
+      const fetchMock = vi.fn(
+        (input: RequestInfo | URL, init?: RequestInit) => {
+          const url = String(input);
+          if (url === "/api/health") return response({ status: "ok" });
+          if (url === "/api/diagnostic-sessions") {
+            return response(diagnosticActive, 201);
+          }
+          if (url === "/api/diagnostic-sessions/diagnostic-001") {
+            return response(diagnosticCompleted);
+          }
+          if (url === "/api/attempts" && init?.method === "POST") {
+            const body = JSON.parse(String(init.body ?? "{}")) as {
+              scenarioId?: string;
+            };
+            return response(
+              {
+                ...attempt,
+                id: `attempt-${body.scenarioId ?? "unknown"}`,
+                scenarioId: body.scenarioId ?? "canvas-save-persistence",
+              },
+              201,
+            );
+          }
+          if (url === `/api/scenarios/${scenarioId}`) {
+            return response({ scenarioId, artifacts });
+          }
+          if (url.includes("/teaching")) return response([]);
+          return response({ error: "NOT_FOUND", message: "unexpected" }, 404);
+        },
+      );
+      vi.stubGlobal("fetch", fetchMock);
+
+      render(<App />);
+
+      expect(
+        await screen.findByRole("heading", { name: title }, { timeout: 3000 }),
+      ).toBeInTheDocument();
+      expect(screen.getByText(routeText)).toBeInTheDocument();
+      expect(screen.getByText(routePrefix)).toBeInTheDocument();
+      expect(screen.queryByText(/AI 开发主线 ·/)).not.toBeInTheDocument();
+      expect(screen.queryByText(forbiddenText)).not.toBeInTheDocument();
+      expect(fetchMock).toHaveBeenCalledWith(
+        `/api/scenarios/${scenarioId}`,
+        expect.any(Object),
+      );
+    },
+  );
+
+  it("当前委托会根据成长档案推进到下一章主线", async () => {
+    const user = userEvent.setup();
+    localStorage.setItem(
+      "codequest_developer",
+      JSON.stringify({
+        name: "见习开发者",
+        xp: 150,
+        rank: "AI 应用学徒",
+        missionsCleared: 1,
+        clearedChapterIds: ["1"],
+        unlockedCompanionNames: ["档案馆记录员"],
+        joinedAt: "2026-07-05T00:00:00.000Z",
+      }),
+    );
+    vi.stubGlobal(
+      "fetch",
+      vi.fn((input: RequestInfo | URL) => {
+        const url = String(input);
+        if (url === "/api/health") return response({ status: "ok" });
+        if (url === "/api/diagnostic-sessions") {
+          return response(diagnosticActive, 201);
+        }
+        if (url === "/api/diagnostic-sessions/diagnostic-001") {
+          return response(diagnosticCompleted);
+        }
+        if (url.includes("/teaching")) return response([]);
+        return response({ error: "NOT_FOUND", message: "unexpected" }, 404);
+      }),
+    );
+
+    render(<App />);
+
+    await screen.findByRole(
+      "heading",
+      { name: /欢迎归队，AI 应用学徒/ },
+      { timeout: 3000 },
+    );
+    expect(screen.queryByRole("button", { name: /走进档案馆/ })).toBeNull();
+    expect(screen.getByAltText("传送门书记官")).toBeInTheDocument();
+    expect(screen.getByText(/第 2 章卷宗已在产品密室展开/)).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: /继续第 2 章委托/ }));
+
+    expect(screen.getByLabelText("路线状态")).toHaveTextContent("02");
+    expect(screen.getByLabelText("路线状态")).toHaveTextContent("下一章");
+    expect(screen.getByText(/下一章主线：第 2 章/)).toBeInTheDocument();
+    expect(screen.getByLabelText("当前主线追踪")).toHaveTextContent("冒险日志");
+    expect(screen.getByLabelText("当前主线追踪")).toHaveTextContent(
+      "通关后写入成长档案",
+    );
+    expect(screen.getAllByText(/AI 点子为什么空泛/).length).toBeGreaterThan(0);
+    expect(
+      screen.getAllByText(/创意工坊里冒出一堆 AI 点子/).length,
+    ).toBeGreaterThan(0);
+    expect(screen.getAllByText(/用户目标 → Brief/).length).toBeGreaterThan(0);
+    expect(screen.getByText(/解锁奖励：宠物 · 灵感萤火/)).toBeInTheDocument();
+    expect(screen.getAllByAltText("传送门书记官").length).toBeGreaterThan(0);
+    expect(screen.getByText(/先记住你在哪里：产品密室/)).toBeInTheDocument();
+    expect(
+      document.querySelector(".visual-novel")?.getAttribute("style"),
+    ).toContain("quest-workbench");
+    expect(
+      screen.getByRole("region", { name: /选中章节卷宗/ }),
+    ).toHaveTextContent("第 2 章现场：产品密室");
+    expect(
+      screen.getByRole("button", { name: /进入第 2 章主线/ }),
+    ).toBeInTheDocument();
+  });
+
+  it("十五章全部通关后进入职业授勋状态，不再把第十五章显示成下一章", async () => {
+    const user = userEvent.setup();
+    localStorage.setItem(
+      "codequest_developer",
+      JSON.stringify({
+        name: "见习开发者",
+        xp: 1170,
+        rank: "AI 工程新星",
+        missionsCleared: 15,
+        clearedChapterIds: Array.from({ length: 15 }, (_, index) =>
+          String(index + 1),
+        ),
+        unlockedCompanionNames: [
+          "档案馆记录员",
+          "灵感萤火",
+          "回廊守卫",
+          "审判庭书记员",
+          "幂等石灵",
+          "雾灯猫",
+          "密钥匣",
+          "镜厅校对师",
+          "检索狐",
+          "塔楼副官",
+          "验收试炼官",
+          "委托书锻造师",
+          "交付审查官",
+          "上线守门人",
+          "终章答辩官",
+        ],
+        joinedAt: "2026-07-05T00:00:00.000Z",
+      }),
+    );
+    vi.stubGlobal(
+      "fetch",
+      vi.fn((input: RequestInfo | URL) => {
+        const url = String(input);
+        if (url === "/api/health") return response({ status: "ok" });
+        if (url === "/api/diagnostic-sessions") {
+          return response(diagnosticActive, 201);
+        }
+        if (url.includes("/teaching")) return response([]);
+        return response({ error: "NOT_FOUND", message: "unexpected" }, 404);
+      }),
+    );
+
+    render(<App />);
+
+    await screen.findByRole(
+      "heading",
+      { name: /欢迎归队，AI 应用工程师/ },
+      { timeout: 3000 },
+    );
+    expect(screen.getByAltText("终章答辩官")).toBeInTheDocument();
+    expect(screen.getByText(/十五章证据已经归档/)).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /走进档案馆/ })).toBeNull();
+    await user.click(screen.getByRole("button", { name: /打开职业档案/ }));
+
+    const routeStatus = screen.getByLabelText("路线状态");
+    expect(routeStatus).toHaveTextContent("15/15");
+    expect(routeStatus).toHaveTextContent("主线完成");
+    expect(
+      screen.getByRole("region", { name: "AI 工程主线结业授勋" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", {
+        name: /AI 工程主线完成，真正的独立训练从这里开始/,
+      }),
+    ).toBeInTheDocument();
+    expect(screen.queryByText(/下一章主线：第 15 章/)).toBeNull();
+    expect(screen.queryByRole("region", { name: "下一章主线" })).toBeNull();
+    expect(
+      screen.getByRole("button", { name: /整理面试复盘/ }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: /打开面试作品集/ }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByLabelText("AI 应用开发世界地图").querySelectorAll(".solved"),
+    ).toHaveLength(15);
+
+    await user.click(screen.getByRole("button", { name: /整理面试复盘/ }));
+    expect(screen.getByLabelText("面试复盘册")).toBeInTheDocument();
+  });
+
+  it("代码导读会把关键行翻译成新手能懂的流程和证据边界", async () => {
+    const user = userEvent.setup();
     const firstCodeStep = case02Scenario.steps.find(
       (step) => step.id === "c2-tour-brief",
     );
@@ -964,11 +1595,41 @@ describe("AI 职业路线入口", () => {
     expect(screen.getByText(/这一棒/)).toBeInTheDocument();
     expect(screen.getByText(/入口/)).toBeInTheDocument();
     expect(screen.getByText(/出口/)).toBeInTheDocument();
+    expect(screen.getByAltText("传送门书记官")).toBeInTheDocument();
+    expect(screen.getByText(/产品链路带读官/)).toBeInTheDocument();
+    expect(screen.getByLabelText("本页导师台词")).toHaveTextContent(
+      "传送门书记官",
+    );
+    expect(screen.getByText(/剧情里的交接镜头/)).toBeInTheDocument();
     expect(
       screen.getAllByText(/用户输入 → Brief 表单状态/).length,
     ).toBeGreaterThan(0);
     expect(screen.getByText(/逐行翻译/)).toBeInTheDocument();
     expect(screen.getByText(/先看人话，再看语法/)).toBeInTheDocument();
+    expect(screen.getByLabelText("谁把什么交给谁")).toHaveTextContent(
+      "用户输入",
+    );
+    expect(screen.getByLabelText("谁把什么交给谁")).toHaveTextContent(
+      "生成候选请求",
+    );
+    expect(screen.getByText(/当前代码处理后/)).toBeInTheDocument();
+    expect(screen.getAllByLabelText("读码交接单")).toHaveLength(1);
+    expect(screen.getByText("收到")).toBeInTheDocument();
+    expect(screen.getByText("动作")).toBeInTheDocument();
+    expect(screen.getByText("交出")).toBeInTheDocument();
+    expect(screen.getByText("证明")).toBeInTheDocument();
+    expect(screen.getByText(/把分散的信息装进一个对象/)).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "下一行" })).toBeEnabled();
+    await user.click(screen.getByRole("button", { name: "下一行" }));
+    await user.click(screen.getByRole("button", { name: "下一行" }));
+    await user.click(screen.getByRole("button", { name: "下一行" }));
+    await user.click(screen.getByRole("button", { name: "下一行" }));
+    expect(
+      screen.getByText(/调用「onBriefChange」，把「brief」交给上一层或下一棒/),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByText(/这一行负责把当前这棒的材料继续加工/),
+    ).not.toBeInTheDocument();
     expect(screen.getByText("能证明")).toBeInTheDocument();
     expect(screen.getByText("不能证明")).toBeInTheDocument();
     expect(screen.getByText("交给 Agent")).toBeInTheDocument();
@@ -978,8 +1639,32 @@ describe("AI 职业路线入口", () => {
     expect(screen.getByText(/请只围绕/)).toBeInTheDocument();
   });
 
-  it("教学进度只统计当前章节步骤并封顶 100%", async () => {
+  it("第一章代码导读会使用档案馆记录员带读保存链路", async () => {
+    const firstCodeStep = teachingScenario.steps.find((step) => step.codeFocus);
+    expect(firstCodeStep).toBeDefined();
+
+    render(
+      <GuidedCodeTour
+        step={firstCodeStep!}
+        stepIndex={0}
+        totalSteps={3}
+        onComplete={vi.fn()}
+        onRemediation={vi.fn()}
+      />,
+    );
+
     const user = userEvent.setup();
+    expect(screen.getByAltText("档案馆记录员")).toBeInTheDocument();
+    expect(screen.getByText(/代码证据带读官/)).toBeInTheDocument();
+    expect(screen.getAllByText(/上一棒交来/).length).toBeGreaterThan(0);
+    for (let index = 0; index < 6; index += 1) {
+      await user.click(screen.getByRole("button", { name: "下一行" }));
+    }
+    expect(screen.getByText(/判断这次接口回信是否成功/)).toBeInTheDocument();
+    expect(screen.getByText(/不能证明数据库已保存/)).toBeInTheDocument();
+  });
+
+  it("教学进度只统计当前章节步骤并封顶 100%", async () => {
     const progressScenario = {
       ...case02Scenario,
       scenarioId: "progress-capping-test",
@@ -1027,11 +1712,593 @@ describe("AI 职业路线入口", () => {
       />,
     );
 
-    expect(await screen.findByText(/进度 100%/)).toBeInTheDocument();
-    await user.click(await screen.findByRole("button", { name: /词库/ }));
-    expect(screen.getByRole("dialog", { name: /词库本/ })).toBeInTheDocument();
-    expect(screen.getAllByText(/持久化/).length).toBeGreaterThan(0);
+    expect(
+      await screen.findByRole("heading", { name: /章节教学完成/ }),
+    ).toBeInTheDocument();
+    expect(screen.getByLabelText("结算前夜导师")).toBeInTheDocument();
+    expect(screen.getByLabelText("已收录的学习证据")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /前往伙伴会合/ })).toBeEnabled();
     expect(screen.queryByText(/进度 125%/)).not.toBeInTheDocument();
+  });
+
+  it("教学进度已全部完成时刷新会直接回到完成庆祝入口", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn((input: RequestInfo | URL) => {
+        const url = String(input);
+        if (url === "/api/attempts/attempt-complete/teaching") {
+          return response(
+            case02Scenario.steps.map((step) => ({
+              stepId: step.id,
+              completed: true,
+              teachingResponse: {},
+              remediationEvents: [],
+              updatedAt: "2026-07-05T00:00:00.000Z",
+            })),
+          );
+        }
+        return response({ error: "NOT_FOUND", message: "unexpected" }, 404);
+      }),
+    );
+
+    render(
+      <TeachingBridge
+        attemptId="attempt-complete"
+        scenario={case02Scenario}
+        developer={{
+          name: "见习开发者",
+          rank: "见习开发者",
+          xp: 0,
+          missionsCleared: 0,
+          clearedChapterIds: [],
+          unlockedCompanionNames: [],
+          joinedAt: "2026-07-05T00:00:00.000Z",
+        }}
+        onComplete={vi.fn()}
+      />,
+    );
+
+    expect(
+      await screen.findByRole("heading", { name: /章节教学完成/ }),
+    ).toBeInTheDocument();
+    expect(screen.getByLabelText("结算前夜导师")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /前往伙伴会合/ })).toBeEnabled();
+  });
+
+  it("教学桥会持续显示上一站、当前棒和下一步，避免用户忘记流程", async () => {
+    const user = userEvent.setup();
+    const clipboardWrite = vi.fn().mockResolvedValue(undefined);
+    vi.stubGlobal("navigator", {
+      ...navigator,
+      clipboard: { writeText: clipboardWrite },
+    });
+
+    vi.stubGlobal(
+      "fetch",
+      vi.fn((input: RequestInfo | URL) => {
+        const url = String(input);
+        if (url === "/api/attempts/attempt-memory/teaching") {
+          return response([
+            {
+              stepId: "c2-map",
+              completed: true,
+              teachingResponse: {},
+              remediationEvents: [],
+              updatedAt: "2026-07-05T00:00:00.000Z",
+            },
+          ]);
+        }
+        return response({ error: "NOT_FOUND", message: "unexpected" }, 404);
+      }),
+    );
+
+    render(
+      <TeachingBridge
+        attemptId="attempt-memory"
+        scenario={case02Scenario}
+        developer={{
+          name: "见习开发者",
+          rank: "见习开发者",
+          xp: 0,
+          missionsCleared: 0,
+          clearedChapterIds: [],
+          unlockedCompanionNames: [],
+          joinedAt: "2026-07-05T00:00:00.000Z",
+        }}
+        onComplete={vi.fn()}
+      />,
+    );
+
+    expect(await screen.findByLabelText("本章导师同行")).toBeInTheDocument();
+    const supportDrawer = screen
+      .getByText(/需要时展开流程回放、导师试炼与能力护照/)
+      .closest("details");
+    expect(supportDrawer).not.toBeNull();
+    expect(supportDrawer).not.toHaveAttribute("open");
+    expect(screen.getByLabelText("本章导师同行")).toHaveTextContent("导师同行");
+    expect(screen.getByLabelText("本章导师同行")).toHaveTextContent("方向守卫");
+    expect(screen.getByLabelText("本章导师同行")).toHaveTextContent(
+      "方向选择大厅",
+    );
+    expect(screen.getByLabelText("本章导师同行")).toHaveTextContent(
+      "先抓住哪个词",
+    );
+    expect(screen.getByLabelText("本章导师同行")).toHaveTextContent(
+      "CanvasStorm 从想法到草案的路线",
+    );
+    expect(screen.getByLabelText("本章导师同行")).toHaveTextContent(
+      "第一眼看哪条线索",
+    );
+    expect(screen.getByLabelText("本关交付契约")).toHaveTextContent(
+      "现在要证明",
+    );
+    expect(screen.getByLabelText("本关交付契约")).toHaveTextContent(
+      "学完能带走",
+    );
+    expect(screen.getByLabelText("同行伙伴反应")).toHaveTextContent("灵感萤火");
+    expect(screen.getByLabelText("同行伙伴反应")).toHaveTextContent(
+      "一次只解锁一个词",
+    );
+    expect(screen.getByLabelText("同行伙伴反应")).toHaveTextContent("产品链路");
+    expect(screen.getByAltText("灵感萤火")).toHaveAttribute(
+      "src",
+      expect.stringContaining("pet-inspiration-glow-v2"),
+    );
+    expect(screen.getByLabelText("本章记忆线")).toBeInTheDocument();
+    expect(screen.getByLabelText("章节冒险日志")).toHaveTextContent("冒险日志");
+    expect(screen.getByLabelText("章节冒险日志")).toHaveTextContent("当前任务");
+    expect(screen.getByLabelText("本章流程回放")).toHaveTextContent("流程回放");
+    expect(screen.getByLabelText("本章流程回放")).toHaveTextContent(
+      "当前站点：Project Brief",
+    );
+    expect(screen.getByLabelText("本章流程回放")).toHaveTextContent("收到：");
+    expect(screen.getByLabelText("本章流程回放")).toHaveTextContent("交出：");
+    expect(screen.getByLabelText("本章流程回放")).toHaveTextContent(
+      "上一棒交来",
+    );
+    expect(screen.getByLabelText("本章流程回放")).toHaveTextContent(
+      "当前要证明",
+    );
+    expect(screen.getByLabelText("本章流程回放")).toHaveTextContent(
+      "交给下一棒",
+    );
+    expect(screen.getByLabelText("导师试炼三印章")).toHaveTextContent(
+      "导师试炼",
+    );
+    expect(screen.getByLabelText("导师试炼三印章")).toHaveTextContent(
+      "0/3 已点亮",
+    );
+    expect(screen.getByLabelText("导师试炼三印章")).toHaveTextContent(
+      "还差：流程印章、证据印章、委托印章。",
+    );
+    const flowSeal = screen.getByRole("button", { name: /流程印章/ });
+    expect(flowSeal).toHaveAttribute("aria-pressed", "false");
+    await user.click(flowSeal);
+    expect(flowSeal).toHaveAttribute("aria-pressed", "true");
+    expect(screen.getByLabelText("导师试炼三印章")).toHaveTextContent(
+      "1/3 已点亮",
+    );
+    expect(screen.getByLabelText("导师试炼三印章")).toHaveTextContent(
+      "还差：证据印章、委托印章。",
+    );
+    await user.click(screen.getByRole("button", { name: /证据印章/ }));
+    await user.click(screen.getByRole("button", { name: /委托印章/ }));
+    expect(screen.getByLabelText("导师试炼三印章")).toHaveTextContent(
+      "3/3 已点亮",
+    );
+    expect(screen.getByLabelText("导师试炼三印章")).not.toHaveTextContent(
+      "还差：",
+    );
+    expect(screen.getByLabelText("导师试炼三印章")).toHaveTextContent(
+      "试炼完成",
+    );
+    expect(screen.getByLabelText("导师试炼三印章")).toHaveTextContent(
+      "下一步：代码线索：Project Brief 表单",
+    );
+    expect(screen.getByLabelText("导师试炼三印章")).toHaveTextContent(
+      "面试里可以说",
+    );
+    expect(screen.getByLabelText("导师试炼三印章")).toHaveTextContent(
+      "获得能力印记",
+    );
+    expect(screen.getByLabelText("导师试炼三印章")).toHaveTextContent(
+      "产品链路小抄 · 证据接力印记",
+    );
+    expect(screen.getByLabelText("试炼收获三格")).toHaveTextContent("工作能力");
+    expect(screen.getByLabelText("试炼收获三格")).toHaveTextContent(
+      "Agent 委托",
+    );
+    expect(screen.getByLabelText("试炼收获三格")).toHaveTextContent("面试素材");
+    await user.click(screen.getByRole("button", { name: "复制本步收获" }));
+    expect(clipboardWrite).toHaveBeenCalledWith(
+      expect.stringContaining("导师试炼本步收获"),
+    );
+    expect(clipboardWrite).toHaveBeenCalledWith(
+      expect.stringContaining("能力印记：产品链路小抄 · 证据接力印记"),
+    );
+    expect(clipboardWrite).toHaveBeenCalledWith(
+      expect.stringContaining("步骤：产品链路小抄"),
+    );
+    expect(clipboardWrite).toHaveBeenCalledWith(
+      expect.stringContaining("流程：Project Brief"),
+    );
+    expect(clipboardWrite).toHaveBeenCalledWith(
+      expect.stringContaining("Agent：委托时写清背景、边界、验收"),
+    );
+    expect(clipboardWrite).toHaveBeenCalledWith(
+      expect.stringContaining("面试：面试里可以说"),
+    );
+    expect(
+      screen.getByRole("button", { name: "已复制本步收获" }),
+    ).toBeInTheDocument();
+    expect(screen.getByLabelText("本章能力护照")).toHaveTextContent("能力护照");
+    expect(screen.getByLabelText("本章能力护照")).toHaveTextContent(
+      "工作里怎么用",
+    );
+    expect(screen.getByLabelText("本章能力护照")).toHaveTextContent("证据工具");
+    expect(screen.getByLabelText("本章能力护照")).toHaveTextContent(
+      "Agent 协作",
+    );
+    expect(screen.getByLabelText("Agent 委托骨架")).toBeInTheDocument();
+    expect(screen.getByLabelText("本章能力护照")).toHaveTextContent("背景");
+    expect(screen.getByLabelText("本章能力护照")).toHaveTextContent("边界");
+    expect(screen.getByLabelText("本章能力护照")).toHaveTextContent("验收");
+    await user.click(screen.getByRole("button", { name: "复制委托骨架" }));
+    expect(clipboardWrite).toHaveBeenCalledWith(
+      expect.stringContaining("背景：我正在学习"),
+    );
+    expect(clipboardWrite).toHaveBeenCalledWith(
+      expect.stringContaining("边界：只能基于本章材料和证据工具分析"),
+    );
+    expect(clipboardWrite).toHaveBeenCalledWith(
+      expect.stringContaining("验收：请交回"),
+    );
+    expect(
+      screen.getByRole("button", { name: "已复制委托骨架" }),
+    ).toBeInTheDocument();
+    expect(screen.getByLabelText("本章能力护照")).toHaveTextContent("验收动作");
+    expect(screen.getByLabelText("本章能力护照")).toHaveTextContent(
+      "用证据证明这一棒真的成立",
+    );
+    expect(screen.getByLabelText("本章能力护照")).toHaveTextContent("面试产出");
+    expect(screen.getByLabelText("面试复盘骨架")).toBeInTheDocument();
+    expect(screen.getByLabelText("本章能力护照")).toHaveTextContent("现象");
+    expect(screen.getByLabelText("本章能力护照")).toHaveTextContent("证据");
+    expect(screen.getByLabelText("本章能力护照")).toHaveTextContent("行动");
+    await user.click(screen.getByRole("button", { name: "复制复盘骨架" }));
+    expect(clipboardWrite).toHaveBeenCalledWith(
+      expect.stringContaining("现象：我遇到的场景是"),
+    );
+    expect(clipboardWrite).toHaveBeenCalledWith(
+      expect.stringContaining("证据：我会引用"),
+    );
+    expect(clipboardWrite).toHaveBeenCalledWith(
+      expect.stringContaining("行动：我先画清"),
+    );
+    expect(clipboardWrite).toHaveBeenCalledWith(
+      expect.stringContaining("验证："),
+    );
+    expect(
+      screen.getByRole("button", { name: "已复制复盘骨架" }),
+    ).toBeInTheDocument();
+    expect(screen.getByText("刚刚看过")).toBeInTheDocument();
+    expect(screen.getAllByText("产品密室勘测").length).toBeGreaterThan(0);
+    expect(screen.getByText("当前这一棒")).toBeInTheDocument();
+    expect(screen.getAllByText("产品链路小抄").length).toBeGreaterThan(0);
+    expect(screen.getByText("接下来")).toBeInTheDocument();
+    expect(
+      screen.getAllByText("代码线索：Project Brief 表单").length,
+    ).toBeGreaterThan(0);
+  });
+
+  it("章节结案页会把结论整理成工作、证据和面试三格复盘", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn((input: RequestInfo | URL) => {
+        const url = String(input);
+        if (url === "/api/attempts/attempt-close-recap/teaching") {
+          return response(
+            case02Scenario.steps
+              .filter((step) => step.id !== "c2-close")
+              .map((step) => ({
+                stepId: step.id,
+                completed: true,
+                teachingResponse: {},
+                remediationEvents: [],
+                updatedAt: "2026-07-05T00:00:00.000Z",
+              })),
+          );
+        }
+        return response({ error: "NOT_FOUND", message: "unexpected" }, 404);
+      }),
+    );
+
+    render(
+      <TeachingBridge
+        attemptId="attempt-close-recap"
+        scenario={case02Scenario}
+        developer={{
+          name: "见习开发者",
+          rank: "见习开发者",
+          xp: 0,
+          missionsCleared: 0,
+          clearedChapterIds: [],
+          unlockedCompanionNames: [],
+          joinedAt: "2026-07-05T00:00:00.000Z",
+        }}
+        onComplete={vi.fn()}
+      />,
+    );
+
+    expect(
+      await screen.findByRole("heading", { name: /主线 1-2 已通关/ }),
+    ).toBeInTheDocument();
+    expect(screen.getByLabelText("章节结案复盘")).toBeInTheDocument();
+    expect(screen.getAllByText("工作里怎么用").length).toBeGreaterThan(0);
+    expect(screen.getByText("证据链怎么验")).toBeInTheDocument();
+    expect(screen.getByText("面试怎么讲")).toBeInTheDocument();
+    expect(
+      screen.getAllByText(/把模糊 AI 需求拆成产品链路/).length,
+    ).toBeGreaterThan(0);
+    expect(screen.getByLabelText("结案导师")).toBeInTheDocument();
+    expect(screen.getByText(/结案导师 ·/)).toBeInTheDocument();
+    expect(screen.getByLabelText("本章能力印记")).toBeInTheDocument();
+    const closeAgentBrief = screen.getByLabelText("给 Agent 的委托口令");
+    expect(closeAgentBrief).toBeInTheDocument();
+    expect(within(closeAgentBrief).getByText("背景")).toBeInTheDocument();
+    expect(within(closeAgentBrief).getByText("边界")).toBeInTheDocument();
+    expect(within(closeAgentBrief).getByText("验收")).toBeInTheDocument();
+    expect(screen.getByText(/不要读取真实项目/)).toBeInTheDocument();
+    expect(
+      screen.getAllByText(/候选请求、取舍记录和会话保存/).length,
+    ).toBeGreaterThan(0);
+  });
+
+  it("进入实战前会显示作战简报、边界和验收口径", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn((input: RequestInfo | URL) => {
+        const url = String(input);
+        if (url === "/api/attempts/attempt-coaching/teaching") {
+          return response(
+            teachingScenario.steps
+              .filter((step) => step.id !== "coaching-hints")
+              .map((step) => ({
+                stepId: step.id,
+                completed: true,
+                teachingResponse: {},
+                remediationEvents: [],
+                updatedAt: "2026-07-05T00:00:00.000Z",
+              })),
+          );
+        }
+        return response({ error: "NOT_FOUND", message: "unexpected" }, 404);
+      }),
+    );
+
+    render(
+      <TeachingBridge
+        attemptId="attempt-coaching"
+        scenario={teachingScenario}
+        developer={{
+          name: "见习开发者",
+          rank: "见习开发者",
+          xp: 0,
+          missionsCleared: 0,
+          clearedChapterIds: [],
+          unlockedCompanionNames: [],
+          joinedAt: "2026-07-05T00:00:00.000Z",
+        }}
+        onComplete={vi.fn()}
+      />,
+    );
+
+    expect(
+      await screen.findByLabelText("实战前夜作战简报"),
+    ).toBeInTheDocument();
+    expect(screen.getByLabelText("同行伙伴反应")).toHaveTextContent(
+      "档案馆记录员",
+    );
+    expect(screen.getByLabelText("同行伙伴反应")).toHaveTextContent(
+      "先完成眼前这一小步",
+    );
+    expect(screen.getByLabelText("同行伙伴反应")).toHaveTextContent(
+      "数据流证据",
+    );
+    expect(screen.getByText("档案馆记录员")).toBeInTheDocument();
+    expect(screen.getByLabelText("实战作战规则")).toBeInTheDocument();
+    expect(screen.getByText(/只改沙盒，不读取真实项目/)).toBeInTheDocument();
+    expect(
+      screen.getByText(/测试报告 \+ 刷新恢复 \+ 数据库证据/),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: /已完成 0\/6 步后继续/ }),
+    ).toBeDisabled();
+  });
+
+  it("完成教学步骤后先由伙伴收录证据，再进入下一站", async () => {
+    const user = userEvent.setup();
+    const transitionFetch = vi.fn(
+      (input: RequestInfo | URL, init?: RequestInit) => {
+        const url = String(input);
+        if (url === "/api/attempts/attempt-transition/teaching") {
+          return response([
+            {
+              stepId: "visual-novel-investigation",
+              completed: true,
+              teachingResponse: {},
+              remediationEvents: [],
+              updatedAt: "2026-07-05T00:00:00.000Z",
+            },
+          ]);
+        }
+        if (
+          url.includes("/api/attempts/attempt-transition/teaching/") &&
+          init?.method === "PATCH"
+        ) {
+          return response([]);
+        }
+        return response({ error: "NOT_FOUND", message: "unexpected" }, 404);
+      },
+    );
+    vi.stubGlobal("fetch", transitionFetch);
+
+    render(
+      <TeachingBridge
+        attemptId="attempt-transition"
+        scenario={case02Scenario}
+        developer={{
+          name: "见习开发者",
+          rank: "见习开发者",
+          xp: 0,
+          missionsCleared: 0,
+          clearedChapterIds: [],
+          unlockedCompanionNames: [],
+          joinedAt: "2026-07-05T00:00:00.000Z",
+        }}
+        onComplete={vi.fn()}
+      />,
+    );
+
+    const mapHeading = await screen.findByRole("heading", {
+      name: "项目地图",
+    });
+    const mapShell = mapHeading.closest("section");
+    expect(mapShell).not.toBeNull();
+    for (const name of ["用户想法", "Project Brief", "方向罗盘"]) {
+      await user.click(
+        within(mapShell!).getByRole("button", { name: new RegExp(name) }),
+      );
+      await user.click(
+        within(mapShell!).getByRole("button", { name: /我懂了/ }),
+      );
+    }
+    await user.click(
+      within(mapShell!).getByRole("button", {
+        name: /已了解基本结构，继续教学/,
+      }),
+    );
+
+    const transition = await screen.findByRole("dialog", {
+      name: "伙伴证据收录",
+    });
+    expect(transition).toHaveTextContent("证据已收录 · 产品密室勘测");
+    expect(transition).toHaveTextContent("灵感萤火 替你守住了这一棒");
+    expect(transition).toHaveTextContent("交给下一站");
+    expect(transition).toHaveTextContent("产品链路小抄");
+    expect(transition).toHaveTextContent("主动复述 · 不评分");
+    expect(mapHeading).toBeInTheDocument();
+
+    const continueButton = screen.getByRole("button", {
+      name: /收下证据，前往下一站/,
+    });
+    expect(continueButton).toBeDisabled();
+    await user.type(
+      screen.getByRole("textbox", { name: /主动复述/ }),
+      "用户先把项目目标交给 Brief，最后保存成可以恢复的会话。",
+    );
+    expect(continueButton).toBeEnabled();
+    await user.click(continueButton);
+    expect(
+      await screen.findByRole("heading", { name: "Project Brief" }),
+    ).toBeInTheDocument();
+    expect(screen.queryByRole("dialog", { name: "伙伴证据收录" })).toBeNull();
+    const savedMap = transitionFetch.mock.calls.find(
+      ([input, init]) =>
+        String(input).endsWith("/teaching/c2-map") && init?.method === "PATCH",
+    );
+    expect(JSON.parse(String(savedMap?.[1]?.body))).toMatchObject({
+      response: {
+        activeRecall: "用户先把项目目标交给 Brief，最后保存成可以恢复的会话。",
+      },
+      completed: true,
+    });
+  });
+
+  it("微知识卡允许选择补课方向、切换卡点并记录求助", async () => {
+    const user = userEvent.setup();
+    const remediationFetch = vi.fn(
+      (input: RequestInfo | URL, init?: RequestInit) => {
+        const url = String(input);
+        if (url === "/api/attempts/attempt-remediation/teaching") {
+          return response([
+            {
+              stepId: "project-map",
+              completed: true,
+              teachingResponse: {},
+              remediationEvents: [],
+              updatedAt: "2026-07-05T00:00:00.000Z",
+            },
+          ]);
+        }
+        if (
+          url ===
+            "/api/attempts/attempt-remediation/teaching/micro-lessons/remediation" &&
+          init?.method === "POST"
+        ) {
+          return response({ saved: true });
+        }
+        return response({ error: "NOT_FOUND", message: "unexpected" }, 404);
+      },
+    );
+    vi.stubGlobal("fetch", remediationFetch);
+
+    render(
+      <TeachingBridge
+        attemptId="attempt-remediation"
+        scenario={teachingScenario}
+        developer={{
+          name: "见习开发者",
+          rank: "见习开发者",
+          xp: 0,
+          missionsCleared: 0,
+          clearedChapterIds: [],
+          unlockedCompanionNames: [],
+          joinedAt: "2026-07-05T00:00:00.000Z",
+        }}
+        onComplete={vi.fn()}
+      />,
+    );
+
+    expect(
+      await screen.findByRole("heading", { name: "内存数组" }),
+    ).toBeInTheDocument();
+    await user.click(
+      screen.getByRole("button", { name: "我有点卡住，需要补课" }),
+    );
+    expect(screen.getByLabelText("选择补课方向")).toHaveTextContent(
+      "补课不会扣分",
+    );
+    await user.click(screen.getByRole("button", { name: "不懂专业术语" }));
+
+    const termLesson = screen.getByLabelText("补课：不懂专业术语");
+    expect(termLesson).toHaveAttribute("aria-modal", "true");
+    expect(document.body.style.overflow).toBe("hidden");
+    expect(termLesson).toHaveTextContent("HTTP 201");
+    expect(termLesson).toHaveTextContent("数据库查询结果才是入库证据");
+    expect(termLesson).not.toHaveTextContent("**HTTP 201**");
+
+    await user.click(screen.getByRole("button", { name: "换一个卡点" }));
+    await user.click(screen.getByRole("button", { name: "不理解因果关系" }));
+    expect(screen.getByLabelText("补课：不理解因果关系")).toHaveTextContent(
+      "写入走内存、读取走数据库",
+    );
+    await user.click(screen.getByRole("button", { name: "带着这句话继续" }));
+    expect(
+      screen.getByRole("button", { name: "我有点卡住，需要补课" }),
+    ).toBeInTheDocument();
+    expect(document.body.style.overflow).toBe("");
+
+    await vi.waitFor(() => {
+      const savedTriggers = remediationFetch.mock.calls
+        .filter(
+          ([input, init]) =>
+            String(input).endsWith("/micro-lessons/remediation") &&
+            init?.method === "POST",
+        )
+        .map(([, init]) => JSON.parse(String(init?.body)).trigger);
+      expect(savedTriggers).toEqual(["term", "causality"]);
+    });
   });
 
   it("打开显示 AI 应用开发路线，点击后直接进入教学桥", async () => {
@@ -1085,6 +2352,55 @@ describe("AI 职业路线入口", () => {
     // 直接进入教学桥
     expect(await screen.findByText(/AI 开发主线/)).toBeInTheDocument();
     expect(localStorage.length).toBe(0);
+  });
+
+  it("根地址重新打开时会继续未完成的第一章剧情", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn((input: RequestInfo | URL, init?: RequestInit) => {
+        const url = String(input);
+        if (url === "/api/health") return response({ status: "ok" });
+        if (url === "/api/diagnostic-sessions") {
+          return response(diagnosticCompleted, 201);
+        }
+        if (url === "/api/attempts" && init?.method === "POST") {
+          return response(attempt, 201);
+        }
+        if (url === "/api/scenarios/canvas-save-persistence") {
+          return response({ scenarioId: "canvas-save-persistence", artifacts });
+        }
+        if (url === "/api/attempts/attempt-001/teaching") {
+          return response([
+            {
+              stepId: "canvasstorm-investigation",
+              completed: false,
+              teachingResponse: {
+                sceneIndex: 0,
+                discovered: { "frontend-stage": ["frontend-ok"] },
+                sceneRecalls: {},
+                sceneDecisions: {},
+              },
+              remediationEvents: [],
+              updatedAt: "2026-07-15T00:00:00.000Z",
+            },
+          ]);
+        }
+        return response({ error: "NOT_FOUND", message: "unexpected" }, 404);
+      }),
+    );
+
+    render(<App />);
+
+    expect(
+      await screen.findByRole("heading", { name: "灯亮了，但戏还没演完" }),
+    ).toBeInTheDocument();
+    expect(
+      await screen.findByText("卷宗已收录 · 点击回看"),
+    ).toBeInTheDocument();
+    expect((await screen.findAllByText(/response\.ok/)).length).toBeGreaterThan(
+      0,
+    );
+    expect(screen.queryByRole("heading", { name: /码上冒险/ })).toBeNull();
   });
 
   it("刷新章节深链会恢复到对应教学桥并跳过已完成的前置剧情", async () => {
@@ -1151,6 +2467,357 @@ describe("AI 职业路线入口", () => {
     expect(screen.getByText(/把分散的信息装进一个对象/)).toBeInTheDocument();
   });
 
+  it("实战通关后的成长档案会给出工作、Agent 和面试迁移口令", async () => {
+    const careerDossierConfig = {
+      missionLabel: "主线 1-2 · AI 应用开发",
+      missionTitle: "产品链路密室",
+      backgroundImage: "/quest-workbench.webp",
+      result: {
+        label: "产品链路闭环通过 · 成长档案已更新",
+        title: "这次通关可以讲成 AI 产品能力",
+        body: (hintLevel: number) =>
+          `你不只是让页面返回 200，而是证明了 Project Brief、方向筛选、候选取舍和会话保存之间的关系。本次独立程度：L${hintLevel >= 3 ? "1" : "2"}。`,
+        proved: "执行草案只接收符合方向的候选",
+        recorded: "Brief、取舍理由、下一步动作与验收证据",
+        pending: "换一个 AI 功能继续练产品拆解",
+        nextTitle: "下一步怎么变成面试里的产品能力？",
+        nextItems: [
+          "把“AI 点子”讲成用户目标、输入、处理、输出和约束。",
+          "说明为什么拒绝不符合阶段的候选，而不是把所有想法都塞进去。",
+          "用测试结果证明会话保存了取舍理由，不只证明接口返回 200。",
+        ],
+      },
+    } as Parameters<typeof CareerDossier>[0]["config"];
+
+    const onBackToRoadmap = vi.fn();
+
+    render(
+      <CareerDossier
+        config={careerDossierConfig}
+        hintLevel={1}
+        onBackToRoadmap={onBackToRoadmap}
+      />,
+    );
+
+    expect(screen.getByLabelText("迁移口令")).toBeInTheDocument();
+    expect(screen.getByLabelText("结案后下一步")).toBeInTheDocument();
+    expect(screen.getByText("工作复盘")).toBeInTheDocument();
+    expect(screen.getByText("Agent 委托")).toBeInTheDocument();
+    expect(screen.getByText("面试讲法")).toBeInTheDocument();
+    expect(screen.getByText(/产品链路密室/)).toBeInTheDocument();
+    expect(
+      screen.getAllByText(/执行草案只接收符合方向的候选/).length,
+    ).toBeGreaterThan(0);
+    expect(
+      screen.getAllByText(/Brief、取舍理由、下一步动作与验收证据/).length,
+    ).toBeGreaterThan(0);
+    expect(
+      screen.getAllByText(/把“AI 点子”讲成用户目标/).length,
+    ).toBeGreaterThan(0);
+    fireEvent.click(screen.getByRole("button", { name: /回到路线图/ }));
+    expect(onBackToRoadmap).toHaveBeenCalledTimes(1);
+  });
+
+  it("只有服务端接受实战提交后才触发成长奖励结算", async () => {
+    const user = userEvent.setup();
+    const onSubmitted = vi.fn();
+    const completeAttempt = {
+      ...case02Attempt,
+      status: "active" as const,
+      verificationStatus: "passed" as const,
+      steps: {
+        "product-brief": {
+          response: { text: "已完成产品 Brief 证据说明。" },
+          savedAt: "2026-07-13T00:00:00.000Z",
+        },
+        "candidate-direction": {
+          response: { text: "已完成候选方向证据说明。" },
+          savedAt: "2026-07-13T00:00:00.000Z",
+        },
+        "agent-brief": {
+          response: { text: "已完成 Agent 委托说明。" },
+          savedAt: "2026-07-13T00:00:00.000Z",
+        },
+        "delivery-review": {
+          response: { text: "已完成交付审查说明。" },
+          savedAt: "2026-07-13T00:00:00.000Z",
+        },
+        "interview-dossier": {
+          response: { text: "已完成面试复盘说明。" },
+          savedAt: "2026-07-13T00:00:00.000Z",
+        },
+      },
+    } as Parameters<typeof Lab>[0]["attempt"];
+    vi.stubGlobal(
+      "fetch",
+      vi.fn((input: RequestInfo | URL, init?: RequestInit) => {
+        if (
+          String(input) === "/api/attempts/attempt-case-02/submit" &&
+          init?.method === "POST"
+        ) {
+          return response({ ...completeAttempt, status: "submitted" });
+        }
+        return response({ error: "NOT_FOUND", message: "unexpected" }, 404);
+      }),
+    );
+
+    render(
+      <Lab
+        artifacts={case02Artifacts}
+        attempt={completeAttempt}
+        onBackToRoadmap={vi.fn()}
+        onSubmitted={onSubmitted}
+        setAttempt={vi.fn()}
+      />,
+    );
+
+    expect(onSubmitted).not.toHaveBeenCalled();
+    await user.click(screen.getByRole("button", { name: /生成成长档案/ }));
+    expect(onSubmitted).toHaveBeenCalledTimes(1);
+  });
+
+  it("重新打开已提交实战时会静默同步成长档案", async () => {
+    const onSubmitted = vi.fn();
+    const submittedAttempt = {
+      ...case02Attempt,
+      status: "submitted" as const,
+    } as Parameters<typeof Lab>[0]["attempt"];
+
+    render(
+      <Lab
+        artifacts={case02Artifacts}
+        attempt={submittedAttempt}
+        onBackToRoadmap={vi.fn()}
+        onSubmitted={onSubmitted}
+        setAttempt={vi.fn()}
+      />,
+    );
+
+    expect(screen.getByLabelText("成长档案结案")).toBeInTheDocument();
+    await waitFor(() =>
+      expect(onSubmitted).toHaveBeenCalledWith({ showReward: false }),
+    );
+  });
+
+  it("实战测试失败后会把失败报告翻译成可读证据", () => {
+    const failedAttempt = {
+      ...case02Attempt,
+      verificationStatus: "failed",
+      latestVerification: {
+        status: "failed",
+        observedAt: "2026-07-05T00:00:00.000Z",
+        report: {
+          tests: [
+            {
+              name: "只把所选方向的候选放进执行草案",
+              status: "failed",
+              message: "执行草案包含了非 MVP 方向候选",
+            },
+            {
+              name: "保存会话时记录 Brief、方向、取舍理由和下一步",
+              status: "failed",
+              message: "缺少已接收候选 id",
+            },
+          ],
+        },
+      },
+    } as Parameters<typeof VerificationPanel>[0]["attempt"];
+    const config = {
+      flowItems: [
+        { label: "用户", title: "写 Brief", detail: "说明目标和约束" },
+        { label: "后端规划器", title: "筛候选", detail: "按方向取舍" },
+        { label: "会话记录", title: "保存取舍", detail: "留下证据" },
+      ],
+      practical: {
+        title: "在 CanvasStorm Brief 沙盒里修正产品链路",
+        sandboxPath: "sandbox/canvasstorm-product-brief",
+        statusPassed: "产品取舍、会话保存和错误提示已经有测试证据。",
+        statusFailed:
+          "失败报告会告诉你：方向筛选、会话记录或空目标处理哪里还没成立。",
+      },
+      artifactGuides: {
+        planner: {
+          place: "第 2 棒：规划器决定哪些候选进入草案",
+          focus: "只看 acceptedCandidates 从哪里来。",
+          keyLines: ["const acceptedCandidates = candidates"],
+          proves: "当前实现没有做方向取舍。",
+          cannotProve: "只能证明故障点。",
+        },
+      },
+    } as unknown as Parameters<typeof VerificationPanel>[0]["config"];
+
+    render(
+      <VerificationPanel
+        attempt={failedAttempt}
+        config={config}
+        onVerify={vi.fn()}
+      />,
+    );
+
+    expect(screen.getByLabelText("测试报告译文")).toBeInTheDocument();
+    expect(screen.getByLabelText("本次验收目标")).toHaveTextContent(
+      "修复不是“看起来对”，而是测试能复现、能通过",
+    );
+    expect(screen.getByLabelText("本次验收目标")).toHaveTextContent(
+      "解锁下一棒，并把这份证据写入成长档案",
+    );
+    expect(screen.getByText("还有 2 个红灯")).toBeInTheDocument();
+    expect(
+      screen.getByText("只把所选方向的候选放进执行草案"),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText("执行草案包含了非 MVP 方向候选"),
+    ).toBeInTheDocument();
+    expect(screen.getByText("缺少已接收候选 id")).toBeInTheDocument();
+    expect(screen.getAllByText("流程断点").length).toBeGreaterThan(0);
+    expect(screen.getAllByText("先查材料").length).toBeGreaterThan(0);
+    expect(screen.getAllByText("下一步").length).toBeGreaterThan(0);
+    expect(
+      screen.getAllByText(/方向筛选这一棒还没成立/).length,
+    ).toBeGreaterThan(0);
+    expect(screen.getAllByText(/第 2 棒：规划器决定/).length).toBeGreaterThan(
+      0,
+    );
+    expect(screen.getAllByText(/回到规划器逻辑/).length).toBeGreaterThan(0);
+  });
+
+  it("实战测试通过后会展示通过测试作为可复述证据", () => {
+    const passedAttempt = {
+      ...case02Attempt,
+      verificationStatus: "passed",
+      latestVerification: {
+        status: "passed",
+        observedAt: "2026-07-05T00:00:00.000Z",
+        report: {
+          generatedAt: "2026-07-05T01:02:03.000Z",
+          sourceHash:
+            "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
+          summary: { passed: 2, failed: 0 },
+          tests: [
+            { name: "只保留 MVP 候选", status: "passed" },
+            { name: "保存取舍理由", status: "passed" },
+          ],
+        },
+      },
+    } as Parameters<typeof VerificationPanel>[0]["attempt"];
+
+    render(
+      <VerificationPanel
+        attempt={passedAttempt}
+        config={
+          {
+            practical: {
+              title: "在 CanvasStorm Brief 沙盒里修正产品链路",
+              sandboxPath: "sandbox/canvasstorm-product-brief",
+              statusPassed: "产品链路测试已通过。",
+              statusFailed: "还有失败证据。",
+            },
+          } as unknown as Parameters<typeof VerificationPanel>[0]["config"]
+        }
+        onVerify={vi.fn()}
+      />,
+    );
+
+    expect(screen.getByText("全部通过 · 2 项证据")).toBeInTheDocument();
+    expect(screen.getByText("只保留 MVP 候选")).toBeInTheDocument();
+    expect(screen.getByText("保存取舍理由")).toBeInTheDocument();
+    const passport = screen.getByLabelText("报告证据护照");
+    expect(passport).toHaveTextContent("生成时间");
+    expect(passport).toHaveTextContent("源码指纹");
+    expect(passport).toHaveTextContent("0123456789");
+    expect(passport).toHaveTextContent("2 通过 / 0 失败");
+    expect(passport).toHaveTextContent("哪些路径没覆盖");
+  });
+
+  it("第 2 章教学完成后只与伙伴会合，不提前发 XP 或标记通关", async () => {
+    const user = userEvent.setup();
+    window.history.replaceState(null, "", "/#chapter-2");
+    vi.stubGlobal(
+      "fetch",
+      vi.fn((input: RequestInfo | URL, init?: RequestInit) => {
+        const url = String(input);
+        if (url === "/api/health") return response({ status: "ok" });
+        if (url === "/api/diagnostic-sessions") {
+          return response(diagnosticActive, 201);
+        }
+        if (url === "/api/diagnostic-sessions/diagnostic-001") {
+          return response(diagnosticCompleted);
+        }
+        if (url === "/api/attempts" && init?.method === "POST") {
+          return response(case02Attempt, 201);
+        }
+        if (url === "/api/scenarios/canvasstorm-product-brief") {
+          return response({
+            scenarioId: "canvasstorm-product-brief",
+            artifacts: case02Artifacts,
+          });
+        }
+        if (url === "/api/attempts/attempt-case-02/teaching") {
+          return response(
+            case02Scenario.steps
+              .filter((step) => step.id !== "c2-close")
+              .map((step) => ({
+                stepId: step.id,
+                completed: true,
+                teachingResponse: {},
+                remediationEvents: [],
+                updatedAt: "2026-07-05T00:00:00.000Z",
+              })),
+          );
+        }
+        if (
+          url === "/api/attempts/attempt-case-02/teaching/c2-close" &&
+          init?.method === "PATCH"
+        ) {
+          return response({ ok: true });
+        }
+        return response({ error: "NOT_FOUND", message: "unexpected" }, 404);
+      }),
+    );
+
+    render(<App />);
+
+    expect(
+      await screen.findByRole("heading", { name: /主线 1-2 已通关/ }),
+    ).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: /完成这一关/ }));
+    expect(
+      await screen.findByRole("dialog", { name: "伙伴证据收录" }),
+    ).toHaveTextContent("交给下一站");
+    await user.type(
+      screen.getByRole("textbox", { name: /主动复述/ }),
+      "我会查看会话保存结果和刷新恢复，证明产品链路真的完成。",
+    );
+    await user.click(
+      screen.getByRole("button", { name: /收下证据，前往伙伴会合/ }),
+    );
+    expect(
+      await screen.findByRole("heading", { name: /章节教学完成/ }),
+    ).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: /前往伙伴会合/ }));
+
+    expect(
+      await screen.findByRole("heading", {
+        name: /第 2 章路线已解读：AI 点子为什么空泛/,
+      }),
+    ).toBeInTheDocument();
+    expect(screen.getAllByText(/灵感萤火/).length).toBeGreaterThan(0);
+    expect(
+      screen.getByText(/XP、阶位和伙伴收藏都要等实战证据通过后结算/),
+    ).toBeInTheDocument();
+    expect(localStorage.getItem("codequest_developer")).toBeNull();
+    expect(screen.getByLabelText("实战会合简报")).toBeInTheDocument();
+    expect(screen.getByText("现在只做一件事")).toBeInTheDocument();
+    expect(screen.getByText("通关门槛")).toBeInTheDocument();
+    expect(screen.getByText("通过后领取")).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: /与伙伴进入实战/ }));
+    expect((await screen.findAllByText(/产品链路密室/)).length).toBeGreaterThan(
+      0,
+    );
+    expect(screen.getAllByText(/读 Project Brief/).length).toBeGreaterThan(0);
+    expect(window.location.hash).toBe("");
+  });
+
   it("面试复盘房间可以保存五段草稿到本地学习记录", async () => {
     const user = userEvent.setup();
     let savedDossier: Record<string, unknown> | null = null;
@@ -1178,6 +2845,26 @@ describe("AI 职业路线入口", () => {
         }
         if (url === "/api/scenarios/canvas-save-persistence") {
           return response({ scenarioId: "canvas-save-persistence", artifacts });
+        }
+        if (url === "/api/learning-recalls") {
+          return response({
+            recalls: [
+              {
+                scenarioId: "canvas-save-persistence",
+                stepId: "project-map",
+                activeRecall:
+                  "用户把草稿交给前端，最后由数据库留下可恢复记录。",
+                updatedAt: "2026-07-05T00:00:00.000Z",
+              },
+              {
+                scenarioId: "canvas-save-persistence",
+                stepId: "chapter-close",
+                activeRecall:
+                  "我会看数据库记录和刷新恢复，再确认自动化测试通过。",
+                updatedAt: "2026-07-05T00:01:00.000Z",
+              },
+            ],
+          });
         }
         if (url === "/api/scenarios/canvasstorm-product-brief") {
           return response({
@@ -1222,6 +2909,9 @@ describe("AI 职业路线入口", () => {
         name: /把通关经历写成你自己的项目回答/,
       }),
     ).toBeInTheDocument();
+    expect(screen.getByLabelText("我的原始复述")).toHaveTextContent(
+      "用户把草稿交给前端",
+    );
     await user.type(
       screen.getByLabelText("现象复盘"),
       "页面提示保存成功，但刷新后记录消失。",
@@ -1285,6 +2975,26 @@ describe("AI 职业路线入口", () => {
         if (url === "/api/scenarios/canvas-save-persistence") {
           return response({ scenarioId: "canvas-save-persistence", artifacts });
         }
+        if (url === "/api/learning-recalls") {
+          return response({
+            recalls: [
+              {
+                scenarioId: "canvas-save-persistence",
+                stepId: "project-map",
+                activeRecall:
+                  "用户把草稿交给前端，最后由数据库留下可恢复记录。",
+                updatedAt: "2026-07-05T00:00:00.000Z",
+              },
+              {
+                scenarioId: "canvas-save-persistence",
+                stepId: "chapter-close",
+                activeRecall:
+                  "我会看数据库记录和刷新恢复，再确认自动化测试通过。",
+                updatedAt: "2026-07-05T00:01:00.000Z",
+              },
+            ],
+          });
+        }
         if (url.includes("/steps/baseline-plan")) {
           return response(portfolioAttempt);
         }
@@ -1310,6 +3020,15 @@ describe("AI 职业路线入口", () => {
     expect(screen.getByText(/Markdown 导出稿/)).toBeInTheDocument();
     expect(screen.getAllByText(/页面提示保存成功/).length).toBeGreaterThan(0);
     expect(screen.getAllByText(/Network 返回 201/).length).toBeGreaterThan(0);
+    expect(screen.getByLabelText("我的原始复述")).toHaveTextContent(
+      "用户把草稿交给前端",
+    );
+    expect(
+      screen.getByText(/我的流程复述：用户把草稿交给前端/),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(/我的验收复述：我会看数据库记录/),
+    ).toBeInTheDocument();
     expect(screen.getByText(/自动化只能证明工程路径可用/)).toBeInTheDocument();
     expect(
       screen.getByRole("button", { name: /补本章草稿/ }),
@@ -1393,6 +3112,11 @@ describe("AI 职业路线入口", () => {
         name: /把你的通关证据封存成一份可恢复的本地备份/,
       }),
     ).toBeInTheDocument();
+    expect(screen.getByText("粘贴 JSON 覆盖恢复")).toBeInTheDocument();
+    expect(screen.getAllByText(/覆盖当前本地学习记录/).length).toBeGreaterThan(
+      0,
+    );
+    expect(screen.queryByText(/合并恢复/)).not.toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: /生成备份 JSON/ }));
     expect(
       await screen.findByText(/已生成本地学习记录备份/),
@@ -1401,14 +3125,29 @@ describe("AI 职业路线入口", () => {
       (screen.getByLabelText("备份 JSON") as HTMLTextAreaElement).value,
     ).toContain("code-quest-learning-backup");
 
-    await user.click(screen.getByRole("button", { name: /恢复这份备份/ }));
+    const restoreButton = screen.getByRole("button", {
+      name: /恢复这份备份/,
+    });
+    expect(restoreButton).toBeDisabled();
+    await user.click(
+      screen.getByRole("checkbox", {
+        name: /我知道恢复会覆盖当前本地学习记录/,
+      }),
+    );
+    expect(restoreButton).toBeEnabled();
+    await user.click(restoreButton);
     expect(
-      await screen.findByText(/已恢复学习记录：5 条记录/),
+      await screen.findByText(/已覆盖恢复学习记录：5 条记录已写入/),
     ).toBeInTheDocument();
   });
 
   it("第 2 章从路线卷宗直接进入 CanvasStorm 产品链路关卡", async () => {
     const user = userEvent.setup();
+    const sealRecall = async (text: string) => {
+      await user.click(screen.getByRole("button", { name: /沿证据继续追到/ }));
+      await user.type(screen.getByLabelText("本幕复述原话"), text);
+      await user.click(screen.getByRole("button", { name: /^封存本幕复述$/ }));
+    };
     const fetchMock = vi.fn((input: RequestInfo | URL, init?: RequestInit) => {
       const url = String(input);
       if (url === "/api/health") return response({ status: "ok" });
@@ -1493,30 +3232,40 @@ describe("AI 职业路线入口", () => {
     ).toBeInTheDocument();
 
     await user.click(screen.getByRole("button", { name: /为什么会空泛/ }));
-    await user.click(screen.getByRole("button", { name: /前往下一地点/ }));
+    await sealRecall("这一幕先把项目目标和约束说清楚，下一幕继续筛选方向。");
+    await user.click(screen.getByRole("button", { name: /^继续下一地点$/ }));
     expect(
       await screen.findByRole("heading", { name: /不是多生成，而是选方向/ }),
     ).toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: /翻开方向罗盘/ }));
     await user.click(screen.getByRole("button", { name: /筛候选不是全都要/ }));
-    await user.click(screen.getByRole("button", { name: /前往下一地点/ }));
+    await sealRecall(
+      "候选不能全部都要，要用目标和约束筛出真正值得验证的方向。",
+    );
+    await user.click(screen.getByRole("button", { name: /^继续下一地点$/ }));
     expect(
       await screen.findByRole("heading", { name: /用户的选择不能丢/ }),
     ).toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: /追踪保存路线/ }));
     await user.click(screen.getByRole("button", { name: /看懂备用仓库/ }));
-    await user.click(screen.getByRole("button", { name: /前往下一地点/ }));
+    await sealRecall(
+      "保存路线要能解释数据从哪里来、交给谁，以及之后如何再次读回来。",
+    );
+    await user.click(screen.getByRole("button", { name: /^继续下一地点$/ }));
     expect(
       await screen.findByRole("heading", { name: /连上 AI，也不能泄露钥匙/ }),
     ).toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: /检查 AI 灯塔/ }));
     await user.click(screen.getByRole("button", { name: /AI 熄灯后怎么办/ }));
+    await sealRecall(
+      "接上 AI 也要说明边界和失败处理，不能把不确定的结果当成完成。",
+    );
     await user.click(screen.getByRole("button", { name: /进入实战修复/ }));
 
     expect(
       await screen.findByRole("heading", { name: /项目地图/ }),
     ).toBeInTheDocument();
-    expect(screen.getByText(/用户想法/)).toBeInTheDocument();
+    expect(screen.getAllByText(/用户想法/).length).toBeGreaterThan(0);
     expect(fetchMock).toHaveBeenCalledWith(
       "/api/scenarios/canvasstorm-product-brief",
       expect.any(Object),
@@ -1570,6 +3319,9 @@ describe("AI 职业路线入口", () => {
     await user.click(screen.getByRole("button", { name: /调取现场证据/ }));
     await user.click(screen.getByRole("button", { name: /领取委托/ }));
 
+    await user.click(
+      screen.getByRole("button", { name: /第 3 章 · 登录状态为什么丢/ }),
+    );
     expect(
       screen.getByRole("button", { name: /进入第 3 章教学关卡/ }),
     ).toBeInTheDocument();
@@ -1741,6 +3493,10 @@ describe("AI 职业路线入口", () => {
 
     expect(screen.getByText(/一致性熔炉被连敲三下/)).toBeInTheDocument();
     expect(screen.getAllByText(/幂等石灵/).length).toBeGreaterThan(0);
+    expect(screen.getByAltText("幂等石灵")).toHaveAttribute(
+      "src",
+      expect.stringContaining("pet-idempotency-stone-v2"),
+    );
     expect(
       screen.getByRole("button", { name: /进入第 5 章教学关卡/ }),
     ).toBeInTheDocument();
@@ -1825,6 +3581,10 @@ describe("AI 职业路线入口", () => {
 
     expect(screen.getByText(/慢速迷雾笼罩页面/)).toBeInTheDocument();
     expect(screen.getAllByText(/雾灯猫/).length).toBeGreaterThan(0);
+    expect(screen.getByAltText("雾灯猫")).toHaveAttribute(
+      "src",
+      expect.stringContaining("pet-foglamp-cat-v2"),
+    );
     expect(
       screen.getByRole("button", { name: /进入第 6 章教学关卡/ }),
     ).toBeInTheDocument();
@@ -1907,6 +3667,10 @@ describe("AI 职业路线入口", () => {
 
     expect(screen.getByText(/模型熔炉需要密钥才能点火/)).toBeInTheDocument();
     expect(screen.getAllByText(/密钥匣/).length).toBeGreaterThan(0);
+    expect(screen.getByAltText("模型熔炉执钥人")).toHaveAttribute(
+      "src",
+      expect.stringContaining("portrait-model-warden-v2"),
+    );
     expect(
       screen.getByRole("button", { name: /进入第 7 章教学关卡/ }),
     ).toBeInTheDocument();
@@ -1995,6 +3759,10 @@ describe("AI 职业路线入口", () => {
 
     expect(screen.getByText(/幻觉镜厅里的 AI 说得很顺/)).toBeInTheDocument();
     expect(screen.getAllByText(/镜厅校对师/).length).toBeGreaterThan(0);
+    expect(screen.getByAltText("镜厅校对师")).toHaveAttribute(
+      "src",
+      expect.stringContaining("portrait-mirror-editor-v2"),
+    );
     expect(
       screen.getByRole("button", { name: /进入第 8 章教学关卡/ }),
     ).toBeInTheDocument();
@@ -2171,6 +3939,10 @@ describe("AI 职业路线入口", () => {
       screen.getByText(/Agent 高塔的副官拿到了工具钥匙/),
     ).toBeInTheDocument();
     expect(screen.getAllByText(/塔楼副官/).length).toBeGreaterThan(0);
+    expect(screen.getByAltText("塔楼副官")).toHaveAttribute(
+      "src",
+      expect.stringContaining("portrait-tool-warden-v2"),
+    );
     expect(
       screen.getByRole("button", { name: /进入第 10 章教学关卡/ }),
     ).toBeInTheDocument();
@@ -2260,6 +4032,10 @@ describe("AI 职业路线入口", () => {
 
     expect(screen.getByText(/验收仪式厅不接受口头承诺/)).toBeInTheDocument();
     expect(screen.getAllByText(/验收试炼官/).length).toBeGreaterThan(0);
+    expect(screen.getByAltText("验收试炼官")).toHaveAttribute(
+      "src",
+      expect.stringContaining("portrait-test-arbiter-v2"),
+    );
     expect(
       screen.getByRole("button", { name: /进入第 11 章教学关卡/ }),
     ).toBeInTheDocument();
@@ -2347,6 +4123,10 @@ describe("AI 职业路线入口", () => {
       screen.getByText(/模糊命令会把副官带向错误房间/),
     ).toBeInTheDocument();
     expect(screen.getAllByText(/委托书锻造师/).length).toBeGreaterThan(0);
+    expect(screen.getByAltText("委托书锻造师")).toHaveAttribute(
+      "src",
+      expect.stringContaining("portrait-brief-forgemaster-v2"),
+    );
     expect(
       screen.getByRole("button", { name: /进入第 12 章教学关卡/ }),
     ).toBeInTheDocument();
@@ -2438,6 +4218,10 @@ describe("AI 职业路线入口", () => {
 
     expect(screen.getByText(/漂亮说明/)).toBeInTheDocument();
     expect(screen.getAllByText(/交付审查官/).length).toBeGreaterThan(0);
+    expect(screen.getByAltText("交付审查官")).toHaveAttribute(
+      "src",
+      expect.stringContaining("portrait-delivery-judge-v2"),
+    );
     expect(
       screen.getByRole("button", { name: /进入第 13 章教学关卡/ }),
     ).toBeInTheDocument();
@@ -2527,6 +4311,10 @@ describe("AI 职业路线入口", () => {
 
     expect(screen.getAllByText(/上线城门/).length).toBeGreaterThan(0);
     expect(screen.getAllByText(/上线守门人/).length).toBeGreaterThan(0);
+    expect(screen.getByAltText("上线守门人")).toHaveAttribute(
+      "src",
+      expect.stringContaining("portrait-release-gatekeeper-v2"),
+    );
     expect(
       screen.getByRole("button", { name: /进入第 14 章教学关卡/ }),
     ).toBeInTheDocument();
@@ -2614,6 +4402,10 @@ describe("AI 职业路线入口", () => {
 
     expect(screen.getAllByText(/面试议会/).length).toBeGreaterThan(0);
     expect(screen.getAllByText(/终章答辩官/).length).toBeGreaterThan(0);
+    expect(screen.getByAltText("终章答辩官")).toHaveAttribute(
+      "src",
+      expect.stringContaining("portrait-interview-councilor-v2"),
+    );
     expect(
       screen.getByRole("button", { name: /进入第 15 章教学关卡/ }),
     ).toBeInTheDocument();
@@ -2674,6 +4466,17 @@ describe("AI 职业路线入口", () => {
         if (url === "/api/scenarios/canvas-save-persistence") {
           return response({ scenarioId: "canvas-save-persistence", artifacts });
         }
+        if (url.includes("/steps/inspect-evidence")) {
+          return response({
+            ...attempt,
+            steps: {
+              "inspect-evidence": {
+                response: { text: "已保存项目材料证据说明。" },
+                savedAt: "2026-06-30T00:00:00Z",
+              },
+            },
+          });
+        }
         if (url.includes("/steps/baseline-plan")) {
           return response({
             ...attempt,
@@ -2713,18 +4516,42 @@ describe("AI 职业路线入口", () => {
     expect(screen.getAllByText(/前端舞台/).length).toBeGreaterThanOrEqual(1);
     expect(screen.getByText(/保存数据的完整旅行路线/)).toBeInTheDocument();
     expect(screen.getByText(/用户 → 前端页面/)).toBeInTheDocument();
+    expect(screen.getByLabelText("本章地点航线")).toHaveTextContent("前端舞台");
+    expect(screen.getByLabelText("本章地点航线")).toHaveTextContent("传送门");
+    expect(screen.getByLabelText("本幕任务契约")).toHaveTextContent(
+      "现在在哪前端舞台",
+    );
+    expect(screen.getByLabelText("本幕任务契约")).toHaveTextContent(
+      "找到后交给前端页面",
+    );
+    expect(screen.getByLabelText("本幕任务契约")).toHaveTextContent(
+      "真实工作现场",
+    );
+    expect(screen.getByLabelText("本幕任务契约")).toHaveTextContent("保存失败");
 
     const firstClueButton = screen.getByRole("button", {
       name: /检查绿色灯牌/,
     });
     await user.click(firstClueButton);
-    expect(screen.getByText(/界面反馈/)).toBeInTheDocument();
+    expect(screen.getAllByText(/界面反馈/).length).toBeGreaterThan(0);
     expect(screen.getByText(/前端页面 → 后端接口/)).toBeInTheDocument();
     expect(
-      screen.getByText(/response.ok 不是“继续传东西”/),
-    ).toBeInTheDocument();
+      screen.getAllByText(/response.ok 不是“继续传东西”/).length,
+    ).toBeGreaterThan(0);
+    expect(screen.getByLabelText("伙伴线索回应")).toHaveTextContent(
+      "档案馆记录员 · 线索回应",
+    );
+    expect(screen.getByLabelText("伙伴线索回应")).toHaveTextContent(
+      "学会区分“界面反馈”和“真实副作用”",
+    );
+    expect(screen.getByText("档案馆记录员默契")).toBeInTheDocument();
+    expect(screen.getByText("1/2")).toBeInTheDocument();
     expect(screen.getByText(/卷宗已收录/)).toBeInTheDocument();
-    expect(firstClueButton).toBeDisabled();
+    expect(firstClueButton).toBeEnabled();
+    await user.click(firstClueButton);
+    expect(
+      screen.getAllByText(/前端先把数据发给后端接口/).length,
+    ).toBeGreaterThan(0);
     await user.click(screen.getByRole("button", { name: /追踪发出的委托/ }));
     expect(screen.getByText(/本幕收获/)).toBeInTheDocument();
     expect(screen.getByText(/前端舞台 已完成/)).toBeInTheDocument();
@@ -2738,6 +4565,9 @@ describe("AI 职业路线入口", () => {
     expect(screen.getByText("现象")).toBeInTheDocument();
     expect(screen.getByText("证据")).toBeInTheDocument();
     expect(screen.getByText("结论")).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: /先把「检查绿色灯牌」当作结果/ }),
+    ).toBeInTheDocument();
     expect(screen.getAllByText(/灯亮了，但戏还没演完/).length).toBeGreaterThan(
       0,
     );
@@ -2746,47 +4576,171 @@ describe("AI 职业路线入口", () => {
     expect(screen.getByText(/我会这样讲：在「前端舞台」/)).toBeInTheDocument();
     expect(screen.getByText(/下一地点预告/)).toBeInTheDocument();
     expect(screen.getByText(/传送门大厅/)).toBeInTheDocument();
-    await user.click(screen.getByRole("button", { name: /前往下一地点/ }));
+    await user.click(screen.getByRole("button", { name: /沿证据继续追到/ }));
+    await user.type(
+      screen.getByLabelText("本幕复述原话"),
+      "页面收到成功回信，但还不能证明数据库真的写入。",
+    );
+    await user.click(screen.getByRole("button", { name: /^封存本幕复述$/ }));
+    expect(screen.getByLabelText("本幕主动复述")).toHaveTextContent(
+      "已封存原话",
+    );
+    await user.click(screen.getByRole("button", { name: /^继续下一地点$/ }));
     expect(screen.getByText(/场景转移/)).toBeInTheDocument();
     expect(screen.getByText(/前往：传送门大厅/)).toBeInTheDocument();
+    expect(screen.getByAltText("传送门守卫")).toBeInTheDocument();
+    expect(screen.getByText(/调查：201 印章不是档案收据/)).toBeInTheDocument();
 
     expect(
       await screen.findByRole("heading", {
         name: /201 印章不是档案收据/,
       }),
     ).toBeInTheDocument();
+    expect(screen.getByLabelText("上一幕回声")).toHaveTextContent(
+      "前端舞台 · 舞台记录员",
+    );
+    expect(screen.getByLabelText("上一幕回声")).toHaveTextContent(
+      "继续追踪它交出的下一份证据",
+    );
+    expect(screen.getByLabelText("上一幕判断回声")).toHaveTextContent(
+      "你选择继续追证据",
+    );
+    expect(screen.getByLabelText("上一幕判断回声")).toHaveTextContent(
+      "这一选择会把",
+    );
 
     await user.click(screen.getByRole("button", { name: /查看传送门回执/ }));
     await user.click(screen.getByRole("button", { name: /审问守卫的证词/ }));
-    await user.click(screen.getByRole("button", { name: /前往下一地点/ }));
+    await user.click(screen.getByRole("button", { name: /沿证据继续追到/ }));
+    await user.type(
+      screen.getByLabelText("本幕复述原话"),
+      "传送门回了成功章，但我要继续核对后端是否接住并交给数据层。",
+    );
+    await user.click(screen.getByRole("button", { name: /^封存本幕复述$/ }));
+    await user.click(screen.getByRole("button", { name: /^继续下一地点$/ }));
 
     await user.click(
       await screen.findByRole("button", { name: /照亮空档案格/ }),
     );
     await user.click(screen.getByRole("button", { name: /比对读写路径/ }));
-    await user.click(screen.getByRole("button", { name: /前往下一地点/ }));
+    await user.click(screen.getByRole("button", { name: /沿证据继续追到/ }));
+    await user.type(
+      screen.getByLabelText("本幕复述原话"),
+      "读取路径和写入路径没有对上，所以刷新后档案仍然为空。",
+    );
+    await user.click(screen.getByRole("button", { name: /^封存本幕复述$/ }));
+    await user.click(screen.getByRole("button", { name: /^继续下一地点$/ }));
 
     await user.click(
       await screen.findByRole("button", { name: /铸造 INSERT 符文/ }),
     );
     await user.click(screen.getByRole("button", { name: /封存验收仪式/ }));
+    await user.click(screen.getByRole("button", { name: /沿证据继续追到/ }));
+    await user.type(
+      screen.getByLabelText("本幕复述原话"),
+      "修复后要重新保存、刷新查库并跑测试，才能证明证据链闭合。",
+    );
+    await user.click(screen.getByRole("button", { name: /^封存本幕复述$/ }));
     await user.click(screen.getByRole("button", { name: /进入实战修复/ }));
 
+    expect((await screen.findAllByText(/档案馆记录员/)).length).toBeGreaterThan(
+      0,
+    );
+    expect(screen.getByLabelText("实战会合简报")).toBeInTheDocument();
+    expect(screen.getByText(/测试通过 \+ 必填作答/)).toBeInTheDocument();
+    expect(screen.queryByText(/下一章预告/)).toBeNull();
+
     await user.click(
-      await screen.findByRole("button", { name: /进入实战练习/ }),
+      await screen.findByRole("button", { name: /与伙伴进入实战/ }),
     );
 
     expect(
       await screen.findByText(/保存数据从哪里来，又在哪里断掉/),
     ).toBeInTheDocument();
-    expect(screen.getByText(/当前这一棒/)).toBeInTheDocument();
+    expect(screen.getByLabelText(/实战追踪/)).toHaveTextContent("冒险日志");
+    expect(screen.getByLabelText(/实战追踪/)).toHaveTextContent("当前任务");
+    expect(screen.getByLabelText("实战剧情向导")).toBeInTheDocument();
+    expect(screen.getByLabelText("实战剧情向导")).toHaveTextContent(
+      "传送门书记官",
+    );
+    expect(screen.getByAltText("传送门书记官实战向导")).toBeInTheDocument();
+    expect(screen.getByLabelText("实战剧情向导")).toHaveTextContent(
+      "这一幕先看懂：读取项目材料",
+    );
+    expect(screen.getByLabelText("实战剧情向导")).toHaveTextContent(
+      "前端讯号窗",
+    );
+    expect(screen.getByLabelText("实战剧情向导")).toHaveTextContent("当前地点");
+    expect(screen.getByLabelText("实战剧情向导")).toHaveTextContent("本幕目标");
+    expect(screen.getByLabelText("实战剧情向导")).toHaveTextContent("通关收获");
+    expect(screen.getByLabelText("本步任务卷轴")).toBeInTheDocument();
+    expect(screen.getByLabelText("本步任务卷轴")).toHaveTextContent("为什么学");
+    expect(screen.getByLabelText("本步任务卷轴")).toHaveTextContent("先看什么");
+    expect(screen.getByLabelText("本步任务卷轴")).toHaveTextContent(
+      "最后交什么",
+    );
+    expect(screen.getByLabelText("本步任务卷轴")).toHaveTextContent(
+      "先看这一棒在流程里的位置",
+    );
+    expect(screen.getByLabelText("流程接力小剧场")).toBeInTheDocument();
+    expect(screen.getByLabelText("流程接力小剧场")).toHaveTextContent("上一棒");
+    expect(screen.getByLabelText("流程接力小剧场")).toHaveTextContent("当前棒");
+    expect(screen.getByLabelText("流程接力小剧场")).toHaveTextContent("下一棒");
+    expect(screen.getByLabelText("流程接力小剧场")).toHaveTextContent("前端");
+    expect(screen.getByLabelText("流程接力小剧场")).toHaveTextContent(
+      "后端接口",
+    );
+    expect(screen.getByLabelText("代码三步翻译卡")).toBeInTheDocument();
+    expect(screen.getByLabelText("代码三步翻译卡")).toHaveTextContent(
+      "把动作送出去",
+    );
+    expect(screen.getByLabelText("代码三步翻译卡")).toHaveTextContent(
+      "判断接口有没有接住",
+    );
+    expect(screen.getByLabelText("代码三步翻译卡")).toHaveTextContent(
+      "不能直接证明数据库已经写入",
+    );
+    expect(screen.getByLabelText("当前能力印记")).toBeInTheDocument();
+    expect(screen.getByText("正在练")).toBeInTheDocument();
+    expect(screen.getByText("会沉淀成")).toBeInTheDocument();
+    expect(screen.getByLabelText("当前能力印记")).toHaveTextContent(
+      "排查路径、提示次数与解释",
+    );
+    expect(screen.getAllByText(/当前这一棒/).length).toBeGreaterThan(0);
     expect(
       screen.getByText(/前端\s*把「发出 POST」交给\s*后端接口/),
     ).toBeInTheDocument();
+    expect(screen.getByLabelText("本关案件路线牌")).toBeInTheDocument();
+    expect(screen.getByText("案件路线牌")).toBeInTheDocument();
+    expect(screen.getByLabelText("本关完整路线")).toHaveTextContent("用户");
+    expect(screen.getByLabelText("本关完整路线")).toHaveTextContent("数据库");
+    expect(screen.getByText("事故从哪来")).toBeInTheDocument();
+    expect(screen.getByText("谁传给谁")).toBeInTheDocument();
+    expect(screen.getByText("第一眼看哪里")).toBeInTheDocument();
+    expect(screen.getByText("最后交出什么")).toBeInTheDocument();
+    expect(screen.getByLabelText("实战接力板")).toBeInTheDocument();
+    expect(screen.getByText("上一棒交来")).toBeInTheDocument();
+    expect(screen.getByText("当前要证明")).toBeInTheDocument();
+    expect(screen.getByText("交给下一棒")).toBeInTheDocument();
+    expect(screen.getByLabelText("这一题的证据路线")).toBeInTheDocument();
+    expect(screen.getByLabelText("新手先读卡")).toBeInTheDocument();
+    expect(screen.getByText("这题到底在问什么")).toBeInTheDocument();
+    expect(screen.getByText("先看哪里")).toBeInTheDocument();
+    expect(screen.getByText("不要怎么写")).toBeInTheDocument();
     expect(screen.getByText(/作答支架/)).toBeInTheDocument();
     expect(screen.getByText(/1\. 我看到/)).toBeInTheDocument();
     expect(screen.getByText(/2\. 它说明/)).toBeInTheDocument();
     expect(screen.getByText(/3\. 下一步/)).toBeInTheDocument();
+    expect(screen.getByLabelText("证据表达示范卡")).toBeInTheDocument();
+    expect(screen.getByLabelText("证据表达示范卡")).toHaveTextContent(
+      "前端发出了 POST",
+    );
+    expect(screen.getByLabelText("证据表达示范卡")).toHaveTextContent(
+      "还不能证明数据库真的写入",
+    );
+    expect(screen.getByLabelText("证据表达示范卡")).toHaveTextContent(
+      "继续查后端日志和 SELECT 结果",
+    );
     expect(screen.getByText(/表达完整度 0\/3/)).toBeInTheDocument();
     expect(screen.getAllByText(/写出至少一条证据/).length).toBeGreaterThan(0);
     expect(screen.getByText(/说明这条证据能证明什么/)).toBeInTheDocument();
@@ -2804,9 +4758,65 @@ describe("AI 职业路线入口", () => {
     expect(screen.getByText(/表达完整度 3\/3/)).toBeInTheDocument();
     expect(screen.getByText(/可以保存并继续/)).toBeInTheDocument();
     expect(screen.getByText(/阅读导览 · 第 2 棒/)).toBeInTheDocument();
+    expect(screen.getByLabelText("材料导师")).toBeInTheDocument();
+    expect(screen.getByAltText("传送门书记官")).toBeInTheDocument();
+    expect(screen.getByText(/请求和日志要按时间线读/)).toBeInTheDocument();
+    expect(screen.getByLabelText("材料接力解释")).toBeInTheDocument();
+    expect(screen.getByText("材料接力")).toBeInTheDocument();
+    expect(screen.getByText("浏览器 Network 或测试报告")).toBeInTheDocument();
+    expect(screen.getByText("后端接口与验收判断")).toBeInTheDocument();
+    expect(
+      screen.getByText(/这次请求或测试到底返回了什么结果/),
+    ).toBeInTheDocument();
     expect(screen.getByText(/这次只盯住/)).toBeInTheDocument();
+    expect(screen.getByLabelText("关键行聚焦")).toBeInTheDocument();
+    expect(screen.getByText(/先看这几行/)).toBeInTheDocument();
+    expect(screen.getByText("json · 关键行")).toBeInTheDocument();
+    expect(
+      screen.getByText(/先只看关键行和前后一行上下文/),
+    ).toBeInTheDocument();
+    expect(document.querySelector(".code-window pre")).toHaveTextContent("201");
+    expect(document.querySelector(".code-window pre")).toHaveTextContent(
+      "visibleCanvases",
+    );
+    expect(
+      screen.getByRole("button", { name: /查看完整卷宗/ }),
+    ).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: /查看完整卷宗/ }));
+    expect(
+      screen.getByRole("button", { name: /收起完整卷宗/ }),
+    ).toHaveAttribute("aria-expanded", "true");
     expect(document.body.textContent ?? "").toContain("201 不是数据库收据");
     expect(document.querySelector(".lab-rpg-shell")).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: /保存并继续/ }));
+    expect(await screen.findByLabelText("刚刚收录的证据")).toHaveTextContent(
+      "证据已收录",
+    );
+    expect(screen.getByLabelText("刚刚收录的证据")).toHaveTextContent(
+      "读取项目材料",
+    );
+    expect(screen.getByLabelText("刚刚收录的证据")).toHaveTextContent(
+      "继续把上一棒证据交给下一棒",
+    );
+    expect(screen.getByLabelText("刚刚收录的证据")).toHaveTextContent(
+      "刚刚沉淀",
+    );
+    expect(screen.getByLabelText("刚刚收录的证据")).toHaveTextContent(
+      "下一步验证",
+    );
+    expect(screen.getByLabelText("刚刚收录的证据")).toHaveTextContent(
+      "以后可复盘",
+    );
+    expect(screen.getByLabelText("刚刚收录的证据")).toHaveTextContent(
+      "一段可复查的读取项目材料判断",
+    );
+    expect(screen.getByLabelText("实战剧情向导")).toHaveTextContent(
+      "接口接待员",
+    );
+    expect(screen.getByAltText("接口接待员实战向导")).toBeInTheDocument();
+    expect(screen.getByLabelText("实战剧情向导")).toHaveTextContent(
+      "请求中转门",
+    );
     await user.click(screen.getByRole("button", { name: /给 Agent 写任务/ }));
     expect(screen.getByText(/1\. 背景/)).toBeInTheDocument();
     expect(screen.getByText(/2\. 边界/)).toBeInTheDocument();
@@ -2816,6 +4826,7 @@ describe("AI 职业路线入口", () => {
     expect(screen.getByRole("textbox")).toHaveValue(
       "背景：\n目标：\n范围/约束：\n验收标准：\n风险和回滚：",
     );
+    expect(screen.getByText(/表达完整度 0\/3/)).toBeInTheDocument();
     expect(localStorage.getItem("codequest_detective")).toBeNull();
-  });
+  }, 60000);
 });

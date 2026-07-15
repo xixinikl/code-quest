@@ -1,0 +1,3 @@
+[2026-07-05T00:18:03.103+08:00] INFO requestId=req_perf_001 route=/api/projects cache=miss dbRows=2500 durationMs=1638
+[2026-07-05T00:18:07.812+08:00] INFO requestId=req_perf_002 route=/api/projects cache=miss dbRows=2500 durationMs=1619
+[2026-07-05T00:18:07.830+08:00] WARN requestId=req_perf_002 message="missing Server-Timing header; frontend cannot split db/cache/render evidence"

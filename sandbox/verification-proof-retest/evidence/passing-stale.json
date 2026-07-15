@@ -1,0 +1,14 @@
+{
+  "phase": "after-fix",
+  "sourceHash": "old_source_hash_from_before_latest_change",
+  "summary": { "passed": 3, "failed": 0 },
+  "tests": [
+    { "name": "保存逻辑会写入仓库", "phase": "unit", "status": "passed" },
+    {
+      "name": "POST 后再 GET 能读到同一条记录",
+      "phase": "integration",
+      "status": "passed"
+    },
+    { "name": "刷新后画布仍存在", "phase": "regression", "status": "passed" }
+  ]
+}

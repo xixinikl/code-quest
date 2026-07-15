@@ -1,0 +1,8 @@
+{
+  "method": "POST",
+  "url": "/api/assistant/stream",
+  "requestBody": { "question": "今天的客服重点是什么？" },
+  "headersVisibleInBrowser": ["Content-Type"],
+  "secretFoundInBrowser": true,
+  "note": "旧版本有人把 Authorization 直接放进前端请求，轮换 Key 可被复制。"
+}

@@ -1,0 +1,8 @@
+{
+  "checked": ["refund-policy-2026#9.4"],
+  "matched": [],
+  "status": "invalid",
+  "expectedAction": "拒答或转人工",
+  "proves": "引用没有命中允许资料",
+  "doesNotProve": "模型一定知道正确答案"
+}

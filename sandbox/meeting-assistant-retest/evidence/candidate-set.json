@@ -1,0 +1,25 @@
+{
+  "candidates": [
+    {
+      "id": "action-summary",
+      "stage": "follow-up",
+      "fitScore": 96,
+      "cost": "low",
+      "reason": "直接解决会后责任不清"
+    },
+    {
+      "id": "topic-recap",
+      "stage": "follow-up",
+      "fitScore": 78,
+      "cost": "low",
+      "reason": "能回顾讨论，但不能直接交付行动项"
+    },
+    {
+      "id": "live-avatar-host",
+      "stage": "during-meeting",
+      "fitScore": 84,
+      "cost": "high",
+      "reason": "展示效果强，但不解决当前会后问题"
+    }
+  ]
+}

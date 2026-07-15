@@ -2,6 +2,9 @@ node_modules/
 dist/
 coverage/
 .data/
+.playwright-cli/
+.xds/
+output/
 sandbox/**/test-results.json
 .DS_Store
 *.local

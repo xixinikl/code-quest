@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "scenarioId": "verification-trial-arena",
+  "phase": "after-fix",
+  "sourceHash": "old_source_hash_from_before_latest_change",
+  "summary": {
+    "passed": 3,
+    "failed": 0
+  },
+  "manual": {
+    "steps": ["打开画布页面", "新增一张画布", "刷新页面", "确认画布仍在列表中"],
+    "expected": "刷新后仍能看到刚才保存的画布",
+    "actual": "刷新后画布仍在"
+  },
+  "tests": [
+    {
+      "name": "保存逻辑会写入仓库",
+      "phase": "unit",
+      "status": "passed"
+    },
+    {
+      "name": "POST 后再 GET 能读到同一条画布",
+      "phase": "integration",
+      "status": "passed"
+    },
+    {
+      "name": "旧问题复现用例已经转绿",
+      "phase": "regression",
+      "status": "passed"
+    }
+  ]
+}

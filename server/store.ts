@@ -2,7 +2,9 @@ import { randomUUID } from "node:crypto";
 import type { LearningDatabase } from "./db.js";
 import {
   ContractError,
+  getTransferRetestScenario,
   requireScenario,
+  requiredScenarioSteps,
   requireScenarioStep,
 } from "./scenarios.js";
 import type { SafeVerificationReport } from "./report.js";
@@ -24,6 +26,12 @@ type StepRow = {
   step_id: string;
   response_json: string;
   saved_at: string;
+};
+
+type VerificationEventRow = {
+  status: "not_run" | "failed" | "passed" | "invalid_report";
+  report_json: string;
+  observed_at: string;
 };
 
 const BACKUP_FORMAT = "code-quest-learning-backup";
@@ -125,7 +133,7 @@ export class LearningStore {
   }
 
   startAttempt(scenarioId: string) {
-    requireScenario(scenarioId);
+    const scenario = requireScenario(scenarioId);
     const latest = this.db
       .prepare(
         `SELECT * FROM attempts
@@ -134,6 +142,13 @@ export class LearningStore {
       )
       .get(LEARNER_ID, scenarioId) as AttemptRow | undefined;
     if (latest) return this.getAttempt(latest.id);
+
+    if (scenario.transferRetest) {
+      this.assertTransferRetestAvailable(
+        scenario.transferRetest.sourceScenarioId,
+        scenario.transferRetest.delayHours,
+      );
+    }
 
     const id = randomUUID();
     this.db
@@ -144,6 +159,89 @@ export class LearningStore {
       )
       .run(id, LEARNER_ID, scenarioId, new Date().toISOString());
     return this.getAttempt(id);
+  }
+
+  getTransferRetestStatus(sourceScenarioId: string, now = new Date()) {
+    requireScenario(sourceScenarioId);
+    const retestScenario = getTransferRetestScenario(sourceScenarioId);
+    if (!retestScenario?.transferRetest) {
+      throw new ContractError("NOT_FOUND", "该场景没有延迟变式复测");
+    }
+
+    const sourceAttempt = this.latestAttemptForScenario(sourceScenarioId);
+    const retestAttempt = this.latestAttemptForScenario(retestScenario.id);
+    const submittedAt = sourceAttempt?.submitted_at ?? null;
+    const availableAt = submittedAt
+      ? new Date(
+          Date.parse(submittedAt) +
+            retestScenario.transferRetest.delayHours * 60 * 60 * 1000,
+        ).toISOString()
+      : null;
+
+    let status:
+      "prerequisite" | "waiting" | "available" | "active" | "completed";
+    if (!submittedAt) status = "prerequisite";
+    else if (retestAttempt?.status === "submitted") status = "completed";
+    else if (retestAttempt) status = "active";
+    else if (availableAt && Date.parse(availableAt) > now.getTime()) {
+      status = "waiting";
+    } else status = "available";
+
+    return {
+      sourceScenarioId,
+      scenarioId: retestScenario.id,
+      title: retestScenario.title,
+      status,
+      delayHours: retestScenario.transferRetest.delayHours,
+      sourceSubmittedAt: submittedAt,
+      availableAt,
+      remainingMs:
+        status === "waiting" && availableAt
+          ? Math.max(0, Date.parse(availableAt) - now.getTime())
+          : 0,
+      attemptId: retestAttempt?.id ?? null,
+      hintLevel: retestAttempt?.hint_level ?? 0,
+      verificationStatus: retestAttempt?.verification_status ?? "not_run",
+    };
+  }
+
+  startTransferRetest(sourceScenarioId: string) {
+    const retestScenario = getTransferRetestScenario(sourceScenarioId);
+    if (!retestScenario) {
+      throw new ContractError("NOT_FOUND", "该场景没有延迟变式复测");
+    }
+    return this.startAttempt(retestScenario.id);
+  }
+
+  private latestAttemptForScenario(scenarioId: string) {
+    return this.db
+      .prepare(
+        `SELECT * FROM attempts
+         WHERE learner_id = ? AND scenario_id = ?
+         ORDER BY started_at DESC LIMIT 1`,
+      )
+      .get(LEARNER_ID, scenarioId) as AttemptRow | undefined;
+  }
+
+  private assertTransferRetestAvailable(
+    sourceScenarioId: string,
+    delayHours: number,
+  ) {
+    const sourceAttempt = this.latestAttemptForScenario(sourceScenarioId);
+    if (!sourceAttempt?.submitted_at) {
+      throw new ContractError(
+        "TRANSFER_PREREQUISITE_REQUIRED",
+        "先完成原始实战，才能进入延迟变式复测",
+      );
+    }
+    const availableAt =
+      Date.parse(sourceAttempt.submitted_at) + delayHours * 60 * 60 * 1000;
+    if (availableAt > Date.now()) {
+      throw new ContractError(
+        "TRANSFER_RETEST_NOT_READY",
+        "延迟复测尚未解锁，请在间隔期后再独立作答",
+      );
+    }
   }
 
   getAttempt(id: string) {
@@ -158,6 +256,15 @@ export class LearningStore {
          FROM step_responses WHERE attempt_id = ? ORDER BY saved_at`,
       )
       .all(id) as StepRow[];
+    const latestVerification = this.db
+      .prepare(
+        `SELECT status, report_json, observed_at
+         FROM verification_events
+         WHERE attempt_id = ?
+         ORDER BY observed_at DESC, id DESC
+         LIMIT 1`,
+      )
+      .get(id) as VerificationEventRow | undefined;
 
     return {
       id: row.id,
@@ -176,6 +283,13 @@ export class LearningStore {
           },
         ]),
       ),
+      latestVerification: latestVerification
+        ? {
+            status: latestVerification.status,
+            observedAt: latestVerification.observed_at,
+            report: JSON.parse(latestVerification.report_json),
+          }
+        : null,
     };
   }
 
@@ -251,13 +365,7 @@ export class LearningStore {
       );
     }
 
-    const requiredSteps = [
-      "inspect-evidence",
-      "trace-data-flow",
-      "agent-brief",
-      "delivery-review",
-      "causal-explanation",
-    ];
+    const requiredSteps = requiredScenarioSteps(attempt.scenarioId);
     const missing = requiredSteps.filter((step) => !attempt.steps[step]);
     if (missing.length) {
       throw new ContractError(
@@ -267,26 +375,43 @@ export class LearningStore {
     }
 
     const now = new Date().toISOString();
-    const levelCandidate = attempt.hintLevel >= 3 ? 1 : 2;
+    const scenario = requireScenario(attempt.scenarioId);
+    const isDelayedTransfer = Boolean(scenario.transferRetest);
+    const levelCandidate = isDelayedTransfer
+      ? attempt.hintLevel === 0
+        ? 3
+        : 2
+      : attempt.hintLevel >= 3
+        ? 1
+        : 2;
     const reason = {
       behaviorVerified: true,
       explanationCaptured: true,
       hintLevel: attempt.hintLevel,
-      limitation:
-        "仅形成引导完成候选证据；尚未经过延迟变式复测与解释语义审查，不能判定 L3。",
+      delayedTransfer: isDelayedTransfer,
+      limitation: isDelayedTransfer
+        ? "已形成延迟变式复测候选证据；解释仍未经过可靠语义审查，不能据此判定更高能力等级。"
+        : "仅形成引导完成候选证据；尚未经过延迟变式复测与解释语义审查，不能判定 L3。",
     };
 
     this.db.exec("BEGIN IMMEDIATE");
     try {
-      for (const skillId of ["api", "database", "debugging"]) {
+      for (const skillId of scenario.skillIds) {
         this.db
           .prepare(
             `INSERT INTO evidence_records
              (attempt_id, skill_id, evidence_type, level_candidate,
               reason_json, created_at)
-             VALUES (?, ?, 'guided_practical', ?, ?, ?)`,
+             VALUES (?, ?, ?, ?, ?, ?)`,
           )
-          .run(attemptId, skillId, levelCandidate, JSON.stringify(reason), now);
+          .run(
+            attemptId,
+            skillId,
+            isDelayedTransfer ? "delayed_transfer" : "guided_practical",
+            levelCandidate,
+            JSON.stringify(reason),
+            now,
+          );
       }
       this.db
         .prepare(
@@ -350,6 +475,40 @@ export class LearningStore {
       remediationEvents: JSON.parse(row.remediation_events_json),
       updatedAt: row.updated_at,
     }));
+  }
+
+  getLearningRecalls() {
+    const rows = this.db
+      .prepare(
+        `SELECT a.scenario_id, t.step_id, t.teaching_response_json, t.updated_at
+         FROM teaching_progress t
+         JOIN attempts a ON a.id = t.attempt_id
+         WHERE a.learner_id = ? AND t.completed = 1
+         ORDER BY t.updated_at DESC`,
+      )
+      .all(LEARNER_ID) as Array<{
+      scenario_id: string;
+      step_id: string;
+      teaching_response_json: string;
+      updated_at: string;
+    }>;
+
+    return rows.flatMap((row) => {
+      const response = JSON.parse(row.teaching_response_json) as Record<
+        string,
+        unknown
+      >;
+      const activeRecall = response.activeRecall;
+      if (typeof activeRecall !== "string" || !activeRecall.trim()) return [];
+      return [
+        {
+          scenarioId: row.scenario_id,
+          stepId: row.step_id,
+          activeRecall: activeRecall.trim(),
+          updatedAt: row.updated_at,
+        },
+      ];
+    });
   }
 
   /** 保存教学步骤进度 */
@@ -558,6 +717,8 @@ export class LearningStore {
 
     this.db.exec("BEGIN IMMEDIATE");
     try {
+      this.replaceLearningTables();
+
       for (const row of backup.tables.learner_profiles) {
         this.db
           .prepare(
@@ -725,6 +886,20 @@ export class LearningStore {
         tableNames.map((table) => [table, backup.tables[table].length]),
       ),
     };
+  }
+
+  private replaceLearningTables() {
+    for (const table of [
+      "evidence_records",
+      "verification_events",
+      "teaching_progress",
+      "step_responses",
+      "attempts",
+      "diagnostic_sessions",
+      "learner_profiles",
+    ]) {
+      this.db.prepare(`DELETE FROM ${table}`).run();
+    }
   }
 
   private rows(sql: string): BackupRow[] {

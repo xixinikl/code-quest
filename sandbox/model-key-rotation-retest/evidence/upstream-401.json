@@ -1,0 +1,8 @@
+{
+  "status": 401,
+  "providerCode": "invalid_api_key",
+  "requestId": "provider-rot-77",
+  "secretEchoed": false,
+  "proves": "上游拒绝了服务端凭证",
+  "doesNotProve": "浏览器是否看到了密钥"
+}

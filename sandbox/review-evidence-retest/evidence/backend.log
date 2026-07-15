@@ -1,0 +1,3 @@
+[2026-07-14T09:20:00.000Z] INFO review diff_files=4 allowed=2
+[2026-07-14T09:20:01.000Z] WARN STALE_TEST_EVIDENCE sourceHash=old-source-hash currentHash=runtime-hash
+[2026-07-14T09:20:02.000Z] WARN MISSING_MOBILE_CHECK viewport=390

@@ -1,0 +1,6 @@
+02:14:08.101 worker-a selected pending job=417
+02:14:08.103 worker-b selected pending job=417
+02:14:08.109 worker-a marked running job=417
+02:14:08.111 worker-b marked running job=417
+02:14:09.401 worker-a inserted chunks=5 job=417
+02:14:09.437 worker-b inserted chunks=5 job=417

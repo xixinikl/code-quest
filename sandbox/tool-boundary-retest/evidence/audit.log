@@ -1,0 +1,2 @@
+2026-07-14T02:10:00Z requestId=req-tool-2048 tool=readOrder action=deny reason=internal-path
+2026-07-14T02:10:00Z requestId=req-tool-2048 fallback=customer-safe-message path=redacted

@@ -1,0 +1,4 @@
+2026-07-15T10:32:03.201Z click=submit-application visibleStatus=success request=POST:/api/applications
+2026-07-15T10:32:03.403Z response=503 visibleStatus=success userMessage=missing
+
+这说明页面状态先于请求结果被写成 success；失败和超时没有给用户下一步。

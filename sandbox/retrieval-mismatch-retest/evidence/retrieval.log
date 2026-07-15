@@ -1,0 +1,2 @@
+2026-07-14T09:44:10.221Z requestId=req-rag-09 query="最新退款规则" topK=1 match=refund-v1-03 score=0.94 active=false
+2026-07-14T09:44:10.222Z requestId=req-rag-09 citation=refund-v1-03 answerStatus=returned

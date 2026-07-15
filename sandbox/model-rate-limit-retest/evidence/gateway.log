@@ -1,0 +1,3 @@
+2026-07-14T00:42:18.104Z INFO request_started requestId=req-night-429 route=POST_/api/support-summaries/batches conversations=2
+2026-07-14T00:42:19.281Z WARN provider_response requestId=req-night-429 providerStatus=429 providerCode=MODEL_RATE_LIMITED retryAfterSeconds=30
+2026-07-14T00:42:19.283Z ERROR summary_batch_failed requestId=req-night-429 upstreamStatus=429 upstreamCode=MODEL_RATE_LIMITED returnedStatus=500

@@ -1,0 +1,14 @@
+{
+  "response": {
+    "status": 500,
+    "headers": {
+      "content-type": "application/json"
+    },
+    "body": {
+      "code": "INTERNAL_ERROR",
+      "message": "系统错误"
+    }
+  },
+  "missing": ["requestId", "retryAfterSeconds", "upstreamBoundary"],
+  "userImpact": "客服主管不知道应该修改输入、立即重试还是等待模型恢复"
+}

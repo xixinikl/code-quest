@@ -1,0 +1,12 @@
+{
+  "request": {
+    "method": "POST",
+    "url": "/api/auth/refresh",
+    "cookie": "refreshToken=refresh_night_17"
+  },
+  "response": {
+    "status": 401,
+    "body": { "error": "SESSION_EXPIRED" }
+  },
+  "observed": "认证服务滚动重启后，浏览器仍带 Cookie，但续期失败"
+}

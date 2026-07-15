@@ -1,0 +1,11 @@
+{
+  "page": "ProjectList",
+  "capturedAt": "2026-07-05T00:19:00+08:00",
+  "commitMs": 1180,
+  "renderedItems": 2500,
+  "longTasks": [
+    { "name": "render project rows", "durationMs": 742 },
+    { "name": "sort project stats", "durationMs": 318 }
+  ],
+  "observation": "接口返回后仍有明显卡顿，首屏不应该一次性渲染全部项目。"
+}

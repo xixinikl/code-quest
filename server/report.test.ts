@@ -91,6 +91,60 @@ describe("固定沙盒测试报告读取", () => {
     expect(result.status).toBe("invalid_report");
     expect(result.report.message).toBe("报告路径越出固定沙盒边界");
   });
+
+  it("报告尚未生成时返回可操作的等待状态", () => {
+    const projectRoot = mkdtempSync(join(tmpdir(), "code-quest-report-"));
+    cleanup.push(() => rmSync(projectRoot, { recursive: true, force: true }));
+    const sourcePath = resolve(
+      projectRoot,
+      "sandbox",
+      "canvas-save-persistence",
+      "server",
+      "canvasRepository.js",
+    );
+    mkdirSync(dirname(sourcePath), { recursive: true });
+    writeFileSync(sourcePath, "export const repositoryVersion = 'test';\n");
+
+    const result = readScenarioReport(
+      projectRoot,
+      "canvas-save-persistence",
+      "2026-01-01T00:00:00.000Z",
+    );
+
+    expect(result.status).toBe("not_run");
+    expect(result.report.message).toContain("尚未找到测试报告");
+  });
+
+  it("拒绝损坏的 JSON 报告并提示重新运行测试", () => {
+    const projectRoot = mkdtempSync(join(tmpdir(), "code-quest-report-"));
+    cleanup.push(() => rmSync(projectRoot, { recursive: true, force: true }));
+    const reportPath = join(
+      projectRoot,
+      "sandbox",
+      "canvas-save-persistence",
+      "test-results.json",
+    );
+    const sourcePath = join(
+      projectRoot,
+      "sandbox",
+      "canvas-save-persistence",
+      "server",
+      "canvasRepository.js",
+    );
+    mkdirSync(dirname(reportPath), { recursive: true });
+    mkdirSync(dirname(sourcePath), { recursive: true });
+    writeFileSync(sourcePath, "export const repositoryVersion = 'test';\n");
+    writeFileSync(reportPath, "{ this is not valid JSON", "utf8");
+
+    const result = readScenarioReport(
+      projectRoot,
+      "canvas-save-persistence",
+      "2026-01-01T00:00:00.000Z",
+    );
+
+    expect(result.status).toBe("invalid_report");
+    expect(result.report.message).toBe("测试报告无法读取或不是有效 JSON");
+  });
 });
 
 function createProjectWithReport() {

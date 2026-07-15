@@ -1,0 +1,33 @@
+{
+  "page": "/projects",
+  "capturedAt": "2026-07-05T00:18:00+08:00",
+  "requests": [
+    {
+      "url": "/assets/app.js",
+      "method": "GET",
+      "status": 200,
+      "sizeKb": 184,
+      "durationMs": 96,
+      "cache": "memory"
+    },
+    {
+      "url": "/api/projects?includeStats=true",
+      "method": "GET",
+      "status": 200,
+      "ttfbMs": 1640,
+      "downloadMs": 32,
+      "durationMs": 1672,
+      "cache": "MISS"
+    },
+    {
+      "url": "/api/projects?includeStats=true",
+      "method": "GET",
+      "status": 200,
+      "ttfbMs": 1618,
+      "downloadMs": 35,
+      "durationMs": 1653,
+      "cache": "MISS"
+    }
+  ],
+  "observation": "JS 资源不慢，最长的是 /api/projects 的 TTFB；第二次访问仍然 MISS。"
+}

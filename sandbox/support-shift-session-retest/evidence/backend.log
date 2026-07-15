@@ -1,0 +1,3 @@
+2026-07-14T00:10:00.012Z INFO auth.login staff=support_17 status=200 refresh=refresh_night_17
+2026-07-14T00:24:59.903Z INFO deploy.auth-worker instance=auth-b started
+2026-07-14T00:25:01.115Z WARN auth.refresh instance=auth-b refresh=refresh_night_17 result=not_found status=401

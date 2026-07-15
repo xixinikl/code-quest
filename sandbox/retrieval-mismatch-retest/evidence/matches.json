@@ -1,0 +1,14 @@
+{
+  "query": "最新退款规则",
+  "topK": 1,
+  "matches": [
+    {
+      "id": "refund-v1-03",
+      "score": 0.94,
+      "version": "2025-12",
+      "active": false
+    }
+  ],
+  "proves": "相似度命中了旧版本",
+  "doesNotProve": "旧版本是当前有效政策"
+}

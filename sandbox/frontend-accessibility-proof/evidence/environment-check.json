@@ -1,0 +1,19 @@
+{
+  "DATABASE_URL": {
+    "status": "present",
+    "safeToShow": false
+  },
+  "AI_API_KEY": {
+    "status": "missing",
+    "safeToShow": false
+  },
+  "APP_ORIGIN": {
+    "status": "present",
+    "safeToShow": true
+  },
+  "featureFlag": {
+    "aiCareerRpgRoute": "gradual-rollout"
+  },
+  "frontendBundleContainsSecret": false,
+  "explain": "本地有 key 不代表生产有 key；前端包也不能出现真实密钥。"
+}

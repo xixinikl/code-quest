@@ -4,12 +4,16 @@ import {
   useEffect,
   useState,
   type CSSProperties,
+  type ReactNode,
 } from "react";
 import {
   ArrowRight,
   BookOpen,
   Check,
   CheckCircle2,
+  ClipboardCopy,
+  ChevronLeft,
+  ChevronRight,
   FileCode2,
   HelpCircle,
   Lightbulb,
@@ -17,39 +21,69 @@ import {
   Network,
   Search,
   ServerCrash,
+  X,
 } from "lucide-react";
-import questArchive from "./assets/quest-archive.png";
-import questPortal from "./assets/quest-portal.png";
-import questStage from "./assets/quest-stage.png";
-import questWorkbench from "./assets/quest-workbench.png";
-import archiveKeeperPortrait from "./assets/portrait-archive-keeper.svg";
-import apiClerkPortrait from "./assets/portrait-api-clerk.svg";
+import questArchive from "./assets/quest-archive.webp";
+import questPortal from "./assets/quest-portal.webp";
+import questStage from "./assets/quest-stage.webp";
+import questWorkbench from "./assets/quest-workbench.webp";
+import apiErrorCourtScene from "./assets/scene-api-error-court.webp";
+import identityCorridorScene from "./assets/scene-identity-corridor.webp";
+import idempotencyForgeScene from "./assets/scene-idempotency-forge.webp";
+import hallucinationMirrorScene from "./assets/scene-hallucination-mirror.webp";
+import modelKeyForgeScene from "./assets/scene-model-key-forge.webp";
+import performanceObservatoryScene from "./assets/scene-performance-observatory.webp";
+import morningStarTimingHarborScene from "./assets/scene-morning-star-timing-harbor.webp";
+import memoryEchoGalleryScene from "./assets/scene-memory-echo-gallery.webp";
+import ragKnowledgeMazeScene from "./assets/scene-rag-knowledge-maze.webp";
+import agentBriefForgeScene from "./assets/scene-agent-brief-forge.webp";
+import agentToolContractHallScene from "./assets/scene-agent-tool-contract-hall.webp";
+import deliveryReviewCourtScene from "./assets/scene-delivery-review-court.webp";
+import interviewDefenseHallScene from "./assets/scene-interview-defense-hall.webp";
+import releaseReadinessGateScene from "./assets/scene-release-readiness-gate.webp";
+import signalStormDispatchTowerScene from "./assets/scene-signal-storm-dispatch-tower.webp";
+import verificationTrialArenaScene from "./assets/scene-verification-trial-arena.webp";
+import archiveKeeperPortrait from "./assets/portrait-archive-keeper-v2.webp";
+import apiClerkPortrait from "./assets/portrait-api-clerk-v2.webp";
 import keyVaultEquipment from "./assets/equipment-key-vault.svg";
-import foglampCatPet from "./assets/pet-foglamp-cat.svg";
-import identityGuardPortrait from "./assets/portrait-identity-guard.svg";
-import idempotencyStonePet from "./assets/pet-idempotency-stone.svg";
-import interviewCouncilorPortrait from "./assets/portrait-interview-councilor.svg";
-import retrievalFoxPet from "./assets/pet-retrieval-fox.svg";
-import mirrorEditorPortrait from "./assets/portrait-mirror-editor.svg";
-import knowledgeKeeperPortrait from "./assets/portrait-knowledge-keeper.svg";
-import modelWardenPortrait from "./assets/portrait-model-warden.svg";
-import briefForgemasterPortrait from "./assets/portrait-brief-forgemaster.svg";
-import deliveryJudgePortrait from "./assets/portrait-delivery-judge.svg";
-import portalScribePortrait from "./assets/portrait-portal-scribe.svg";
-import releaseGatekeeperPortrait from "./assets/portrait-release-gatekeeper.svg";
-import testArbiterPortrait from "./assets/portrait-test-arbiter.svg";
-import toolWardenPortrait from "./assets/portrait-tool-warden.svg";
+import foglampCatPet from "./assets/pet-foglamp-cat-v2.webp";
+import identityGuardPortrait from "./assets/portrait-identity-guard-v2.webp";
+import idempotencyStonePet from "./assets/pet-idempotency-stone-v2.webp";
+import inspirationGlowPet from "./assets/pet-inspiration-glow-v2.webp";
+import interviewCouncilorPortrait from "./assets/portrait-interview-councilor-v2.webp";
+import retrievalFoxPet from "./assets/pet-retrieval-fox-v2.webp";
+import mirrorEditorPortrait from "./assets/portrait-mirror-editor-v2.webp";
+import knowledgeKeeperPortrait from "./assets/portrait-index-arbiter.webp";
+import modelWardenPortrait from "./assets/portrait-model-warden-v2.webp";
+import briefForgemasterPortrait from "./assets/portrait-brief-forgemaster-v2.webp";
+import deliveryJudgePortrait from "./assets/portrait-delivery-judge-v2.webp";
+import portalScribePortrait from "./assets/portrait-portal-scribe-v2.webp";
+import releaseGatekeeperPortrait from "./assets/portrait-release-gatekeeper-v2.webp";
+import testArbiterPortrait from "./assets/portrait-test-arbiter-v2.webp";
+import toolWardenPortrait from "./assets/portrait-tool-warden-v2.webp";
+import stormDispatcherPortrait from "./assets/portrait-storm-dispatcher.webp";
+import echoForensicsPortrait from "./assets/portrait-echo-forensics-officer.webp";
+import indexArbiterPortrait from "./assets/portrait-index-arbiter.webp";
+import timingNavigatorPortrait from "./assets/portrait-timing-navigator.webp";
 import {
   type ConceptCard,
   type CodeFocus,
   type GlossaryEntry,
   type MapNode,
   type ProjectMap,
+  type RemediationLesson,
   type TeachingScenario,
   type TeachingStep,
   glossary,
 } from "./teaching";
 import { type DeveloperProfile } from "./careerProfile";
+import { withChapterRemediation } from "./remediation";
+import {
+  getChapterShot,
+  getMapNodePlacement,
+  resolveChapterCinematic,
+} from "./chapterCinematics";
+import { normalizeScenarioId } from "./scenarioIds";
 
 type TeachingApiProgress = {
   stepId: string;
@@ -76,6 +110,920 @@ async function api<T>(path: string, init?: RequestInit): Promise<T> {
 function scrollPageToTop() {
   document.documentElement.scrollTop = 0;
   document.body.scrollTop = 0;
+}
+
+function ChapterMemoryStrip({
+  steps,
+  currentStepIdx,
+  progress,
+}: {
+  steps: TeachingStep[];
+  currentStepIdx: number;
+  progress: TeachingApiProgress[];
+}) {
+  const currentStep = steps[currentStepIdx];
+  if (!currentStep) return null;
+
+  const previousStep = steps[currentStepIdx - 1];
+  const nextStep = steps[currentStepIdx + 1];
+  const completedCount = new Set(
+    progress.filter((item) => item.completed).map((item) => item.stepId),
+  ).size;
+
+  return (
+    <section className="chapter-memory-strip" aria-label="本章记忆线">
+      <div className="memory-strip-head">
+        <span>本章记忆线</span>
+        <strong>
+          已收录 {Math.min(completedCount, steps.length)} / {steps.length} 站
+        </strong>
+      </div>
+      <div className="memory-strip-grid">
+        <article>
+          <span>刚刚看过</span>
+          <strong>{previousStep?.title ?? "剧情探索"}</strong>
+          <p>
+            {previousStep?.goal ??
+              "你已经完成本章开场调查，知道事故为什么发生、这一关要解决什么。"}
+          </p>
+        </article>
+        <article className="active">
+          <span>当前这一棒</span>
+          <strong>{currentStep.title}</strong>
+          <p>{currentStep.goal}</p>
+        </article>
+        <article>
+          <span>接下来</span>
+          <strong>{nextStep?.title ?? "伙伴会合"}</strong>
+          <p>
+            {nextStep?.goal ??
+              "把本章路线、证据边界和面试复盘收束起来，再进入真实项目实战。"}
+          </p>
+        </article>
+      </div>
+    </section>
+  );
+}
+
+function ChapterQuestLog({
+  scenario,
+  currentStepIdx,
+  completedCount,
+}: {
+  scenario: TeachingScenario;
+  currentStepIdx: number;
+  completedCount: number;
+}) {
+  const currentStep = scenario.steps[currentStepIdx];
+  if (!currentStep) return null;
+
+  const previousStep = scenario.steps[currentStepIdx - 1];
+  const nextStep = scenario.steps[currentStepIdx + 1];
+
+  return (
+    <section className="quest-log teaching-quest-log" aria-label="章节冒险日志">
+      <header>
+        <span>冒险日志</span>
+        <strong>{scenario.steps[0]?.title ?? "章节任务"}</strong>
+      </header>
+      <div>
+        <article>
+          <span>已收录</span>
+          <strong>
+            {previousStep?.title ?? `剧情探索 ${completedCount} 站`}
+          </strong>
+          <p>
+            {previousStep?.goal ??
+              "你已经看过本章事故现场，知道这关不是背概念，而是沿流程找证据。"}
+          </p>
+        </article>
+        <article className="active">
+          <span>当前任务</span>
+          <strong>{currentStep.title}</strong>
+          <p>{currentStep.goal}</p>
+        </article>
+        <article>
+          <span>下一步</span>
+          <strong>{nextStep?.title ?? "伙伴会合"}</strong>
+          <p>
+            {nextStep?.goal ??
+              "把本章证据线整理成工作复盘、Agent 委托和面试表达，再进入实战。"}
+          </p>
+        </article>
+      </div>
+    </section>
+  );
+}
+
+function ChapterMentorCompanion({
+  scenario,
+  currentStepIdx,
+  scenes,
+  routeLabel,
+  workBackground,
+}: {
+  scenario: TeachingScenario;
+  currentStepIdx: number;
+  scenes: QuestScene[];
+  routeLabel: string;
+  workBackground?: string;
+}) {
+  const currentStep = scenario.steps[currentStepIdx];
+  const scene = scenes[Math.min(currentStepIdx, scenes.length - 1)];
+  if (!currentStep || !scene) return null;
+
+  const firstTerm = scene.terms?.[0];
+  const firstClue = scene.clues[0];
+  const isMapStep = currentStep.id.includes("map");
+  const scenePortrait = getScenePortrait(scene);
+  const activeNode =
+    scenario.projectMap.nodes[
+      Math.min(
+        currentStepIdx,
+        Math.max(scenario.projectMap.nodes.length - 1, 0),
+      )
+    ];
+  const finalNode = scenario.projectMap.nodes.at(-1);
+
+  return (
+    <section
+      className={`chapter-mentor-companion ${isMapStep ? "map-step-compact" : ""}`}
+      aria-label="本章导师同行"
+    >
+      <div
+        className="mentor-scene-glow"
+        style={{ backgroundImage: `url(${scene.image})` }}
+        aria-hidden="true"
+      />
+      {scenePortrait && (
+        <img
+          className="mentor-companion-portrait"
+          src={scenePortrait}
+          alt={scene.speaker}
+        />
+      )}
+      <div className="mentor-companion-copy">
+        <span>
+          导师同行 · {scene.place} · {routeLabel}
+        </span>
+        <strong>
+          {scene.speaker} 正在带你看：{currentStep.title}
+        </strong>
+        <blockquote className="mentor-scene-dialogue">
+          “{scene.dialogue}”
+        </blockquote>
+        <p>{scene.mentor}</p>
+        {workBackground && (
+          <div className="mentor-work-bridge">
+            <span>工作里什么时候会遇到</span>
+            <p>{workBackground}</p>
+          </div>
+        )}
+        <div className="mentor-companion-brief">
+          <article>
+            <span>这一幕为什么重要</span>
+            <b>{scene.goal}</b>
+          </article>
+          <article>
+            <span>先抓住哪个词</span>
+            <b>
+              {firstTerm
+                ? `${firstTerm.term}：${firstTerm.meaning}`
+                : currentStep.goal}
+            </b>
+          </article>
+          <article>
+            <span>第一眼看哪条线索</span>
+            <b>{firstClue?.label ?? currentStep.goal}</b>
+          </article>
+        </div>
+        <div className="mentor-delivery-contract" aria-label="本关交付契约">
+          <div>
+            <span>现在要证明</span>
+            <b>{activeNode?.output ?? currentStep.goal}</b>
+          </div>
+          <div>
+            <span>交给下一棒</span>
+            <b>{activeNode?.evidenceSources?.[0] ?? "可复核的项目证据"}</b>
+          </div>
+          <div>
+            <span>学完能带走</span>
+            <b>{finalNode?.output ?? "一段能在面试中讲清的工作复盘"}</b>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+const teachingCompanions: Record<
+  string,
+  { name: string; type: "伙伴" | "宠物" | "装备"; image: string; gift: string }
+> = {
+  "frontend-component-state": {
+    name: "状态编舞师",
+    type: "伙伴",
+    image: portalScribePortrait,
+    gift: "状态流证据",
+  },
+  "frontend-request-states": {
+    name: "提示小灯",
+    type: "宠物",
+    image: foglampCatPet,
+    gift: "请求状态矩阵",
+  },
+  "java-layered-request": {
+    name: "分层守望者",
+    type: "伙伴",
+    image: apiClerkPortrait,
+    gift: "请求接力证据",
+  },
+  "java-transaction-consistency": {
+    name: "事务小锻炉",
+    type: "宠物",
+    image: idempotencyStonePet,
+    gift: "回滚与一致性证据",
+  },
+  "java-cache-observability": {
+    name: "缓存巡航员",
+    type: "伙伴",
+    image: foglampCatPet,
+    gift: "缓存时间线证据",
+  },
+  "frontend-performance-proof": {
+    name: "首屏观测师",
+    type: "伙伴",
+    image: testArbiterPortrait,
+    gift: "性能基线与复测证据",
+  },
+  "frontend-accessibility-proof": {
+    name: "灯塔小鹿",
+    type: "宠物",
+    image: foglampCatPet,
+    gift: "无障碍与回归证据",
+  },
+  "frontend-testing-proof": {
+    name: "回归审查官",
+    type: "伙伴",
+    image: testArbiterPortrait,
+    gift: "测试与回归证据",
+  },
+  "java-release-harbor": {
+    name: "上线港守门人",
+    type: "伙伴",
+    image: releaseGatekeeperPortrait,
+    gift: "上线与回滚证据",
+  },
+  "java-production-incident": {
+    name: "事故回声官",
+    type: "伙伴",
+    image: deliveryJudgePortrait,
+    gift: "报警、止血与复测证据",
+  },
+  "canvas-save-persistence": {
+    name: "档案馆记录员",
+    type: "伙伴",
+    image: archiveKeeperPortrait,
+    gift: "数据流证据",
+  },
+  "case-002": {
+    name: "灵感萤火",
+    type: "宠物",
+    image: inspirationGlowPet,
+    gift: "产品链路",
+  },
+  "case-003-login-state": {
+    name: "回廊守卫",
+    type: "伙伴",
+    image: identityGuardPortrait,
+    gift: "登录态证据",
+  },
+  "case-004-api-error": {
+    name: "审判庭书记员",
+    type: "伙伴",
+    image: apiClerkPortrait,
+    gift: "接口错误证据",
+  },
+  "case-005-data-consistency": {
+    name: "幂等石灵",
+    type: "宠物",
+    image: idempotencyStonePet,
+    gift: "一致性证据",
+  },
+  "case-006-performance": {
+    name: "雾灯猫",
+    type: "宠物",
+    image: foglampCatPet,
+    gift: "性能时间账本",
+  },
+  "case-007-ai-api": {
+    name: "密钥匣",
+    type: "装备",
+    image: keyVaultEquipment,
+    gift: "安全调用边界",
+  },
+  "case-008-hallucination": {
+    name: "镜厅校对师",
+    type: "伙伴",
+    image: mirrorEditorPortrait,
+    gift: "引用校验证据",
+  },
+  "case-009-rag": {
+    name: "检索狐",
+    type: "宠物",
+    image: retrievalFoxPet,
+    gift: "检索命中证据",
+  },
+  "case-010-agent-tools": {
+    name: "塔楼副官",
+    type: "伙伴",
+    image: toolWardenPortrait,
+    gift: "工具权限边界",
+  },
+  "case-011-testing-proof": {
+    name: "验收试炼官",
+    type: "伙伴",
+    image: testArbiterPortrait,
+    gift: "可信测试证据",
+  },
+  "case-012-agent-brief": {
+    name: "委托书锻造师",
+    type: "伙伴",
+    image: briefForgemasterPortrait,
+    gift: "可执行委托",
+  },
+  "case-013-delivery-review": {
+    name: "交付审查官",
+    type: "伙伴",
+    image: deliveryJudgePortrait,
+    gift: "交付判断依据",
+  },
+  "case-014-release-readiness": {
+    name: "上线守门人",
+    type: "伙伴",
+    image: releaseGatekeeperPortrait,
+    gift: "可回滚上线清单",
+  },
+  "case-015-interview-review": {
+    name: "终章答辩官",
+    type: "伙伴",
+    image: interviewCouncilorPortrait,
+    gift: "可追问面试回答",
+  },
+};
+
+function getCompanionAction(step: TeachingStep) {
+  if (step.id.includes("map")) {
+    return "先沿路线念一遍谁收到什么、又交出什么；暂时不用记代码。";
+  }
+  if (step.id.includes("concept") || step.id === "micro-lessons") {
+    return "一次只解锁一个词：先看生活类比，再回到本章例子。";
+  }
+  if (step.id.includes("tour")) {
+    return "只盯当前高亮行，先说清它收到什么、做了什么、交出什么。";
+  }
+  if (step.id.includes("close")) {
+    return "把现象、证据、行动和验证各说一句，再把它收进面试复盘。";
+  }
+  if (step.id.includes("evidence") || step.id.includes("verification")) {
+    return "把两条能互相印证的证据连起来，不用页面提示代替事实。";
+  }
+  return "先完成眼前这一小步；看不懂时回到流程位置和证据来源。";
+}
+
+function ChapterCompanionReaction({
+  scenario,
+  currentStepIdx,
+}: {
+  scenario: TeachingScenario;
+  currentStepIdx: number;
+}) {
+  const companion =
+    teachingCompanions[normalizeScenarioId(scenario.scenarioId)];
+  const currentStep = scenario.steps[currentStepIdx];
+  if (!companion || !currentStep) return null;
+  const isMapStep = currentStep.id.includes("map");
+
+  return (
+    <aside
+      className={`chapter-companion-reaction ${isMapStep ? "map-step-compact" : ""}`}
+      aria-label="同行伙伴反应"
+    >
+      <div className="companion-reaction-portrait">
+        <img src={companion.image} alt={companion.name} />
+        <span>{companion.type}</span>
+      </div>
+      <div className="companion-reaction-copy">
+        <span>
+          {companion.name} · 正在陪你完成「{currentStep.title}」
+        </span>
+        <strong>{getCompanionAction(currentStep)}</strong>
+      </div>
+      <div className="companion-reaction-gift">
+        <span>本步收集</span>
+        <b>{companion.gift}</b>
+      </div>
+    </aside>
+  );
+}
+
+function StepEvidenceTransition({
+  scenario,
+  completedStepIndex,
+  saving,
+  onContinue,
+}: {
+  scenario: TeachingScenario;
+  completedStepIndex: number;
+  saving: boolean;
+  onContinue: (activeRecall?: string) => void;
+}) {
+  const [activeRecall, setActiveRecall] = useState("");
+  const completedStep = scenario.steps[completedStepIndex];
+  const nextStep = scenario.steps[completedStepIndex + 1];
+  const companion =
+    teachingCompanions[normalizeScenarioId(scenario.scenarioId)];
+  if (!completedStep || !companion) return null;
+
+  const requiresRecall =
+    completedStep.id === "project-map" ||
+    completedStep.id.includes("-map") ||
+    completedStep.id.includes("-close");
+  const isCloseStep = completedStep.id.includes("-close");
+  const recallPrompt = isCloseStep
+    ? "不用背标准答案：用一句自己的话说，这一关要看什么证据，才能证明真的完成？"
+    : "不用抄流程图：用一句自己的话说，起点把什么交给谁，最后又要交出什么？";
+  const recallReady = activeRecall.trim().length >= 12;
+
+  return (
+    <div className="step-evidence-transition" role="presentation">
+      <section
+        className="step-evidence-transition-panel"
+        role="dialog"
+        aria-modal="true"
+        aria-label="伙伴证据收录"
+      >
+        <div className="step-transition-portrait">
+          <img src={companion.image} alt={companion.name} />
+          <span>{companion.type}同行</span>
+        </div>
+        <div className="step-transition-copy">
+          <span>证据已收录 · {completedStep.title}</span>
+          <h2>{companion.name} 替你守住了这一棒</h2>
+          <p>{completedStep.goal}</p>
+          <div className="step-transition-handoff">
+            <article>
+              <span>这一站留下</span>
+              <strong>{companion.gift}</strong>
+            </article>
+            <article>
+              <span>交给下一站</span>
+              <strong>{nextStep?.title ?? "伙伴会合"}</strong>
+              <small>
+                {nextStep?.goal ??
+                  "把本章证据整理成工作复盘、Agent 委托和面试表达。"}
+              </small>
+            </article>
+          </div>
+          <blockquote>“{getCompanionAction(completedStep)}”</blockquote>
+          {requiresRecall && (
+            <label className="step-transition-recall">
+              <span>主动复述 · 不评分</span>
+              <strong>{recallPrompt}</strong>
+              <textarea
+                value={activeRecall}
+                onChange={(event) => setActiveRecall(event.target.value)}
+                placeholder={
+                  isCloseStep
+                    ? "例如：我会同时查看……和……，因为……"
+                    : "例如：用户先把……交给……，最后……"
+                }
+                rows={3}
+                autoFocus
+              />
+              <small>
+                {recallReady
+                  ? "这句话会作为你的原始理解记录保存，不代表系统已经判定掌握。"
+                  : `至少写 12 个字，还差 ${Math.max(0, 12 - activeRecall.trim().length)} 个。`}
+              </small>
+            </label>
+          )}
+          <button
+            className="v2-button primary"
+            onClick={() => onContinue(activeRecall.trim() || undefined)}
+            disabled={saving || (requiresRecall && !recallReady)}
+            autoFocus={!requiresRecall}
+          >
+            {saving
+              ? "正在保存你的复述…"
+              : nextStep
+                ? "收下证据，前往下一站"
+                : "收下证据，前往伙伴会合"}
+            <ArrowRight size={17} />
+          </button>
+        </div>
+      </section>
+    </div>
+  );
+}
+
+function ChapterFlowReplay({
+  scenario,
+  currentStepIdx,
+}: {
+  scenario: TeachingScenario;
+  currentStepIdx: number;
+}) {
+  const nodes = scenario.projectMap.nodes;
+  if (nodes.length === 0) return null;
+
+  const activeNodeIndex = Math.min(
+    Math.max(currentStepIdx, 0),
+    nodes.length - 1,
+  );
+  const activeNode = nodes[activeNodeIndex];
+  const nextNode = nodes[activeNodeIndex + 1];
+  const incomingEdge = scenario.projectMap.edges.find(
+    (edge) => edge.to === activeNode.id,
+  );
+  const outgoingEdge = scenario.projectMap.edges.find(
+    (edge) => edge.from === activeNode.id,
+  );
+
+  return (
+    <section className="chapter-flow-replay" aria-label="本章流程回放">
+      <header>
+        <span>流程回放</span>
+        <strong>
+          当前站点：{activeNode.label}
+          {nextNode ? ` → 下一站：${nextNode.label}` : " → 准备结案"}
+        </strong>
+      </header>
+      <ol className="flow-replay-rail">
+        {nodes.map((node, index) => {
+          const edgeToNext = scenario.projectMap.edges.find(
+            (edge) => edge.from === node.id,
+          );
+          return (
+            <li
+              key={node.id}
+              className={[
+                index < activeNodeIndex ? "done" : "",
+                index === activeNodeIndex ? "active" : "",
+              ]
+                .filter(Boolean)
+                .join(" ")}
+            >
+              <div className="flow-replay-marker">
+                <span>{index + 1}</span>
+              </div>
+              <div className="flow-replay-copy">
+                <strong>{node.label}</strong>
+                <p>
+                  收到：{node.input}；交出：{node.output}
+                </p>
+                <small>
+                  证据：{node.evidenceSources.slice(0, 2).join("、")}
+                  {edgeToNext ? ` · 交给下一站：${edgeToNext.label}` : ""}
+                </small>
+              </div>
+            </li>
+          );
+        })}
+      </ol>
+      <footer className="flow-replay-brief">
+        <article>
+          <span>上一棒交来</span>
+          <strong>{incomingEdge?.label ?? "本章起点"}</strong>
+          <p>{activeNode.input}</p>
+        </article>
+        <article>
+          <span>当前要证明</span>
+          <strong>{activeNode.label}</strong>
+          <p>
+            看 {activeNode.evidenceSources.slice(0, 2).join("、") || "本章材料"}
+            ，判断它是否真的把材料交给下一站。
+          </p>
+        </article>
+        <article>
+          <span>交给下一棒</span>
+          <strong>{outgoingEdge?.label ?? "章节结案"}</strong>
+          <p>{activeNode.output}</p>
+        </article>
+      </footer>
+    </section>
+  );
+}
+
+function ChapterMentorTrial({
+  scenario,
+  currentStepIdx,
+}: {
+  scenario: TeachingScenario;
+  currentStepIdx: number;
+}) {
+  const [litSeals, setLitSeals] = useState<Record<string, boolean>>({});
+  const [copiedTakeaway, setCopiedTakeaway] = useState(false);
+  const currentStep = scenario.steps[currentStepIdx];
+  if (!currentStep) return null;
+  const nextStep = scenario.steps[currentStepIdx + 1];
+
+  const activeNode =
+    scenario.projectMap.nodes[
+      Math.min(currentStepIdx, scenario.projectMap.nodes.length - 1)
+    ];
+  const evidence =
+    activeNode?.evidenceSources.slice(0, 2).join("、") || "本章证据";
+  const seals = [
+    {
+      id: `${currentStep.id}-flow`,
+      label: "流程印章",
+      title: "我能说清上一棒和下一棒",
+      prompt: `用自己的话说出「${activeNode?.label ?? currentStep.title}」收到什么、交出什么。`,
+    },
+    {
+      id: `${currentStep.id}-evidence`,
+      label: "证据印章",
+      title: "我知道第一眼看哪份证据",
+      prompt: `先看 ${evidence}，不要只凭剧情或绿色提示判断。`,
+    },
+    {
+      id: `${currentStep.id}-agent`,
+      label: "委托印章",
+      title: "我能把这一步交给 Agent",
+      prompt: "能写出背景、边界、验收三句话，再让 Agent 继续协作。",
+    },
+  ];
+  const litCount = seals.filter((seal) => litSeals[seal.id]).length;
+  const missingSeals = seals.filter((seal) => !litSeals[seal.id]);
+  const trialComplete = litCount === seals.length;
+  const abilityMark = `${currentStep.title} · 证据接力印记`;
+  const interviewLine = `面试里可以说：我在「${currentStep.title}」这一步，不只看结论，而是用 ${evidence} 证明「${activeNode?.label ?? currentStep.title}」这条链路是否成立。`;
+  const takeawayCards = [
+    {
+      label: "工作能力",
+      title: "能讲清这一棒",
+      body: `「${activeNode?.label ?? currentStep.title}」收到什么、交出什么，要能说成人话。`,
+    },
+    {
+      label: "Agent 委托",
+      title: "能交代协作边界",
+      body: "给 Agent 时写清背景、边界、验收，不把判断全丢出去。",
+    },
+    {
+      label: "面试素材",
+      title: "能复述证据链",
+      body: interviewLine,
+    },
+  ];
+  const takeawayText = [
+    "导师试炼本步收获",
+    `能力印记：${abilityMark}`,
+    `步骤：${currentStep.title}`,
+    `流程：${activeNode?.label ?? currentStep.title} 要说清收到什么、交出什么。`,
+    `证据：先看 ${evidence}，不要只凭剧情或绿色提示判断。`,
+    "Agent：委托时写清背景、边界、验收，再让 Agent 继续协作。",
+    `面试：${interviewLine}`,
+    `下一步：${nextStep?.title ?? "伙伴会合"}`,
+  ].join("\n");
+  const copyTakeaway = async () => {
+    try {
+      await navigator.clipboard?.writeText(takeawayText);
+      setCopiedTakeaway(true);
+    } catch {
+      setCopiedTakeaway(false);
+    }
+  };
+
+  return (
+    <section className="chapter-mentor-trial" aria-label="导师试炼三印章">
+      <header>
+        <span>导师试炼</span>
+        <strong>点亮三枚印章，再说自己看懂了这一棒</strong>
+        <small>{litCount}/3 已点亮</small>
+      </header>
+      <div className="mentor-trial-grid">
+        {seals.map((seal) => {
+          const active = litSeals[seal.id] === true;
+          return (
+            <button
+              key={seal.id}
+              type="button"
+              className={active ? "lit" : ""}
+              aria-pressed={active}
+              onClick={() =>
+                setLitSeals((current) => ({
+                  ...current,
+                  [seal.id]: !current[seal.id],
+                }))
+              }
+            >
+              <span>{seal.label}</span>
+              <strong>{seal.title}</strong>
+              <p>{seal.prompt}</p>
+            </button>
+          );
+        })}
+      </div>
+      {!trialComplete && (
+        <p className="mentor-trial-gap" aria-live="polite">
+          还差：{missingSeals.map((seal) => seal.label).join("、")}。
+        </p>
+      )}
+      {trialComplete && (
+        <footer className="mentor-trial-complete" aria-live="polite">
+          <span>试炼完成</span>
+          <strong>你已经能把这一棒讲成流程、证据和 Agent 委托。</strong>
+          <div className="mentor-trial-mark">
+            <span>获得能力印记</span>
+            <strong>{abilityMark}</strong>
+          </div>
+          <p>
+            下一步：{nextStep?.title ?? "伙伴会合"}。带走一句话： 「
+            {activeNode?.label ?? currentStep.title}」要用 {evidence}
+            证明，不只听页面或剧情说成功。
+          </p>
+          <div className="mentor-trial-takeaways" aria-label="试炼收获三格">
+            {takeawayCards.map((card) => (
+              <article key={card.label}>
+                <span>{card.label}</span>
+                <strong>{card.title}</strong>
+                <p>{card.body}</p>
+              </article>
+            ))}
+          </div>
+          <button
+            className="mentor-trial-copy"
+            type="button"
+            onClick={() => void copyTakeaway()}
+          >
+            <ClipboardCopy aria-hidden="true" size={14} />
+            {copiedTakeaway ? "已复制本步收获" : "复制本步收获"}
+          </button>
+        </footer>
+      )}
+    </section>
+  );
+}
+
+function ChapterAbilityPassport({
+  scenario,
+  currentStepIdx,
+}: {
+  scenario: TeachingScenario;
+  currentStepIdx: number;
+}) {
+  const [copiedSeed, setCopiedSeed] = useState<"agent" | "interview" | null>(
+    null,
+  );
+  const currentStep = scenario.steps[currentStepIdx];
+  if (!currentStep) return null;
+
+  const evidenceSources = Array.from(
+    new Set(
+      scenario.projectMap.nodes.flatMap((node) => node.evidenceSources ?? []),
+    ),
+  ).slice(0, 5);
+  const finalStep = scenario.steps.at(-1);
+  const routeStart = scenario.projectMap.nodes[0];
+  const routeEnd = scenario.projectMap.nodes.at(-1);
+  const agentBriefSeed = {
+    background: `我正在学习「${currentStep.title}」，目标是：${currentStep.goal}。`,
+    boundary: `只能基于本章材料和证据工具分析，不能替我编造已经验证过的结果。`,
+    acceptance: `请交回“看到什么 / 说明什么 / 下一步验证什么”，并引用 ${
+      evidenceSources.slice(0, 2).join("、") || "项目材料"
+    }。`,
+  };
+  const interviewSeed = {
+    phenomenon: `我遇到的场景是「${currentStep.title}」，不是泛泛学概念。`,
+    evidence: `我会引用 ${evidenceSources.slice(0, 2).join("、") || "项目材料"} 说明判断依据。`,
+    action: `我先画清 ${routeStart?.label ?? "起点"} 到 ${routeEnd?.label ?? "结案"} 的交接路线，再决定下一步。`,
+    verification: finalStep?.goal ?? "最后用本章结论和实战证据收束成复盘。",
+  };
+  const agentBriefText = [
+    "Agent 委托骨架",
+    `背景：${agentBriefSeed.background}`,
+    `边界：${agentBriefSeed.boundary}`,
+    `验收：${agentBriefSeed.acceptance}`,
+  ].join("\n");
+  const interviewBriefText = [
+    "面试复盘骨架",
+    `现象：${interviewSeed.phenomenon}`,
+    `证据：${interviewSeed.evidence}`,
+    `行动：${interviewSeed.action}`,
+    `验证：${interviewSeed.verification}`,
+  ].join("\n");
+  const copySeed = async (
+    seed: "agent" | "interview",
+    clipboardText: string,
+  ) => {
+    try {
+      await navigator.clipboard?.writeText(clipboardText);
+      setCopiedSeed(seed);
+    } catch {
+      setCopiedSeed(null);
+    }
+  };
+
+  return (
+    <section className="chapter-ability-passport" aria-label="本章能力护照">
+      <header>
+        <span>能力护照</span>
+        <strong>这关不是看完就算，而是要带走一项工作能力</strong>
+      </header>
+      <div className="ability-passport-grid">
+        <article>
+          <span>正在训练</span>
+          <strong>{currentStep.goal}</strong>
+          <p>当前站点：{currentStep.title}。先把这一站讲清楚，再进入下一棒。</p>
+        </article>
+        <article>
+          <span>工作里怎么用</span>
+          <strong>
+            {routeStart?.label ?? "起点"} → {routeEnd?.label ?? "结案"}
+          </strong>
+          <p>
+            真实工作里遇到同类问题时，先画出谁把什么交给谁，再找证据证明断点。
+          </p>
+        </article>
+        <article>
+          <span>证据工具</span>
+          <strong>{evidenceSources.join(" / ") || "项目材料"}</strong>
+          <p>不用背术语；优先说“我看到什么、它说明什么、下一步验证什么”。</p>
+        </article>
+        <article>
+          <span>Agent 协作</span>
+          <strong>背景 / 边界 / 验收</strong>
+          <p>
+            交给 Agent 前先写清楚现场、不能越过的范围，以及它必须交回什么证据。
+          </p>
+          <dl className="agent-brief-seed" aria-label="Agent 委托骨架">
+            <div>
+              <dt>背景</dt>
+              <dd>{agentBriefSeed.background}</dd>
+            </div>
+            <div>
+              <dt>边界</dt>
+              <dd>{agentBriefSeed.boundary}</dd>
+            </div>
+            <div>
+              <dt>验收</dt>
+              <dd>{agentBriefSeed.acceptance}</dd>
+            </div>
+          </dl>
+          <button
+            className="seed-copy-button"
+            type="button"
+            onClick={() => void copySeed("agent", agentBriefText)}
+          >
+            <ClipboardCopy aria-hidden="true" size={14} />
+            {copiedSeed === "agent" ? "已复制委托骨架" : "复制委托骨架"}
+          </button>
+        </article>
+        <article>
+          <span>验收动作</span>
+          <strong>用证据证明这一棒真的成立</strong>
+          <p>
+            完成本章前，至少能把「{routeStart?.label ?? "起点"} →{" "}
+            {routeEnd?.label ?? "结案"}」讲成一条证据链，并说明用{" "}
+            {evidenceSources.slice(0, 2).join("、") || "项目材料"}
+            怎么复核。
+          </p>
+        </article>
+        <article>
+          <span>面试产出</span>
+          <strong>{finalStep?.goal ?? "把本章整理成项目复盘"}</strong>
+          <p>通关后把现象、定位证据、行动、验证和边界整理成 1 分钟项目回答。</p>
+          <dl className="interview-brief-seed" aria-label="面试复盘骨架">
+            <div>
+              <dt>现象</dt>
+              <dd>{interviewSeed.phenomenon}</dd>
+            </div>
+            <div>
+              <dt>证据</dt>
+              <dd>{interviewSeed.evidence}</dd>
+            </div>
+            <div>
+              <dt>行动</dt>
+              <dd>{interviewSeed.action}</dd>
+            </div>
+            <div>
+              <dt>验证</dt>
+              <dd>{interviewSeed.verification}</dd>
+            </div>
+          </dl>
+          <button
+            className="seed-copy-button"
+            type="button"
+            onClick={() => void copySeed("interview", interviewBriefText)}
+          >
+            <ClipboardCopy aria-hidden="true" size={14} />
+            {copiedSeed === "interview" ? "已复制复盘骨架" : "复制复盘骨架"}
+          </button>
+        </article>
+      </div>
+    </section>
+  );
 }
 
 // ============ 子组件 ============
@@ -109,6 +1057,7 @@ type QuestScene = {
   id: string;
   image: string;
   portrait?: string;
+  portraitOverride?: string;
   place: string;
   title: string;
   speaker: string;
@@ -118,6 +1067,173 @@ type QuestScene = {
   terms?: QuestTerm[];
   clues: QuestClue[];
 };
+
+type StoryProgressSnapshot = {
+  sceneIndex: number;
+  discovered: Record<string, string[]>;
+  sceneRecalls: Record<string, string>;
+  sceneDecisions: Record<string, string>;
+};
+
+function getStoryProgressStepId(scenarioId: string) {
+  scenarioId = normalizeScenarioId(scenarioId);
+  const storyStepIds: Record<string, string> = {
+    "frontend-component-state": "frontend-component-investigation",
+    "frontend-request-states": "frontend-request-states-investigation",
+    "java-layered-request": "java-layered-investigation",
+    "java-transaction-consistency": "java-transaction-investigation",
+    "java-cache-observability": "java-cache-investigation",
+    "frontend-performance-proof": "frontend-performance-investigation",
+    "frontend-accessibility-proof": "frontend-accessibility-investigation",
+    "frontend-testing-proof": "frontend-testing-investigation",
+    "java-release-harbor": "java-release-investigation",
+    "java-production-incident": "java-release-investigation",
+    "canvas-save-persistence": "canvasstorm-investigation",
+    "case-002": "canvasstorm-investigation",
+    "case-003-login-state": "login-state-investigation",
+    "case-004-api-error": "api-error-investigation",
+    "case-005-data-consistency": "consistency-investigation",
+    "case-006-performance": "performance-investigation",
+    "case-007-ai-api": "ai-api-investigation",
+    "case-008-hallucination": "hallucination-investigation",
+    "case-009-rag": "rag-investigation",
+    "case-010-agent-tools": "agent-tools-investigation",
+    "case-011-testing-proof": "testing-proof-investigation",
+    "case-012-agent-brief": "agent-brief-investigation",
+    "case-013-delivery-review": "delivery-review-investigation",
+    "case-014-release-readiness": "release-readiness-investigation",
+    "case-015-interview-review": "interview-review-investigation",
+  };
+  return storyStepIds[scenarioId] ?? "story-investigation";
+}
+
+function parseStoryProgress(
+  response: Record<string, unknown> | undefined,
+  maxSceneIndex: number,
+): StoryProgressSnapshot | undefined {
+  if (!response || typeof response.sceneIndex !== "number") return undefined;
+  const readRecord = (value: unknown): Record<string, string[]> => {
+    if (!value || typeof value !== "object" || Array.isArray(value)) return {};
+    return Object.fromEntries(
+      Object.entries(value).flatMap(([key, items]) =>
+        Array.isArray(items)
+          ? [
+              [
+                key,
+                items.filter(
+                  (item): item is string => typeof item === "string",
+                ),
+              ],
+            ]
+          : [],
+      ),
+    );
+  };
+  const readStringRecord = (value: unknown): Record<string, string> => {
+    if (!value || typeof value !== "object" || Array.isArray(value)) return {};
+    return Object.fromEntries(
+      Object.entries(value).flatMap(([key, item]) =>
+        typeof item === "string" ? [[key, item]] : [],
+      ),
+    );
+  };
+  return {
+    sceneIndex: Math.min(
+      Math.max(Math.floor(response.sceneIndex), 0),
+      maxSceneIndex,
+    ),
+    discovered: readRecord(response.discovered),
+    sceneRecalls: readStringRecord(response.sceneRecalls),
+    sceneDecisions: readStringRecord(response.sceneDecisions),
+  };
+}
+
+const scenePortraitOverrides: Record<string, string> = {
+  "archive-vault": knowledgeKeeperPortrait,
+  "repair-bench": briefForgemasterPortrait,
+  "cs-direction": briefForgemasterPortrait,
+  "cs-ai-status": stormDispatcherPortrait,
+  "cookie-portal": portalScribePortrait,
+  "session-vault": archiveKeeperPortrait,
+  "expiry-bench": echoForensicsPortrait,
+  "validation-bench": indexArbiterPortrait,
+  "log-archive": echoForensicsPortrait,
+  "forge-clicks": stormDispatcherPortrait,
+  "unique-vault": indexArbiterPortrait,
+  "waterfall-tower": stormDispatcherPortrait,
+  "api-clocktower": timingNavigatorPortrait,
+  "render-stage": echoForensicsPortrait,
+  "key-vault": stormDispatcherPortrait,
+  "stream-bridge": portalScribePortrait,
+  "context-bag": echoForensicsPortrait,
+  "citation-court": indexArbiterPortrait,
+  "retrieval-hall": retrievalFoxPet,
+  "chunk-workshop": knowledgeKeeperPortrait,
+  "schema-hall": indexArbiterPortrait,
+  "permission-gate": echoForensicsPortrait,
+  "unit-rune-room": timingNavigatorPortrait,
+  "report-archive": echoForensicsPortrait,
+  "acceptance-contract": indexArbiterPortrait,
+  "diff-evidence-room": echoForensicsPortrait,
+  "regression-risk-hall": indexArbiterPortrait,
+  "backup-archive": timingNavigatorPortrait,
+  "monitoring-tower": echoForensicsPortrait,
+  "star-orrery": stormDispatcherPortrait,
+  "followup-mirror": echoForensicsPortrait,
+};
+
+function getScenePortrait(scene: QuestScene) {
+  return (
+    scene.portraitOverride ?? scenePortraitOverrides[scene.id] ?? scene.portrait
+  );
+}
+
+type SceneDecisionOption = {
+  id: string;
+  label: string;
+  feedback: string;
+};
+
+function getSceneDecision(
+  scene: QuestScene,
+  journey: QuestJourneyItem | undefined,
+): { prompt: string; options: SceneDecisionOption[] } {
+  const surfaceEvidence = scene.clues[0]?.label ?? "眼前结果";
+  const nextProof = journey?.proof ?? "下一份可观察证据";
+  const nextTo = journey?.to ?? "下一站";
+  return {
+    prompt: `线索已经收齐。现在你要怎么处理「${scene.title}」？`,
+    options: [
+      {
+        id: "trust-surface",
+        label: `先把「${surfaceEvidence}」当作结果`,
+        feedback: `「${surfaceEvidence}」只是表面线索，不是最终结论。它只能说明当前这一棒发生了，下一步还要检查「${nextProof}」。`,
+      },
+      {
+        id: "trace-next",
+        label: `沿证据继续追到${nextTo}`,
+        feedback: `这个判断更接近真实排障：把当前线索交给「${nextTo}」，再用下一份证据确认它有没有真的发生。`,
+      },
+    ],
+  };
+}
+
+function getDecisionEcho(
+  scene: QuestScene | null,
+  decisionId: string | undefined,
+) {
+  if (!scene || !decisionId) return null;
+  if (decisionId === "trace-next") {
+    return {
+      title: "你选择继续追证据",
+      body: `这一选择会把「${scene.clues.at(-1)?.label ?? scene.title}」交给下一幕，先核对下一份证据，再下结论。`,
+    };
+  }
+  return {
+    title: "你先收下了眼前的结果",
+    body: `这一选择不会扣分，但留下一个提醒：${scene.clues.at(-1)?.skill ?? scene.goal} 还不能单独证明事情真的完成。`,
+  };
+}
 
 const questJourney: QuestJourneyItem[] = [
   {
@@ -163,6 +1279,580 @@ const questJourney: QuestJourneyItem[] = [
     proof: "刷新后仍能看到记录，测试通过",
     plain:
       "最后不是只改代码，而是证明这条路真的走通：页面、接口、数据库三边都对上。",
+  },
+];
+
+const javaLayeredJourney: QuestJourneyItem[] = [
+  {
+    sceneId: "java-request-gate",
+    from: "客户端",
+    to: "Controller",
+    payload: "GET /api/users/u-17",
+    proof: "请求记录里的 method、path 和 status",
+    plain: "客户端只负责发起请求，把地址和参数交给 Controller 入口。",
+  },
+  {
+    sceneId: "java-controller-hall",
+    from: "Controller",
+    to: "Service",
+    payload: "userId + viewerId",
+    proof: "Controller 调用 UserService，而不是直接查库",
+    plain:
+      "Controller 像前台，负责接待和转换，不应该自己决定权限或直接碰数据库。",
+  },
+  {
+    sceneId: "java-service-forge",
+    from: "Service",
+    to: "Repository",
+    payload: "经过权限判断的 userId",
+    proof: "viewerId 不匹配时被拒绝",
+    plain: "Service 是业务规则所在的中间层，先做判断，再把合法请求交给数据层。",
+  },
+  {
+    sceneId: "java-repository-vault",
+    from: "Repository",
+    to: "数据库",
+    payload: "findById 查询",
+    proof: "SQL 查询只证明数据层拿到了记录",
+    plain: "Repository 专心把对象和数据库互相转换，不应该偷偷承担权限规则。",
+  },
+  {
+    sceneId: "java-interview-dais",
+    from: "证据链",
+    to: "面试表达",
+    payload: "现象、边界、修复、验证",
+    proof: "能复述一条请求经过三层的完整路线",
+    plain:
+      "工作能力不是背出三层名字，而是能解释每层为什么存在、证据如何证明它真的经过。",
+  },
+];
+
+const javaLayeredScenes: QuestScene[] = [
+  {
+    id: "java-request-gate",
+    image: questStage,
+    portrait: archiveKeeperPortrait,
+    place: "请求城门",
+    title: "一封请求刚刚抵达",
+    speaker: "分层塔守门人",
+    dialogue:
+      "先别急着打开数据库。每个请求都要先报到入口，只有知道它从哪里来，才知道下一棒该交给谁。",
+    goal: "分清客户端发起请求与服务端处理请求的区别。",
+    mentor:
+      "你现在看到的 GET 不是答案，它只是任务单。接下来要追踪这张任务单经过了哪些角色。",
+    terms: [
+      {
+        term: "Controller",
+        meaning: "接收 HTTP 请求、整理参数并返回响应的入口层。",
+      },
+      {
+        term: "HTTP 响应",
+        meaning: "服务端处理完请求后回给客户端的状态、数据和错误信息。",
+      },
+    ],
+    clues: [
+      {
+        id: "java-request-record",
+        label: "查看请求任务单",
+        action: "打开 network.json",
+        result:
+          "记录显示 GET /api/users/u-17 返回 200。这能证明请求到达并有响应，不能证明权限规则已经执行。",
+        snippet: "客户端 -> GET /api/users/u-17 -> 服务端 -> 200",
+        question:
+          "先记住：200 只说明这次请求收到了成功响应，不等于每一层都按职责工作。",
+        journeyIndex: 0,
+        skill: "学会从请求记录确定排查起点。",
+      },
+      {
+        id: "java-request-terms",
+        label: "打开名词卡",
+        action: "理解 Controller 和响应",
+        result:
+          "Controller 是服务端的入口，不是数据库。它应该把请求交给业务层，再把结果包装成响应。",
+        snippet:
+          "请求进入 Controller\nController -> Service\nService -> Repository -> 数据库",
+        question: "名词先放回流程里：它是谁、收到什么、交给谁？",
+        journeyIndex: 1,
+        skill: "把抽象名词放回真实工作流程。",
+      },
+    ],
+  },
+  {
+    id: "java-controller-hall",
+    image: questPortal,
+    portrait: apiClerkPortrait,
+    place: "Controller 接待厅",
+    title: "前台越过了业务门",
+    speaker: "接口接待员",
+    dialogue:
+      "事故记录写着 Controller 直接拿了 Repository。看起来省了一步，实际上把权限检查绕开了。",
+    goal: "找出 Controller 直接访问 Repository 为什么危险。",
+    mentor: "前台可以收表、验格式、发回信，但不该自己替业务规则盖章。",
+    terms: [
+      {
+        term: "分层",
+        meaning: "按职责把入口、业务规则和数据访问分开，降低修改和排查成本。",
+      },
+      {
+        term: "职责边界",
+        meaning: "每层应该负责什么，以及明确不应该负责什么。",
+      },
+    ],
+    clues: [
+      {
+        id: "java-controller-code",
+        label: "查看 Controller 代码",
+        action: "打开 UserController.java",
+        result:
+          "代码直接调用 userRepository.findById，完全没有进入 UserService，所以 viewerId 权限判断没有机会执行。",
+        snippet:
+          "错误路线：Controller -> Repository\n正确路线：Controller -> Service -> Repository",
+        question: "直接查库不是“少写代码”，而是跳过了业务规则所在的关卡。",
+        journeyIndex: 1,
+        skill: "用代码证据指出职责越界。",
+      },
+      {
+        id: "java-controller-log",
+        label: "对照服务日志",
+        action: "打开 backend.log",
+        result:
+          "日志明确记录 service=UserService status=SKIPPED。它和代码互相印证：不是猜测，而是能复现的绕路。",
+        snippet:
+          "controller=UserController repository=findById\nservice=UserService status=SKIPPED",
+        question: "代码告诉你怎么走，日志告诉你这次运行真的怎么走。",
+        journeyIndex: 2,
+        skill: "让静态代码和运行证据互相验证。",
+      },
+    ],
+  },
+  {
+    id: "java-service-forge",
+    image: questWorkbench,
+    portrait: briefForgemasterPortrait,
+    place: "Service 规则熔炉",
+    title: "业务规则必须有人守",
+    speaker: "规则锻造师",
+    dialogue:
+      "同一个查用户动作，查看自己可以通过，查看别人必须拒绝。规则放在 Service，所有入口才有机会共享同一把锁。",
+    goal: "理解 Service 为什么要先做业务判断。",
+    mentor:
+      "把 viewerId 想成来访者，把 userId 想成要查看的档案。先验身份关系，再允许数据层查找。",
+    terms: [
+      { term: "Service", meaning: "承载业务规则和用例流程的服务层。" },
+      {
+        term: "权限检查",
+        meaning: "判断当前请求者是否有权执行或查看目标资源。",
+      },
+    ],
+    clues: [
+      {
+        id: "java-service-rule",
+        label: "查看权限规则",
+        action: "打开 UserService.java",
+        result:
+          "UserService 会先比较 viewerId 和 userId，不一致就拒绝；通过后才调用 Repository。",
+        snippet:
+          "if (!viewerId.equals(userId)) reject\nthen repository.findById(userId)",
+        question: "规则先于查询，才能保证数据层不会替绕过权限的请求服务。",
+        journeyIndex: 2,
+        skill: "说清业务规则和数据访问的先后关系。",
+      },
+      {
+        id: "java-service-test",
+        label: "预演失败分支",
+        action: "用 viewerId 不匹配的情况思考",
+        result:
+          "如果 Controller 经过 Service，viewerId 不匹配应在 Service 被拒绝，而不是先查到数据再补救。",
+        snippet: "viewer=u-02, target=u-17\nexpected: reject before repository",
+        question: "真正重要的不只是成功路径，还包括规则应该在哪一层挡住失败。",
+        journeyIndex: 3,
+        skill: "开始用失败路径验证架构边界。",
+      },
+    ],
+  },
+  {
+    id: "java-repository-vault",
+    image: questArchive,
+    portrait: knowledgeKeeperPortrait,
+    place: "Repository 档案库",
+    title: "查到数据不等于流程正确",
+    speaker: "数据档案员",
+    dialogue:
+      "档案库确实找到了 u-17，但这只能说明最后一棒工作过，不能替前面的权限规则作证。",
+    goal: "区分数据库查询证据与完整业务流程证据。",
+    mentor: "一行 SQL 结果很有用，但它回答的是“查到了吗”，不是“应该查吗”。",
+    terms: [
+      {
+        term: "Repository",
+        meaning: "负责数据访问的层，封装查询和持久化细节。",
+      },
+      {
+        term: "持久化",
+        meaning: "把数据写入数据库等长期存储，重启或刷新后仍可读取。",
+      },
+    ],
+    clues: [
+      {
+        id: "java-database-proof",
+        label: "查看数据库查询",
+        action: "打开 database-query.txt",
+        result:
+          "SELECT 返回 1 行，证明 Repository 查到了数据；文件也明确提醒，它不能证明 Service 权限规则执行过。",
+        snippet: "Repository -> SELECT -> 1 row\n不能证明：Service 已执行",
+        question:
+          "证据要回答具体问题：数据存在、权限正确、流程经过，是三件不同的事。",
+        journeyIndex: 3,
+        skill: "避免把局部成功误判为全链路正确。",
+      },
+      {
+        id: "java-dto-contract",
+        label: "看 DTO 回信",
+        action: "打开 UserResponse.java",
+        result:
+          "DTO 只负责把内部 User 转成对外响应格式。它是数据合同，不负责决定谁有权限读取。",
+        snippet: "User -> UserResponse(id, displayName) -> HTTP response",
+        question: "DTO 是回信格式，不是业务规则的守门人。",
+        journeyIndex: 4,
+        skill: "分清数据合同和业务规则。",
+      },
+    ],
+  },
+  {
+    id: "java-interview-dais",
+    image: interviewDefenseHallScene,
+    portrait: interviewCouncilorPortrait,
+    place: "面试答辩台",
+    title: "把三层讲成一条能工作的路",
+    speaker: "项目答辩官",
+    dialogue:
+      "现在轮到你复述：请求从哪里来，为什么不能直达数据库，哪份证据证明你修对了？",
+    goal: "把流程、职责、证据和面试表达连起来。",
+    mentor:
+      "面试官不只问你知不知道 Controller，他们会追问：如果换一个入口，权限规则还在吗？",
+    terms: [
+      {
+        term: "可解释能力",
+        meaning: "能说明现象、证据、根因、修改和验证，而不是只报一个结论。",
+      },
+      {
+        term: "迁移能力",
+        meaning: "换项目或换岗位后，仍能用同一套追流程和找证据的方法。",
+      },
+    ],
+    clues: [
+      {
+        id: "java-flow-recall",
+        label: "复述请求路线",
+        action: "用自己的话说清谁把什么交给谁",
+        result:
+          "完整路线是：客户端发请求，Controller 接收并交给 Service，Service 执行业务判断后交给 Repository，Repository 查询数据库，结果再沿原路返回。",
+        snippet:
+          "Client -> Controller -> Service -> Repository -> DB -> Response",
+        question: "能复述完整路线，才算真正开始理解这座服务塔。",
+        journeyIndex: 4,
+        skill: "形成可复用的工作流程表达。",
+      },
+      {
+        id: "java-interview-answer",
+        label: "写一段面试回答",
+        action: "把现象、根因、修复和验证串起来",
+        result:
+          "可以这样讲：我发现 Controller 绕过 Service 直接查 Repository，导致权限规则没有执行；我用代码和日志确认了绕路，再让 Controller 调 Service，并用不匹配 viewerId 的失败路径验证规则确实生效。",
+        snippet: "现象 -> 证据 -> 根因 -> 修复 -> 失败路径复测",
+        question: "这比背“Controller-Service-Repository”更接近真实工作和面试。",
+        journeyIndex: 4,
+        skill: "把技术理解转成面试可讲的证据故事。",
+      },
+    ],
+  },
+];
+
+const frontendComponentJourney: QuestJourneyItem[] = [
+  {
+    sceneId: "frontend-click-stage",
+    from: "用户",
+    to: "组件事件",
+    payload: "点击加载资料",
+    proof: "交互记录出现 click",
+    plain: "用户只发起动作，不能替请求宣布成功。",
+  },
+  {
+    sceneId: "frontend-state-stage",
+    from: "组件事件",
+    to: "状态所有者",
+    payload: "idle -> loading",
+    proof: "按钮和提示进入加载状态",
+    plain: "组件用一个状态描述请求现在走到哪一步。",
+  },
+  {
+    sceneId: "frontend-network-stage",
+    from: "状态所有者",
+    to: "请求结果",
+    payload: "GET /api/profile/me",
+    proof: "200 或 503 response",
+    plain: "只有请求返回，组件才知道该进入 success 还是 error。",
+  },
+  {
+    sceneId: "frontend-render-stage",
+    from: "请求结果",
+    to: "页面反馈",
+    payload: "success/error + data/message",
+    proof: "用户能看到正确下一步",
+    plain: "渲染是结果的翻译器，不应该把失败伪装成成功。",
+  },
+];
+
+const frontendRequestStatesJourney: QuestJourneyItem[] =
+  frontendComponentJourney.map((item, index) => ({
+    ...item,
+    from: index === 0 ? "提交动作" : item.from,
+    to: index === frontendComponentJourney.length - 1 ? "面试复盘" : item.to,
+    payload:
+      ["表单数据", "loading 状态", "201 / 503 响应", "可读错误反馈"][index] ??
+      item.payload,
+    proof:
+      [
+        "点击记录出现且请求开始",
+        "按钮进入 loading 并禁止重复提交",
+        "Network 与浏览器日志对齐",
+        "用户能看到失败原因和重试动作",
+      ][index] ?? item.proof,
+    plain:
+      [
+        "点击只是起点，组件还不能替请求宣布成功。",
+        "请求进行时由 loading 保护状态和按钮，避免用户重复提交。",
+        "响应状态码和错误体决定页面下一步，而不是点击时间。",
+        "最终要把技术结果翻译成用户能理解、能继续行动的反馈。",
+      ][index] ?? item.plain,
+  }));
+
+function getFrontendRequestStatesScenes(): QuestScene[] {
+  return frontendComponentScenes.map((scene, index) => ({
+    ...scene,
+    id: `request-states-${index}`,
+    place: ["表单传送厅", "状态控制台", "响应观测台", "复盘答辩台"][index],
+    title: [
+      "申请刚刚送出",
+      "先把按钮交给 loading",
+      "201 和 503 到底带来什么",
+      "把错误翻译成下一步",
+    ][index],
+    dialogue: [
+      "用户只按了一次提交。传送厅的灯还不能替请求宣布成功，先确认这份申请真的走上了路。",
+      "状态控制台只有一个主人。请求没有回来之前，按钮要保护现场，页面要诚实地说正在等待。",
+      "201、400、503 和超时不是一组装饰数字，它们会决定用户下一步是继续、修改还是稍后重试。",
+      "现在请你把事故讲清楚：现象、时间顺序、证据、修复和仍然要复测的边界。",
+    ][index],
+    goal: [
+      "区分点击动作和请求结果。",
+      "理解 loading 与防重复提交的必要性。",
+      "用 Network 和日志区分成功、失败与超时。",
+      "把状态机故障讲成工作和面试都能复述的证据故事。",
+    ][index],
+    mentor: [
+      "点击是出发，不是到达。你要追踪它把什么交给请求。",
+      "loading 不是让用户干等，而是让系统明确当前还没有结果。",
+      "先看返回，再做判断；错误体要告诉用户能不能重试、该改什么。",
+      "好的前端修复会让用户知道发生了什么，也让工程师能用证据验收。",
+    ][index],
+    clues: scene.clues.map((clue, clueIndex) => ({
+      ...clue,
+      id: `request-states-${index}-${clueIndex}`,
+      label: ["看提交记录", "看状态时间线"][clueIndex],
+      action: ["打开 Network 请求", "打开浏览器日志"][clueIndex],
+      result: [
+        "记录显示 POST /api/applications 可能返回 201，也可能返回 503；点击本身不能替请求选择 success。",
+        "日志显示 visibleStatus 早于 response=503，说明页面在证据到达前就宣布了成功。",
+      ][clueIndex],
+      snippet: [
+        "click=submit-application -> POST /api/applications",
+        "response=503 -> visibleStatus=success (错误)",
+      ][clueIndex],
+      question: [
+        "先记住：提交动作只证明请求开始，不证明服务端接受了申请。",
+        "状态必须跟随 response.ok 和错误体变化，不能跟随点击时间变化。",
+      ][clueIndex],
+      skill: ["找到请求状态的起点", "用时间顺序定位提前成功"][clueIndex],
+    })),
+  }));
+}
+
+const frontendComponentScenes: QuestScene[] = [
+  {
+    id: "frontend-click-stage",
+    image: questStage,
+    portrait: portalScribePortrait,
+    place: "组件剧场入口",
+    title: "按钮刚刚被按下",
+    speaker: "状态编舞师",
+    dialogue:
+      "观众只看到一次点击，真正的戏还没开始。先记住：动作是起点，不是结果。",
+    goal: "区分用户动作与请求成功。",
+    mentor: "前端问题常常不是按钮坏了，而是页面太早替用户下了结论。",
+    terms: [
+      { term: "组件", meaning: "负责一块界面和交互的可复用单元。" },
+      { term: "事件处理", meaning: "用户点击后，组件执行的那段函数。" },
+    ],
+    clues: [
+      {
+        id: "frontend-click-log",
+        label: "查看点击记录",
+        action: "打开交互记录",
+        result: "记录只证明用户触发了 click，还没有证明 GET 请求成功。",
+        snippet: "click=load-profile -> request pending",
+        question: "点击可以触发请求，但不能直接变成 success。",
+        journeyIndex: 0,
+        skill: "学会区分动作和结果。",
+      },
+      {
+        id: "frontend-component-term",
+        label: "打开组件名词卡",
+        action: "理解组件负责什么",
+        result:
+          "ProfilePanel 负责把状态翻译成页面，不负责替后端证明资料已经加载。",
+        snippet: "事件 -> 状态 -> 渲染",
+        question: "组件是舞台，不是后台数据库。",
+        journeyIndex: 1,
+        skill: "把组件放回整个请求流程。",
+      },
+    ],
+  },
+  {
+    id: "frontend-state-stage",
+    image: questWorkbench,
+    portrait: briefForgemasterPortrait,
+    place: "状态灯控台",
+    title: "同一盏灯不该同时说两句话",
+    speaker: "状态编舞师",
+    dialogue:
+      "loading、success、error 是同一条请求的不同幕次。事故现场却在请求还没回来时亮起 success。",
+    goal: "理解 state 为什么必须跟着请求结果变化。",
+    mentor:
+      "把状态想成舞台灯：点击时亮等待灯，收到 200 才亮成功灯，503 就亮错误灯。",
+    terms: [
+      { term: "state", meaning: "组件记住的会影响界面的数据。" },
+      {
+        term: "重新渲染",
+        meaning: "状态变化后，组件重新计算并更新用户看到的界面。",
+      },
+    ],
+    clues: [
+      {
+        id: "frontend-code-order",
+        label: "查看状态更新顺序",
+        action: "打开 ProfilePanel.jsx",
+        result:
+          "代码先 setStatus('success')，后 await loadProfile；所以失败也会先显示成功。",
+        snippet: "setStatus('success')\nawait loadProfile()",
+        question: "时间顺序就是根因证据。",
+        journeyIndex: 1,
+        skill: "从关键行解释页面行为。",
+      },
+      {
+        id: "frontend-state-terms",
+        label: "比较三种状态",
+        action: "把 loading/success/error 排成顺序",
+        result:
+          "正确顺序是 idle -> loading -> success 或 error；success 和 error 互斥。",
+        snippet: "idle -> loading -> (success | error)",
+        question: "状态图比背 API 更能解释页面为什么变化。",
+        journeyIndex: 2,
+        skill: "用状态机思路理解交互。",
+      },
+    ],
+  },
+  {
+    id: "frontend-network-stage",
+    image: questPortal,
+    portrait: apiClerkPortrait,
+    place: "Network 回廊",
+    title: "200 和 503 把剧情分成两条路",
+    speaker: "接口接待员",
+    dialogue:
+      "同一个按钮可以走成功路，也可以走失败路。真正专业的页面，两条路都要给用户下一步。",
+    goal: "把 Network 状态码连接到页面状态。",
+    mentor: "response.ok 是请求回信的判断，不是一个自动把资料交给页面的魔法。",
+    terms: [
+      {
+        term: "response.ok",
+        meaning: "浏览器根据响应状态码给出的成功/失败判断。",
+      },
+      {
+        term: "错误反馈",
+        meaning: "告诉用户发生了什么，以及他接下来能做什么。",
+      },
+    ],
+    clues: [
+      {
+        id: "frontend-network-result",
+        label: "对照 200 与 503",
+        action: "查看 Network 记录",
+        result:
+          "200 可以进入 success 并展示资料；503 必须进入 error，不能沿用 success 文案。",
+        snippet: "200 -> success\n503 -> error + 可读提示",
+        question: "同一个按钮不是只有成功剧本。",
+        journeyIndex: 2,
+        skill: "用两条路径设计验收。",
+      },
+      {
+        id: "frontend-browser-log",
+        label: "查看浏览器日志",
+        action: "对齐 visibleStatus 和 response",
+        result:
+          "日志显示 visibleStatus=success 早于 response=503，证明页面反馈领先于真实结果。",
+        snippet: "visibleStatus=success -> response=503",
+        question: "日志把‘感觉不对’变成了时间证据。",
+        journeyIndex: 3,
+        skill: "用时间顺序定位异步问题。",
+      },
+    ],
+  },
+  {
+    id: "frontend-render-stage",
+    image: deliveryReviewCourtScene,
+    portrait: interviewCouncilorPortrait,
+    place: "可见反馈舞台",
+    title: "让用户知道下一步该做什么",
+    speaker: "项目答辩官",
+    dialogue:
+      "最后请你证明：成功有资料，失败有解释，加载有等待，而且每一条都能从代码和测试追溯回来。",
+    goal: "把状态、证据和交付验收连成面试表达。",
+    mentor:
+      "会做页面只是起点，能解释状态为什么变化、失败如何被看见，才是工程能力。",
+    terms: [
+      {
+        term: "可访问反馈",
+        meaning: "让包括使用辅助技术的用户也能感知加载和错误。",
+      },
+      {
+        term: "状态所有者",
+        meaning: "真正负责保存并更新某个状态的组件或模块。",
+      },
+    ],
+    clues: [
+      {
+        id: "frontend-render-contract",
+        label: "检查反馈合同",
+        action: "确认 loading/success/error 都有对应文案",
+        result:
+          "状态和文案必须一一对应，错误提示还要通过 aria-live 等方式让用户感知。",
+        snippet: "loading -> 等待\nsuccess -> 资料\nerror -> 原因 + 下一步",
+        question: "可见反馈是用户理解系统的最后一棒。",
+        journeyIndex: 3,
+        skill: "把用户体验纳入工程验收。",
+      },
+      {
+        id: "frontend-interview-line",
+        label: "写下前端复盘",
+        action: "复述状态故障的现象、证据和修复",
+        result:
+          "可以这样讲：我发现组件在请求返回前就显示成功，用日志确认状态早于 503，随后让状态由 response.ok 驱动，并用成功/失败两条交互测试复测。",
+        snippet: "现象 -> 时间证据 -> 状态修复 -> 双路径复测",
+        question: "这比说‘我会 React’更接近真实前端工作。",
+        journeyIndex: 3,
+        skill: "把前端问题讲成可验证的工程故事。",
+      },
+    ],
   },
 ];
 
@@ -660,7 +2350,7 @@ const loginStateJourney: QuestJourneyItem[] = [
 const loginStateScenes: QuestScene[] = [
   {
     id: "login-gate",
-    image: questPortal,
+    image: identityCorridorScene,
     portrait: identityGuardPortrait,
     place: "身份回廊入口",
     title: "门牌发出来了，但谁来认它？",
@@ -812,7 +2502,7 @@ const loginStateScenes: QuestScene[] = [
   },
   {
     id: "expiry-bench",
-    image: questWorkbench,
+    image: deliveryReviewCourtScene,
     portrait: identityGuardPortrait,
     place: "过期与验收台",
     title: "修复登录态，要证明两件事",
@@ -911,7 +2601,7 @@ const apiErrorJourney: QuestJourneyItem[] = [
 const apiErrorScenes: QuestScene[] = [
   {
     id: "api-court-gate",
-    image: questPortal,
+    image: apiErrorCourtScene,
     portrait: apiClerkPortrait,
     place: "接口审判庭入口",
     title: "红色状态码不是一句“坏了”",
@@ -1064,7 +2754,7 @@ const apiErrorScenes: QuestScene[] = [
   },
   {
     id: "error-verdict",
-    image: questWorkbench,
+    image: verificationTrialArenaScene,
     portrait: apiClerkPortrait,
     place: "错误判决台",
     title: "修复接口，要同时验收成功和失败",
@@ -1165,7 +2855,7 @@ const consistencyJourney: QuestJourneyItem[] = [
 const consistencyScenes: QuestScene[] = [
   {
     id: "forge-clicks",
-    image: questStage,
+    image: idempotencyForgeScene,
     portrait: idempotencyStonePet,
     place: "一致性熔炉入口",
     title: "同一锤，不该敲出三把剑",
@@ -1319,7 +3009,7 @@ const consistencyScenes: QuestScene[] = [
   },
   {
     id: "consistency-verdict",
-    image: questWorkbench,
+    image: interviewDefenseHallScene,
     portrait: idempotencyStonePet,
     place: "一致性验收台",
     title: "别说防住了，证明只剩一条",
@@ -1369,6 +3059,54 @@ const consistencyScenes: QuestScene[] = [
     ],
   },
 ];
+
+const javaTransactionScenes: QuestScene[] = consistencyScenes.map(
+  (scene, index) => {
+    const javaSceneDetails = [
+      {
+        image: idempotencyForgeScene,
+        portraitOverride: apiClerkPortrait,
+        place: "订单锻造台",
+        speaker: "订单值守官",
+        dialogue:
+          "值守官把同一张订单草稿摊开三份：客户只点了一次，服务台却收到了三次请求。她把笔递给你：先沿着请求证据找到重复从哪里进来。",
+      },
+      {
+        image: identityCorridorScene,
+        portraitOverride: identityGuardPortrait,
+        place: "幂等门廊",
+        speaker: "幂等门卫",
+        dialogue:
+          "门卫举起一枚 Idempotency-Key：请求可以重来，但同一张取货牌只能对应同一张订单。你要找出这张牌如何从 Controller 传到业务层。",
+      },
+      {
+        image: deliveryReviewCourtScene,
+        portraitOverride: deliveryJudgePortrait,
+        place: "唯一索引审查庭",
+        speaker: "数据审查官",
+        dialogue:
+          "审查官没有被前端的 loading 说服。她把唯一索引和事务边界放到案台上：并发请求同时通过时，最后一道裁决必须来自数据库。",
+      },
+      {
+        image: verificationTrialArenaScene,
+        portraitOverride: testArbiterPortrait,
+        place: "事务回滚试炼场",
+        speaker: "回滚试炼官",
+        dialogue:
+          "试炼官故意让订单写入进行到一半再失败。你要判断哪些动作必须一起成功，哪些证据能证明失败后没有留下半条订单。",
+      },
+      {
+        image: interviewDefenseHallScene,
+        portraitOverride: interviewCouncilorPortrait,
+        place: "订单答辩厅",
+        speaker: "工程答辩官",
+        dialogue:
+          "答辩官把三次请求、同一个 key 和数据库 count 摆成一条证据链：不要只说“加了防抖”，要说清系统如何在工作压力下保持一条记录。",
+      },
+    ][index];
+    return javaSceneDetails ? { ...scene, ...javaSceneDetails } : scene;
+  },
+);
 
 const performanceJourney: QuestJourneyItem[] = [
   {
@@ -1421,7 +3159,7 @@ const performanceJourney: QuestJourneyItem[] = [
 const performanceScenes: QuestScene[] = [
   {
     id: "fog-gate",
-    image: questStage,
+    image: performanceObservatoryScene,
     portrait: foglampCatPet,
     place: "慢速迷雾入口",
     title: "别急着优化，先点亮时间账本",
@@ -1622,7 +3360,7 @@ const performanceScenes: QuestScene[] = [
   },
   {
     id: "cache-lighthouse",
-    image: questWorkbench,
+    image: releaseReadinessGateScene,
     portrait: foglampCatPet,
     place: "缓存灯塔",
     title: "变快之后，还要证明没有变旧",
@@ -1672,6 +3410,54 @@ const performanceScenes: QuestScene[] = [
     ],
   },
 ];
+
+const frontendPerformanceScenes: QuestScene[] = performanceScenes.map(
+  (scene, index) => {
+    const frontendSceneDetails = [
+      {
+        image: morningStarTimingHarborScene,
+        portraitOverride: timingNavigatorPortrait,
+        place: "首屏计时港",
+        speaker: "时序领航员",
+        dialogue:
+          "领航员把首屏加载拆成一串时间刻度：资源下载、接口等待和页面渲染不是同一件事。先找出哪一棒真的在拖慢用户。",
+      },
+      {
+        image: performanceObservatoryScene,
+        portraitOverride: portalScribePortrait,
+        place: "浏览器瀑布观测台",
+        speaker: "网络观测员",
+        dialogue:
+          "观测员展开 Network 瀑布图：每条资源都是一笔时间账。你要把最长的等待和页面上的具体体验对应起来。",
+      },
+      {
+        image: apiErrorCourtScene,
+        portraitOverride: apiClerkPortrait,
+        place: "接口时钟塔",
+        speaker: "接口计时官",
+        dialogue:
+          "计时官把 TTFB 和服务端日志对齐：如果浏览器一直等后端开口，就不能把锅甩给渲染层。证据要能对上同一个请求。",
+      },
+      {
+        image: deliveryReviewCourtScene,
+        portraitOverride: deliveryJudgePortrait,
+        place: "渲染舞台审查席",
+        speaker: "渲染审查官",
+        dialogue:
+          "审查官让你观察接口已经很快、页面却仍然卡顿的现场。数据到达后还要经过组件更新和绘制，性能问题可能发生在最后一棒。",
+      },
+      {
+        image: verificationTrialArenaScene,
+        portraitOverride: testArbiterPortrait,
+        place: "性能回归试炼场",
+        speaker: "回归试炼官",
+        dialogue:
+          "试炼官不接受“感觉快了”。你要用优化前后数据、功能结果和移动端复测证明：页面更快了，而且没有因为缓存或拆分而变错。",
+      },
+    ][index];
+    return frontendSceneDetails ? { ...scene, ...frontendSceneDetails } : scene;
+  },
+);
 
 const aiApiJourney: QuestJourneyItem[] = [
   {
@@ -1723,7 +3509,7 @@ const aiApiJourney: QuestJourneyItem[] = [
 const aiApiScenes: QuestScene[] = [
   {
     id: "model-forge-gate",
-    image: questStage,
+    image: modelKeyForgeScene,
     portrait: modelWardenPortrait,
     place: "模型熔炉入口",
     title: "钥匙不在舞台上，火才不会烧到城外",
@@ -1878,7 +3664,7 @@ const aiApiScenes: QuestScene[] = [
   },
   {
     id: "fallback-bench",
-    image: questWorkbench,
+    image: verificationTrialArenaScene,
     portrait: keyVaultEquipment,
     place: "熄火兜底台",
     title: "熔炉会熄火，交付不能失语",
@@ -1973,7 +3759,7 @@ const hallucinationJourney: QuestJourneyItem[] = [
 const hallucinationScenes: QuestScene[] = [
   {
     id: "mirror-gate",
-    image: questPortal,
+    image: hallucinationMirrorScene,
     portrait: mirrorEditorPortrait,
     place: "幻觉镜厅入口",
     title: "镜子会补全空白，所以委托书必须写清楚",
@@ -2026,12 +3812,12 @@ const hallucinationScenes: QuestScene[] = [
   {
     id: "context-bag",
     image: questArchive,
-    portrait: mirrorEditorPortrait,
+    portrait: archiveKeeperPortrait,
     place: "随案资料库",
     title: "没有资料袋，镜子只能靠记忆猜",
-    speaker: "镜厅校对师",
+    speaker: "资料袋管理员",
     dialogue:
-      "校对师把几页资料装进银色袋子，每页都刻着编号。她说：AI 可以聪明，但产品不能让它凭空替公司发言。",
+      "资料袋管理员把几页资料装进银色袋子，每页都刻着编号。她说：AI 可以聪明，但产品不能让它凭空替公司发言。",
     goal: "理解上下文为什么要带资料 id、原文和范围。",
     mentor:
       "你不用马上懂 RAG。先懂这件事：模型本轮能用什么资料，必须被系统明确交给它。",
@@ -2128,13 +3914,13 @@ const hallucinationScenes: QuestScene[] = [
   },
   {
     id: "refusal-bench",
-    image: questWorkbench,
-    portrait: mirrorEditorPortrait,
+    image: interviewDefenseHallScene,
+    portrait: releaseGatekeeperPortrait,
     place: "拒答工坊",
     title: "承认不知道，是保护用户的护盾",
-    speaker: "镜厅校对师",
+    speaker: "拒答守门人",
     dialogue:
-      "最后一面镜子故意没有放入任何资料。它沉默片刻，给出“资料不足”。校对师微笑：这不是失败，这是系统学会了诚实。",
+      "最后一面镜子故意没有放入任何资料。它沉默片刻，给出“资料不足”。拒答守门人微笑：这不是失败，这是系统学会了诚实。",
     goal: "形成幻觉控制的 Agent 任务、验收动作和面试复盘。",
     mentor:
       "产品不能要求 AI 永远回答。专业交付要定义：什么时候回答，什么时候拒答，拒答时用户下一步该怎么办。",
@@ -2230,7 +4016,7 @@ const ragJourney: QuestJourneyItem[] = [
 const ragScenes: QuestScene[] = [
   {
     id: "library-gate",
-    image: questArchive,
+    image: ragKnowledgeMazeScene,
     portrait: knowledgeKeeperPortrait,
     place: "知识迷宫入口",
     title: "答案不在模型脑子里，先看资料从哪来",
@@ -2383,7 +4169,7 @@ const ragScenes: QuestScene[] = [
   },
   {
     id: "retrieval-hall",
-    image: questStage,
+    image: deliveryReviewCourtScene,
     portrait: retrievalFoxPet,
     place: "检索回声厅",
     title: "问对问题，还要命中对书页",
@@ -2483,7 +4269,7 @@ const agentToolsJourney: QuestJourneyItem[] = [
 const agentToolsScenes: QuestScene[] = [
   {
     id: "tool-contract-gate",
-    image: questPortal,
+    image: agentToolContractHallScene,
     portrait: toolWardenPortrait,
     place: "工具契约大厅",
     title: "副官不能凭空拿钥匙，工具必须先登记",
@@ -2537,10 +4323,10 @@ const agentToolsScenes: QuestScene[] = [
   {
     id: "schema-hall",
     image: questArchive,
-    portrait: toolWardenPortrait,
+    portrait: portalScribePortrait,
     place: "参数契约厅",
     title: "申请表填错，钥匙不能出鞘",
-    speaker: "塔楼副官",
+    speaker: "参数抄写员",
     dialogue:
       "副官把工具申请表递给你：userId 必须是字符串，status 只能是 paid、pending、failed。少一个字段，门就不会开。",
     goal: "理解参数 schema 如何在执行前挡住错误和危险输入。",
@@ -2588,10 +4374,10 @@ const agentToolsScenes: QuestScene[] = [
   {
     id: "permission-gate",
     image: questStage,
-    portrait: toolWardenPortrait,
+    portrait: identityGuardPortrait,
     place: "权限门禁",
     title: "参数合法，也不代表你有权开门",
-    speaker: "塔楼副官",
+    speaker: "权限守卫",
     dialogue:
       "申请表终于填对了，但高塔门禁仍然没有亮绿灯。副官说：字段合法只是第二道门，权限才决定这次能不能执行。",
     goal: "理解权限检查不能靠 Prompt，必须在工具执行器里做。",
@@ -2637,11 +4423,11 @@ const agentToolsScenes: QuestScene[] = [
   },
   {
     id: "fallback-audit",
-    image: questWorkbench,
-    portrait: toolWardenPortrait,
+    image: verificationTrialArenaScene,
+    portrait: echoForensicsPortrait,
     place: "回退与审计台",
     title: "工具失败时，副官要交回可读报告",
-    speaker: "塔楼副官",
+    speaker: "审计取证官",
     dialogue:
       "工具执行到一半，远处接口熄火。副官没有假装成功，而是递回一张带编号的失败报告：TOOL_FAILED，requestId 已记录。",
     goal: "形成 Agent 工具调用的失败回退、审计和面试复盘。",
@@ -2737,7 +4523,7 @@ const testingProofJourney: QuestJourneyItem[] = [
 const testingProofScenes: QuestScene[] = [
   {
     id: "test-oath-gate",
-    image: questStage,
+    image: verificationTrialArenaScene,
     portrait: testArbiterPortrait,
     place: "验收试炼场",
     title: "先让旧故障现形，再谈修复",
@@ -2791,10 +4577,10 @@ const testingProofScenes: QuestScene[] = [
   {
     id: "unit-rune-room",
     image: questWorkbench,
-    portrait: testArbiterPortrait,
+    portrait: portalScribePortrait,
     place: "单元符文室",
     title: "单元测试守住一个齿轮",
-    speaker: "验收试炼官",
+    speaker: "单元符文师",
     dialogue:
       "墙上刻着许多小符文：输入、输出、边界值。试炼官提醒你：整条链路太长时，先确认关键函数这颗齿轮没有滑牙。",
     goal: "理解单元测试适合证明函数和模块的小范围行为。",
@@ -2843,10 +4629,10 @@ const testingProofScenes: QuestScene[] = [
   {
     id: "integration-arena",
     image: questPortal,
-    portrait: testArbiterPortrait,
+    portrait: apiClerkPortrait,
     place: "集成竞技场",
     title: "模块交接时，证据不能掉在半路",
-    speaker: "验收试炼官",
+    speaker: "接口接力官",
     dialogue:
       "竞技场两端分别是接口门和数据库门。单独看每扇门都很漂亮，但真正的试炼是：POST 交出去的东西，GET 或数据库能不能再找回来。",
     goal: "理解集成测试如何证明前端、接口、数据层和数据库协作。",
@@ -2893,11 +4679,11 @@ const testingProofScenes: QuestScene[] = [
   },
   {
     id: "report-archive",
-    image: questArchive,
-    portrait: testArbiterPortrait,
+    image: deliveryReviewCourtScene,
+    portrait: deliveryJudgePortrait,
     place: "验收档案馆",
     title: "报告要能复核，也要敢写未覆盖风险",
-    speaker: "验收试炼官",
+    speaker: "证据档案官",
     dialogue:
       "档案馆里不是只收藏绿色勾。试炼官把一份报告摊开：生成时间、源码指纹、通过用例、失败详情、未覆盖风险，一项都不能含糊。",
     goal: "形成可以交给 Agent、同事和面试官复核的验收表达。",
@@ -2995,7 +4781,7 @@ const agentBriefJourney: QuestJourneyItem[] = [
 const agentBriefScenes: QuestScene[] = [
   {
     id: "brief-fog-gate",
-    image: questPortal,
+    image: agentBriefForgeScene,
     portrait: briefForgemasterPortrait,
     place: "委托迷雾门",
     title: "一句“你自己看着办”，会把副官丢进迷雾",
@@ -3047,10 +4833,10 @@ const agentBriefScenes: QuestScene[] = [
   {
     id: "goal-anvil",
     image: questWorkbench,
-    portrait: briefForgemasterPortrait,
+    portrait: modelWardenPortrait,
     place: "目标铁砧",
     title: "目标要能落锤，不能只是一团愿望",
-    speaker: "委托书锻造师",
+    speaker: "目标校准官",
     dialogue:
       "铁砧上摆着两块矿石：‘更好用’和‘刷新后仍能看到刚保存的记录’。锻造师只拿起第二块：它有形状，才能被锻造。",
     goal: "把想法改写成可观察、可判断、和用户结果有关的目标。",
@@ -3098,10 +4884,10 @@ const agentBriefScenes: QuestScene[] = [
   {
     id: "constraint-rune",
     image: questStage,
-    portrait: briefForgemasterPortrait,
+    portrait: identityGuardPortrait,
     place: "约束符文台",
     title: "护栏刻清楚，Agent 才不会越界",
-    speaker: "委托书锻造师",
+    speaker: "边界守卫",
     dialogue:
       "符文台上刻着几条发光边界：不读真实项目、不执行危险命令、不破坏旧章节、不把学习效果说成已验证。锻造师说：这不是胆小，是工程纪律。",
     goal: "理解约束如何保护范围、风格、安全和已有功能。",
@@ -3147,11 +4933,11 @@ const agentBriefScenes: QuestScene[] = [
   },
   {
     id: "acceptance-contract",
-    image: questArchive,
-    portrait: briefForgemasterPortrait,
+    image: deliveryReviewCourtScene,
+    portrait: testArbiterPortrait,
     place: "契约封印室",
     title: "验收和风险，是委托书最后的封印",
-    speaker: "委托书锻造师",
+    speaker: "验收契约官",
     dialogue:
       "最后一页委托书被压进金色封印。锻造师递给你羽笔：写下要跑的测试、要走的浏览器路径、还没覆盖的风险。没有这些，交付不能离开工坊。",
     goal: "能写出可执行验收和风险说明，让 Agent 交付可以被复核。",
@@ -3260,7 +5046,7 @@ const deliveryReviewJourney: QuestJourneyItem[] = [
 const deliveryReviewScenes: QuestScene[] = [
   {
     id: "delivery-docket",
-    image: questStage,
+    image: deliveryReviewCourtScene,
     portrait: deliveryJudgePortrait,
     place: "交付审查庭",
     title: "漂亮结案陈词，不能直接过审",
@@ -3287,9 +5073,9 @@ const deliveryReviewScenes: QuestScene[] = [
         label: "核对交付说明",
         action: "检查摘要、验证和风险是否齐全",
         result:
-          "合格交付不能只写“已完成”。它至少要写：接入第 13 章；跑过 npm run verify；桌面和 390px 路径走通；第 14-15 章仍是预览；回归风险在哪里。",
+          "合格交付不能只写“已完成”。它至少要写：本次改了哪一章；跑过哪条 verify；桌面和 390px 走了哪条路径；旧章节、刷新恢复和真人学习效果还存在哪些回归风险与边界。",
         snippet:
-          "摘要：第 13 章已接入交付审查庭。\n验证：npm run verify；桌面/390px 浏览器路径。\n风险：第 14-15 章仍未接入剧情。",
+          "摘要：第 13-15 章已接入独立场景。\n验证：npm run verify；三章桌面 + 390px 浏览器路径。\n回归风险：真人学习效果未验；共用教学桥需回归旧章节。",
         question: "这一步解决的是：用户看到“完成了”时，应该先问它拿什么证据。",
         journeyIndex: 0,
         skill: "能判断交付说明是不是可复核。",
@@ -3312,10 +5098,10 @@ const deliveryReviewScenes: QuestScene[] = [
   {
     id: "diff-evidence-room",
     image: questArchive,
-    portrait: deliveryJudgePortrait,
+    portrait: mirrorEditorPortrait,
     place: "Diff 证物室",
     title: "口供要和现场照片对得上",
-    speaker: "交付审查官",
+    speaker: "Diff 取证师",
     dialogue:
       "证物室的柜门一格格打开：教学数据、剧情组件、首页入口、测试、文档。审查官说：Diff 不会撒谎，但你要会读它在说什么。",
     goal: "理解 Diff 如何证明改动范围，也如何暴露无关改动。",
@@ -3364,10 +5150,10 @@ const deliveryReviewScenes: QuestScene[] = [
   {
     id: "regression-risk-hall",
     image: questPortal,
-    portrait: deliveryJudgePortrait,
+    portrait: testArbiterPortrait,
     place: "回归风险回廊",
     title: "新门开了，旧门也不能塌",
-    speaker: "交付审查官",
+    speaker: "回归审查官",
     dialogue:
       "回廊里有十三扇门。新开的第 13 扇闪着银光，但审查官让你回头看前十二扇：共用入口一改，旧章节也可能被牵动。",
     goal: "理解回归测试、边界条件和真实浏览器路径为什么必须一起看。",
@@ -3415,11 +5201,11 @@ const deliveryReviewScenes: QuestScene[] = [
   },
   {
     id: "accept-or-reject-bench",
-    image: questWorkbench,
-    portrait: deliveryJudgePortrait,
+    image: verificationTrialArenaScene,
+    portrait: interviewCouncilorPortrait,
     place: "接收裁决台",
     title: "接收也要写理由，拒收也要给路径",
-    speaker: "交付审查官",
+    speaker: "接收裁决官",
     dialogue:
       "裁决台上有两枚印章：接收、补证。审查官把它们推给你：别凭心情盖章。你要写清楚证据足在哪里，或者还缺哪一份。",
     goal: "学会把审查结论写成接收理由、拒收理由和后续补证要求。",
@@ -3443,7 +5229,7 @@ const deliveryReviewScenes: QuestScene[] = [
         label: "查项目记忆",
         action: "确认文档是否跟代码状态一致",
         result:
-          "如果代码已经接入第 13 章，HANDOFF、README、任务表和 changelog 也要写明：第 3-13 章可进入剧情，第 14-15 章仍是预览。",
+          "如果代码已经接入第 13-15 章，HANDOFF、任务表和 changelog 也要写明：15 章都有剧情与实战 Lab；真人学习效果和 Java/前端路线仍是边界。",
         snippet:
           "HANDOFF.md\nREADME.md\ndocs/ai-career-rpg-tasks.md\nchangelogs/2026-07-04-ui-refresh.md",
         question: "长期项目的记忆不该只留在聊天里。文档会保护下一次接力。",
@@ -3526,7 +5312,7 @@ const releaseReadinessJourney: QuestJourneyItem[] = [
 const releaseReadinessScenes: QuestScene[] = [
   {
     id: "release-gate",
-    image: questPortal,
+    image: releaseReadinessGateScene,
     portrait: releaseGatekeeperPortrait,
     place: "上线城门",
     title: "城门要开，但不能只靠一声“冲”",
@@ -3577,10 +5363,10 @@ const releaseReadinessScenes: QuestScene[] = [
   {
     id: "env-key-vault",
     image: questArchive,
-    portrait: releaseGatekeeperPortrait,
+    portrait: modelWardenPortrait,
     place: "配置钥匙库",
     title: "本地有钥匙，不代表线上也有",
-    speaker: "上线守门人",
+    speaker: "配置调度官",
     dialogue:
       "钥匙库里挂着三排钥匙：本地、测试、生产。守门人摘下生产那一串：上线前看的是这串，不是你口袋里的本地钥匙。",
     goal: "理解环境变量、密钥、URL 和功能开关为什么必须上线前确认。",
@@ -3629,10 +5415,10 @@ const releaseReadinessScenes: QuestScene[] = [
   {
     id: "backup-archive",
     image: questWorkbench,
-    portrait: releaseGatekeeperPortrait,
+    portrait: archiveKeeperPortrait,
     place: "备份档案库",
     title: "代码能退，数据不一定会自己回来",
-    speaker: "上线守门人",
+    speaker: "恢复审查官",
     dialogue:
       "档案库深处摆着一只沙漏。守门人把它倒转：代码回滚像倒回时间，数据写坏却可能已经改变现实。",
     goal: "理解数据备份、迁移和恢复步骤为什么是上线前的硬门槛。",
@@ -3680,10 +5466,10 @@ const releaseReadinessScenes: QuestScene[] = [
   {
     id: "monitoring-tower",
     image: questStage,
-    portrait: releaseGatekeeperPortrait,
+    portrait: testArbiterPortrait,
     place: "监控哨塔",
     title: "上线后，真正的夜巡才开始",
-    speaker: "上线守门人",
+    speaker: "健康检查官",
     dialogue:
       "城门开了，远处却安静得不正常。守门人举起望远镜：没有报警不等于没事故，先看指标，再看日志。",
     goal: "理解上线后要观察错误率、接口耗时、日志和关键业务成功率。",
@@ -3731,11 +5517,11 @@ const releaseReadinessScenes: QuestScene[] = [
   },
   {
     id: "rollback-bench",
-    image: questPortal,
-    portrait: releaseGatekeeperPortrait,
+    image: interviewDefenseHallScene,
+    portrait: deliveryJudgePortrait,
     place: "回滚机关室",
     title: "退路不是丢脸，是专业",
-    speaker: "上线守门人",
+    speaker: "回滚裁决官",
     dialogue:
       "机关室中央有一枚反向齿轮。守门人把手放在齿轮旁：真正可靠的上线，是你在开门前就知道怎么关门。",
     goal: "能写清回滚触发条件、回滚步骤、数据影响和回滚后验证。",
@@ -3778,6 +5564,902 @@ const releaseReadinessScenes: QuestScene[] = [
           "上线面试复盘可以这样讲：我提前定义回滚条件，并用冒烟测试证明恢复。",
         journeyIndex: 5,
         skill: "能说明回滚后如何验收。",
+      },
+    ],
+  },
+];
+
+const javaCacheJourney: QuestJourneyItem[] = [
+  {
+    sceneId: "cache-miss-dock",
+    from: "用户请求",
+    to: "缓存门",
+    payload: "GET /api/projects?id=42",
+    proof: "日志显示命中还是未命中",
+    plain: "先确认请求有没有找到缓存。没有命中时，才应该继续向数据库取资料。",
+  },
+  {
+    sceneId: "cache-key-atlas",
+    from: "请求参数",
+    to: "缓存 key",
+    payload: "用户、租户、版本组成的 key",
+    proof: "相同请求命中同一份数据，不同用户不串数据",
+    plain:
+      "缓存 key 就像档案柜标签。标签少了，可能拿错资料；标签乱了，缓存永远命不中。",
+  },
+  {
+    sceneId: "cache-stale-mirror",
+    from: "数据库更新",
+    to: "旧缓存",
+    payload: "更新事件和失效策略",
+    proof: "更新后不会继续读到旧版本",
+    plain:
+      "缓存快，但它可能记住昨天的答案。更新数据时，要告诉缓存哪一格需要失效。",
+  },
+  {
+    sceneId: "cache-fallback-lantern",
+    from: "缓存/数据库异常",
+    to: "用户反馈",
+    payload: "降级、超时和可重试错误",
+    proof: "故障时不泄露内部细节，用户仍知道下一步",
+    plain:
+      "缓存不是系统的唯一生命线。它坏了时，服务要有边界清楚的降级和可观察错误。",
+  },
+  {
+    sceneId: "cache-proof-observatory",
+    from: "日志与指标",
+    to: "面试复盘",
+    payload: "命中率、耗时、旧数据复测",
+    proof: "优化前后可比较，数据正确性没有被牺牲",
+    plain: "最后要同时证明变快了、没串数据、没读旧数据，而且异常时能定位。",
+  },
+];
+
+const javaCacheScenes: QuestScene[] = [
+  {
+    id: "cache-miss-dock",
+    image: performanceObservatoryScene,
+    portrait: timingNavigatorPortrait,
+    place: "缓存潮汐码头",
+    title: "先看货架有没有这份资料",
+    speaker: "缓存巡航员",
+    dialogue:
+      "码头的请求船一艘接一艘靠岸。巡航员没有直接打开数据库仓库，而是先指向前方货架：先查这一船有没有命中缓存。",
+    goal: "理解 cache hit、cache miss 和数据库查询的先后关系。",
+    mentor: "缓存排查的第一步不是背 Redis 命令，而是确认请求到底走了哪条路。",
+    terms: [
+      {
+        term: "缓存命中",
+        meaning:
+          "请求需要的数据已经在缓存里，可以直接返回，通常比查数据库更快。",
+      },
+      {
+        term: "缓存未命中",
+        meaning:
+          "缓存没有这份数据，需要继续查数据库或其他来源，再决定是否回填缓存。",
+      },
+    ],
+    clues: [
+      {
+        id: "cache-path",
+        label: "追踪请求路线",
+        action: "查看一次 GET 的日志",
+        result:
+          "日志显示 cache miss -> database query -> cache set。说明这次请求没有命中缓存。",
+        snippet: "GET /api/projects/42\ncache=miss\nDB SELECT ...\ncache=set",
+        question: "先区分命中和未命中，才能知道慢在哪里。",
+        journeyIndex: 0,
+        skill: "能从日志判断请求是否命中缓存。",
+      },
+      {
+        id: "cache-hit",
+        label: "对比第二次请求",
+        action: "重复请求同一个项目",
+        result: "第二次显示 cache hit，直接返回缓存值，没有再次查询数据库。",
+        snippet: "第一次：miss -> DB -> set\n第二次：hit -> return",
+        question: "同一个请求第二次更快，不代表所有请求都该无脑缓存。",
+        journeyIndex: 0,
+        skill: "能解释缓存命中带来的路径变化。",
+      },
+    ],
+  },
+  {
+    id: "cache-key-atlas",
+    image: memoryEchoGalleryScene,
+    portrait: archiveKeeperPortrait,
+    place: "缓存标签星图室",
+    title: "标签少一格，资料就可能串门",
+    speaker: "档案库守匠",
+    dialogue:
+      "星图室里有两位用户的同名项目。守匠把标签拆开：用户、租户和版本都要进 key，不能因为名字一样就把别人的资料递过来。",
+    goal: "理解缓存 key 的组成和数据隔离。",
+    mentor:
+      "缓存 key 是数据边界的一部分。它写得不完整，性能问题会升级成权限和正确性问题。",
+    terms: [
+      {
+        term: "缓存 key",
+        meaning: "缓存中定位一份数据的唯一标签，通常由业务身份和版本信息组成。",
+      },
+      {
+        term: "数据串租户",
+        meaning:
+          "不同用户或租户因为 key 设计错误，读到了不属于自己的缓存数据。",
+      },
+    ],
+    clues: [
+      {
+        id: "key-shape",
+        label: "拆开 key 标签",
+        action: "比较两个用户的缓存 key",
+        result:
+          "project:42 只含项目 id，可能让不同租户读到同一份缓存；project:tenant-a:user-7:42 才包含边界。",
+        snippet: "危险：project:42\n更完整：project:tenant-a:user-7:v3:42",
+        question: "缓存快不等于正确，先问标签能不能区分数据归属。",
+        journeyIndex: 1,
+        skill: "能检查缓存 key 是否包含必要边界。",
+      },
+      {
+        id: "key-version",
+        label: "看版本标签",
+        action: "更新数据后比较旧新 key",
+        result:
+          "版本或失效策略能帮助系统区分旧快照与当前数据，避免长期命中旧值。",
+        snippet: "project:42:v2 -> update -> project:42:v3",
+        question: "版本不是装饰，它是旧数据治理的一种办法。",
+        journeyIndex: 1,
+        skill: "知道缓存版本与旧数据的关系。",
+      },
+    ],
+  },
+  {
+    id: "cache-stale-mirror",
+    image: questPortal,
+    portrait: apiClerkPortrait,
+    place: "旧影镜廊",
+    title: "资料改了，镜子也要知道",
+    speaker: "接口接待员",
+    dialogue:
+      "项目名称已经改成新版本，镜廊里的倒影却还显示旧名字。接待员指向更新链路：写数据库只是第一步，还要处理缓存。",
+    goal: "理解缓存失效、回填和一致性之间的关系。",
+    mentor:
+      "不要笼统说‘缓存导致脏数据’。要说清楚哪个写操作没有让哪一个 key 失效。",
+    terms: [
+      {
+        term: "缓存失效",
+        meaning: "让某个缓存条目不再被当作当前答案，下一次请求重新取真实数据。",
+      },
+      { term: "脏数据", meaning: "缓存里的值已经和真实数据源不一致。" },
+    ],
+    clues: [
+      {
+        id: "stale-log",
+        label: "比对前后版本",
+        action: "查看更新日志和读取日志",
+        result:
+          "数据库已经是 v3，但读取仍命中 v2，说明更新链路没有正确处理缓存。",
+        snippet: "DB version=v3\ncache hit version=v2",
+        question: "证据要把‘旧’具体到版本，不要只写感觉过期。",
+        journeyIndex: 2,
+        skill: "能用版本证据识别脏缓存。",
+      },
+      {
+        id: "invalidate",
+        label: "找到失效动作",
+        action: "查看写入后的缓存处理",
+        result: "更新成功后删除或刷新对应 key，下一次读取才会从数据库拿到 v3。",
+        snippet:
+          "UPDATE project\nDEL project:tenant-a:user-7:42\nnext GET -> DB v3",
+        question: "失效动作要和写入的业务边界对应。",
+        journeyIndex: 2,
+        skill: "能解释写入与缓存失效的交接。",
+      },
+    ],
+  },
+  {
+    id: "cache-fallback-lantern",
+    image: questArchive,
+    portrait: modelWardenPortrait,
+    place: "降级灯塔",
+    title: "缓存坏了，服务不能一起沉船",
+    speaker: "模型守门人",
+    dialogue:
+      "缓存潮突然退去，灯塔上的巡航员没有把内部异常甩给用户，而是切到受控降级：查数据库、限制重试，并留下可追踪的错误编号。",
+    goal: "理解缓存故障时的降级、超时和错误边界。",
+    mentor:
+      "降级不是吞掉异常。它要让用户得到可行动反馈，让工程师能用日志找到真实原因。",
+    terms: [
+      {
+        term: "降级",
+        meaning: "依赖不可用时，使用较慢但可接受的路径或有限功能维持服务。",
+      },
+      {
+        term: "超时",
+        meaning: "等待超过可接受时间后主动结束，避免请求无限占用资源。",
+      },
+    ],
+    clues: [
+      {
+        id: "cache-timeout",
+        label: "观察缓存超时",
+        action: "查看一次缓存服务不可用请求",
+        result:
+          "缓存连接超时后走受控数据库回源，没有把 Redis 地址和堆栈直接展示给用户。",
+        snippet: "cache timeout 800ms\nfallback=database\nrequestId=req_42",
+        question: "用户看到的是可理解的提示，工程师通过 requestId 查详细日志。",
+        journeyIndex: 3,
+        skill: "能说清缓存故障的用户边界与日志边界。",
+      },
+      {
+        id: "retry-limit",
+        label: "检查重试次数",
+        action: "查看失败时是否无限重试",
+        result:
+          "有限重试或快速失败能保护线程和数据库，避免缓存故障放大成全站故障。",
+        snippet: "cache retry: 1\nfallback: database\nno infinite loop",
+        question: "重试不是越多越可靠，必须有上限和替代路径。",
+        journeyIndex: 3,
+        skill: "能识别无上限重试的风险。",
+      },
+    ],
+  },
+  {
+    id: "cache-proof-observatory",
+    image: releaseReadinessGateScene,
+    portrait: interviewCouncilorPortrait,
+    place: "命中率观测台",
+    title: "快了，也要证明没有变错",
+    speaker: "项目答辩官",
+    dialogue:
+      "观测台把三条曲线叠在一起：命中率、接口耗时和旧版本读取。答辩官说：只报一个‘变快了’不算结案。",
+    goal: "把缓存优化整理成可验收、可复盘的工程证据。",
+    mentor:
+      "面试和工作里都要同时回答三件事：快了多少、数据对不对、缓存坏了怎么办。",
+    terms: [
+      {
+        term: "命中率",
+        meaning:
+          "请求中直接从缓存拿到结果的比例，用来判断缓存是否真的发挥作用。",
+      },
+      {
+        term: "可观测性",
+        meaning:
+          "通过日志、指标和追踪知道系统正在发生什么，而不是只凭体感猜测。",
+      },
+    ],
+    clues: [
+      {
+        id: "hit-metric",
+        label: "读取命中率曲线",
+        action: "比较优化前后指标",
+        result:
+          "命中率上升且数据库压力下降，但还要结合错误率和数据版本一起判断。",
+        snippet: "before hit=18%, p95=920ms\nafter hit=84%, p95=180ms",
+        question: "命中率是证据之一，不是唯一成功标准。",
+        journeyIndex: 4,
+        skill: "能用命中率与耗时共同评价缓存。",
+      },
+      {
+        id: "cache-interview",
+        label: "写下复盘答案",
+        action: "用现象、证据、修复、复测讲一遍",
+        result:
+          "完整回答应包含 miss/hit、key 边界、失效、降级和复测，而不是只说‘用了 Redis’。",
+        snippet: "现象 -> 命中/旧值证据 -> key/失效修复 -> 指标与正确性复测",
+        question: "这就是能带进面试的缓存故事。",
+        journeyIndex: 4,
+        skill: "能把缓存问题讲成可验证的项目复盘。",
+      },
+    ],
+  },
+];
+
+const accessibilityJourney: QuestJourneyItem[] = [
+  {
+    sceneId: "accessibility-contrast",
+    from: "页面内容",
+    to: "视觉与听觉提示",
+    payload: "标题、颜色、错误信息",
+    proof: "不同用户都能找到当前状态",
+    plain: "可访问性不是额外装饰，而是让更多人能完成同一个任务。",
+  },
+  {
+    sceneId: "accessibility-keyboard",
+    from: "键盘用户",
+    to: "焦点路线",
+    payload: "Tab 顺序、焦点样式、跳过链接",
+    proof: "不用鼠标也能走完核心流程",
+    plain: "如果按钮藏在鼠标 hover 里，键盘用户就像被关在门外。",
+  },
+  {
+    sceneId: "accessibility-semantic",
+    from: "HTML 结构",
+    to: "辅助技术",
+    payload: "标题、label、button、landmark",
+    proof: "读屏器能理解页面结构",
+    plain: "语义标签是给辅助技术的路标，不只是代码风格。",
+  },
+  {
+    sceneId: "accessibility-live",
+    from: "异步请求",
+    to: "用户反馈",
+    payload: "loading、错误和成功状态",
+    proof: "状态变化会被及时感知",
+    plain: "页面变化如果只靠颜色和动画，很多人根本收不到这条消息。",
+  },
+  {
+    sceneId: "accessibility-proof",
+    from: "修复改动",
+    to: "交付验收",
+    payload: "键盘、读屏、对比度和回归测试",
+    proof: "功能可用且没有破坏原有路径",
+    plain: "最后要证明不是加了一个 aria-label 就结束，而是关键路径真的可用。",
+  },
+];
+
+const accessibilityScenes: QuestScene[] = [
+  {
+    id: "accessibility-contrast",
+    image: identityCorridorScene,
+    portrait: identityGuardPortrait,
+    place: "可见性灯廊",
+    title: "每个人都要看见这扇门",
+    speaker: "身份守卫",
+    dialogue:
+      "灯廊里有一扇只用浅灰文字标记的门。身份守卫把灯调亮：颜色、文字和焦点都要一起告诉用户门在哪里。",
+    goal: "理解可访问性首先是让信息和状态可感知。",
+    mentor:
+      "不要从规范名词开始。先问：用户能不能看见、听见、找到、理解这一步？",
+    terms: [
+      {
+        term: "对比度",
+        meaning: "文字与背景之间的明暗差异，差异太小会让很多用户难以阅读。",
+      },
+      {
+        term: "可感知",
+        meaning: "信息能通过不止一种方式被用户获取，例如文字不只依赖颜色。",
+      },
+    ],
+    clues: [
+      {
+        id: "contrast-check",
+        label: "检查文字对比",
+        action: "比较正文、按钮和背景",
+        result: "低对比度文字即使功能正确，也会让用户找不到重点。",
+        snippet: "错误：只用红色表示失败\n修复：红色 + ‘保存失败’文字",
+        question: "状态不能只靠颜色表达。",
+        journeyIndex: 0,
+        skill: "能发现只靠颜色传递信息的问题。",
+      },
+      {
+        id: "focus-visible",
+        label: "点亮当前焦点",
+        action: "用键盘移动焦点",
+        result: "焦点必须有清晰可见的轮廓，用户才知道下一次 Enter 会作用在哪。",
+        snippet: "Tab -> focus visible -> Enter",
+        question: "看得见焦点，才谈得上能操作。",
+        journeyIndex: 0,
+        skill: "能检查键盘焦点是否可见。",
+      },
+    ],
+  },
+  {
+    id: "accessibility-keyboard",
+    image: questStage,
+    portrait: portalScribePortrait,
+    place: "键盘桥",
+    title: "不用鼠标，也要走完这条路",
+    speaker: "传送门抄写员",
+    dialogue:
+      "鼠标被收进工具箱，桥上的按钮一个个亮起。抄写员说：Tab 顺序不是随机散步，它应该和任务阅读顺序一致。",
+    goal: "理解键盘可操作性、焦点顺序和跳过重复导航。",
+    mentor:
+      "验收时把鼠标放开，能否打开菜单、填写表单、提交和看到结果？这比口头说支持键盘可靠。",
+    terms: [
+      {
+        term: "焦点顺序",
+        meaning: "键盘按 Tab 移动时，控件获得焦点的先后顺序。",
+      },
+      {
+        term: "跳过链接",
+        meaning: "让键盘用户跳过重复导航，直接到达页面主要内容的链接。",
+      },
+    ],
+    clues: [
+      {
+        id: "tab-route",
+        label: "走一遍 Tab 路线",
+        action: "只用键盘进入主任务",
+        result:
+          "焦点应从导航进入主内容，再到当前操作，不应跳到不可见或已经离开的元素。",
+        snippet:
+          "Tab: nav -> main -> quest action\n不能：hidden dialog -> address bar",
+        question: "键盘路径要服务任务顺序。",
+        journeyIndex: 1,
+        skill: "能用键盘发现焦点顺序问题。",
+      },
+      {
+        id: "button-semantics",
+        label: "检查操作控件",
+        action: "区分链接和按钮",
+        result:
+          "改变页面状态用 button，跳转页面用 a。语义正确后，键盘和读屏器才更容易理解。",
+        snippet: "错误：div onClick\n更清楚：button type=button",
+        question: "语义不是形式，它决定浏览器提供什么默认能力。",
+        journeyIndex: 1,
+        skill: "能选择合适的交互语义。",
+      },
+    ],
+  },
+  {
+    id: "accessibility-semantic",
+    image: questWorkbench,
+    portrait: archiveKeeperPortrait,
+    place: "语义档案馆",
+    title: "给页面画一张读得懂的地图",
+    speaker: "档案库守匠",
+    dialogue:
+      "档案馆里没有视觉标题，却有一堆大小一样的方框。守匠重新挂上 h1、h2、label 和 landmark：结构先被理解，内容才有入口。",
+    goal: "理解语义 HTML 如何帮助读屏器和所有用户理解页面层级。",
+    mentor:
+      "先把页面当成目录：主标题、章节、表单标签和操作名称都要能被准确找到。",
+    terms: [
+      {
+        term: "语义 HTML",
+        meaning:
+          "使用表达含义的元素，例如 button、nav、main、label，而不是全部用 div。",
+      },
+      {
+        term: "landmark",
+        meaning: "页面中的导航地标，例如 main、nav、header，帮助用户快速跳转。",
+      },
+    ],
+    clues: [
+      {
+        id: "heading-map",
+        label: "查看标题树",
+        action: "检查页面标题层级",
+        result:
+          "标题层级能让用户快速定位当前关卡和任务，不应只靠字号大小模拟。",
+        snippet: "h1 章节名\n  h2 当前任务\n  h2 证据说明",
+        question: "标题是页面地图，不只是大号文字。",
+        journeyIndex: 2,
+        skill: "能检查页面标题结构。",
+      },
+      {
+        id: "form-label",
+        label: "给输入框找名字",
+        action: "检查 label 与 input 的关联",
+        result: "输入框有明确 label，读屏器和点击文字都能定位到正确控件。",
+        snippet: "label htmlFor=task\ninput id=task",
+        question: "用户知道要填什么，系统也知道这个输入是什么。",
+        journeyIndex: 2,
+        skill: "能检查表单控件是否有可理解名称。",
+      },
+    ],
+  },
+  {
+    id: "accessibility-live",
+    image: apiErrorCourtScene,
+    portrait: apiClerkPortrait,
+    place: "状态回声庭",
+    title: "页面变了，要让人收到消息",
+    speaker: "接口接待员",
+    dialogue:
+      "请求失败时，页面只变成一块红色。接待员敲响回声钟：状态变化要有文字、焦点和适合的 live region，不能让用户猜。",
+    goal: "理解异步 loading、错误和成功反馈的可访问表达。",
+    mentor:
+      "用户不一定看得到动画，也不一定听得到颜色。把发生了什么和下一步写出来。",
+    terms: [
+      {
+        term: "aria-live",
+        meaning: "告诉辅助技术某块内容更新后需要被播报的机制。",
+      },
+      {
+        term: "错误关联",
+        meaning: "把错误说明和对应输入或操作明确关联，让用户知道哪里需要处理。",
+      },
+    ],
+    clues: [
+      {
+        id: "live-status",
+        label: "听见状态变化",
+        action: "观察 loading 与成功/失败提示",
+        result: "状态变化有可读文本，并通过合适的 live region 告知辅助技术。",
+        snippet: "loading -> ‘正在保存’\nerror -> ‘保存失败，请重试’",
+        question: "不要只让图标旋转，要把状态说出来。",
+        journeyIndex: 3,
+        skill: "能设计异步状态的可访问反馈。",
+      },
+      {
+        id: "error-focus",
+        label: "把焦点带到错误",
+        action: "提交无效表单后观察焦点",
+        result: "错误发生后，焦点或错误关联能帮助用户快速回到需要修正的位置。",
+        snippet: "submit -> error summary -> focus first invalid field",
+        question: "失败之后也要给用户一条回去的路。",
+        journeyIndex: 3,
+        skill: "能检查错误后的恢复路径。",
+      },
+    ],
+  },
+  {
+    id: "accessibility-proof",
+    image: verificationTrialArenaScene,
+    portrait: testArbiterPortrait,
+    place: "无障碍验收台",
+    title: "不是加一个标签就算交付",
+    speaker: "验收试炼官",
+    dialogue:
+      "试炼官把键盘、读屏器、对比度检查和原有测试排成四列：每一列都通过，才说明这条路真的能交给用户。",
+    goal: "形成可复核的无障碍交付证据和面试复盘。",
+    mentor:
+      "自动化工具能抓一部分问题，但关键流程仍要人工走一遍，并记录未覆盖边界。",
+    terms: [
+      {
+        term: "自动化审计",
+        meaning: "用工具检查部分规则，例如缺少 label、对比度或无名称按钮。",
+      },
+      {
+        term: "人工验收",
+        meaning:
+          "真实使用键盘、读屏或不同视力条件走关键流程，发现工具漏掉的问题。",
+      },
+    ],
+    clues: [
+      {
+        id: "four-proof",
+        label: "收齐四类证据",
+        action: "整理自动化与人工结果",
+        result:
+          "合格报告包括键盘路径、语义/读屏检查、对比度结果和原有功能回归测试。",
+        snippet:
+          "keyboard: pass\nsemantic: pass\ncontrast: pass\nregression: pass",
+        question: "验收要说明覆盖了什么，也要说明没覆盖什么。",
+        journeyIndex: 4,
+        skill: "能设计无障碍交付证据。",
+      },
+      {
+        id: "accessibility-interview",
+        label: "写下复盘答案",
+        action: "讲清发现、修复和复测",
+        result:
+          "面试回答可以说：我用键盘和语义检查发现焦点丢失，修复控件语义与错误反馈，再用人工路径和回归测试证明核心流程可用。",
+        snippet: "现象 -> 键盘/读屏证据 -> 语义与反馈修复 -> 人工+自动化复测",
+        question: "这比说‘我注意无障碍’更能证明你做过工程验收。",
+        journeyIndex: 4,
+        skill: "能把无障碍工作讲成证据故事。",
+      },
+    ],
+  },
+];
+
+const javaIncidentJourney: QuestJourneyItem[] = [
+  {
+    sceneId: "incident-signal-tower",
+    from: "线上请求",
+    to: "监控报警",
+    payload: "错误率、P95 延迟、时间窗口",
+    proof: "知道异常何时开始、影响有多大",
+    plain:
+      "事故的第一棒不是猜根因，而是先确认信号：什么指标变红、从什么时候变红、影响是否还在扩大。",
+  },
+  {
+    sceneId: "incident-timeline-archive",
+    from: "监控报警",
+    to: "请求时间线",
+    payload: "requestId、路径、版本号、时间戳",
+    proof: "能把一条用户请求从入口追到异常",
+    plain:
+      "日志像侦探的脚印。requestId 把同一次请求的前端、接口和后端记录串起来，避免把不同事故混在一起。",
+  },
+  {
+    sceneId: "incident-log-corridor",
+    from: "请求时间线",
+    to: "结构化日志",
+    payload: "异常堆栈、错误码、稳定版本",
+    proof: "知道发生了什么，而不是只看到红灯",
+    plain:
+      "结构化日志不是把一大段文字塞进文件，而是让路径、错误码、版本和 requestId 能被搜索和比较。",
+  },
+  {
+    sceneId: "incident-decision-gate",
+    from: "证据时间线",
+    to: "止血决定",
+    payload: "继续观察、降级、暂停或回滚",
+    proof: "决定基于阈值和影响，不基于慌乱",
+    plain:
+      "错误率和 P95 是决定信号。先判断影响范围，再选择止血动作；重启不是默认答案，回滚也要有理由。",
+  },
+  {
+    sceneId: "incident-rollback-chamber",
+    from: "止血决定",
+    to: "稳定版本",
+    payload: "回滚步骤、健康检查、冒烟路径",
+    proof: "退回之后，用户路径真的恢复",
+    plain:
+      "回滚只完成版本切换，不等于事故结束。还要重新走健康检查、登录、保存和关键接口，证明恢复。",
+  },
+  {
+    sceneId: "incident-review-hall",
+    from: "恢复证据",
+    to: "事故复盘",
+    payload: "现象、证据、根因、修复、防复发",
+    proof: "能把事故讲成工作和面试都听得懂的故事",
+    plain:
+      "复盘不是找人背锅，而是把判断依据和改进护栏留下来，让下一次值班的人不用从零开始。",
+  },
+];
+
+const javaIncidentScenes: QuestScene[] = [
+  {
+    id: "incident-signal-tower",
+    image: signalStormDispatchTowerScene,
+    portrait: stormDispatcherPortrait,
+    place: "事故回声塔 · 报警层",
+    title: "先听清哪一盏灯在响",
+    speaker: "风暴调度员",
+    dialogue:
+      "警报同时响起，调度员按住你的手：先别重启。告诉我错误率从哪一分钟开始升高，P95 是否也一起变坏。",
+    goal: "先用错误率、P95 和时间窗口确认事故影响。",
+    mentor:
+      "错误率告诉你失败占比，P95 告诉你大多数请求里最慢的那一段。它们是判断影响的信号，不是根因本身。",
+    terms: [
+      {
+        term: "错误率",
+        meaning: "失败请求占全部请求的比例，用来观察失败是否扩大。",
+      },
+      {
+        term: "P95",
+        meaning: "把请求耗时从快到慢排序后，95% 请求都不超过的耗时。",
+      },
+    ],
+    clues: [
+      {
+        id: "incident-error-rate",
+        label: "读取错误率",
+        action: "记录变红时间、当前值和正常基线",
+        result: "错误率从 21:14 的 0.8% 升到 8.4%，说明失败不是单个用户偶发。",
+        snippet: "error_rate: 8.4%\nbaseline: 0.8%\nwindow: 21:14-21:20",
+        question: "你现在能证明异常扩大了吗？",
+        journeyIndex: 0,
+        skill: "能区分偶发错误和正在扩大的事故。",
+      },
+      {
+        id: "incident-p95",
+        label: "对照 P95",
+        action: "比较耗时指标和错误率是否同时恶化",
+        result: "P95 从 420ms 升到 1320ms，说明用户不仅失败，还在等待更久。",
+        snippet: "latency_p95: 1320ms\nbaseline: 420ms\nstatus: degraded",
+        question: "指标告诉你影响多大，但还不能单独告诉你为什么。",
+        journeyIndex: 0,
+        skill: "能解释 P95 在事故判断里的作用。",
+      },
+    ],
+  },
+  {
+    id: "incident-timeline-archive",
+    image: memoryEchoGalleryScene,
+    portrait: timingNavigatorPortrait,
+    place: "事故回声塔 · 时间线档案",
+    title: "让一条请求留下完整脚印",
+    speaker: "时间线领航员",
+    dialogue:
+      "领航员展开一张会发光的请求时间线：没有 requestId 的日志，只是一堆互相不认识的纸片。",
+    goal: "用 requestId、路径、版本号和时间戳把同一请求串起来。",
+    mentor:
+      "先锁定一条真实失败请求，再沿同一个 requestId 找前端、网关、Controller 和异常日志。不要一上来翻所有文件。",
+    terms: [
+      {
+        term: "requestId",
+        meaning: "给一次请求的唯一编号，用来串起不同层的日志。",
+      },
+      {
+        term: "时间窗口",
+        meaning: "围绕故障发生前后划定的搜索范围，避免混入别的请求。",
+      },
+    ],
+    clues: [
+      {
+        id: "incident-request-id",
+        label: "锁定 requestId",
+        action: "从失败响应和日志中找到同一个请求编号",
+        result:
+          "前端 500 响应里的 req-7f3 与后端 ERROR 记录一致，说明两条证据属于同一次请求。",
+        snippet: "response.requestId: req-7f3\nserver.log.requestId: req-7f3",
+        question: "为什么不能只搜一条模糊的 error 文本？",
+        journeyIndex: 1,
+        skill: "能用 requestId 缩小排查范围。",
+      },
+      {
+        id: "incident-version-trace",
+        label: "对照版本号",
+        action: "确认失败请求落在哪个发布版本",
+        result:
+          "req-7f3 命中 release 2026.07.15-rc2，而稳定版本是 rc1，故障与本次变更存在时间关联。",
+        snippet: "request: req-7f3\nrelease: rc2\nstable: rc1",
+        question: "时间关联是线索，不是最终根因，还要继续看代码和业务影响。",
+        journeyIndex: 1,
+        skill: "能把请求证据和发布版本对齐。",
+      },
+    ],
+  },
+  {
+    id: "incident-log-corridor",
+    image: performanceObservatoryScene,
+    portrait: echoForensicsPortrait,
+    place: "事故回声塔 · 日志回廊",
+    title: "日志要能回答发生了什么",
+    speaker: "回声取证官",
+    dialogue:
+      "取证官把一条 failed 推回去：这不是日志，只是情绪。真正的日志要带路径、错误码、版本和上下文。",
+    goal: "理解结构化日志如何帮助定位异常，而不是只打印一句 failed。",
+    mentor:
+      "日志要让下一位值班工程师能搜索、比较、复现。字段越稳定，越容易把事件和指标接起来。",
+    terms: [
+      {
+        term: "结构化日志",
+        meaning: "按固定字段记录事件，让机器和人都能搜索和聚合。",
+      },
+      {
+        term: "错误码",
+        meaning: "给一类失败一个稳定名字，方便前端提示、日志检索和统计。",
+      },
+    ],
+    clues: [
+      {
+        id: "incident-structured-log",
+        label: "补齐日志字段",
+        action: "找出日志里缺少的排障字段",
+        result:
+          "只有 failed 无法判断哪条路径出错；至少需要 path、requestId、errorCode、release 和 duration。",
+        snippet: "{ path, requestId, errorCode, release, durationMs }",
+        question: "日志字段缺失时，谁会被迫重新猜一遍事故？",
+        journeyIndex: 2,
+        skill: "能判断日志是否足以支持排障。",
+      },
+      {
+        id: "incident-root-cause",
+        label: "写出当前假设",
+        action: "把证据和根因假设分开记录",
+        result:
+          "证据是 rc2 的 /save 延迟和 5xx 升高；假设是新缓存刷新路径阻塞了数据库写入，还需要复测确认。",
+        snippet: "evidence != hypothesis\nnext: reproduce + compare rc1/rc2",
+        question: "为什么不能把第一个猜测直接写成根因？",
+        journeyIndex: 2,
+        skill: "能区分事实、假设和待验证动作。",
+      },
+    ],
+  },
+  {
+    id: "incident-decision-gate",
+    image: agentToolContractHallScene,
+    portrait: indexArbiterPortrait,
+    place: "事故回声塔 · 决定门",
+    title: "先止血，再追求漂亮的根因",
+    speaker: "指标裁决官",
+    dialogue:
+      "裁决官把两枚信号印章放上桌：错误率超过 5% 先回滚，只有轻微延迟才进入观察。线上不是答题比赛，是保护用户。",
+    goal: "根据影响阈值选择观察、降级、暂停或回滚。",
+    mentor:
+      "止血动作要可逆、可解释。你可以先回到稳定版本，再在安全环境里继续查根因。",
+    terms: [
+      { term: "止血", meaning: "先让影响停止扩大，例如降级、关闭开关或回滚。" },
+      {
+        term: "回滚",
+        meaning: "把服务版本退回已知稳定版本，并验证用户路径恢复。",
+      },
+    ],
+    clues: [
+      {
+        id: "incident-impact-decision",
+        label: "对照阈值",
+        action: "把当前指标和预设门槛比较",
+        result:
+          "错误率 8.4% 已超过 5% 门槛，不能继续只观察；要执行有记录的止血动作。",
+        snippet: "if errorRate > 0.05 -> rollback\nelse if p95 > 800 -> hold",
+        question: "阈值的作用是让谁在压力下还能做出一致决定？",
+        journeyIndex: 3,
+        skill: "能用指标阈值支持止血决定。",
+      },
+      {
+        id: "incident-rollback-choice",
+        label: "选择回滚",
+        action: "说明为什么此刻回滚比重启更合适",
+        result:
+          "rc2 与故障时间相关、错误率持续超过阈值，回滚到 rc1 可先恢复用户路径；重启不能消除版本缺陷。",
+        snippet: "action: rollback\nfrom: rc2\nto: rc1\nreason: sustained 5xx",
+        question: "你是在解决用户影响，还是在假装解决根因？",
+        journeyIndex: 3,
+        skill: "能解释止血动作和根因修复的区别。",
+      },
+    ],
+  },
+  {
+    id: "incident-rollback-chamber",
+    image: releaseReadinessGateScene,
+    portrait: deliveryJudgePortrait,
+    place: "事故回声塔 · 回滚机关",
+    title: "回到稳定版本，还要证明门真的恢复",
+    speaker: "交付审查官",
+    dialogue:
+      "审查官没有因为版本号变回 rc1 就盖章：健康检查、保存、登录和关键日志都要重新走一遍。",
+    goal: "理解回滚后的健康检查、冒烟和业务复测。",
+    mentor:
+      "回滚动作证明版本切换发生了；冒烟和指标恢复才证明用户真的回来了。两者不能混为一谈。",
+    terms: [
+      { term: "冒烟测试", meaning: "用最短关键路径确认服务还能完成基本功能。" },
+      {
+        term: "恢复证据",
+        meaning: "回滚后用健康、接口、业务动作和指标证明影响消失。",
+      },
+    ],
+    clues: [
+      {
+        id: "incident-smoke-path",
+        label: "走恢复路径",
+        action: "按固定顺序复测健康、登录和保存",
+        result:
+          "health 返回 200，登录成功，保存后刷新可见，说明用户主路径恢复。",
+        snippet: "health 200 -> login 200 -> save 201 -> refresh visible",
+        question: "为什么只看部署命令成功不够？",
+        journeyIndex: 4,
+        skill: "能设计回滚后的最短业务复测路径。",
+      },
+      {
+        id: "incident-recovery-signal",
+        label: "观察恢复信号",
+        action: "确认错误率和 P95 回到基线附近",
+        result:
+          "rc1 上线 10 分钟后错误率回到 0.9%，P95 回到 450ms，恢复证据与用户复测一致。",
+        snippet: "error_rate: 0.9%\np95: 450ms\nwindow: 10min after rollback",
+        question: "恢复指标和业务路径为什么要互相作证？",
+        journeyIndex: 4,
+        skill: "能用指标和业务结果共同确认恢复。",
+      },
+    ],
+  },
+  {
+    id: "incident-review-hall",
+    image: interviewDefenseHallScene,
+    portrait: interviewCouncilorPortrait,
+    place: "事故回声塔 · 复盘厅",
+    title: "把事故留下来的不是恐惧，而是护栏",
+    speaker: "复盘议员",
+    dialogue:
+      "复盘议员收起警报，把六份记录排成一列：现象、证据、根因、修复、验证、防复发。她问：下一位值班的人能少走哪一步弯路？",
+    goal: "把线上事故整理成工作复盘和面试回答。",
+    mentor:
+      "好的复盘不夸大掌握，也不把责任推给某个人。它留下可执行的护栏，例如阈值、测试、日志字段和回滚清单。",
+    terms: [
+      {
+        term: "事故复盘",
+        meaning: "围绕事实和改进整理事故全过程，不是单纯追责。",
+      },
+      { term: "防复发", meaning: "把一次事故转成测试、监控、流程或代码护栏。" },
+    ],
+    clues: [
+      {
+        id: "incident-review-chain",
+        label: "写完整事故链",
+        action: "用固定顺序复述事故",
+        result:
+          "现象：5xx 与延迟升高；证据：requestId、日志、指标；根因：rc2 路径；修复：回滚；验证：业务复测和指标恢复。",
+        snippet: "symptom -> evidence -> cause -> action -> verify -> prevent",
+        question: "这条链能不能让没有参与事故的人听懂？",
+        journeyIndex: 5,
+        skill: "能讲清一次线上故障闭环。",
+      },
+      {
+        id: "incident-prevention",
+        label: "补一条护栏",
+        action: "为下一次事故留下具体改进",
+        result:
+          "补充错误率阈值告警、结构化日志字段、rc1/rc2 对比复测和回滚后冒烟清单，避免只靠值班人的记忆。",
+        snippet:
+          "guardrail: alert + log schema + regression + rollback checklist",
+        question: "防复发措施是否能被下一次测试或审查真正执行？",
+        journeyIndex: 5,
+        skill: "能把事故经验沉淀成工程护栏。",
       },
     ],
   },
@@ -3840,7 +6522,7 @@ const interviewReviewJourney: QuestJourneyItem[] = [
 const interviewReviewScenes: QuestScene[] = [
   {
     id: "evidence-archive",
-    image: questArchive,
+    image: interviewDefenseHallScene,
     portrait: interviewCouncilorPortrait,
     place: "证据档案馆",
     title: "证据不是简历装饰，是你的角色徽章",
@@ -3892,10 +6574,10 @@ const interviewReviewScenes: QuestScene[] = [
   {
     id: "star-orrery",
     image: questStage,
-    portrait: interviewCouncilorPortrait,
+    portrait: echoForensicsPortrait,
     place: "STAR 星盘",
     title: "模板不是答案，证据才会让星盘转动",
-    speaker: "终章答辩官",
+    speaker: "STAR 记录官",
     dialogue:
       "四枚星环悬在空中：S、T、A、R。答辩官拨动第一枚：背景太长会遮住行动，结果没有证据会失去重量。",
     goal: "学会用 STAR 把项目经历讲成清楚、短、可验证的回答。",
@@ -3944,10 +6626,10 @@ const interviewReviewScenes: QuestScene[] = [
   {
     id: "incident-court",
     image: questPortal,
-    portrait: interviewCouncilorPortrait,
+    portrait: deliveryJudgePortrait,
     place: "故障复盘庭",
     title: "会修 bug 不够，要会讲清为什么修对了",
-    speaker: "终章答辩官",
+    speaker: "故障复盘官",
     dialogue:
       "复盘庭里回放着每一关事故：登录掉线、接口报错、数据重复、页面变慢。答辩官说：你要讲的不是 bug 多，而是你如何让混乱变成证据。",
     goal: "能把排障经历讲成现象、证据、根因、修复、验证和防复发。",
@@ -3995,10 +6677,10 @@ const interviewReviewScenes: QuestScene[] = [
   {
     id: "tradeoff-council",
     image: questWorkbench,
-    portrait: interviewCouncilorPortrait,
+    portrait: modelWardenPortrait,
     place: "取舍议会桌",
     title: "技术名词不会替你回答为什么",
-    speaker: "终章答辩官",
+    speaker: "取舍议员",
     dialogue:
       "议会桌上摆着三封方案：快做、稳做、可回滚地做。答辩官推给你羽笔：说出你选哪一个，也说出你付出了什么代价。",
     goal: "能解释技术取舍：约束、候选方案、选择理由、代价和验证。",
@@ -4032,9 +6714,9 @@ const interviewReviewScenes: QuestScene[] = [
         label: "承认边界",
         action: "说明哪些没做、为什么没做",
         result:
-          "可以说：第 1-15 章已经接入剧情教学和各自实战 Lab；自动化能证明路径可用，但真人学习效果、作品集导出和多岗位路线仍需要继续验证与扩展。诚实边界比夸大更可信。",
+          "可以说：第 1-15 章已经接入剧情教学、各自实战 Lab、作品集和本地备份；自动化能证明工程路径可用，但真人学习效果和 Java/前端路线仍需要继续验证与扩展。诚实边界比夸大更可信。",
         snippet:
-          "已完成：AI 主线 1-15 章工程闭环。\n未完成：真人学习效果、作品集导出、多岗位路线。",
+          "已完成：AI 主线 1-15 章工程闭环、作品集、本地备份。\n未完成：真人学习效果、Java/前端具体路线。",
         question: "面试官不怕你没做完所有事，怕你不知道边界在哪里。",
         journeyIndex: 3,
         skill: "能诚实说明项目边界。",
@@ -4044,10 +6726,10 @@ const interviewReviewScenes: QuestScene[] = [
   {
     id: "followup-mirror",
     image: questArchive,
-    portrait: interviewCouncilorPortrait,
+    portrait: identityGuardPortrait,
     place: "追问镜厅",
     title: "第二问还能站住，才是真的理解",
-    speaker: "终章答辩官",
+    speaker: "追问审查官",
     dialogue:
       "镜厅里回荡着面试官的追问：为什么 201 不能证明落库？RAG 引用错了怎么办？Agent 越权怎么拦？答辩官笑了：现在，别躲。",
     goal: "准备追问，把回答从背稿变成可讨论的工程理解。",
@@ -4093,11 +6775,11 @@ const interviewReviewScenes: QuestScene[] = [
   },
   {
     id: "answer-forge",
-    image: questStage,
-    portrait: interviewCouncilorPortrait,
+    image: releaseReadinessGateScene,
+    portrait: briefForgemasterPortrait,
     place: "答辩定稿台",
     title: "终章不是结束，是你能独立讲清楚自己",
-    speaker: "终章答辩官",
+    speaker: "回答锻造师",
     dialogue:
       "定稿台上，十五枚徽章排成一条星河。答辩官把最后一枚递给你：你不需要假装无所不能，你要证明自己会学习、会定位、会验证、会复盘。",
     goal: "形成一段可复用、可追问、能体现成长的面试回答。",
@@ -4145,32 +6827,189 @@ const interviewReviewScenes: QuestScene[] = [
   },
 ];
 
+const javaReleaseScenes: QuestScene[] = releaseReadinessScenes.map(
+  (scene, index) => {
+    const details = [
+      {
+        image: releaseReadinessGateScene,
+        portraitOverride: releaseGatekeeperPortrait,
+        place: "Java 发布港",
+        speaker: "发布守门人",
+        dialogue:
+          "守门人把 Java 服务的发布单摊开：配置、健康检查和回滚不是上线后的补救，而是出港前必须逐项确认的护栏。",
+      },
+      {
+        image: signalStormDispatchTowerScene,
+        portraitOverride: stormDispatcherPortrait,
+        place: "环境变量风暴塔",
+        speaker: "配置调度官",
+        dialogue:
+          "调度官让你核对开发、预发和生产的变量边界。值存在不等于服务拿到了正确配置，日志和启动检查必须能证明它。",
+      },
+      {
+        image: deliveryReviewCourtScene,
+        portraitOverride: deliveryJudgePortrait,
+        place: "备份恢复审查庭",
+        speaker: "恢复审查官",
+        dialogue:
+          "审查官拒绝只看备份文件：真正的上线证据是恢复演练能把数据带回来，并且业务路径可以继续工作。",
+      },
+      {
+        image: performanceObservatoryScene,
+        portraitOverride: timingNavigatorPortrait,
+        place: "健康检查观测台",
+        speaker: "健康检查官",
+        dialogue:
+          "观测官把启动探针、关键接口和错误率放到同一张图上：上线后的第一分钟，要知道服务是活着，还是只是进程没退出。",
+      },
+      {
+        image: interviewDefenseHallScene,
+        portraitOverride: interviewCouncilorPortrait,
+        place: "发布复盘台",
+        speaker: "发布答辩官",
+        dialogue:
+          "答辩官要求你讲清这次上线如何发现风险、如何回滚、如何确认恢复，并把清单沉淀成下一次能复用的工程证据。",
+      },
+    ][index];
+    return details ? { ...scene, ...details } : scene;
+  },
+);
+
+const frontendTestingScenes: QuestScene[] = testingProofScenes.map(
+  (scene, index) => {
+    const details = [
+      {
+        image: verificationTrialArenaScene,
+        portraitOverride: testArbiterPortrait,
+        place: "前端回归试炼场",
+        speaker: "测试仲裁官",
+        dialogue:
+          "仲裁官把失败复现、组件测试和真实浏览器路径摆在一起：前端修复必须证明用户真正看到的状态变对了。",
+      },
+      {
+        image: memoryEchoGalleryScene,
+        portraitOverride: echoForensicsPortrait,
+        place: "组件行为回声廊",
+        speaker: "交互取证师",
+        dialogue:
+          "取证师让你重放点击、加载、失败和重试：测试不是给按钮盖章，而是记录状态如何随着用户动作变化。",
+      },
+      {
+        image: deliveryReviewCourtScene,
+        portraitOverride: deliveryJudgePortrait,
+        place: "集成路径审查庭",
+        speaker: "路径审查官",
+        dialogue:
+          "审查官把 Network、页面反馈和移动端截图串成一条路径，提醒你单测通过也不能替代真实交互验收。",
+      },
+      {
+        image: releaseReadinessGateScene,
+        portraitOverride: releaseGatekeeperPortrait,
+        place: "前端交付门",
+        speaker: "交付守门人",
+        dialogue:
+          "守门人要求你留下失败证据、修复范围和回归结果，只有别人能复查的证据才算真正交付。",
+      },
+    ][index];
+    return details ? { ...scene, ...details } : scene;
+  },
+);
+
+const teachingStorySceneSets: Record<string, QuestScene[]> = {
+  "canvas-save-persistence": questScenes,
+  "case-002": canvasStormScenes,
+  "case-003-login-state": loginStateScenes,
+  "case-004-api-error": apiErrorScenes,
+  "case-005-data-consistency": consistencyScenes,
+  "case-006-performance": performanceScenes,
+  "case-007-ai-api": aiApiScenes,
+  "case-008-hallucination": hallucinationScenes,
+  "case-009-rag": ragScenes,
+  "case-010-agent-tools": agentToolsScenes,
+  "case-011-testing-proof": testingProofScenes,
+  "case-012-agent-brief": agentBriefScenes,
+  "case-013-delivery-review": deliveryReviewScenes,
+  "case-014-release-readiness": releaseReadinessScenes,
+  "case-015-interview-review": interviewReviewScenes,
+  "java-layered-request": javaLayeredScenes,
+  "java-transaction-consistency": javaTransactionScenes,
+  "java-cache-observability": javaCacheScenes,
+  "java-release-harbor": javaReleaseScenes,
+  "java-production-incident": javaIncidentScenes,
+  "frontend-component-state": frontendComponentScenes,
+  "frontend-request-states": getFrontendRequestStatesScenes(),
+  "frontend-performance-proof": frontendPerformanceScenes,
+  "frontend-accessibility-proof": accessibilityScenes,
+  "frontend-testing-proof": frontendTestingScenes,
+};
+
+// The route contract test reads the same story registry used by TeachingBridge.
+// eslint-disable-next-line react-refresh/only-export-components
+export function getTeachingStorySceneImages(scenarioId: string) {
+  return (
+    teachingStorySceneSets[normalizeScenarioId(scenarioId)] ?? questScenes
+  ).map((scene) => scene.image);
+}
+
+// Keep the content contract testable without exposing the mutable registry.
+// The UI still receives the same scene objects through the teaching bridge.
+// eslint-disable-next-line react-refresh/only-export-components
+export function getTeachingStoryScenes(scenarioId: string) {
+  return teachingStorySceneSets[normalizeScenarioId(scenarioId)] ?? questScenes;
+}
+
 function EvidenceStoryQuest({
+  scenarioId,
   developer,
   saving,
   scenes = questScenes,
   journey = questJourney,
   journeyTitle = "保存数据的完整旅行路线",
   stepLabel = "地点",
+  workBackground,
+  initialProgress,
+  onProgress,
   onComplete,
 }: {
+  scenarioId: string;
   developer: DeveloperProfile;
   saving: boolean;
   scenes?: QuestScene[];
   journey?: QuestJourneyItem[];
   journeyTitle?: string;
   stepLabel?: string;
-  onComplete: () => void;
+  workBackground?: string;
+  initialProgress?: StoryProgressSnapshot;
+  onProgress?: (snapshot: StoryProgressSnapshot) => void;
+  onComplete: (
+    sceneRecalls?: Record<string, string>,
+    sceneDecisions?: Record<string, string>,
+  ) => void;
 }) {
-  const [sceneIndex, setSceneIndex] = useState(0);
-  const [discovered, setDiscovered] = useState<Record<string, string[]>>({});
+  const [sceneIndex, setSceneIndex] = useState(
+    initialProgress?.sceneIndex ?? 0,
+  );
+  const [discovered, setDiscovered] = useState<Record<string, string[]>>(
+    initialProgress?.discovered ?? {},
+  );
+  const [sceneRecalls, setSceneRecalls] = useState<Record<string, string>>(
+    initialProgress?.sceneRecalls ?? {},
+  );
+  const [sceneDecisions, setSceneDecisions] = useState<Record<string, string>>(
+    initialProgress?.sceneDecisions ?? {},
+  );
+  const [recallDraft, setRecallDraft] = useState("");
   const [activeClueId, setActiveClueId] = useState<string | null>(null);
   const [transitionScene, setTransitionScene] = useState<{
     scene: QuestScene;
     index: number;
   } | null>(null);
   const scene = scenes[sceneIndex];
+  const companion = teachingCompanions[normalizeScenarioId(scenarioId)];
+  const cinematic = resolveChapterCinematic(scenarioId);
+  const cameraShot = getChapterShot(scenarioId, sceneIndex);
   const nextScene = scenes[sceneIndex + 1] ?? null;
+  const previousScene = scenes[sceneIndex - 1] ?? null;
   const sceneDiscovered = discovered[scene.id] ?? [];
   const activeClue =
     scene.clues.find((clue) => clue.id === activeClueId) ??
@@ -4179,6 +7018,8 @@ function EvidenceStoryQuest({
   const sceneDone = scene.clues.every((clue) =>
     sceneDiscovered.includes(clue.id),
   );
+  const recallReady = recallDraft.trim().length >= 12;
+  const recallSaved = Boolean(sceneRecalls[scene.id]);
   const totalFound = Object.values(discovered).reduce(
     (total, items) => total + items.length,
     0,
@@ -4194,6 +7035,15 @@ function EvidenceStoryQuest({
       0,
     );
   const activeJourney = journey[activeJourneyIndex] ?? journey[0];
+  const decision = getSceneDecision(scene, activeJourney);
+  const selectedDecisionId = sceneDecisions[scene.id];
+  const previousDecisionEcho = getDecisionEcho(
+    previousScene,
+    previousScene ? sceneDecisions[previousScene.id] : undefined,
+  );
+  const selectedDecision = decision.options.find(
+    (option) => option.id === selectedDecisionId,
+  );
   const sceneInterviewLine = `我会这样讲：在「${scene.place}」，我用「${
     scene.clues[0]?.label ?? scene.title
   }」这条证据说明：${scene.clues.at(-1)?.skill ?? scene.goal}`;
@@ -4215,6 +7065,10 @@ function EvidenceStoryQuest({
     },
   ];
 
+  const persistStoryProgress = (snapshot: StoryProgressSnapshot) => {
+    onProgress?.(snapshot);
+  };
+
   useEffect(() => {
     if (!transitionScene) return undefined;
     const timer = window.setTimeout(() => {
@@ -4228,38 +7082,119 @@ function EvidenceStoryQuest({
   const discover = (clue: QuestClue) => {
     setActiveClueId(clue.id);
     if (sceneDiscovered.includes(clue.id)) return;
-    setDiscovered({
+    const nextDiscovered = {
       ...discovered,
       [scene.id]: [...sceneDiscovered, clue.id],
+    };
+    setDiscovered({
+      ...nextDiscovered,
+    });
+    persistStoryProgress({
+      sceneIndex,
+      discovered: nextDiscovered,
+      sceneRecalls,
+      sceneDecisions,
     });
   };
 
   const goNext = () => {
     setActiveClueId(null);
+    if (!sceneRecalls[scene.id]) return;
     if (sceneIndex + 1 < scenes.length) {
+      const nextSceneIndex = sceneIndex + 1;
       setTransitionScene({
-        scene: scenes[sceneIndex + 1],
-        index: sceneIndex + 1,
+        scene: scenes[nextSceneIndex],
+        index: nextSceneIndex,
+      });
+      setRecallDraft("");
+      persistStoryProgress({
+        sceneIndex: nextSceneIndex,
+        discovered,
+        sceneRecalls,
+        sceneDecisions,
       });
       return;
     }
-    onComplete();
+    onComplete(sceneRecalls, sceneDecisions);
+  };
+
+  const saveSceneRecall = () => {
+    if (!recallReady || !selectedDecisionId) return;
+    const nextRecalls = {
+      ...sceneRecalls,
+      [scene.id]: recallDraft.trim(),
+    };
+    setSceneRecalls({
+      ...nextRecalls,
+    });
+    persistStoryProgress({
+      sceneIndex,
+      discovered,
+      sceneRecalls: nextRecalls,
+      sceneDecisions,
+    });
+  };
+
+  const chooseDecision = (decisionId: string) => {
+    const nextDecisions = { ...sceneDecisions, [scene.id]: decisionId };
+    setSceneDecisions(nextDecisions);
+    persistStoryProgress({
+      sceneIndex,
+      discovered,
+      sceneRecalls,
+      sceneDecisions: nextDecisions,
+    });
   };
 
   return (
     <main
-      className={`quest-shell quest-scene-${scene.id}`}
-      style={{ "--quest-bg": `url(${scene.image})` } as CSSProperties}
+      className={`quest-shell quest-scene-${scene.id} chapter-shot-${cameraShot.shot}`}
+      data-camera={cinematic.cameraLabel}
+      style={
+        {
+          "--quest-bg": `url(${scene.image})`,
+          "--camera-focus": cameraShot.focus,
+          "--camera-entry-x": cameraShot.entryX,
+          "--camera-entry-y": cameraShot.entryY,
+          "--camera-entry-scale": cameraShot.entryScale,
+          "--camera-drift-x": cameraShot.driftX,
+          "--camera-drift-y": cameraShot.driftY,
+          "--camera-drift-scale": cameraShot.driftScale,
+          "--camera-duration": cameraShot.duration,
+          "--camera-easing": cameraShot.easing,
+        } as CSSProperties
+      }
     >
       <div className="quest-camera" />
       {transitionScene && (
         <div className="quest-transition-card" aria-live="polite">
-          <span>场景转移</span>
-          <strong>前往：{transitionScene.scene.place}</strong>
-          <p>
-            {transitionScene.scene.speaker} 即将登场，下一幕要调查「
-            {transitionScene.scene.title}」。
-          </p>
+          <div className="quest-transition-character">
+            <img
+              src={
+                getScenePortrait(transitionScene.scene) ?? archiveKeeperPortrait
+              }
+              alt={transitionScene.scene.speaker}
+            />
+            <div>
+              <span>下一幕登场 · {transitionScene.scene.place}</span>
+              <strong>{transitionScene.scene.speaker}</strong>
+            </div>
+          </div>
+          <span className="quest-transition-kicker">场景转移</span>
+          <strong className="quest-transition-title">
+            前往：{transitionScene.scene.place}
+          </strong>
+          <span className="quest-transition-case">
+            调查：{transitionScene.scene.title}
+          </span>
+          <p>{transitionScene.scene.dialogue}</p>
+          <div className="quest-transition-handoff">
+            <span>这一幕要接住的证据</span>
+            <strong>
+              {transitionScene.scene.clues[0]?.label ??
+                transitionScene.scene.goal}
+            </strong>
+          </div>
         </div>
       )}
       <header className="quest-hud" aria-label="调查进度">
@@ -4279,18 +7214,115 @@ function EvidenceStoryQuest({
             {sceneIndex + 1}/{scenes.length}
           </strong>
         </div>
+        {companion && (
+          <div className="quest-companion-meter">
+            <span>{companion.name}默契</span>
+            <strong>
+              {sceneDiscovered.length}/{scene.clues.length}
+            </strong>
+          </div>
+        )}
       </header>
 
+      <nav className="quest-scene-rail" aria-label="本章地点航线">
+        <div className="quest-scene-rail-heading">
+          <span>本章地点航线</span>
+          <strong>
+            已到达 {sceneIndex + 1} / {scenes.length} · 当前在「{scene.place}」
+          </strong>
+        </div>
+        <ol>
+          {scenes.map((item, index) => {
+            const status =
+              index < sceneIndex
+                ? "done"
+                : index === sceneIndex
+                  ? "active"
+                  : "next";
+            const railPlace = item.place.replace(/大厅|深处/g, "");
+            return (
+              <li className={status} key={item.id} title={item.place}>
+                <span className="quest-scene-rail-marker">{index + 1}</span>
+                <div>
+                  <strong>{railPlace}</strong>
+                  <small>
+                    {index < sceneIndex
+                      ? `已收录 · ${item.speaker}`
+                      : index === sceneIndex
+                        ? `正在调查 · ${item.speaker}`
+                        : `下一站 · ${item.speaker}`}
+                  </small>
+                </div>
+              </li>
+            );
+          })}
+        </ol>
+      </nav>
+
       <section className="quest-stage">
+        <section className="quest-memory-echo" aria-label="上一幕回声">
+          <span>{previousScene ? "上一幕回声" : "序章委托"}</span>
+          <strong>
+            {previousScene
+              ? `${previousScene.place} · ${previousScene.speaker}`
+              : "你为什么来到这座代码城"}
+          </strong>
+          <p>
+            {previousScene
+              ? `你刚刚收录了「${previousScene.clues.at(-1)?.label ?? previousScene.title}」：${(previousScene.clues.at(-1)?.skill ?? previousScene.goal).replace(/[。！？]$/, "")}。这一幕不是重新开始，而是继续追踪它交出的下一份证据。`
+              : `你接到的委托是：查清「${scene.title}」背后的证据链。先从「${scene.place}」开始，讲清谁把什么交给谁。`}
+          </p>
+        </section>
+
+        {previousDecisionEcho && (
+          <aside className="quest-decision-echo" aria-label="上一幕判断回声">
+            <span>上一幕判断回声</span>
+            <strong>{previousDecisionEcho.title}</strong>
+            <p>{previousDecisionEcho.body}</p>
+          </aside>
+        )}
+
         {journey.length > 0 && activeJourney && (
-          <section className="quest-flow-board" aria-label="完整流程">
+          <section className="quest-current-contract" aria-label="本幕任务契约">
             <header>
-              <span>先看整条路</span>
-              <strong>{journeyTitle}</strong>
-              <p>
-                每个地点只是在放大其中一棒。你不用背术语，先看清谁把什么交给谁。
-              </p>
+              <span>本幕任务契约</span>
+              <strong>先记住这一件事，再开始探索</strong>
             </header>
+            <div className="quest-current-contract-grid">
+              <article>
+                <span>现在在哪</span>
+                <strong>{scene.place}</strong>
+              </article>
+              <article>
+                <span>要找什么</span>
+                <strong>{activeJourney.payload}</strong>
+              </article>
+              <article>
+                <span>找到后交给</span>
+                <strong>{activeJourney.to}</strong>
+              </article>
+            </div>
+            <p>{activeJourney.plain}</p>
+            {workBackground && (
+              <p className="quest-work-context">
+                <b>真实工作现场</b>
+                {workBackground}
+              </p>
+            )}
+          </section>
+        )}
+
+        {journey.length > 0 && activeJourney && (
+          <details
+            className="quest-flow-board"
+            aria-label="完整流程"
+            open={sceneIndex === 0}
+          >
+            <summary>
+              <span>完整流程卷轴</span>
+              <strong>{journeyTitle}</strong>
+              <small>点击展开全链路；当前只需要记住高亮的这一棒。</small>
+            </summary>
             <div className="quest-flow-track">
               {journey.map((item, index) => {
                 const active = index === activeJourneyIndex;
@@ -4320,14 +7352,14 @@ function EvidenceStoryQuest({
               </strong>
               <p>{activeJourney.plain}</p>
             </div>
-          </section>
+          </details>
         )}
 
         <div className="quest-place-card">
           <div className="quest-character" aria-label="剧情角色">
             <img
               className="quest-character-portrait"
-              src={scene.portrait ?? archiveKeeperPortrait}
+              src={getScenePortrait(scene) ?? archiveKeeperPortrait}
               alt=""
             />
             <div>
@@ -4362,11 +7394,10 @@ function EvidenceStoryQuest({
                   className={`${activeClueId === clue.id ? "active" : ""} ${
                     found ? "found" : ""
                   }`}
-                  disabled={found}
                   onClick={() => discover(clue)}
                 >
                   <strong>{clue.label}</strong>
-                  <small>{found ? "卷宗已收录" : clue.action}</small>
+                  <small>{found ? "卷宗已收录 · 点击回看" : clue.action}</small>
                 </button>
               );
             })}
@@ -4391,6 +7422,24 @@ function EvidenceStoryQuest({
                 )}
                 {activeClue.question && (
                   <div className="quest-question">{activeClue.question}</div>
+                )}
+                {companion && (
+                  <div
+                    className="quest-companion-whisper"
+                    aria-label="伙伴线索回应"
+                  >
+                    <img src={companion.image} alt={companion.name} />
+                    <div>
+                      <span>{companion.name} · 线索回应</span>
+                      <p>
+                        “先把「{activeClue.label}」收进卷宗。它说明：
+                        {activeClue.skill}”
+                      </p>
+                      <small>
+                        默契印记 {sceneDiscovered.length}/{scene.clues.length}
+                      </small>
+                    </div>
+                  </div>
                 )}
                 <small>{activeClue.skill}</small>
               </>
@@ -4427,13 +7476,83 @@ function EvidenceStoryQuest({
                     <span>面试一句话</span>
                     <p>{sceneInterviewLine}</p>
                   </div>
+                  <section
+                    className="quest-decision-card"
+                    aria-label="本幕判断分支"
+                  >
+                    <span>做出判断 · 不惩罚</span>
+                    <strong>{decision.prompt}</strong>
+                    <div className="quest-decision-options">
+                      {decision.options.map((option) => (
+                        <button
+                          key={option.id}
+                          type="button"
+                          className={
+                            selectedDecisionId === option.id ? "selected" : ""
+                          }
+                          aria-pressed={selectedDecisionId === option.id}
+                          onClick={() => chooseDecision(option.id)}
+                        >
+                          <strong>{option.label}</strong>
+                          <small>
+                            {selectedDecisionId === option.id
+                              ? "已选择"
+                              : "点击查看结果"}
+                          </small>
+                        </button>
+                      ))}
+                    </div>
+                    {selectedDecision && (
+                      <p className="quest-decision-feedback">
+                        {selectedDecision.feedback}
+                      </p>
+                    )}
+                  </section>
+                  <section
+                    className="quest-recall-card"
+                    aria-label="本幕主动复述"
+                  >
+                    <span>主动复述 · 不评分</span>
+                    <strong>
+                      用你自己的话说：这一幕的证据证明了什么，下一幕要继续查什么？
+                    </strong>
+                    <textarea
+                      aria-label="本幕复述原话"
+                      value={recallDraft}
+                      onChange={(event) => setRecallDraft(event.target.value)}
+                      placeholder="例如：页面显示成功只能说明收到回信，我还要查数据库是否真的写入。"
+                      rows={3}
+                    />
+                    <small>
+                      {recallSaved
+                        ? "已封存原话；这不会直接代表你已经掌握。"
+                        : !selectedDecisionId
+                          ? "先做出一个判断，再用自己的话复述这一幕。"
+                          : recallReady
+                            ? "可以封存了。系统只保存你的原话，不自动判定对错。"
+                            : `至少写 12 个字，还差 ${Math.max(0, 12 - recallDraft.trim().length)} 个。`}
+                    </small>
+                    <button
+                      className="v2-button ghost"
+                      type="button"
+                      onClick={saveSceneRecall}
+                      disabled={
+                        !recallReady || !selectedDecisionId || recallSaved
+                      }
+                    >
+                      {recallSaved ? "本幕复述已封存" : "封存本幕复述"}
+                    </button>
+                  </section>
                 </div>
                 <div
                   className="quest-next-preview"
                   aria-label={nextScene ? "下一地点预告" : "结案预告"}
                 >
                   <img
-                    src={nextScene?.portrait ?? archiveKeeperPortrait}
+                    src={
+                      (nextScene && getScenePortrait(nextScene)) ??
+                      archiveKeeperPortrait
+                    }
                     alt=""
                   />
                   <div>
@@ -4463,16 +7582,30 @@ function EvidenceStoryQuest({
               </div>
               <button
                 className="dialogue-next"
-                disabled={!sceneDone || saving || Boolean(transitionScene)}
+                disabled={
+                  !sceneDone ||
+                  !selectedDecisionId ||
+                  !recallSaved ||
+                  saving ||
+                  Boolean(transitionScene)
+                }
                 onClick={goNext}
               >
                 {sceneIndex + 1 < scenes.length
                   ? sceneDone
-                    ? "前往下一地点"
-                    : "先找齐本地点线索"
+                    ? recallSaved
+                      ? "继续下一地点"
+                      : selectedDecisionId
+                        ? "先保存复述"
+                        : "先选择判断"
+                    : "先收集本地点线索"
                   : sceneDone
-                    ? "进入实战修复"
-                    : "先找齐本地点线索"}
+                    ? recallSaved
+                      ? "进入实战修复"
+                      : selectedDecisionId
+                        ? "先保存复述"
+                        : "先选择判断"
+                    : "先收集本地点线索"}
                 <ArrowRight size={17} />
               </button>
             </footer>
@@ -4485,51 +7618,66 @@ function EvidenceStoryQuest({
 
 /** 项目地图：可视化数据流 */
 function ProjectMapView({
+  scenarioId,
   map,
   onComplete,
 }: {
+  scenarioId: string;
   map: ProjectMap;
   onComplete: () => void;
 }) {
+  const cinematic = resolveChapterCinematic(scenarioId);
   const [selected, setSelected] = useState<MapNode | null>(null);
   const [dismissed, setDismissed] = useState<Set<string>>(new Set());
   const [confirming, setConfirming] = useState(false);
   const requiredCount = Math.min(3, map.nodes.length);
 
-  // 按边顺序排列节点
-  const orderedNodes =
-    map.edges.length > 0
-      ? (() => {
-          const result: MapNode[] = [];
-          const nodeMap = new Map(map.nodes.map((n) => [n.id, n]));
-          const seen = new Set<string>();
-          // 从 edges 追踪路径
-          const start = map.edges[0].from;
-          let current = start;
-          while (current && !seen.has(current)) {
-            const node = nodeMap.get(current);
-            if (node) {
-              result.push(node);
-              seen.add(current);
-            }
-            const next = map.edges.find((e) => e.from === current);
-            current = next?.to ?? "";
-          }
-          // 补上没被 edges 覆盖的节点
-          for (const node of map.nodes) {
-            if (!seen.has(node.id)) result.push(node);
-          }
-          return result;
-        })()
-      : map.nodes;
+  const orderedNodes = map.nodes;
+  const placements = orderedNodes.map((_, index) =>
+    getMapNodePlacement(cinematic.mapTopology, index),
+  );
+  const maxMapRow = Math.max(...placements.map((placement) => placement.row));
+  const connectionLines = map.edges.flatMap((edge) => {
+    const fromIndex = orderedNodes.findIndex((node) => node.id === edge.from);
+    const toIndex = orderedNodes.findIndex((node) => node.id === edge.to);
+    if (fromIndex < 0 || toIndex < 0) return [];
+    const from = placements[fromIndex];
+    const to = placements[toIndex];
+    return [
+      {
+        ...edge,
+        x1: (from.column - 1 + from.span / 2) * 10,
+        y1: (from.row - 0.5) * 32,
+        x2: (to.column - 1 + to.span / 2) * 10,
+        y2: (to.row - 0.5) * 32,
+      },
+    ];
+  });
 
   return (
-    <section className="teaching-shell map-quest-shell">
+    <section
+      className={`teaching-shell map-quest-shell map-topology-${cinematic.mapTopology}`}
+      data-map-topology={cinematic.mapTopology}
+      data-camera={cinematic.cameraLabel}
+      aria-label={`${cinematic.chapterTitle}项目地图`}
+      style={
+        {
+          "--map-accent": cinematic.mapAccent,
+          "--map-accent-soft": cinematic.mapAccentSoft,
+        } as CSSProperties
+      }
+    >
       <header className="teaching-header">
         <span className="mini-label">教学模式 · 不影响能力分</span>
         <h2>
           <Network size={28} /> 项目地图
         </h2>
+        <strong className="chapter-map-title">
+          {cinematic.mapLabel}
+          <span aria-label="当前探索区域与关键地标">
+            {cinematic.mapTerrain} · {cinematic.mapLandmark}
+          </span>
+        </strong>
         <p>
           点击节点了解它在做什么。看完 <strong>至少 {requiredCount} 个</strong>
           即可继续。
@@ -4540,10 +7688,9 @@ function ProjectMapView({
         <img src={portalScribePortrait} alt="" />
         <div>
           <span>地图向导</span>
-          <strong>先别急着记名字，先看每一站收到什么、交出什么。</strong>
+          <strong>{cinematic.mapInstruction}</strong>
           <p>
-            这张地图像一条办案路线：上一站交出材料，下一站继续处理。
-            你点开节点时，只需要回答三个问题：它收到什么、交出什么、能用哪些证据证明。
+            点开节点时只回答三个问题：它收到什么、交出什么、能用哪些证据证明。
           </p>
         </div>
         <ol aria-label="地图阅读顺序">
@@ -4553,11 +7700,55 @@ function ProjectMapView({
         </ol>
       </div>
 
-      <div className="flowchart">
+      <div
+        className={`flowchart topology-${cinematic.mapTopology}`}
+        aria-label={cinematic.mapLabel}
+        style={{ "--map-row-count": maxMapRow } as CSSProperties}
+      >
+        <svg
+          className="flowchart-connections"
+          viewBox={`0 0 120 ${maxMapRow * 32}`}
+          preserveAspectRatio="none"
+          aria-hidden="true"
+        >
+          <defs>
+            <marker
+              id={`map-arrow-${cinematic.chapterId}`}
+              markerWidth="7"
+              markerHeight="7"
+              refX="6"
+              refY="3.5"
+              orient="auto"
+            >
+              <path d="M0,0 L7,3.5 L0,7 Z" />
+            </marker>
+          </defs>
+          {connectionLines.map((line) => (
+            <line
+              key={`${line.from}-${line.to}`}
+              x1={line.x1}
+              y1={line.y1}
+              x2={line.x2}
+              y2={line.y2}
+              markerEnd={`url(#map-arrow-${cinematic.chapterId})`}
+            />
+          ))}
+        </svg>
         {orderedNodes.map((node, idx) => {
           const edgeLabel = map.edges.find((e) => e.from === node.id)?.label;
+          const placement = getMapNodePlacement(cinematic.mapTopology, idx);
           return (
-            <div key={node.id} className="flowchart-row">
+            <div
+              key={node.id}
+              className="flowchart-row"
+              style={
+                {
+                  "--map-column": placement.column,
+                  "--map-span": placement.span,
+                  "--map-row": placement.row,
+                } as CSSProperties
+              }
+            >
               <button
                 className={`flowchart-node ${selected?.id === node.id ? "active" : ""} ${dismissed.has(node.id) ? "seen" : ""}`}
                 onClick={() => setSelected(node)}
@@ -4660,9 +7851,11 @@ function ProjectMapView({
 /** 概念卡微知识 */
 function ConceptCardView({
   card,
+  remediation,
   onComplete,
 }: {
   card: ConceptCard;
+  remediation?: ReactNode;
   onComplete: () => void;
 }) {
   const [showAnalogy, setShowAnalogy] = useState(false);
@@ -4791,6 +7984,8 @@ function ConceptCardView({
         )}
       </div>
 
+      {remediation}
+
       <footer className="teaching-footer">
         <button
           className="v2-button primary"
@@ -4909,13 +8104,130 @@ function explainCodeLine(
   if (compact.includes("const ") || compact.includes("let ")) {
     return `这里是在给一份数据起名字。先问：它来自「${focus.input}」里的哪一块，后面会不会变成「${focus.output}」。`;
   }
+  if (compact.match(/^[\w${}\s,.]+,$/) && compact.includes(",")) {
+    return `这里列出要一起交接的字段。逐个念变量名，确认它们能不能组成「${focus.input}」。`;
+  }
+  if (compact.match(/^\w+:\s*/)) {
+    const fieldName = compact.split(":")[0];
+    return `这里在给对象补上「${fieldName}」这一栏。读对象字段时，要问它后面会不会影响「${focus.output}」。`;
+  }
+  const callbackMatch = compact.match(/^([A-Za-z]\w*)\((.*)\);?$/);
+  if (callbackMatch) {
+    const [, callbackName, rawArgs] = callbackMatch;
+    const args = rawArgs.trim() || "刚刚整理好的材料";
+    if (callbackName.startsWith("on")) {
+      return `这里调用「${callbackName}」，把「${args}」交给上一层或下一棒。它是这段代码真正交出结果的动作。`;
+    }
+    return `这里调用「${callbackName}」，让已经准备好的材料继续往后走。下一步要看它是否产出「${focus.output}」。`;
+  }
+  const methodMatch = compact.match(/\.(\w+)\(/);
+  if (methodMatch) {
+    return `这里调用「${methodMatch[1]}」方法处理当前材料。方法名通常会告诉你它是在保存、查询、筛选还是更新。`;
+  }
   if (compact.includes("if ")) {
     return "这里是分岔口：条件成立走错误或特殊路径，不成立才继续主流程。";
   }
   if (compact.includes("};") || compact === "}" || compact === "});") {
     return "这里结束一个代码块，说明这一段交接已经收口。";
   }
-  return "这一行负责把当前这棒的材料继续加工。先不用背语法，抓住输入和输出。";
+  return `这一行要结合变量名读：它接在「${focus.input}」之后，目的仍然是交出「${focus.output}」。先标出名词，再沿流程找下一份证据。`;
+}
+
+function buildCodeHandoff(line: string, focus: CodeFocus) {
+  const compact = line.trim();
+  const empty = {
+    receives: "上一行留下的上下文",
+    action: "把代码分段",
+    outputs: "更清楚的阅读节奏",
+    proof: "没有业务动作发生",
+  };
+  if (!compact) return empty;
+  if (compact.startsWith("//")) {
+    return {
+      receives: "读代码的人",
+      action: "提示这一段的意图",
+      outputs: "阅读方向",
+      proof: "注释不会被程序执行",
+    };
+  }
+  if (compact.match(/^import\s/)) {
+    return {
+      receives: "外部模块",
+      action: "引入后面要用的工具",
+      outputs: "当前文件可调用的名字",
+      proof: "只证明依赖被引用，不证明业务执行",
+    };
+  }
+  if (compact.includes("fetch(") || compact.includes("POST")) {
+    return {
+      receives: focus.input,
+      action: "把材料送到后端接口",
+      outputs: "Network 请求",
+      proof: "打开 Network 看路径、方法、请求体和状态码",
+    };
+  }
+  if (compact.includes("JSON.stringify")) {
+    return {
+      receives: "页面状态对象",
+      action: "打包成请求体",
+      outputs: "后端能收到的 JSON 字段",
+      proof: "Network Payload 里能看到这些字段",
+    };
+  }
+  if (compact.includes("response.ok")) {
+    return {
+      receives: "后端返回的 HTTP 状态",
+      action: "判断这次接口回信是否成功",
+      outputs: "成功或失败分支",
+      proof: "只能证明接口回信成功，不能证明数据库已保存",
+    };
+  }
+  if (compact.includes("response.json")) {
+    return {
+      receives: "后端响应体",
+      action: "把 JSON 内容读出来",
+      outputs: focus.output,
+      proof: "看响应 body 和页面后续展示是否一致",
+    };
+  }
+  if (compact.includes("INSERT") || compact.includes("db.run")) {
+    return {
+      receives: focus.input,
+      action: "写入数据库",
+      outputs: "持久化记录",
+      proof: "用 SELECT、测试报告或刷新恢复证明记录存在",
+    };
+  }
+  if (compact.includes("SELECT") || compact.includes("db.get")) {
+    return {
+      receives: "查询条件",
+      action: "读取数据库",
+      outputs: "数据库里的真实记录",
+      proof: "查不到就是反证，说明前面的成功提示不够",
+    };
+  }
+  if (compact.includes("return ")) {
+    return {
+      receives: "当前函数整理好的结果",
+      action: "把结果交出去",
+      outputs: focus.output,
+      proof: "看调用方有没有收到并继续使用这个结果",
+    };
+  }
+  if (compact.includes("const ") || compact.includes("let ")) {
+    return {
+      receives: focus.input,
+      action: "给一份中间材料起名字",
+      outputs: "后面可继续使用的变量",
+      proof: "沿着变量名往下找它有没有被传走",
+    };
+  }
+  return {
+    receives: focus.input,
+    action: "处理当前材料",
+    outputs: focus.output,
+    proof: "继续沿下一行、Network、日志或数据库找证据",
+  };
 }
 
 function splitProjectPosition(position?: string) {
@@ -4923,6 +8235,55 @@ function splitProjectPosition(position?: string) {
     .split(/\s*→\s*/)
     .map((part) => part.trim())
     .filter(Boolean);
+}
+
+function getCodeTourGuide(step: TeachingStep) {
+  if (step.id.startsWith("c2-")) {
+    return {
+      name: "传送门书记官",
+      role: "产品链路带读官",
+      image: portalScribePortrait,
+      line: "我会把这几行代码翻成一张交接单：用户输入先交给谁，Brief 又被送到哪里。",
+    };
+  }
+  if (step.id.startsWith("case-03") || step.id.includes("login")) {
+    return {
+      name: "身份回廊守卫",
+      role: "登录态带读官",
+      image: identityGuardPortrait,
+      line: "别急着背 Cookie 和 Token，先看这几行有没有把身份凭证交到下一扇门。",
+    };
+  }
+  if (step.id.startsWith("case-04") || step.id.includes("api")) {
+    return {
+      name: "审判庭书记员",
+      role: "接口证据带读官",
+      image: apiClerkPortrait,
+      line: "状态码只是判词的一角，真正要读的是请求、响应和日志怎样互相作证。",
+    };
+  }
+  if (step.id.startsWith("case-05") || step.id.includes("consistency")) {
+    return {
+      name: "幂等石灵",
+      role: "一致性带读官",
+      image: idempotencyStonePet,
+      line: "重复点击会把同一份委托敲出多份影子，我们要找后端有没有守住唯一证据。",
+    };
+  }
+  if (step.id.startsWith("case-07") || step.id.includes("ai")) {
+    return {
+      name: "模型熔炉执钥人",
+      role: "AI 接入带读官",
+      image: modelWardenPortrait,
+      line: "读 AI 代码时先找密钥、边界和失败兜底，别被流畅输出晃过去。",
+    };
+  }
+  return {
+    name: "档案馆记录员",
+    role: "代码证据带读官",
+    image: archiveKeeperPortrait,
+    line: "我只带你看当前几行：上一棒交来了什么，这几行处理了什么，又把证据交给谁。",
+  };
 }
 
 /** 引导式代码导读 */
@@ -4940,6 +8301,7 @@ function GuidedCodeTour({
   onRemediation: (trigger: string) => void;
 }) {
   const [showFullFile, setShowFullFile] = useState(false);
+  const [activeLineIndex, setActiveLineIndex] = useState(0);
   const focus = step.codeFocus;
 
   if (!focus) {
@@ -4951,9 +8313,12 @@ function GuidedCodeTour({
   }
 
   const flowParts = splitProjectPosition(step.projectPosition);
+  const guide = getCodeTourGuide(step);
   const canProve = focus.observationGoal;
   const cannotProve = `这几行不能单独证明「${focus.output}」已经在真实环境发生。还要继续看 Network、后端日志、数据库记录或测试结果。`;
   const agentBrief = `请只围绕 ${focus.filePath} 的 ${focus.functionName} 检查「${step.projectPosition ?? step.goal}」：输入是「${focus.input}」，输出应该是「${focus.output}」。请说明这几行能证明什么、不能证明什么，并给出下一步验收证据。`;
+  const activeLine = focus.lines[activeLineIndex] ?? "";
+  const activeHandoff = buildCodeHandoff(activeLine, focus);
 
   return (
     <section className="teaching-shell code-tour-shell">
@@ -4966,20 +8331,26 @@ function GuidedCodeTour({
       </header>
 
       <div className="code-guide-board" aria-label="代码巡读官">
-        <img src={modelWardenPortrait} alt="" />
+        <img src={guide.image} alt={guide.name} />
         <div>
-          <span>代码巡读官</span>
+          <span>{guide.role}</span>
           <strong>这一页只读当前几行，不把整座项目一次塞进脑子。</strong>
-          <p>
-            先看上一棒交来的材料，再看这几行交出去什么。读完以后，你还要知道：
-            这几行能证明什么，不能证明什么，下一步该找哪种证据。
-          </p>
+          <p>{guide.line}</p>
         </div>
         <ol aria-label="代码阅读顺序">
           <li>抓输入</li>
           <li>看关键行</li>
           <li>找反证</li>
         </ol>
+      </div>
+
+      <div className="code-mentor-dialogue" aria-label="本页导师台词">
+        <span>{guide.name}</span>
+        <p>
+          “先把这段代码当成剧情里的交接镜头：上一棒交来「{focus.input}
+          」，这一段必须交出「{focus.output}
+          」。如果交接没发生，后面的绿色提示都只是舞台灯。”
+        </p>
       </div>
 
       <div className="tour-reading-compass" aria-label="代码阅读罗盘">
@@ -5018,6 +8389,25 @@ function GuidedCodeTour({
           ))}
         </div>
       )}
+
+      <section className="tour-handoff-card" aria-label="谁把什么交给谁">
+        <header>
+          <span>先看懂这一步</span>
+          <strong>谁把什么交给谁</strong>
+        </header>
+        <div className="tour-handoff-route">
+          <span>{flowParts[0] ?? "上一棒"}</span>
+          <ArrowRight size={16} aria-hidden="true" />
+          <span className="active">当前代码</span>
+          <ArrowRight size={16} aria-hidden="true" />
+          <span>{flowParts.at(-1) ?? "下一棒"}</span>
+        </div>
+        <p>
+          <b>{flowParts[0] ?? "上一棒"}</b> 把「{focus.input}
+          」交给当前代码；当前代码处理后， 要继续交出「{focus.output}
+          」。如果这两次交接没有证据，页面上的成功提示还不能算通关。
+        </p>
+      </section>
 
       {/* 项目位置 */}
       <div className="tour-section">
@@ -5066,9 +8456,13 @@ function GuidedCodeTour({
         <h3>
           <FileCode2 size={16} />
           关键代码（
-          {showFullFile ? "完整文件" : "只看这 " + focus.lines.length + " 行"}）
+          {showFullFile
+            ? "完整文件"
+            : `第 ${activeLineIndex + 1}/${focus.lines.length} 行`}
+          ）
           <button
             className="v2-button ghost"
+            type="button"
             onClick={() => setShowFullFile(!showFullFile)}
           >
             {showFullFile ? "只看重点行" : "查看完整文件"}
@@ -5096,44 +8490,83 @@ function GuidedCodeTour({
             </pre>
           </div>
         ) : (
-          <div className="code-focus-block">
-            <div className="code-focus-header">
-              <span>{focus.filePath}</span>
-              <b>关键行 {focus.lines.length}</b>
+          <>
+            <div className="code-focus-block">
+              <div className="code-focus-header">
+                <span>{focus.filePath}</span>
+                <b>
+                  第 {activeLineIndex + 1} 行 / {focus.lines.length}
+                </b>
+              </div>
+              <pre>
+                <code className="hl">
+                  <span className="line-num">
+                    {String(activeLineIndex + 1).padStart(2, " ")}
+                  </span>
+                  {activeLine || " "}
+                </code>
+              </pre>
             </div>
-            <pre>
-              {focus.lines.map((line, i) => {
-                const keyLine =
-                  line.includes("// ←") ||
-                  line.includes("// 关键") ||
-                  line.includes("// 因此");
-                return (
-                  <code key={i} className={keyLine ? "hl" : ""}>
-                    <span className="line-num">
-                      {String(i + 1).padStart(2, " ")}
-                    </span>
-                    {line || " "}
-                  </code>
-                );
-              })}
-            </pre>
-          </div>
+            <div className="code-line-stepper" aria-label="逐行读码控制">
+              <button
+                className="v2-button ghost"
+                type="button"
+                disabled={activeLineIndex === 0}
+                aria-label="上一行"
+                onClick={() =>
+                  setActiveLineIndex((index) => Math.max(0, index - 1))
+                }
+              >
+                <ChevronLeft size={16} />
+                上一行
+              </button>
+              <span>读懂第 {activeLineIndex + 1} 行，再把它交给下一棒</span>
+              <button
+                className="v2-button ghost"
+                type="button"
+                disabled={activeLineIndex === focus.lines.length - 1}
+                aria-label="下一行"
+                onClick={() =>
+                  setActiveLineIndex((index) =>
+                    Math.min(focus.lines.length - 1, index + 1),
+                  )
+                }
+              >
+                下一行
+                <ChevronRight size={16} />
+              </button>
+            </div>
+          </>
         )}
       </div>
 
       <div className="tour-section tour-line-notes">
         <h3>
           <Lightbulb size={16} />
-          逐行翻译：先看人话，再看语法
+          逐行翻译：第 {activeLineIndex + 1} 行，先看人话，再看语法
         </h3>
-        <div>
-          {focus.lines.map((line, i) => (
-            <article key={`${line}-${i}`}>
-              <code>{String(i + 1).padStart(2, "0")}</code>
-              <p>{explainCodeLine(line, focus, step.projectPosition)}</p>
-            </article>
-          ))}
-        </div>
+        <article>
+          <code>{String(activeLineIndex + 1).padStart(2, "0")}</code>
+          <p>{explainCodeLine(activeLine, focus, step.projectPosition)}</p>
+          <dl className="line-handoff-card" aria-label="读码交接单">
+            <div>
+              <dt>收到</dt>
+              <dd>{activeHandoff.receives}</dd>
+            </div>
+            <div>
+              <dt>动作</dt>
+              <dd>{activeHandoff.action}</dd>
+            </div>
+            <div>
+              <dt>交出</dt>
+              <dd>{activeHandoff.outputs}</dd>
+            </div>
+            <div>
+              <dt>证明</dt>
+              <dd>{activeHandoff.proof}</dd>
+            </div>
+          </dl>
+        </article>
       </div>
 
       {/* 观察目标 */}
@@ -5175,6 +8608,39 @@ function GuidedCodeTour({
 }
 
 /** "我没看懂"补课分支 */
+function RemediationLessonView({ lesson }: { lesson: RemediationLesson }) {
+  return (
+    <div className="remediation-lesson-body">
+      <p className="remediation-summary">{lesson.summary}</p>
+      <dl className="remediation-notes">
+        {lesson.notes.map((note) => (
+          <div key={note.label}>
+            <dt>{note.label}</dt>
+            <dd>{note.detail}</dd>
+          </div>
+        ))}
+      </dl>
+      {lesson.sequence && lesson.sequence.length > 0 && (
+        <div className="remediation-sequence">
+          <strong>按这个顺序再看一遍</strong>
+          <ol>
+            {lesson.sequence.map((item) => (
+              <li key={item}>{item}</li>
+            ))}
+          </ol>
+        </div>
+      )}
+      <p className="remediation-takeaway">
+        <Lightbulb size={16} />
+        <span>
+          <b>这一小课只记一句：</b>
+          {lesson.takeaway}
+        </span>
+      </p>
+    </div>
+  );
+}
+
 function StepRemediation({
   step,
   onRemediation,
@@ -5184,6 +8650,19 @@ function StepRemediation({
 }) {
   const [showPanel, setShowPanel] = useState(false);
   const [completedLesson, setCompletedLesson] = useState<string | null>(null);
+  const selectedLesson = step.remediation?.find(
+    (item) => item.trigger === completedLesson,
+  );
+  const remediationOpen = showPanel || Boolean(selectedLesson);
+
+  useEffect(() => {
+    if (!remediationOpen) return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [remediationOpen]);
 
   if (!step.remediation || step.remediation.length === 0) return null;
 
@@ -5192,60 +8671,115 @@ function StepRemediation({
       {!showPanel && !completedLesson && (
         <button
           className="v2-button ghost remediation-trigger"
+          type="button"
           onClick={() => setShowPanel(true)}
         >
           <HelpCircle size={16} />
-          这里没看懂
+          我有点卡住，需要补课
         </button>
       )}
 
       {showPanel && !completedLesson && (
-        <div className="remediation-panel">
-          <strong>具体是哪里不懂？</strong>
-          <div className="remediation-options">
-            {step.remediation.map((r) => (
-              <button
-                key={r.trigger}
-                className="v2-button remediation-option-btn"
-                onClick={() => {
-                  setCompletedLesson(r.trigger);
-                  setShowPanel(false);
-                  onRemediation(r.trigger);
-                }}
-              >
-                {r.label}
-              </button>
-            ))}
-          </div>
-          <button
-            className="v2-button ghost"
-            onClick={() => setShowPanel(false)}
+        <div className="remediation-overlay">
+          <div
+            className="remediation-panel"
+            role="dialog"
+            aria-modal="true"
+            aria-label="选择补课方向"
           >
-            算了，我继续看
-          </button>
+            <header className="remediation-dialog-head">
+              <div>
+                <span>学习急救站</span>
+                <strong>现在卡在哪一步？</strong>
+              </div>
+              <button
+                className="remediation-close"
+                type="button"
+                aria-label="关闭补课"
+                title="关闭补课"
+                onClick={() => setShowPanel(false)}
+              >
+                <X size={18} />
+              </button>
+            </header>
+            <p>选最接近的一项就好。补课不会扣分，也不会影响通关。</p>
+            <div className="remediation-options">
+              {step.remediation.map((r) => (
+                <button
+                  key={r.trigger}
+                  className="v2-button remediation-option-btn"
+                  type="button"
+                  onClick={() => {
+                    setCompletedLesson(r.trigger);
+                    setShowPanel(false);
+                    onRemediation(r.trigger);
+                  }}
+                >
+                  {r.label}
+                </button>
+              ))}
+            </div>
+            <button
+              className="v2-button ghost"
+              type="button"
+              onClick={() => setShowPanel(false)}
+            >
+              先回到当前内容
+            </button>
+          </div>
         </div>
       )}
 
-      {completedLesson && (
-        <div className="remediation-micro-lesson">
-          <header>
-            <Lightbulb size={18} />
-            <strong>补课</strong>
-            <button
-              className="v2-button small"
-              onClick={() => setCompletedLesson(null)}
-            >
-              回到步骤
-            </button>
-          </header>
-          <div className="micro-lesson-content">
-            {step.remediation
-              .filter((r) => r.trigger === completedLesson)
-              .map((r) => (
-                <p key={r.trigger} style={{ whiteSpace: "pre-line" }}>
-                  {r.microLesson}
-                </p>
-              ))}
+      {selectedLesson && (
+        <div className="remediation-overlay">
+          <div
+            className="remediation-micro-lesson"
+            role="dialog"
+            aria-modal="true"
+            aria-label={`补课：${selectedLesson.label}`}
+          >
+            <header>
+              <Lightbulb size={18} />
+              <div>
+                <span>补课卷轴</span>
+                <strong>{selectedLesson.label}</strong>
+              </div>
+              <button
+                className="remediation-close"
+                type="button"
+                aria-label="关闭补课"
+                title="关闭补课"
+                onClick={() => {
+                  setCompletedLesson(null);
+                  setShowPanel(false);
+                }}
+              >
+                <X size={18} />
+              </button>
+            </header>
+            <RemediationLessonView lesson={selectedLesson.microLesson} />
+            <footer>
+              <button
+                className="v2-button ghost"
+                type="button"
+                onClick={() => {
+                  setCompletedLesson(null);
+                  setShowPanel(true);
+                }}
+              >
+                换一个卡点
+              </button>
+              <button
+                className="v2-button primary"
+                type="button"
+                onClick={() => {
+                  setCompletedLesson(null);
+                  setShowPanel(false);
+                }}
+              >
+                <Check size={16} /> 带着这句话继续
+              </button>
+            </footer>
           </div>
         </div>
       )}
@@ -5363,8 +8897,33 @@ function DemoEvidenceConnect({
                 {
                   trigger: "causality",
                   label: "不理解因果关系",
-                  microLesson:
-                    "1. 前端显示成功 ← 来自路由返回 201\n2. 数据库 0 行 ← INSERT 从未执行\n3. 刷新后空 ← 读取走数据库，数据在内存\n\n所以：成功是假象，因为写和读是两个数据源。",
+                  microLesson: {
+                    summary:
+                      "把四份证据按时间排好，就能看到成功提示和真正入库不是一回事。",
+                    notes: [
+                      {
+                        label: "页面成功",
+                        detail:
+                          "来自路由返回 201，只能证明前端收到了成功回信。",
+                      },
+                      {
+                        label: "数据库 0 行",
+                        detail:
+                          "说明 INSERT 没有发生，这是比成功提示更接近根因的反证。",
+                      },
+                      {
+                        label: "刷新后为空",
+                        detail: "刷新读取 SQLite，而刚才的数据只留在内存数组。",
+                      },
+                    ],
+                    sequence: [
+                      "先确认前端为什么显示成功。",
+                      "再用数据库查询检查成功有没有真实副作用。",
+                      "最后用刷新复测确认读取路径是否能拿回数据。",
+                    ],
+                    takeaway:
+                      "写入走内存、读取走数据库，所以表面成功无法经受刷新复测。",
+                  },
                 },
               ],
             }}
@@ -5395,14 +8954,18 @@ export function TeachingBridge({
   attemptId,
   scenario,
   developer,
+  workBackground,
   onComplete,
 }: {
   attemptId: string;
   scenario: TeachingScenario;
   developer: DeveloperProfile;
+  workBackground?: string;
   onComplete: () => void;
 }) {
   // 从服务端恢复教学进度
+  const teachingScenarioId = normalizeScenarioId(scenario.scenarioId);
+  const storyProgressStepId = getStoryProgressStepId(teachingScenarioId);
   const [progress, setProgress] = useState<TeachingApiProgress[]>([]);
   const [currentStepIdx, setCurrentStepIdx] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -5412,6 +8975,9 @@ export function TeachingBridge({
   const [showCelebration, setShowCelebration] = useState(false);
   const [showIntro, setShowIntro] = useState(true);
   const [storyQuestComplete, setStoryQuestComplete] = useState(false);
+  const [completedStepTransition, setCompletedStepTransition] = useState<
+    number | null
+  >(null);
 
   // 载入已保存的教学进度
   useEffect(() => {
@@ -5433,13 +8999,20 @@ export function TeachingBridge({
         if (mapped.some((p) => p.completed)) {
           setShowIntro(false);
           setStoryQuestComplete(true);
+        } else if (mapped.some((p) => p.stepId === storyProgressStepId)) {
+          setShowIntro(false);
         }
 
         // 找到第一个未完成的步骤
         const firstIncomplete = scenario.steps.findIndex(
           (step) => !mapped.find((p) => p.stepId === step.id && p.completed),
         );
-        if (firstIncomplete >= 0) setCurrentStepIdx(firstIncomplete);
+        if (firstIncomplete >= 0) {
+          setCurrentStepIdx(firstIncomplete);
+        } else if (scenario.steps.length > 0) {
+          setCurrentStepIdx(scenario.steps.length - 1);
+          setShowCelebration(true);
+        }
       } catch (cause) {
         if (!cancelled) setError(String(cause));
       } finally {
@@ -5450,7 +9023,7 @@ export function TeachingBridge({
     return () => {
       cancelled = true;
     };
-  }, [attemptId, scenario.steps]);
+  }, [attemptId, scenario.steps, storyProgressStepId]);
 
   useEffect(() => {
     if (!showIntro) scrollPageToTop();
@@ -5473,18 +9046,20 @@ export function TeachingBridge({
         );
 
   const saveProgress = useCallback(
-    async (stepId: string, response?: unknown) => {
+    async (stepId: string, response?: unknown, completed = true) => {
       setSaving(true);
       try {
         await api(`/api/attempts/${attemptId}/teaching/${stepId}`, {
           method: "PATCH",
           body: JSON.stringify({
             response: response ?? {},
-            completed: true,
+            completed,
           }),
         });
+        return true;
       } catch (cause) {
         setError(String(cause));
+        return false;
       } finally {
         setSaving(false);
       }
@@ -5517,331 +9092,657 @@ export function TeachingBridge({
       setCurrentStepIdx(0);
       setShowIntro(true);
       setStoryQuestComplete(false);
+      setCompletedStepTransition(null);
     } catch (cause) {
       setError(String(cause));
     } finally {
       setResetting(false);
     }
-  }, [attemptId]);
+  }, [attemptId, setShowIntro, setStoryQuestComplete]);
 
-  const completeStep = useCallback(
-    async (idx: number) => {
-      const step = scenario.steps[idx];
-      if (!step) return;
-      await saveProgress(step.id, { completed: true });
-      if (idx + 1 < scenario.steps.length) {
-        setCurrentStepIdx(idx + 1);
+  const completeStep = useCallback((idx: number) => {
+    setCompletedStepTransition(idx);
+  }, []);
+
+  const continueAfterEvidence = useCallback(
+    async (activeRecall?: string) => {
+      if (completedStepTransition === null) return;
+      const completedStep = scenario.steps[completedStepTransition];
+      if (!completedStep) return;
+      const saved = await saveProgress(completedStep.id, {
+        completed: true,
+        ...(activeRecall ? { activeRecall } : {}),
+      });
+      if (!saved) return;
+      if (completedStepTransition + 1 < scenario.steps.length) {
+        setCurrentStepIdx(completedStepTransition + 1);
       } else {
         setShowCelebration(true);
       }
+      setCompletedStepTransition(null);
     },
-    [scenario.steps, saveProgress],
+    [completedStepTransition, saveProgress, scenario.steps],
   );
 
-  const isCanvasStorm = scenario.scenarioId === "case-002";
-  const isLoginState = scenario.scenarioId === "case-003-login-state";
-  const isApiError = scenario.scenarioId === "case-004-api-error";
-  const isConsistency = scenario.scenarioId === "case-005-data-consistency";
-  const isPerformance = scenario.scenarioId === "case-006-performance";
-  const isAiApi = scenario.scenarioId === "case-007-ai-api";
-  const isHallucination = scenario.scenarioId === "case-008-hallucination";
-  const isRag = scenario.scenarioId === "case-009-rag";
-  const isAgentTools = scenario.scenarioId === "case-010-agent-tools";
-  const isTestingProof = scenario.scenarioId === "case-011-testing-proof";
-  const isAgentBrief = scenario.scenarioId === "case-012-agent-brief";
-  const isDeliveryReview = scenario.scenarioId === "case-013-delivery-review";
+  const isCanvasStorm = teachingScenarioId === "case-002";
+  const isJavaLayered = teachingScenarioId === "java-layered-request";
+  const isJavaTransaction =
+    teachingScenarioId === "java-transaction-consistency";
+  const isJavaCache = teachingScenarioId === "java-cache-observability";
+  const isJavaIncident = teachingScenarioId === "java-production-incident";
+  const isJavaRelease = teachingScenarioId === "java-release-harbor";
+  const isFrontendAccessibility =
+    teachingScenarioId === "frontend-accessibility-proof";
+  const isFrontendTesting = teachingScenarioId === "frontend-testing-proof";
+  const isFrontendPerformance =
+    teachingScenarioId === "frontend-performance-proof";
+  const isFrontendComponent = teachingScenarioId === "frontend-component-state";
+  const isFrontendRequestStates =
+    teachingScenarioId === "frontend-request-states";
+  const isJavaRouteScenario =
+    isJavaLayered ||
+    isJavaTransaction ||
+    isJavaCache ||
+    isJavaRelease ||
+    isJavaIncident;
+  const isFrontendRouteScenario =
+    isFrontendComponent ||
+    isFrontendRequestStates ||
+    isFrontendPerformance ||
+    isFrontendAccessibility ||
+    isFrontendTesting;
+  const isLoginState = teachingScenarioId === "case-003-login-state";
+  const isApiError = teachingScenarioId === "case-004-api-error";
+  const isConsistency = teachingScenarioId === "case-005-data-consistency";
+  const isPerformance = teachingScenarioId === "case-006-performance";
+  const isAiApi = teachingScenarioId === "case-007-ai-api";
+  const isHallucination = teachingScenarioId === "case-008-hallucination";
+  const isRag = teachingScenarioId === "case-009-rag";
+  const isAgentTools = teachingScenarioId === "case-010-agent-tools";
+  const isTestingProof = teachingScenarioId === "case-011-testing-proof";
+  const isAgentBrief = teachingScenarioId === "case-012-agent-brief";
+  const isDeliveryReview = teachingScenarioId === "case-013-delivery-review";
   const isReleaseReadiness =
-    scenario.scenarioId === "case-014-release-readiness";
-  const isInterviewReview = scenario.scenarioId === "case-015-interview-review";
-  const storyScenes = isCanvasStorm
-    ? canvasStormScenes
-    : isLoginState
-      ? loginStateScenes
-      : isApiError
-        ? apiErrorScenes
-        : isConsistency
-          ? consistencyScenes
-          : isPerformance
-            ? performanceScenes
-            : isAiApi
-              ? aiApiScenes
-              : isHallucination
-                ? hallucinationScenes
-                : isRag
-                  ? ragScenes
-                  : isAgentTools
-                    ? agentToolsScenes
-                    : isTestingProof
-                      ? testingProofScenes
-                      : isAgentBrief
-                        ? agentBriefScenes
-                        : isDeliveryReview
-                          ? deliveryReviewScenes
-                          : isReleaseReadiness
-                            ? releaseReadinessScenes
-                            : isInterviewReview
-                              ? interviewReviewScenes
-                              : questScenes;
-  const storyJourney = isCanvasStorm
-    ? canvasStormJourney
-    : isLoginState
-      ? loginStateJourney
-      : isApiError
-        ? apiErrorJourney
-        : isConsistency
-          ? consistencyJourney
-          : isPerformance
+    teachingScenarioId === "case-014-release-readiness";
+  const isInterviewReview = teachingScenarioId === "case-015-interview-review";
+  const isStoryQuestScenario =
+    isFrontendComponent ||
+    isFrontendRequestStates ||
+    isJavaLayered ||
+    isJavaTransaction ||
+    isJavaCache ||
+    isFrontendPerformance ||
+    isFrontendAccessibility ||
+    isFrontendTesting ||
+    isJavaRelease ||
+    isJavaIncident ||
+    teachingScenarioId === "canvas-save-persistence" ||
+    isCanvasStorm ||
+    isLoginState ||
+    isApiError ||
+    isConsistency ||
+    isPerformance ||
+    isAiApi ||
+    isHallucination ||
+    isRag ||
+    isAgentTools ||
+    isTestingProof ||
+    isAgentBrief ||
+    isDeliveryReview ||
+    isReleaseReadiness ||
+    isInterviewReview;
+  const chapterCinematic = resolveChapterCinematic(teachingScenarioId);
+  const introCameraShot = getChapterShot(teachingScenarioId, 0);
+  const storyScenes = isFrontendTesting
+    ? frontendTestingScenes
+    : isFrontendAccessibility
+      ? accessibilityScenes
+      : isJavaIncident
+        ? javaIncidentScenes
+        : isJavaRelease
+          ? javaReleaseScenes
+          : isFrontendPerformance
+            ? frontendPerformanceScenes
+            : isJavaCache
+              ? javaCacheScenes
+              : isJavaTransaction
+                ? javaTransactionScenes
+                : isFrontendRequestStates
+                  ? getFrontendRequestStatesScenes()
+                  : isFrontendComponent
+                    ? frontendComponentScenes
+                    : isJavaLayered
+                      ? javaLayeredScenes
+                      : isCanvasStorm
+                        ? canvasStormScenes
+                        : isLoginState
+                          ? loginStateScenes
+                          : isApiError
+                            ? apiErrorScenes
+                            : isConsistency
+                              ? consistencyScenes
+                              : isPerformance
+                                ? performanceScenes
+                                : isAiApi
+                                  ? aiApiScenes
+                                  : isHallucination
+                                    ? hallucinationScenes
+                                    : isRag
+                                      ? ragScenes
+                                      : isAgentTools
+                                        ? agentToolsScenes
+                                        : isTestingProof
+                                          ? testingProofScenes
+                                          : isAgentBrief
+                                            ? agentBriefScenes
+                                            : isDeliveryReview
+                                              ? deliveryReviewScenes
+                                              : isReleaseReadiness
+                                                ? releaseReadinessScenes
+                                                : isInterviewReview
+                                                  ? interviewReviewScenes
+                                                  : questScenes;
+  const savedStoryProgress = progress.find(
+    (item) => item.stepId === storyProgressStepId && !item.completed,
+  );
+  const initialStoryProgress = parseStoryProgress(
+    savedStoryProgress?.teachingResponse,
+    Math.max(storyScenes.length - 1, 0),
+  );
+  const storyJourney = isFrontendTesting
+    ? testingProofJourney
+    : isFrontendAccessibility
+      ? accessibilityJourney
+      : isJavaIncident
+        ? javaIncidentJourney
+        : isJavaRelease
+          ? releaseReadinessJourney
+          : isFrontendPerformance
             ? performanceJourney
-            : isAiApi
-              ? aiApiJourney
-              : isHallucination
-                ? hallucinationJourney
-                : isRag
-                  ? ragJourney
-                  : isAgentTools
-                    ? agentToolsJourney
-                    : isTestingProof
-                      ? testingProofJourney
-                      : isAgentBrief
-                        ? agentBriefJourney
-                        : isDeliveryReview
-                          ? deliveryReviewJourney
-                          : isReleaseReadiness
-                            ? releaseReadinessJourney
-                            : isInterviewReview
-                              ? interviewReviewJourney
-                              : questJourney;
-  const storyRouteLabel = isCanvasStorm
-    ? "CanvasStorm 从想法到草案的路线"
-    : isLoginState
-      ? "登录态从页面到后端验证的路线"
-      : isApiError
-        ? "接口失败从页面到日志的路线"
-        : isConsistency
-          ? "重复提交从页面到数据库的路线"
-          : isPerformance
-            ? "页面变慢从用户到复测的路线"
-            : isAiApi
-              ? "AI 请求从用户到模型再回到页面的路线"
-              : isHallucination
-                ? "AI 回答从问题到引用校验的路线"
-                : isRag
-                  ? "RAG 资料从文档到回答引用的路线"
-                  : isAgentTools
-                    ? "Agent 工具从计划到受控执行的路线"
-                    : isTestingProof
-                      ? "可信验收从复现到报告的路线"
-                      : isAgentBrief
-                        ? "Agent 委托从现场到验收的路线"
-                        : isDeliveryReview
-                          ? "Agent 交付从说明到接收决定的路线"
-                          : isReleaseReadiness
-                            ? "上线从交付到回滚决定的路线"
-                            : isInterviewReview
-                              ? "面试回答从证据到追问定稿的路线"
-                              : "保存数据的完整旅行路线";
+            : isJavaCache
+              ? javaCacheJourney
+              : isJavaTransaction
+                ? consistencyJourney
+                : isFrontendRequestStates
+                  ? frontendRequestStatesJourney
+                  : isFrontendComponent
+                    ? frontendComponentJourney
+                    : isJavaLayered
+                      ? javaLayeredJourney
+                      : isCanvasStorm
+                        ? canvasStormJourney
+                        : isLoginState
+                          ? loginStateJourney
+                          : isApiError
+                            ? apiErrorJourney
+                            : isConsistency
+                              ? consistencyJourney
+                              : isPerformance
+                                ? performanceJourney
+                                : isAiApi
+                                  ? aiApiJourney
+                                  : isHallucination
+                                    ? hallucinationJourney
+                                    : isRag
+                                      ? ragJourney
+                                      : isAgentTools
+                                        ? agentToolsJourney
+                                        : isTestingProof
+                                          ? testingProofJourney
+                                          : isAgentBrief
+                                            ? agentBriefJourney
+                                            : isDeliveryReview
+                                              ? deliveryReviewJourney
+                                              : isReleaseReadiness
+                                                ? releaseReadinessJourney
+                                                : isInterviewReview
+                                                  ? interviewReviewJourney
+                                                  : questJourney;
+  const storyRouteLabel = isFrontendTesting
+    ? "前端交付从失败复现到回归验收的证据路线"
+    : isFrontendAccessibility
+      ? "前端页面从语义、键盘到移动端回归的证据路线"
+      : isJavaIncident
+        ? "Java 线上事故从报警到回滚复盘的证据路线"
+        : isJavaRelease
+          ? "Java 服务从交付到健康检查和回滚的证据路线"
+          : isFrontendPerformance
+            ? "前端首屏从资源到渲染的性能证据路线"
+            : isJavaCache
+              ? "缓存从请求到数据库和复测的证据路线"
+              : isJavaTransaction
+                ? "订单从请求到事务回滚的证据路线"
+                : isFrontendRequestStates
+                  ? "前端点击从组件状态到页面反馈的路线"
+                  : isJavaLayered
+                    ? "Java 请求从客户端到数据库的分层路线"
+                    : isCanvasStorm
+                      ? "CanvasStorm 从想法到草案的路线"
+                      : isLoginState
+                        ? "登录态从页面到后端验证的路线"
+                        : isApiError
+                          ? "接口失败从页面到日志的路线"
+                          : isConsistency
+                            ? "重复提交从页面到数据库的路线"
+                            : isPerformance
+                              ? "页面变慢从用户到复测的路线"
+                              : isAiApi
+                                ? "AI 请求从用户到模型再回到页面的路线"
+                                : isHallucination
+                                  ? "AI 回答从问题到引用校验的路线"
+                                  : isRag
+                                    ? "RAG 资料从文档到回答引用的路线"
+                                    : isAgentTools
+                                      ? "Agent 工具从计划到受控执行的路线"
+                                      : isTestingProof
+                                        ? "可信验收从复现到报告的路线"
+                                        : isAgentBrief
+                                          ? "Agent 委托从现场到验收的路线"
+                                          : isDeliveryReview
+                                            ? "Agent 交付从说明到接收决定的路线"
+                                            : isReleaseReadiness
+                                              ? "上线从交付到回滚决定的路线"
+                                              : isInterviewReview
+                                                ? "面试回答从证据到追问定稿的路线"
+                                                : "保存数据的完整旅行路线";
   const storyStepLabel = isCanvasStorm ? "章节" : "地点";
 
   if (showIntro) {
-    const introConfig = isCanvasStorm
+    const introConfig = isFrontendTesting
       ? {
-          badge: "主线 1-2",
-          title: "思维风暴：AI 点子为什么会空泛",
-          desc: "真实项目 CanvasStorm：先写 Project Brief，再选方向、筛候选、保存会话。",
-          copy: "这次我们拆 CanvasStorm 这种真实产品思路：用户先写项目背景，AI 按方向生成候选，用户筛选后保存成会话。每一章都会先解释名词，再给一条很短的链路，让你知道它为什么影响产品效果。",
+          badge: "前端工程 · 第 5 关",
+          title: "回归试炼场：绿色报告真的可信吗",
+          desc: "测试报告亮起绿灯，但审查官发现它可能对应旧代码。你要重新确认前端交付是否真的可靠。",
+          copy: "你会从失败复现开始，经过组件边界、请求集成、浏览器手动复测和回归风险，最后决定这份前端交付是接收还是退回。",
           evidence: [
-            ["输入", "Project Brief"],
-            ["输出", "候选看板 + 执行草案"],
-            ["能力", "把 AI 功能讲成产品链路"],
+            ["复现", "旧故障红灯"],
+            ["回归", "浏览器路径"],
+            ["审查", "源码指纹 + 风险"],
           ],
-          bg: questStage,
+          bg: verificationTrialArenaScene,
         }
-      : isLoginState
+      : isFrontendAccessibility
         ? {
-            badge: "主线 1-3",
-            title: "身份回廊：登录状态为什么会丢",
-            desc: "用户刚登录成功，刷新后却又被赶回门外。Cookie、Token 和 Session 到底谁失忆了？",
-            copy: "这一关先不甩概念定义。你会跟着一张门牌从登录表单走到后端登记库，看到浏览器把什么带回去、后端又查什么。最后你要能说清：刷新后掉登录，应该用哪些证据判断是前端状态、Cookie 还是后端 Session 的问题。",
+            badge: "前端工程 · 第 4 关",
+            title: "无障碍交付庭：漂亮的页面是否真的可用",
+            desc: "审查官不只看页面截图，还要确认键盘、读屏、焦点、对比度和小屏用户能不能完成任务。",
+            copy: "你会从语义按钮和表单标签开始，沿着键盘操作、读屏反馈、焦点可见性和 390px 移动端回归走一遍。每个判断都要落到证据，而不是一句‘看起来没问题’。",
             evidence: [
-              ["门牌", "Cookie + Token"],
-              ["登记册", "后端 Session"],
-              ["反证", "GET /me → 401"],
+              ["语义", "button + label"],
+              ["操作", "键盘 + focus"],
+              ["验收", "390px + 回归"],
             ],
-            bg: questPortal,
+            bg: verificationTrialArenaScene,
           }
-        : isApiError
+        : isJavaIncident
           ? {
-              badge: "主线 1-4",
-              title: "接口审判庭：接口为什么会报错",
-              desc: "页面只看到红色报错，但真正的原因可能在请求参数、状态码、后端校验或日志里。",
-              copy: "这一关把接口报错拆成一场审判：前端递交申请表，接口盖状态码，校验官指出字段问题，日志档案记录后台原因。你要学会用 Network、响应体和日志判断失败到底发生在哪一层。",
+              badge: "Java 后端 · 第 5 关",
+              title: "事故回声塔：线上故障怎样从日志走到决定",
+              desc: "报警塔同时亮起错误率和延迟两盏红灯。你要先判断影响，再决定止血、回滚和如何证明恢复。",
+              copy: "你会从监控报警走到 requestId、结构化日志、稳定版本、回滚和恢复复测。每个决定都要有证据，不能把‘重启一下’当成排障方案。",
               evidence: [
-                ["申请表", "Network Payload"],
-                ["红章", "400 / 500"],
-                ["档案", "后端日志"],
+                ["信号", "错误率 + P95"],
+                ["时间线", "requestId + release"],
+                ["退路", "rollback + smoke test"],
               ],
-              bg: questStage,
+              bg: signalStormDispatchTowerScene,
             }
-          : isConsistency
+          : isJavaRelease
             ? {
-                badge: "主线 1-5",
-                title: "一致性熔炉：数据为什么重复/错乱",
-                desc: "用户只是点了一次，数据库却多出几条记录。是按钮太快，还是后端没有守门？",
-                copy: "这一关把重复提交讲成一条清楚的路线：用户动作可能变成多次请求，前端要减少连点，后端要用 Idempotency-Key 查重，数据库要用唯一约束和事务兜底。最后你要能证明：重复请求真的来了，但核心数据只留下了一份。",
+                badge: "Java 后端 · 第 4 关",
+                title: "上线港：服务上线前如何留退路",
+                desc: "上线守门人不会因为构建成功就开闸，你要证明配置、健康检查、监控和回滚都已经准备好。",
+                copy: "你会从上线计划走到环境配置、备份、冒烟、监控和回滚条件。每一道门都要有证据，不能只写一句‘已部署’。",
                 evidence: [
-                  ["重复", "多次 POST"],
-                  ["门牌", "Idempotency-Key"],
-                  ["验收", "SELECT count(*) → 1"],
+                  ["配置", "secret + feature flag"],
+                  ["信号", "health + monitoring"],
+                  ["退路", "backup + rollback"],
                 ],
-                bg: questWorkbench,
+                bg: releaseReadinessGateScene,
               }
-            : isPerformance
+            : isFrontendPerformance
               ? {
-                  badge: "主线 1-6",
-                  title: "慢速迷雾：页面为什么慢",
-                  desc: "页面打开很慢，到底是资源太大、接口太慢、数据库卡住，还是前端渲染撑不住？",
-                  copy: "这一关不让你凭感觉优化。你会跟着雾灯猫查看 Network 瀑布图、TTFB、后端计时日志、渲染数量和缓存复测，最后能写出一份 Agent 看得懂、面试官也听得懂的性能优化任务。",
+                  badge: "前端工程 · 第 3 关",
+                  title: "首屏观测塔：页面为什么慢",
+                  desc: "观测塔的首屏被资源、接口和渲染三种等待叠在一起，用户只看到一个转圈。",
+                  copy: "你会用瀑布图看资源和接口，用 TTFB 判断服务端等待，再用渲染画像确认是不是页面一次摆了太多内容。每个判断都要有证据。",
                   evidence: [
-                    ["账本", "Network 瀑布图"],
-                    ["等待", "TTFB + 后端日志"],
-                    ["复测", "优化前后耗时对比"],
+                    ["资源", "Network waterfall"],
+                    ["接口", "TTFB + server timing"],
+                    ["验收", "移动端复测"],
                   ],
-                  bg: questPortal,
+                  bg: performanceObservatoryScene,
                 }
-              : isAiApi
+              : isJavaCache
                 ? {
-                    badge: "主线 1-7",
-                    title: "模型熔炉：AI 接口怎么接",
-                    desc: "用户想让 AI 回复，但真正的密钥不能放在前端。谁去点火？流式结果怎么回来？失败时怎么兜底？",
-                    copy: "这一关把 AI API 接入拆成一条工程路线：用户输入交给前端，前端只请求自己的后端；后端从环境变量读取密钥，再调用模型服务；模型流式返回内容，前端逐段显示。最后你要能证明：前端包里没有密钥，失败时用户看得懂，日志能定位。",
+                    badge: "Java 后端 · 第 3 关",
+                    title: "缓存风廊：为什么用户读到旧数据",
+                    desc: "缓存精灵把旧版本递给了用户。你要用命中日志、数据库版本和 TTL 找到真正的断点。",
+                    copy: "你会沿着一次读取走过缓存、数据库和异步刷新，先理解缓存命中与失效，再用时间线判断是旧缓存、慢查询还是任务尚未完成。",
                     evidence: [
-                      ["密钥", "server-only API Key"],
-                      ["通道", "POST /api/ai/chat"],
-                      ["体验", "stream reader + fallback"],
+                      ["入口", "GET /projects/:id"],
+                      ["分岔", "cache hit / DB miss"],
+                      ["验收", "TTL + 版本复测"],
                     ],
-                    bg: questWorkbench,
+                    bg: performanceObservatoryScene,
                   }
-                : isHallucination
+                : isJavaTransaction
                   ? {
-                      badge: "主线 1-8",
-                      title: "幻觉镜厅：AI 回复为什么胡说",
-                      desc: "AI 回答得很顺，但没有引用来源。它到底是根据资料回答，还是在补全空白？",
-                      copy: "这一关把“AI 胡说”拆成工程路线：用户问题先写成 Prompt 委托，后端把带编号的资料片段放进 context，模型输出 answer、citations 和 confidence，服务端再校验引用是否真的来自本轮资料。最后你要能证明：有资料时能答，没资料时不编。",
+                      badge: "Java 后端 · 第 2 关",
+                      title: "事务熔炉：两张表不能只成功一张",
+                      desc: "订单已经写入，库存却没有扣除。你要找出事务、幂等和唯一约束分别守哪一扇门。",
+                      copy: "你会跟着重复下单和中途失败两条路径，先看请求和日志，再对比数据库前后状态。最后用失败复测证明系统没有留下半成品。",
                       evidence: [
-                        ["委托", "grounded Prompt"],
-                        ["证物", "context chunks + citations"],
-                        ["验收", "无资料时拒答"],
+                        ["请求", "重复 POST + 幂等键"],
+                        ["异常", "订单有 / 库存无"],
+                        ["验收", "回滚 + count(*)"],
                       ],
-                      bg: questPortal,
+                      bg: idempotencyForgeScene,
                     }
-                  : isRag
+                  : isFrontendRequestStates
                     ? {
-                        badge: "主线 1-9",
-                        title: "知识迷宫：RAG 知识库",
-                        desc: "AI 想回答公司资料问题，不能靠记忆猜。它必须先找到正确书页，再带着引用开口。",
-                        copy: "这一关把 RAG 拆成一条可检查路线：资料先进入知识库，长文档被切成带来源的 chunk，chunk 生成 embedding 写入索引；用户提问时，系统检索 topK 命中片段，把它们作为 context 交给模型，最后展示带 citations 的回答。最后你要能证明：命中了哪几页、分数如何、答案引用是否真的来自这些页。",
+                        badge: "前端工程 · 第 2 关",
+                        title: "表单传送厅：错误怎样被用户看懂",
+                        desc: "传送厅只有一盏成功灯，用户分不清请求正在路上、已经失败还是可以重试。",
+                        copy: "你会跟着一次提交走过 loading、Network 响应、错误体和页面反馈。每一站都会解释名词，并用 201、503、超时和键盘可见性证明状态机是否真的诚实。",
                         evidence: [
-                          ["资料", "source + chunk id"],
-                          ["检索", "topK matches + score"],
-                          ["回答", "citations 指回原文"],
+                          ["起点", "click → loading"],
+                          ["分岔", "201 / 503 / timeout"],
+                          ["验收", "错误反馈 + 重试"],
                         ],
-                        bg: questArchive,
+                        bg: apiErrorCourtScene,
                       }
-                    : isAgentTools
+                    : isFrontendComponent
                       ? {
-                          badge: "主线 1-10",
-                          title: "工具契约大厅：Agent 工具调用",
-                          desc: "Agent 想替你查数据、调接口、执行动作。它能做事，但每一步都必须先验明工具、参数、权限和失败回退。",
-                          copy: "这一关把 Agent 工具调用拆成一条安全路线：用户目标先变成 Agent 计划，Agent 只能选择注册表里的工具；工具执行前先校验参数 schema，再检查当前用户和环境权限；合法调用才执行，失败时返回结构化错误和 requestId。最后你要能证明：正常调用有结果，坏参数被拦，越权动作被拒绝。",
+                          badge: "前端工程 · 第 1 关",
+                          title: "按钮为什么一点击就乱跳",
+                          desc: "组件剧场的状态灯提前亮了，用户看到成功，Network 却返回了失败。到底谁应该决定页面显示什么？",
+                          copy: "你会跟着一次点击走过事件处理、状态所有者、请求结果和重新渲染。每一站都解释名词，并用 200/503、浏览器日志和关键代码证明页面为什么会显示成现在这样。",
                           evidence: [
-                            ["工具", "tool registry"],
-                            ["门禁", "schema + permission"],
-                            ["回退", "TOOL_FAILED + requestId"],
+                            ["起点", "click → loading"],
+                            ["分岔", "200 success / 503 error"],
+                            ["验收", "双路径交互测试"],
                           ],
-                          bg: questPortal,
+                          bg: questStage,
                         }
-                      : isTestingProof
+                      : isJavaLayered
                         ? {
-                            badge: "主线 1-11",
-                            title: "验收试炼场：测试怎么证明修好了",
-                            desc: "验收试炼官拦在门前：Agent 说修好了还不够。你要能拿出复现、自动化测试、手动报告和回归风险，证明交付可信。",
-                            copy: "这一关把测试验收拆成一条证据路线：先把旧故障写成能失败的复现用例，再用单元测试守住关键函数，用集成测试证明模块交接没有掉东西，最后从真实入口生成手动测试报告，并说明哪些风险已经覆盖、哪些还没有。最后你要能写出一份让 Agent、同事和面试官都能复核的验收证据。",
+                            badge: "Java 后端 · 第 1 章",
+                            title: "请求为什么要经过三层",
+                            desc: "一封用户请求抵达服务塔，却被发现绕过了业务层。Controller、Service、Repository 到底各自守什么门？",
+                            copy: "你会跟着同一封请求从客户端走进 Controller，再交给 Service 做业务判断，接着由 Repository 查询数据库，最后沿原路返回。每到一层都会解释名词、展示证据，并告诉你这一层不能越过什么边界。",
                             evidence: [
-                              ["复现", "red → green"],
-                              ["自动化", "unit + integration"],
-                              ["报告", "generatedAt + fingerprint"],
+                              ["入口", "GET /api/users/u-17"],
+                              ["接力", "Controller → Service → Repository"],
+                              ["验收", "权限失败路径 + 日志证据"],
                             ],
-                            bg: questStage,
+                            bg: questPortal,
                           }
-                        : isAgentBrief
+                        : isCanvasStorm
                           ? {
-                              badge: "主线 1-12",
-                              title: "委托书工坊：Agent 任务怎么写",
-                              desc: "委托书锻造师把空白契约推到你面前：你不是把愿望丢给 Agent，而是把现场、目标、边界、验收和风险锻造成一份可执行委托。",
-                              copy: "这一关把 Agent 任务拆成五段：先交代问题现场和已有证据，再写出可观察目标；然后划定范围和禁止事项，写清验收命令、浏览器路径和可见结果；最后补上风险、未覆盖项和回滚思路。最后你要能证明：这份任务让 Agent 知道做什么、不做什么、怎么证明做完，并把“我会指挥 Agent 做项目”整理成能讲给面试官听的复盘。",
+                              badge: "主线 1-2",
+                              title: "思维风暴：AI 点子为什么会空泛",
+                              desc: "真实项目 CanvasStorm：先写 Project Brief，再选方向、筛候选、保存会话。",
+                              copy: "这次我们拆 CanvasStorm 这种真实产品思路：用户先写项目背景，AI 按方向生成候选，用户筛选后保存成会话。每一章都会先解释名词，再给一条很短的链路，让你知道它为什么影响产品效果。",
                               evidence: [
-                                ["背景", "现象 + 证据"],
-                                ["边界", "scope + constraints"],
-                                ["验收", "verify + browser path"],
+                                ["输入", "Project Brief"],
+                                ["输出", "候选看板 + 执行草案"],
+                                ["能力", "把 AI 功能讲成产品链路"],
                               ],
-                              bg: questWorkbench,
+                              bg: questStage,
                             }
-                          : isDeliveryReview
+                          : isLoginState
                             ? {
-                                badge: "主线 1-13",
-                                title: "交付审查庭：怎么审查 Agent 交付",
-                                desc: "Agent 说“已完成”只是开庭铃声。你要审说明、看 Diff、核测试、追边界，再决定接收还是要求补证。",
-                                copy: "这一关把交付审查拆成六步：先读交付说明，确认它覆盖摘要、验证和风险；再用 Diff 核对改动范围；接着查看自动化和浏览器证据，补上移动端、刷新、旧章节等边界；最后检查 README、HANDOFF、任务表和 changelog 是否同步。你要能把“我觉得不行”改写成“缺这几份证据”。",
+                                badge: "主线 1-3",
+                                title: "身份回廊：登录状态为什么会丢",
+                                desc: "用户刚登录成功，刷新后却又被赶回门外。Cookie、Token 和 Session 到底谁失忆了？",
+                                copy: "这一关先不甩概念定义。你会跟着一张门牌从登录表单走到后端登记库，看到浏览器把什么带回去、后端又查什么。最后你要能说清：刷新后掉登录，应该用哪些证据判断是前端状态、Cookie 还是后端 Session 的问题。",
                                 evidence: [
-                                  ["说明", "delivery note"],
-                                  ["证物", "diff + tests"],
-                                  ["决定", "accept / request changes"],
+                                  ["门牌", "Cookie + Token"],
+                                  ["登记册", "后端 Session"],
+                                  ["反证", "GET /me → 401"],
                                 ],
-                                bg: questStage,
+                                bg: identityCorridorScene,
                               }
-                            : isReleaseReadiness
+                            : isApiError
                               ? {
-                                  badge: "主线 1-14",
-                                  title: "上线前夜：上线前检查什么",
-                                  desc: "上线守门人挡在城门前：交付通过不等于可以开门。上线前要核计划、环境变量、备份、冒烟测试、监控和回滚，确保出事能发现、能退、能保护数据。",
-                                  copy: "这一关把上线拆成一条工程路线：先写上线计划和影响范围，再核生产环境变量、密钥和功能开关；如果碰到数据变更，就确认备份和恢复步骤；上线前走桌面和 390px 冒烟测试，上线后看错误率、接口耗时和关键业务成功率；最后提前写清回滚条件和回滚后验证。你要能在面试里把“我会部署”升级成“我能负责一次可控上线”。",
+                                  badge: "主线 1-4",
+                                  title: "接口审判庭：接口为什么会报错",
+                                  desc: "页面只看到红色报错，但真正的原因可能在请求参数、状态码、后端校验或日志里。",
+                                  copy: "这一关把接口报错拆成一场审判：前端递交申请表，接口盖状态码，校验官指出字段问题，日志档案记录后台原因。你要学会用 Network、响应体和日志判断失败到底发生在哪一层。",
                                   evidence: [
-                                    ["计划", "release checklist"],
-                                    ["运行", "env + backup + monitoring"],
-                                    ["退路", "rollback + smoke test"],
+                                    ["申请表", "Network Payload"],
+                                    ["红章", "400 / 500"],
+                                    ["档案", "后端日志"],
                                   ],
-                                  bg: questPortal,
+                                  bg: apiErrorCourtScene,
                                 }
-                              : isInterviewReview
+                              : isConsistency
                                 ? {
-                                    badge: "主线 1-15",
-                                    title: "终章答辩厅：面试怎么讲项目",
-                                    desc: "终章答辩官敲响议会钟：面试官不只听你做过什么，还会追问证据、边界和取舍。终章要把前 14 章的通关产出炼成可追问的项目回答。",
-                                    copy: "这一关把面试复盘拆成一条路线：先从通关记录里挑出能展示、能解释、能验收的证据；再用 STAR 压缩成清楚回答；排障经历要讲现象、证据、根因、修复和验证；技术经历要讲约束、方案、代价和技术取舍；最后用 Agent 扮演面试官追问证据边界和失败路径。你要能把“我学过这些”升级成“我能独立讲清一个真实工程项目，也知道哪些学习效果还要真人复测”。",
+                                    badge: "主线 1-5",
+                                    title: "一致性熔炉：数据为什么重复/错乱",
+                                    desc: "用户只是点了一次，数据库却多出几条记录。是按钮太快，还是后端没有守门？",
+                                    copy: "这一关把重复提交讲成一条清楚的路线：用户动作可能变成多次请求，前端要减少连点，后端要用 Idempotency-Key 查重，数据库要用唯一约束和事务兜底。最后你要能证明：重复请求真的来了，但核心数据只留下了一份。",
                                     evidence: [
-                                      ["结构", "STAR + incident review"],
-                                      ["取舍", "tradeoff + boundary"],
-                                      ["定稿", "follow-up ready answer"],
+                                      ["重复", "多次 POST"],
+                                      ["门牌", "Idempotency-Key"],
+                                      ["验收", "SELECT count(*) → 1"],
                                     ],
-                                    bg: questArchive,
+                                    bg: idempotencyForgeScene,
                                   }
-                                : {
-                                    badge: "主线 1-1",
-                                    title: "保存成功，但刷新后消失了",
-                                    desc: "点击保存→提示成功→刷新页面→数据不见。前端骗你？还是后端没存？",
-                                    copy: "这不是一道题，是一份事故卷宗。你要走过现场、传送门和档案库， 把“看起来成功”的表象拆成能讲给面试官听的证据链。",
-                                    evidence: [
-                                      ["表象", "POST → 201 Created"],
-                                      ["反证", "SELECT → 0 rows"],
-                                    ],
-                                    bg: questArchive,
-                                  };
+                                : isPerformance
+                                  ? {
+                                      badge: "主线 1-6",
+                                      title: "慢速迷雾：页面为什么慢",
+                                      desc: "页面打开很慢，到底是资源太大、接口太慢、数据库卡住，还是前端渲染撑不住？",
+                                      copy: "这一关不让你凭感觉优化。你会跟着雾灯猫查看 Network 瀑布图、TTFB、后端计时日志、渲染数量和缓存复测，最后能写出一份 Agent 看得懂、面试官也听得懂的性能优化任务。",
+                                      evidence: [
+                                        ["账本", "Network 瀑布图"],
+                                        ["等待", "TTFB + 后端日志"],
+                                        ["复测", "优化前后耗时对比"],
+                                      ],
+                                      bg: performanceObservatoryScene,
+                                    }
+                                  : isAiApi
+                                    ? {
+                                        badge: "主线 1-7",
+                                        title: "模型熔炉：AI 接口怎么接",
+                                        desc: "用户想让 AI 回复，但真正的密钥不能放在前端。谁去点火？流式结果怎么回来？失败时怎么兜底？",
+                                        copy: "这一关把 AI API 接入拆成一条工程路线：用户输入交给前端，前端只请求自己的后端；后端从环境变量读取密钥，再调用模型服务；模型流式返回内容，前端逐段显示。最后你要能证明：前端包里没有密钥，失败时用户看得懂，日志能定位。",
+                                        evidence: [
+                                          ["密钥", "server-only API Key"],
+                                          ["通道", "POST /api/ai/chat"],
+                                          ["体验", "stream reader + fallback"],
+                                        ],
+                                        bg: modelKeyForgeScene,
+                                      }
+                                    : isHallucination
+                                      ? {
+                                          badge: "主线 1-8",
+                                          title: "幻觉镜厅：AI 回复为什么胡说",
+                                          desc: "AI 回答得很顺，但没有引用来源。它到底是根据资料回答，还是在补全空白？",
+                                          copy: "这一关把“AI 胡说”拆成工程路线：用户问题先写成 Prompt 委托，后端把带编号的资料片段放进 context，模型输出 answer、citations 和 confidence，服务端再校验引用是否真的来自本轮资料。最后你要能证明：有资料时能答，没资料时不编。",
+                                          evidence: [
+                                            ["委托", "grounded Prompt"],
+                                            [
+                                              "证物",
+                                              "context chunks + citations",
+                                            ],
+                                            ["验收", "无资料时拒答"],
+                                          ],
+                                          bg: hallucinationMirrorScene,
+                                        }
+                                      : isRag
+                                        ? {
+                                            badge: "主线 1-9",
+                                            title: "知识迷宫：RAG 知识库",
+                                            desc: "AI 想回答公司资料问题，不能靠记忆猜。它必须先找到正确书页，再带着引用开口。",
+                                            copy: "这一关把 RAG 拆成一条可检查路线：资料先进入知识库，长文档被切成带来源的 chunk，chunk 生成 embedding 写入索引；用户提问时，系统检索 topK 命中片段，把它们作为 context 交给模型，最后展示带 citations 的回答。最后你要能证明：命中了哪几页、分数如何、答案引用是否真的来自这些页。",
+                                            evidence: [
+                                              ["资料", "source + chunk id"],
+                                              ["检索", "topK matches + score"],
+                                              ["回答", "citations 指回原文"],
+                                            ],
+                                            bg: ragKnowledgeMazeScene,
+                                          }
+                                        : isAgentTools
+                                          ? {
+                                              badge: "主线 1-10",
+                                              title:
+                                                "工具契约大厅：Agent 工具调用",
+                                              desc: "Agent 想替你查数据、调接口、执行动作。它能做事，但每一步都必须先验明工具、参数、权限和失败回退。",
+                                              copy: "这一关把 Agent 工具调用拆成一条安全路线：用户目标先变成 Agent 计划，Agent 只能选择注册表里的工具；工具执行前先校验参数 schema，再检查当前用户和环境权限；合法调用才执行，失败时返回结构化错误和 requestId。最后你要能证明：正常调用有结果，坏参数被拦，越权动作被拒绝。",
+                                              evidence: [
+                                                ["工具", "tool registry"],
+                                                ["门禁", "schema + permission"],
+                                                [
+                                                  "回退",
+                                                  "TOOL_FAILED + requestId",
+                                                ],
+                                              ],
+                                              bg: agentToolContractHallScene,
+                                            }
+                                          : isTestingProof
+                                            ? {
+                                                badge: "主线 1-11",
+                                                title:
+                                                  "验收试炼场：测试怎么证明修好了",
+                                                desc: "验收试炼官拦在门前：Agent 说修好了还不够。你要能拿出复现、自动化测试、手动报告和回归风险，证明交付可信。",
+                                                copy: "这一关把测试验收拆成一条证据路线：先把旧故障写成能失败的复现用例，再用单元测试守住关键函数，用集成测试证明模块交接没有掉东西，最后从真实入口生成手动测试报告，并说明哪些风险已经覆盖、哪些还没有。最后你要能写出一份让 Agent、同事和面试官都能复核的验收证据。",
+                                                evidence: [
+                                                  ["复现", "red → green"],
+                                                  [
+                                                    "自动化",
+                                                    "unit + integration",
+                                                  ],
+                                                  [
+                                                    "报告",
+                                                    "generatedAt + fingerprint",
+                                                  ],
+                                                ],
+                                                bg: verificationTrialArenaScene,
+                                              }
+                                            : isAgentBrief
+                                              ? {
+                                                  badge: "主线 1-12",
+                                                  title:
+                                                    "委托书工坊：Agent 任务怎么写",
+                                                  desc: "委托书锻造师把空白契约推到你面前：你不是把愿望丢给 Agent，而是把现场、目标、边界、验收和风险锻造成一份可执行委托。",
+                                                  copy: "这一关把 Agent 任务拆成五段：先交代问题现场和已有证据，再写出可观察目标；然后划定范围和禁止事项，写清验收命令、浏览器路径和可见结果；最后补上风险、未覆盖项和回滚思路。最后你要能证明：这份任务让 Agent 知道做什么、不做什么、怎么证明做完，并把“我会指挥 Agent 做项目”整理成能讲给面试官听的复盘。",
+                                                  evidence: [
+                                                    ["背景", "现象 + 证据"],
+                                                    [
+                                                      "边界",
+                                                      "scope + constraints",
+                                                    ],
+                                                    [
+                                                      "验收",
+                                                      "verify + browser path",
+                                                    ],
+                                                  ],
+                                                  bg: agentBriefForgeScene,
+                                                }
+                                              : isDeliveryReview
+                                                ? {
+                                                    badge: "主线 1-13",
+                                                    title:
+                                                      "交付审查庭：怎么审查 Agent 交付",
+                                                    desc: "Agent 说“已完成”只是开庭铃声。你要审说明、看 Diff、核测试、追边界，再决定接收还是要求补证。",
+                                                    copy: "这一关把交付审查拆成六步：先读交付说明，确认它覆盖摘要、验证和风险；再用 Diff 核对改动范围；接着查看自动化和浏览器证据，补上移动端、刷新、旧章节等边界；最后检查 README、HANDOFF、任务表和 changelog 是否同步。你要能把“我觉得不行”改写成“缺这几份证据”。",
+                                                    evidence: [
+                                                      ["说明", "delivery note"],
+                                                      ["证物", "diff + tests"],
+                                                      [
+                                                        "决定",
+                                                        "accept / request changes",
+                                                      ],
+                                                    ],
+                                                    bg: deliveryReviewCourtScene,
+                                                  }
+                                                : isReleaseReadiness
+                                                  ? {
+                                                      badge: "主线 1-14",
+                                                      title:
+                                                        "上线前夜：上线前检查什么",
+                                                      desc: "上线守门人挡在城门前：交付通过不等于可以开门。上线前要核计划、环境变量、备份、冒烟测试、监控和回滚，确保出事能发现、能退、能保护数据。",
+                                                      copy: "这一关把上线拆成一条工程路线：先写上线计划和影响范围，再核生产环境变量、密钥和功能开关；如果碰到数据变更，就确认备份和恢复步骤；上线前走桌面和 390px 冒烟测试，上线后看错误率、接口耗时和关键业务成功率；最后提前写清回滚条件和回滚后验证。你要能在面试里把“我会部署”升级成“我能负责一次可控上线”。",
+                                                      evidence: [
+                                                        [
+                                                          "计划",
+                                                          "release checklist",
+                                                        ],
+                                                        [
+                                                          "运行",
+                                                          "env + backup + monitoring",
+                                                        ],
+                                                        [
+                                                          "退路",
+                                                          "rollback + smoke test",
+                                                        ],
+                                                      ],
+                                                      bg: releaseReadinessGateScene,
+                                                    }
+                                                  : isInterviewReview
+                                                    ? {
+                                                        badge: "主线 1-15",
+                                                        title:
+                                                          "终章答辩厅：面试怎么讲项目",
+                                                        desc: "终章答辩官敲响议会钟：面试官不只听你做过什么，还会追问证据、边界和取舍。终章要把前 14 章的通关产出炼成可追问的项目回答。",
+                                                        copy: "这一关把面试复盘拆成一条路线：先从通关记录里挑出能展示、能解释、能验收的证据；再用 STAR 压缩成清楚回答；排障经历要讲现象、证据、根因、修复和验证；技术经历要讲约束、方案、代价和技术取舍；最后用 Agent 扮演面试官追问证据边界和失败路径。你要能把“我学过这些”升级成“我能独立讲清一个真实工程项目，也知道哪些学习效果还要真人复测”。",
+                                                        evidence: [
+                                                          [
+                                                            "结构",
+                                                            "STAR + incident review",
+                                                          ],
+                                                          [
+                                                            "取舍",
+                                                            "tradeoff + boundary",
+                                                          ],
+                                                          [
+                                                            "定稿",
+                                                            "follow-up ready answer",
+                                                          ],
+                                                        ],
+                                                        bg: interviewDefenseHallScene,
+                                                      }
+                                                    : {
+                                                        badge: "主线 1-1",
+                                                        title:
+                                                          "保存成功，但刷新后消失了",
+                                                        desc: "点击保存→提示成功→刷新页面→数据不见。前端骗你？还是后端没存？",
+                                                        copy: "这不是一道题，是一份事故卷宗。你要走过现场、传送门和档案库， 把“看起来成功”的表象拆成能讲给面试官听的证据链。",
+                                                        evidence: [
+                                                          [
+                                                            "表象",
+                                                            "POST → 201 Created",
+                                                          ],
+                                                          [
+                                                            "反证",
+                                                            "SELECT → 0 rows",
+                                                          ],
+                                                        ],
+                                                        bg: questArchive,
+                                                      };
     const route = storyScenes.map((scene) => scene.place);
 
     return (
       <main
-        className="quest-shell mission-gate"
-        style={{ "--quest-bg": `url(${introConfig.bg})` } as CSSProperties}
+        className={`quest-shell mission-gate chapter-shot-${introCameraShot.shot}`}
+        data-camera={chapterCinematic.cameraLabel}
+        style={
+          {
+            "--quest-bg": `url(${introConfig.bg})`,
+            "--camera-focus": introCameraShot.focus,
+            "--camera-entry-x": introCameraShot.entryX,
+            "--camera-entry-y": introCameraShot.entryY,
+            "--camera-entry-scale": introCameraShot.entryScale,
+            "--camera-drift-x": introCameraShot.driftX,
+            "--camera-drift-y": introCameraShot.driftY,
+            "--camera-drift-scale": introCameraShot.driftScale,
+            "--camera-duration": introCameraShot.duration,
+            "--camera-easing": introCameraShot.easing,
+          } as CSSProperties
+        }
       >
         <div className="quest-camera" />
         <header className="quest-hud" aria-label="委托状态">
@@ -5857,7 +9758,14 @@ export function TeachingBridge({
 
         <section className="mission-gate-stage">
           <div className="mission-dossier">
-            <span>AI 开发主线 · {introConfig.badge}</span>
+            <span>
+              {isFrontendRouteScenario
+                ? "前端工程成长路线 ·"
+                : isJavaRouteScenario
+                  ? "Java 后端成长路线 ·"
+                  : "AI 开发主线 ·"}{" "}
+              {introConfig.badge}
+            </span>
             <h1>{introConfig.title}</h1>
             <p>{introConfig.desc}</p>
             <blockquote>{introConfig.copy}</blockquote>
@@ -5897,45 +9805,84 @@ export function TeachingBridge({
   if (showCelebration) {
     const stepCount = scenario.steps.length;
     const isPrimarySandbox = scenario.scenarioId === "canvas-save-persistence";
+    const completionScene = storyScenes.at(-1) ?? storyScenes[0];
+    const completionCards = [
+      {
+        label: "流程地图",
+        value: "看清谁把什么交给谁",
+        detail: storyRouteLabel,
+      },
+      {
+        label: "名词小抄",
+        value: "先理解名词，再进入代码",
+        detail: "术语不再靠猜，先用项目现场解释。",
+      },
+      {
+        label: "关键代码",
+        value: "只看当前关卡关键行",
+        detail: "每行代码都要能接上上一棒和下一份证据。",
+      },
+      {
+        label: "复盘产出",
+        value: "整理成工作和面试表达",
+        detail: "把现象、证据、结论和 Agent 委托收束起来。",
+      },
+    ];
     return (
-      <section className="teaching-shell celebration-screen">
-        <div className="celebration-icon">🎉</div>
-        <h2>{isPrimarySandbox ? "教学阶段完成！" : "章节教学完成！"}</h2>
-        <p>
-          你已经完成了 <strong>{stepCount} 个教学步骤</strong>
-          ，包括流程地图、概念小抄、关键代码导读和章节复盘。
-        </p>
-        <div className="celebration-stats">
-          <div>
-            <span>🗺️</span>
-            <strong>流程地图</strong>
-            <small>看清谁把什么交给谁</small>
+      <main className="teaching-bridge celebration-stage-shell">
+        <section
+          className="teaching-shell celebration-screen celebration-gate"
+          style={
+            {
+              "--celebration-bg": `url(${completionScene?.image ?? questArchive})`,
+            } as CSSProperties
+          }
+        >
+          <div className="celebration-gate-mentor" aria-label="结算前夜导师">
+            <img
+              src={completionScene?.portrait ?? archiveKeeperPortrait}
+              alt=""
+            />
+            <div>
+              <span>会合前夜 · {completionScene?.place ?? "档案馆"}</span>
+              <strong>{completionScene?.speaker ?? "档案馆记录员"}</strong>
+              <p>
+                {completionScene?.mentor ??
+                  "路线已经看懂，下一步要把它变成可验收的实战证据。"}
+              </p>
+            </div>
           </div>
-          <div>
-            <span>🧠</span>
-            <strong>概念小抄</strong>
-            <small>先理解名词，再进入代码</small>
+          <header className="celebration-gate-head">
+            <span>{isPrimarySandbox ? "实战前夜" : "伙伴会合前夜"}</span>
+            <h2>{isPrimarySandbox ? "教学阶段完成！" : "章节教学完成！"}</h2>
+            <p>
+              你已经完成了 <strong>{stepCount} 个教学步骤</strong>
+              ，现在先确认自己收到了哪些证据，再进入下一段真实练习。
+            </p>
+          </header>
+          <div className="celebration-stats" aria-label="已收录的学习证据">
+            {completionCards.map((card) => (
+              <div key={card.label}>
+                <span>{card.label}</span>
+                <strong>{card.value}</strong>
+                <small>{card.detail}</small>
+              </div>
+            ))}
           </div>
-          <div>
-            <span>📖</span>
-            <strong>代码阅读</strong>
-            <small>只看当前关卡关键行</small>
+          <div className="celebration-handoff">
+            <b>{isPrimarySandbox ? "进入独立实战" : "前往伙伴会合"}</b>
+            <p>
+              {isPrimarySandbox
+                ? "教学阶段的帮助不会计入能力分。下面进入真正的练习：你将独立完成修复，提示等级会如实记录。"
+                : "章节教学只证明你走完了路线说明。下面先与本章伙伴会合，再一起进入沙盒；XP、阶位、伙伴收藏和面试经历都要等实战证据通过后结算。"}
+            </p>
           </div>
-          <div>
-            <span>🤝</span>
-            <strong>复盘产出</strong>
-            <small>整理成工作和面试表达</small>
-          </div>
-        </div>
-        <p className="celebration-note">
-          {isPrimarySandbox
-            ? "教学阶段的帮助不会计入能力分。下面进入真正的练习——你将独立完成修复，提示等级会如实记录。"
-            : "章节教学证明你看懂了路线和证据边界。下面进入章节结算，记录本章解锁物和面试复盘；真实工程能力仍需要后续沙盒、测试报告和迁移复盘证明。"}
-        </p>
-        <button className="v2-button primary wide" onClick={onComplete}>
-          {isPrimarySandbox ? "进入实战练习 🚀" : "进入章节结算"}
-        </button>
-      </section>
+          <button className="dialogue-next" onClick={onComplete}>
+            {isPrimarySandbox ? "进入实战练习" : "前往伙伴会合"}
+            <ArrowRight size={17} />
+          </button>
+        </section>
+      </main>
     );
   }
 
@@ -5957,67 +9904,30 @@ export function TeachingBridge({
     );
   }
 
-  if (
-    (scenario.scenarioId === "canvas-save-persistence" ||
-      scenario.scenarioId === "case-002" ||
-      scenario.scenarioId === "case-003-login-state" ||
-      scenario.scenarioId === "case-004-api-error" ||
-      scenario.scenarioId === "case-005-data-consistency" ||
-      scenario.scenarioId === "case-006-performance" ||
-      scenario.scenarioId === "case-007-ai-api" ||
-      scenario.scenarioId === "case-008-hallucination" ||
-      scenario.scenarioId === "case-009-rag" ||
-      scenario.scenarioId === "case-010-agent-tools" ||
-      scenario.scenarioId === "case-011-testing-proof" ||
-      scenario.scenarioId === "case-012-agent-brief" ||
-      scenario.scenarioId === "case-013-delivery-review" ||
-      scenario.scenarioId === "case-014-release-readiness" ||
-      scenario.scenarioId === "case-015-interview-review") &&
-    !storyQuestComplete
-  ) {
+  if (isStoryQuestScenario && !storyQuestComplete) {
     return (
       <EvidenceStoryQuest
+        scenarioId={scenario.scenarioId}
         developer={developer}
         saving={saving}
         scenes={storyScenes}
         journey={storyJourney}
         journeyTitle={storyRouteLabel}
         stepLabel={storyStepLabel}
-        onComplete={async () => {
-          await saveProgress(
-            isCanvasStorm
-              ? "canvasstorm-investigation"
-              : isLoginState
-                ? "login-state-investigation"
-                : isApiError
-                  ? "api-error-investigation"
-                  : isConsistency
-                    ? "consistency-investigation"
-                    : isPerformance
-                      ? "performance-investigation"
-                      : isAiApi
-                        ? "ai-api-investigation"
-                        : isHallucination
-                          ? "hallucination-investigation"
-                          : isRag
-                            ? "rag-investigation"
-                            : isAgentTools
-                              ? "agent-tools-investigation"
-                              : isTestingProof
-                                ? "testing-proof-investigation"
-                                : isAgentBrief
-                                  ? "agent-brief-investigation"
-                                  : isDeliveryReview
-                                    ? "delivery-review-investigation"
-                                    : isReleaseReadiness
-                                      ? "release-readiness-investigation"
-                                      : isInterviewReview
-                                        ? "interview-review-investigation"
-                                        : "story-investigation",
-            {
-              completedAt: new Date().toISOString(),
-              route: isCanvasStorm
-                ? "canvasstorm-real-project"
+        workBackground={workBackground}
+        initialProgress={initialStoryProgress}
+        onProgress={(snapshot) => {
+          void saveProgress(storyProgressStepId, snapshot, false);
+        }}
+        onComplete={async (sceneRecalls, sceneDecisions) => {
+          await saveProgress(storyProgressStepId, {
+            completedAt: new Date().toISOString(),
+            ...(sceneRecalls ? { sceneRecalls } : {}),
+            ...(sceneDecisions ? { sceneDecisions } : {}),
+            route: isCanvasStorm
+              ? "canvasstorm-real-project"
+              : isJavaIncident
+                ? "java-production-incident-investigation"
                 : isLoginState
                   ? "login-state-investigation"
                   : isApiError
@@ -6045,8 +9955,7 @@ export function TeachingBridge({
                                         : isInterviewReview
                                           ? "interview-review-answer-forge"
                                           : "visual-novel-investigation",
-            },
-          );
+          });
           setStoryQuestComplete(true);
           if (
             !isCanvasStorm &&
@@ -6079,13 +9988,374 @@ export function TeachingBridge({
     );
   }
 
+  const closeRecapCards = isCanvasStorm
+    ? [
+        {
+          label: "工作里怎么用",
+          title: "把模糊 AI 需求拆成产品链路",
+          body: "遇到“做个 AI 功能”时，先追问用户、输入、输出、候选取舍和保存边界。",
+        },
+        {
+          label: "证据链怎么验",
+          title: "Brief、方向、候选、会话都要能追到",
+          body: "看表单状态、候选请求、取舍记录和会话保存，证明 AI 产出不是空泛生成。",
+        },
+        {
+          label: "面试怎么讲",
+          title: "我把 AI 生成从灵感变成可交付流程",
+          body: "不要只说用了 AI，要讲清输入结构、决策流程、保存边界和不可用兜底。",
+        },
+      ]
+    : isJavaIncident
+      ? [
+          {
+            label: "工作里怎么用",
+            title: "线上先止血，再追根因",
+            body: "错误率、P95、requestId 和版本号帮你判断影响；回滚是保护用户的动作，不等于根因已经修好。",
+          },
+          {
+            label: "证据链怎么验",
+            title: "报警、日志、回滚、复测要互相作证",
+            body: "用时间窗口和 requestId 串起证据，再用健康检查、冒烟路径和恢复指标证明用户真的恢复。",
+          },
+          {
+            label: "面试怎么讲",
+            title: "我能把线上故障讲成可复核闭环",
+            body: "讲清现象、证据、判断、止血、恢复和防复发，不把事故归结成一句‘重启就好了’。",
+          },
+        ]
+      : isLoginState
+        ? [
+            {
+              label: "工作里怎么用",
+              title: "刷新掉登录时先分清前后端状态",
+              body: "用户被踢回登录页时，先看浏览器凭证、请求是否带 token、后端是否查到 Session。",
+            },
+            {
+              label: "证据链怎么验",
+              title: "Application、Network、后端验证一起看",
+              body: "Cookie/Token、GET /me 状态码和后端 Session 查询结果要能互相对上。",
+            },
+            {
+              label: "面试怎么讲",
+              title: "我能解释登录态怎么保存、怎么失效",
+              body: "讲清浏览器带什么、后端查什么、401 说明什么，以及过期后如何给用户反馈。",
+            },
+          ]
+        : isApiError
+          ? [
+              {
+                label: "工作里怎么用",
+                title: "接口失败先看请求，再看状态码",
+                body: "不要只说接口坏了，先判断是前端参数、权限、后端校验还是服务异常。",
+              },
+              {
+                label: "证据链怎么验",
+                title: "Payload、响应体、日志串起来",
+                body: "Network 看到请求和状态码，响应体说明用户可见错误，后端日志说明真实原因。",
+              },
+              {
+                label: "面试怎么讲",
+                title: "我能定位失败发生在哪一层",
+                body: "用 400/401/500、结构化错误和 requestId 说明自己不是凭感觉排障。",
+              },
+            ]
+          : isConsistency
+            ? [
+                {
+                  label: "工作里怎么用",
+                  title: "重复提交要前端拦、后端守、数据库兜底",
+                  body: "连点、重试和并发都会出现，不能只靠按钮禁用解决一致性。",
+                },
+                {
+                  label: "证据链怎么验",
+                  title: "重复请求来了，但核心记录只有一份",
+                  body: "用 Network、Idempotency-Key、唯一约束和 SELECT count 证明数据没有重复落库。",
+                },
+                {
+                  label: "面试怎么讲",
+                  title: "我能解释幂等和事务边界",
+                  body: "说明为什么前端防抖是体验层，后端幂等和数据库约束才是底线。",
+                },
+              ]
+            : isPerformance
+              ? [
+                  {
+                    label: "工作里怎么用",
+                    title: "页面慢先判断慢在哪一段",
+                    body: "别急着优化样式，先拆资源加载、接口等待、后端耗时和前端渲染。",
+                  },
+                  {
+                    label: "证据链怎么验",
+                    title: "瀑布图、Server-Timing、复测对比",
+                    body: "用 TTFB、后端计时、渲染画像和优化前后耗时证明瓶颈与收益。",
+                  },
+                  {
+                    label: "面试怎么讲",
+                    title: "我不是说变快了，而是证明变快了",
+                    body: "讲清定位方法、优化动作、复测数字、缓存边界和数据新鲜度风险。",
+                  },
+                ]
+              : isAiApi
+                ? [
+                    {
+                      label: "工作里怎么用",
+                      title: "AI Key 只能在服务端使用",
+                      body: "前端只请求自己的后端，后端读环境变量再调用模型服务。",
+                    },
+                    {
+                      label: "证据链怎么验",
+                      title: "前端无密钥、成功流式、失败兜底",
+                      body: "检查打包代码、Network 流式响应、上游失败结构化错误和后端日志。",
+                    },
+                    {
+                      label: "面试怎么讲",
+                      title: "我能安全接入 AI API",
+                      body: "说明密钥隔离、流式体验、错误兜底和日志定位，而不是只展示能聊天。",
+                    },
+                  ]
+                : isHallucination
+                  ? [
+                      {
+                        label: "工作里怎么用",
+                        title: "AI 回答必须有来源和拒答边界",
+                        body: "资料不足时要拒答，有资料时要带引用，不能让模型顺口补全。",
+                      },
+                      {
+                        label: "证据链怎么验",
+                        title: "Prompt、context、citations 都要校验",
+                        body: "检查本轮资料、引用 id、引用是否存在，以及无资料问题是否会拒答。",
+                      },
+                      {
+                        label: "面试怎么讲",
+                        title: "我把 AI 输出做成可验证流程",
+                        body: "讲清 grounding、引用校验、confidence 和拒答策略，证明不是只调 prompt。",
+                      },
+                    ]
+                  : isRag
+                    ? [
+                        {
+                          label: "工作里怎么用",
+                          title: "先找资料，再让模型回答",
+                          body: "公司知识问答不能靠模型记忆，要从文档 chunk 检索出来源。",
+                        },
+                        {
+                          label: "证据链怎么验",
+                          title: "source、chunk、topK、citations 连起来",
+                          body: "看命中文档、分数、传入 context 和最终引用是否能回到原文。",
+                        },
+                        {
+                          label: "面试怎么讲",
+                          title: "我能解释资料如何进入回答",
+                          body: "讲清切分、向量索引、检索命中、引用展示和未命中拒答。",
+                        },
+                      ]
+                    : isAgentTools
+                      ? [
+                          {
+                            label: "工作里怎么用",
+                            title: "Agent 能做事，但必须先过工具门禁",
+                            body: "让 Agent 只能调用注册表里的工具，参数和权限都要先校验。",
+                          },
+                          {
+                            label: "证据链怎么验",
+                            title: "正常调用、坏参数、越权拒绝都要测",
+                            body: "看 tool registry、schema 校验、permission gate、失败回退和 audit log。",
+                          },
+                          {
+                            label: "面试怎么讲",
+                            title: "我让 Agent 成为受控执行者",
+                            body: "说明工具边界、参数校验、权限隔离和失败回退，证明不是放任 Agent乱做。",
+                          },
+                        ]
+                      : isTestingProof
+                        ? [
+                            {
+                              label: "工作里怎么用",
+                              title: "Agent 说修好了不算验收",
+                              body: "先复现旧问题，再用自动化和手动报告证明当前代码真的修复。",
+                            },
+                            {
+                              label: "证据链怎么验",
+                              title: "复现、单测、集成、手动报告一起交",
+                              body: "报告要带时间、步骤、源码指纹、结果和仍未覆盖的回归风险。",
+                            },
+                            {
+                              label: "面试怎么讲",
+                              title: "我会用证据接收交付",
+                              body: "讲清 red to green、边界测试和手动复测，而不是只相信口头完成。",
+                            },
+                          ]
+                        : isAgentBrief
+                          ? [
+                              {
+                                label: "工作里怎么用",
+                                title: "把愿望写成 Agent 能执行的委托",
+                                body: "任务要包含背景、目标、范围、禁止事项、验收和风险。",
+                              },
+                              {
+                                label: "证据链怎么验",
+                                title: "Agent 知道做什么，也知道不能做什么",
+                                body: "检查验收命令、浏览器路径、可见结果、回滚和未覆盖项是否写清楚。",
+                              },
+                              {
+                                label: "面试怎么讲",
+                                title: "我能指挥 Agent 做工程任务",
+                                body: "说明自己会拆目标、设边界、写验收，而不是把判断全部丢给 Agent。",
+                              },
+                            ]
+                          : isDeliveryReview
+                            ? [
+                                {
+                                  label: "工作里怎么用",
+                                  title: "审交付先读说明，再看 Diff 和证据",
+                                  body: "Agent 说完成只是开始，还要核范围、测试、边界和文档同步。",
+                                },
+                                {
+                                  label: "证据链怎么验",
+                                  title: "摘要、Diff、测试、浏览器验收要一致",
+                                  body: "过期测试、移动端缺口、文档没同步，都应该要求补证。",
+                                },
+                                {
+                                  label: "面试怎么讲",
+                                  title: "我能判断交付是否真的完成",
+                                  body: "把“我觉得不行”改成“缺少哪份证据、哪个边界没验”。",
+                                },
+                              ]
+                            : isReleaseReadiness
+                              ? [
+                                  {
+                                    label: "工作里怎么用",
+                                    title: "上线不是点部署，而是守门",
+                                    body: "上线前确认计划、环境变量、备份、冒烟测试、监控和回滚条件。",
+                                  },
+                                  {
+                                    label: "证据链怎么验",
+                                    title: "上线前后都要有可观察信号",
+                                    body: "看 env、backup restore、390px 冒烟、错误率、接口耗时和回滚验证。",
+                                  },
+                                  {
+                                    label: "面试怎么讲",
+                                    title: "我能负责一次可控上线",
+                                    body: "讲清发布风险、监控指标、回滚阈值和恢复后如何证明系统正常。",
+                                  },
+                                ]
+                              : isInterviewReview
+                                ? [
+                                    {
+                                      label: "工作里怎么用",
+                                      title: "把项目经历整理成可追问故事",
+                                      body: "从证据里挑素材，用 STAR 讲行动和结果，再准备边界和追问。",
+                                    },
+                                    {
+                                      label: "证据链怎么验",
+                                      title: "每句话都要能回到具体产出",
+                                      body: "现象、证据、根因、行动、验证、取舍和未覆盖项都要能被追问。",
+                                    },
+                                    {
+                                      label: "面试怎么讲",
+                                      title: "我能把学习产出转成工程表达",
+                                      body: "讲清自己如何读项目、定位 bug、写任务、审交付、上线和复盘。",
+                                    },
+                                  ]
+                                : [
+                                    {
+                                      label: "工作里怎么用",
+                                      title: "先分清内存成功和持久化成功",
+                                      body: "页面提示成功不代表数据库真的保存，刷新后消失要追完整数据流。",
+                                    },
+                                    {
+                                      label: "证据链怎么验",
+                                      title: "POST 成功和 SELECT 结果要一起看",
+                                      body: "201 只能证明接口返回成功，数据库查询和刷新恢复才能证明持久化。",
+                                    },
+                                    {
+                                      label: "面试怎么讲",
+                                      title: "我能解释一次保存请求怎么走",
+                                      body: "讲清用户、前端、后端、数据层、数据库和验收证据之间的交接。",
+                                    },
+                                  ];
+  const closeAgentBrief = {
+    background: `本章要继续实战的是：${closeRecapCards[0].title}。${closeRecapCards[0].body}`,
+    boundary:
+      "只围绕本章沙盒和白名单材料排查；不要读取真实项目、不要执行用户终端命令、不要声称学习效果已经真人验证。",
+    acceptance: `${closeRecapCards[1].title}：${closeRecapCards[1].body}`,
+  };
+  const closeScene = storyScenes.at(-1) ?? storyScenes[0];
+  const closeChapterTitle = isJavaIncident
+    ? "Java 第 5 关已通关"
+    : isJavaRelease
+      ? "Java 第 4 关已通关"
+      : isLoginState
+        ? "主线 1-3 已通关"
+        : isApiError
+          ? "主线 1-4 已通关"
+          : isConsistency
+            ? "主线 1-5 已通关"
+            : isPerformance
+              ? "主线 1-6 已通关"
+              : isAiApi
+                ? "主线 1-7 已通关"
+                : isHallucination
+                  ? "主线 1-8 已通关"
+                  : isRag
+                    ? "主线 1-9 已通关"
+                    : isAgentTools
+                      ? "主线 1-10 已通关"
+                      : isTestingProof
+                        ? "主线 1-11 已通关"
+                        : isAgentBrief
+                          ? "主线 1-12 已通关"
+                          : isDeliveryReview
+                            ? "主线 1-13 已通关"
+                            : isReleaseReadiness
+                              ? "主线 1-14 已通关"
+                              : isInterviewReview
+                                ? "主线 1-15 已通关"
+                                : "主线 1-2 已通关";
+  const closeChapterSummary = isJavaIncident
+    ? "你已经能把一次线上故障讲成完整证据链：先用错误率和 P95 确认影响，再用 requestId、日志和版本号定位范围；达到阈值时先回滚止血，回滚后用健康检查、业务冒烟和恢复指标证明用户路径回来，最后补上告警、日志和回归护栏。面试里要讲清每个决定依据，而不是只说最后重启或回滚了。"
+    : isCanvasStorm
+      ? "你已经能把一个空泛 AI 点子讲成产品链路：用户先写 Project Brief，系统按方向限制 AI 发散，候选看板让用户保留、待定或放弃，最后把 Brief、候选、取舍和草案保存成会话。面试里不要只说“我做了 AI 生成”，要讲清输入结构、决策流程、保存边界和 AI 不可用时的兜底。"
+      : isLoginState
+        ? "你已经能把登录态讲成一条证据链：页面提交账号密码，后端发 token，浏览器用 Cookie 携带它，验证路由再查后端 Session。掉登录时，不要只看页面，要用 Application、Network 和后端验证逻辑共同判断。"
+        : isApiError
+          ? "你已经能把接口报错讲成一条证据链：用户提交表单，前端发出请求，后端校验参数并返回状态码，日志记录具体原因。定位接口失败时，不要只说接口坏了，要用 Network、响应体和后端日志判断失败发生在哪一层。"
+          : isConsistency
+            ? "你已经能把重复提交讲成一条证据链：同一次动作可能产生多次请求，前端负责减少连点，后端用 Idempotency-Key 识别同一件事，数据库用唯一约束和事务兜底。验收时要证明重复请求真的进来了，但核心记录最终只有一份。"
+            : isPerformance
+              ? "你已经能把页面慢讲成一条证据链：用户打开页面，浏览器下载资源，接口等待后端第一口响应，前端渲染列表，最后用缓存、分页或请求去重优化并复测。性能优化不能只说变快了，要给出优化前后耗时、数据新鲜度和回归测试。"
+              : isAiApi
+                ? "你已经能把 AI API 接入讲成一条证据链：用户输入交给前端，前端只请求自己的后端，后端从环境变量读取密钥并调用模型服务，模型流式返回内容，前端逐段显示。验收时要证明前端不含密钥、成功能流式输出、失败有结构化错误和日志。"
+                : isHallucination
+                  ? "你已经能把 AI 幻觉控制讲成一条证据链：用户问题先写成 Prompt 委托，后端把带编号的 context 资料交给模型，模型输出 answer、citations 和 confidence，服务端再校验引用是否属于本轮资料。验收时要证明有资料能答、无资料不编、每个引用都能追到来源。"
+                  : isRag
+                    ? "你已经能把 RAG 知识库讲成一条证据链：原始资料先保留来源元数据，长文档被切成 chunk，chunk 生成 embedding 写入索引；用户提问时检索 topK 命中片段，再把这些片段作为 context 交给模型生成带 citations 的回答。验收时要先看命中是否正确，再看引用能否回到原文。"
+                    : isAgentTools
+                      ? "你已经能把 Agent 工具调用讲成一条证据链：用户目标先变成 Agent 计划，Agent 只能选择注册表里的工具；工具执行前先校验参数 schema，再检查当前用户和环境权限；合法调用才执行，失败时返回结构化错误、requestId 和可理解提示。验收时要证明正常调用有结果、坏参数被拦、越权动作被拒绝。"
+                      : isTestingProof
+                        ? "你已经能把测试验收讲成一条证据链：先把旧故障写成能失败的复现用例，再用单元测试守住关键函数，用集成测试证明接口、数据层和数据库交接正确，最后用手动测试报告记录时间、步骤、源码指纹和回归风险。验收 Agent 交付时，不要只接受“已修复”，要要求它交出可复核证据。"
+                        : isAgentBrief
+                          ? "你已经能把 Agent 任务写成一份可执行委托：先交代问题现场、影响和已有证据，再写出可观察目标；然后划定范围、约束和禁止事项，最后给出验收命令、浏览器路径、可见结果、风险和未覆盖项。好的委托不是把判断全部丢给 Agent，而是让 Agent 在清楚边界内交出可复核成果。"
+                          : isDeliveryReview
+                            ? "你已经能把 Agent 交付审查讲成一条证据链：先读交付说明确认摘要、验证和风险，再用 Diff 核对改动范围；接着看自动化、浏览器和移动端边界证据，最后检查项目记忆是否同步。接收或拒收都要基于证据，而不是基于 Agent 的语气。"
+                            : isReleaseReadiness
+                              ? "你已经能把上线前检查讲成一条证据链：交付通过后先写上线计划和影响范围，再核生产环境变量、密钥和功能开关；涉及数据就确认备份和恢复步骤，上线后观察错误率、接口耗时和业务成功率，异常时按提前写好的条件回滚，并用冒烟测试证明恢复。上线不是点部署，而是让发布可观察、可回退、可复盘。"
+                              : isInterviewReview
+                                ? "你已经能把项目经历讲成一条可追问的证据链：先从前面关卡挑出可展示、可解释、可验收的证据，再用 STAR 压缩回答；排障经历讲现象、证据、根因、修复和验证，技术经历讲约束、方案、代价和取舍。最后准备追问和边界，让面试回答经得起第二问。"
+                                : "你已经正确识别了登录状态丢失的根因：Token/Session 只存在内存中，服务重启后全部失效。这和主线 1-1「数据消失事件」是同一个根本原理——内存是临时的，持久化才能真正确保数据不丢失。";
+
   const renderStep = (idx: number) => {
-    const step = scenario.steps[idx];
+    const step = withChapterRemediation(
+      scenario.scenarioId,
+      scenario.steps[idx],
+    );
 
     switch (step.id) {
       case "project-map":
         return (
           <ProjectMapView
+            scenarioId={scenario.scenarioId}
             map={scenario.projectMap}
             onComplete={() => completeStep(idx)}
           />
@@ -6095,8 +10365,10 @@ export function TeachingBridge({
         return (
           <MicroLessonsView
             key="micro-lessons"
+            step={step}
             concepts={step.concepts ?? []}
             onComplete={() => completeStep(idx)}
+            onRemediation={(trigger) => recordRemediation(step.id, trigger)}
           />
         );
 
@@ -6148,6 +10420,7 @@ export function TeachingBridge({
       case "c15-map":
         return (
           <ProjectMapView
+            scenarioId={scenario.scenarioId}
             map={scenario.projectMap}
             onComplete={() => completeStep(idx)}
           />
@@ -6170,8 +10443,10 @@ export function TeachingBridge({
         return (
           <MicroLessonsView
             key={step.id}
+            step={step}
             concepts={step.concepts ?? []}
             onComplete={() => completeStep(idx)}
+            onRemediation={(trigger) => recordRemediation(step.id, trigger)}
           />
         );
 
@@ -6230,78 +10505,63 @@ export function TeachingBridge({
       case "c14-close":
       case "c15-close":
         return (
-          <section
-            className="teaching-shell"
-            style={{ textAlign: "center", padding: "60px 40px" }}
-          >
-            <div style={{ fontSize: 48, marginBottom: 16 }}>🧩</div>
-            <h2>
-              {isLoginState
-                ? "主线 1-3 已通关"
-                : isApiError
-                  ? "主线 1-4 已通关"
-                  : isConsistency
-                    ? "主线 1-5 已通关"
-                    : isPerformance
-                      ? "主线 1-6 已通关"
-                      : isAiApi
-                        ? "主线 1-7 已通关"
-                        : isHallucination
-                          ? "主线 1-8 已通关"
-                          : isRag
-                            ? "主线 1-9 已通关"
-                            : isAgentTools
-                              ? "主线 1-10 已通关"
-                              : isTestingProof
-                                ? "主线 1-11 已通关"
-                                : isAgentBrief
-                                  ? "主线 1-12 已通关"
-                                  : isDeliveryReview
-                                    ? "主线 1-13 已通关"
-                                    : isReleaseReadiness
-                                      ? "主线 1-14 已通关"
-                                      : isInterviewReview
-                                        ? "主线 1-15 已通关"
-                                        : "主线 1-2 已通关"}
-            </h2>
-            <p
-              style={{
-                fontSize: 14,
-                color: "var(--muted)",
-                lineHeight: 1.8,
-                marginBottom: 28,
-              }}
+          <section className="teaching-shell chapter-close-stage">
+            <div className="chapter-close-mentor" aria-label="结案导师">
+              <img src={closeScene?.portrait ?? archiveKeeperPortrait} alt="" />
+              <div>
+                <span>结案导师 · {closeScene?.place ?? "档案馆"}</span>
+                <strong>{closeScene?.speaker ?? "档案馆记录员"}</strong>
+                <p>
+                  {closeScene?.mentor ??
+                    "把证据收束成可复述的判断，再进入下一段实战。"}
+                </p>
+              </div>
+            </div>
+            <header className="chapter-close-head">
+              <span>🧩 章节结案</span>
+              <h2>{closeChapterTitle}</h2>
+              <p>{closeChapterSummary}</p>
+            </header>
+            <div className="chapter-close-badges" aria-label="本章能力印记">
+              {closeRecapCards.map((card) => (
+                <span key={card.label}>{card.title}</span>
+              ))}
+            </div>
+            <div className="chapter-close-recap" aria-label="章节结案复盘">
+              {closeRecapCards.map((card) => (
+                <article key={card.label}>
+                  <span>{card.label}</span>
+                  <strong>{card.title}</strong>
+                  <p>{card.body}</p>
+                </article>
+              ))}
+            </div>
+            <section
+              className="chapter-agent-brief"
+              aria-label="给 Agent 的委托口令"
             >
-              {isCanvasStorm
-                ? "你已经能把一个空泛 AI 点子讲成产品链路：用户先写 Project Brief，系统按方向限制 AI 发散，候选看板让用户保留、待定或放弃，最后把 Brief、候选、取舍和草案保存成会话。面试里不要只说“我做了 AI 生成”，要讲清输入结构、决策流程、保存边界和 AI 不可用时的兜底。"
-                : isLoginState
-                  ? "你已经能把登录态讲成一条证据链：页面提交账号密码，后端发 token，浏览器用 Cookie 携带它，验证路由再查后端 Session。掉登录时，不要只看页面，要用 Application、Network 和后端验证逻辑共同判断。"
-                  : isApiError
-                    ? "你已经能把接口报错讲成一条证据链：用户提交表单，前端发出请求，后端校验参数并返回状态码，日志记录具体原因。定位接口失败时，不要只说接口坏了，要用 Network、响应体和后端日志判断失败发生在哪一层。"
-                    : isConsistency
-                      ? "你已经能把重复提交讲成一条证据链：同一次动作可能产生多次请求，前端负责减少连点，后端用 Idempotency-Key 识别同一件事，数据库用唯一约束和事务兜底。验收时要证明重复请求真的进来了，但核心记录最终只有一份。"
-                      : isPerformance
-                        ? "你已经能把页面慢讲成一条证据链：用户打开页面，浏览器下载资源，接口等待后端第一口响应，前端渲染列表，最后用缓存、分页或请求去重优化并复测。性能优化不能只说变快了，要给出优化前后耗时、数据新鲜度和回归测试。"
-                        : isAiApi
-                          ? "你已经能把 AI API 接入讲成一条证据链：用户输入交给前端，前端只请求自己的后端，后端从环境变量读取密钥并调用模型服务，模型流式返回内容，前端逐段显示。验收时要证明前端不含密钥、成功能流式输出、失败有结构化错误和日志。"
-                          : isHallucination
-                            ? "你已经能把 AI 幻觉控制讲成一条证据链：用户问题先写成 Prompt 委托，后端把带编号的 context 资料交给模型，模型输出 answer、citations 和 confidence，服务端再校验引用是否属于本轮资料。验收时要证明有资料能答、无资料不编、每个引用都能追到来源。"
-                            : isRag
-                              ? "你已经能把 RAG 知识库讲成一条证据链：原始资料先保留来源元数据，长文档被切成 chunk，chunk 生成 embedding 写入索引；用户提问时检索 topK 命中片段，再把这些片段作为 context 交给模型生成带 citations 的回答。验收时要先看命中是否正确，再看引用能否回到原文。"
-                              : isAgentTools
-                                ? "你已经能把 Agent 工具调用讲成一条证据链：用户目标先变成 Agent 计划，Agent 只能选择注册表里的工具；工具执行前先校验参数 schema，再检查当前用户和环境权限；合法调用才执行，失败时返回结构化错误、requestId 和可理解提示。验收时要证明正常调用有结果、坏参数被拦、越权动作被拒绝。"
-                                : isTestingProof
-                                  ? "你已经能把测试验收讲成一条证据链：先把旧故障写成能失败的复现用例，再用单元测试守住关键函数，用集成测试证明接口、数据层和数据库交接正确，最后用手动测试报告记录时间、步骤、源码指纹和回归风险。验收 Agent 交付时，不要只接受“已修复”，要要求它交出可复核证据。"
-                                  : isAgentBrief
-                                    ? "你已经能把 Agent 任务写成一份可执行委托：先交代问题现场、影响和已有证据，再写出可观察目标；然后划定范围、约束和禁止事项，最后给出验收命令、浏览器路径、可见结果、风险和未覆盖项。好的委托不是把判断全部丢给 Agent，而是让 Agent 在清楚边界内交出可复核成果。"
-                                    : isDeliveryReview
-                                      ? "你已经能把 Agent 交付审查讲成一条证据链：先读交付说明确认摘要、验证和风险，再用 Diff 核对改动范围；接着看自动化、浏览器和移动端边界证据，最后检查项目记忆是否同步。接收或拒收都要基于证据，而不是基于 Agent 的语气。"
-                                      : isReleaseReadiness
-                                        ? "你已经能把上线前检查讲成一条证据链：交付通过后先写上线计划和影响范围，再核生产环境变量、密钥和功能开关；涉及数据就确认备份和恢复步骤，上线后观察错误率、接口耗时和业务成功率，异常时按提前写好的条件回滚，并用冒烟测试证明恢复。上线不是点部署，而是让发布可观察、可回退、可复盘。"
-                                        : isInterviewReview
-                                          ? "你已经能把项目经历讲成一条可追问的证据链：先从前面关卡挑出可展示、可解释、可验收的证据，再用 STAR 压缩回答；排障经历讲现象、证据、根因、修复和验证，技术经历讲约束、方案、代价和取舍。最后准备追问和边界，让面试回答经得起第二问。"
-                                          : "你已经正确识别了登录状态丢失的根因：Token/Session 只存在内存中，服务重启后全部失效。这和主线 1-1「数据消失事件」是同一个根本原理——内存是临时的，持久化才能真正确保数据不丢失。"}
-            </p>
+              <div>
+                <span>给 Agent 的委托口令</span>
+                <strong>下一步不是“帮我修一下”，而是交出可验收任务。</strong>
+                <p>
+                  把本章结论改写成三句任务骨架：背景讲清现场，边界守住安全，验收说明怎么证明完成。
+                </p>
+              </div>
+              <dl>
+                <div>
+                  <dt>背景</dt>
+                  <dd>{closeAgentBrief.background}</dd>
+                </div>
+                <div>
+                  <dt>边界</dt>
+                  <dd>{closeAgentBrief.boundary}</dd>
+                </div>
+                <div>
+                  <dt>验收</dt>
+                  <dd>{closeAgentBrief.acceptance}</dd>
+                </div>
+              </dl>
+            </section>
             <button
               className="v2-button primary wide"
               onClick={() => completeStep(idx)}
@@ -6348,13 +10608,66 @@ export function TeachingBridge({
         <span>🏆 进度 {teachingProgressPercent}%</span>
       </div>
 
+      <ChapterMentorCompanion
+        key={storyScenes[currentStepIdx]?.id ?? currentStepIdx}
+        scenario={scenario}
+        currentStepIdx={currentStepIdx}
+        scenes={storyScenes}
+        routeLabel={storyRouteLabel}
+        workBackground={workBackground}
+      />
+
+      <ChapterCompanionReaction
+        scenario={scenario}
+        currentStepIdx={currentStepIdx}
+      />
+
       {renderStep(currentStepIdx)}
+
+      <details className="learning-support-drawer">
+        <summary>
+          <span>冒险辅助</span>
+          <strong>需要时展开流程回放、导师试炼与能力护照</strong>
+          <small>当前任务已经在上方，不必先读完这些资料</small>
+        </summary>
+        <ChapterMemoryStrip
+          steps={scenario.steps}
+          currentStepIdx={currentStepIdx}
+          progress={progress}
+        />
+        <ChapterQuestLog
+          scenario={scenario}
+          currentStepIdx={currentStepIdx}
+          completedCount={completedScenarioStepCount}
+        />
+        <ChapterFlowReplay
+          scenario={scenario}
+          currentStepIdx={currentStepIdx}
+        />
+        <ChapterMentorTrial
+          scenario={scenario}
+          currentStepIdx={currentStepIdx}
+        />
+        <ChapterAbilityPassport
+          scenario={scenario}
+          currentStepIdx={currentStepIdx}
+        />
+      </details>
 
       {saving && (
         <div className="teaching-saving">
           <LoaderCircle className="spin" size={16} />
           保存进度…
         </div>
+      )}
+
+      {completedStepTransition !== null && (
+        <StepEvidenceTransition
+          scenario={scenario}
+          completedStepIndex={completedStepTransition}
+          saving={saving}
+          onContinue={continueAfterEvidence}
+        />
       )}
 
       <GlossaryPanel entries={glossary} />
@@ -6364,11 +10677,15 @@ export function TeachingBridge({
 
 /** 微知识列表视图 */
 function MicroLessonsView({
+  step,
   concepts,
   onComplete,
+  onRemediation,
 }: {
+  step: TeachingStep;
   concepts: ConceptCard[];
   onComplete: () => void;
+  onRemediation: (trigger: string) => void;
 }) {
   const [completedCards, setCompletedCards] = useState<Set<string>>(new Set());
   const allDone = concepts.every((c) => completedCards.has(c.id));
@@ -6399,6 +10716,9 @@ function MicroLessonsView({
         <ConceptCardView
           key={nextCard.id}
           card={nextCard}
+          remediation={
+            <StepRemediation step={step} onRemediation={onRemediation} />
+          }
           onComplete={() => {
             setCompletedCards(new Set([...completedCards, nextCard.id]));
           }}
@@ -6426,6 +10746,23 @@ function MicroLessonsView({
 /** 陪练介绍 */
 function CoachingIntro({ onComplete }: { onComplete: () => void }) {
   const [checked, setChecked] = useState<Set<number>>(new Set());
+  const battleRules = [
+    {
+      label: "目标",
+      value: "把临时内存写入真实数据库",
+      detail: "这一步不是背答案，而是把刚学到的数据流用在 sandbox 修复里。",
+    },
+    {
+      label: "边界",
+      value: "只改沙盒，不读取真实项目",
+      detail: "应用不会帮你执行终端命令；测试由你在沙盒里手动运行。",
+    },
+    {
+      label: "验收",
+      value: "测试报告 + 刷新恢复 + 数据库证据",
+      detail: "真正通关要能证明保存后刷新不丢，数据库也能查到记录。",
+    },
+  ];
   const coachingSteps = [
     {
       step: "找出当前写入位置",
@@ -6477,14 +10814,36 @@ function CoachingIntro({ onComplete }: { onComplete: () => void }) {
 
   return (
     <section className="teaching-shell coaching-shell">
-      <header className="teaching-header">
-        <span className="mini-label">陪练模式 · 提示会被记录但不扣分</span>
-        <h2>🛠️ 现在进入实战修复</h2>
-        <p>
-          教学阶段已完成。下面是修复的 6 个步骤，每步都有可领取的提示。
-          完成一步就勾选 ✓
-        </p>
-      </header>
+      <div className="coaching-briefing" aria-label="实战前夜作战简报">
+        <div className="coaching-mentor">
+          <img src={archiveKeeperPortrait} alt="" />
+          <div>
+            <span>实战前夜 · 档案修复台</span>
+            <strong>档案馆记录员</strong>
+            <p>
+              接下来不再只是看故事。你要亲手把“保存成功”变成数据库里真的有记录，
+              然后用测试和刷新结果证明它。
+            </p>
+          </div>
+        </div>
+        <header className="teaching-header">
+          <span className="mini-label">陪练模式 · 提示会被记录但不扣分</span>
+          <h2>现在进入实战修复</h2>
+          <p>
+            下面是修复前的作战清单。每一步都对应一份证据：看代码、找表字段、改写入逻辑、手动跑测试。
+            勾完 6 步后，再进入真正的沙盒实战。
+          </p>
+        </header>
+        <div className="coaching-rules" aria-label="实战作战规则">
+          {battleRules.map((rule) => (
+            <article key={rule.label}>
+              <span>{rule.label}</span>
+              <strong>{rule.value}</strong>
+              <p>{rule.detail}</p>
+            </article>
+          ))}
+        </div>
+      </div>
 
       <div className="coaching-checklist">
         {coachingSteps.map((cs, idx) => (
@@ -6526,7 +10885,7 @@ function CoachingIntro({ onComplete }: { onComplete: () => void }) {
 
       <footer className="teaching-footer">
         <button
-          className="v2-button primary wide"
+          className="dialogue-next coaching-action"
           disabled={!allChecked}
           onClick={onComplete}
         >

@@ -33,11 +33,21 @@ export type LearningCheck = {
   acceptableAnswers: string[];
 };
 
+export type RemediationLesson = {
+  summary: string;
+  notes: Array<{
+    label: string;
+    detail: string;
+  }>;
+  sequence?: string[];
+  takeaway: string;
+};
+
 /** 补课路径 */
 export type RemediationPath = {
   trigger: "term" | "syntax" | "project-position" | "causality";
   label: string;
-  microLesson: string;
+  microLesson: RemediationLesson;
 };
 
 /** 教学步骤定义 */
@@ -391,27 +401,131 @@ export const codeTourSteps: TeachingStep[] = [
 /** 补课内容 */
 export const remediationContent: Record<
   RemediationPath["trigger"],
-  { label: string; microLesson: string }
+  { label: string; microLesson: RemediationLesson }
 > = {
   term: {
     label: "不懂专业术语",
-    microLesson:
-      "**HTTP 201**：表示服务器收到了请求并成功创建了资源。它是状态码，不是数据库操作的证明。\n\n**内存数组**：程序运行时在 RAM 中存放数据的变量。关进程后消失。\n\n**SQLite**：一种文件型数据库，数据写入文件后即使程序重启也不会丢。\n\n**数据访问层**：负责把数据从内存搬到数据库（或反向）的代码层。",
+    microLesson: {
+      summary: "先不背定义，只分清四个角色分别能证明什么。",
+      notes: [
+        {
+          label: "HTTP 201",
+          detail:
+            "后端给前端的成功回执。它只能说明接口这样回复了，不能单独证明数据库已经写入。",
+        },
+        {
+          label: "内存数组",
+          detail: "程序运行时的临时白板。服务重启后会重新变成空数组。",
+        },
+        {
+          label: "SQLite",
+          detail:
+            "保存在磁盘文件里的数据库。数据真的写进去后，刷新或重启仍然可以查到。",
+        },
+        {
+          label: "数据访问层",
+          detail:
+            "专门替业务代码读写数据库的一层。这里负责把画布对象真正交给 SQLite。",
+        },
+      ],
+      takeaway: "201 是回信，数据库查询结果才是入库证据。",
+    },
   },
   syntax: {
     label: "看代码语法有困难",
-    microLesson:
-      "**fetch()**：浏览器发 HTTP 请求的方法。返回 Promise，所以前面有 await。\n\n**response.ok**：如果 HTTP 状态码是 200-299 则为 true。\n\n**push()**：把元素加到数组末尾。\n\n**db.run()**：执行 SQL 语句。\n\n**箭头函数 (=>)**：ES6 简化的函数写法。`(参数) => { 代码 }`。\n\n记住：先看函数名和 return，再看关键操作（push、db.run、response）。类型的声明可以暂时跳过。",
+    microLesson: {
+      summary:
+        "读这一关的代码不用懂全部 JavaScript，只追四个会改变结果的动作。",
+      notes: [
+        {
+          label: "fetch()",
+          detail: "前端用它把画布数据发给后端。前面的 await 表示先等后端回信。",
+        },
+        {
+          label: "response.ok",
+          detail:
+            "状态码在 200 到 299 时为 true，所以前端会把按钮改成“保存成功”。",
+        },
+        {
+          label: "push()",
+          detail: "只把对象放进当前进程的数组，像写在临时白板上。",
+        },
+        {
+          label: "db.run()",
+          detail: "执行 SQL，才有机会把对象真正写进 SQLite。",
+        },
+      ],
+      sequence: [
+        "先找函数收到什么参数。",
+        "再找 fetch、push、db.run 这类真正做事的动作。",
+        "最后看 return 把什么结果交给下一层。",
+      ],
+      takeaway: "先追动作和交接，暂时跳过样式、类型和不影响结果的语法。",
+    },
   },
   "project-position": {
     label: "不知道代码在项目中的位置",
-    microLesson:
-      "项目结构：\n```\nsandbox/canvas-save-persistence/\n├── frontend/        ← React 组件（界面）\n├── server/          ← 后端（路由 + 数据访问）\n│   ├── canvasRoutes.js    ← API 路由\n│   └── canvasRepository.js ← 数据访问层\n├── database/        ← 数据库 schema 和迁移\n├── evidence/        ← 运行证据（日志、Network）\n└── tests/           ← 用户手动运行的测试\n```\n数据流路径：React 组件 → fetch → 路由 → 数据访问层 → SQLite → 回来。",
+    microLesson: {
+      summary: "把项目想成一座分工明确的档案馆，每个目录只负责一段路。",
+      notes: [
+        {
+          label: "frontend/",
+          detail: "用户看到的 React 页面。这里收集点击和表单数据，再发请求。",
+        },
+        {
+          label: "server/canvasRoutes.js",
+          detail:
+            "接口接待台。它接收 POST 请求，调用数据访问层，再把状态码和 JSON 回给前端。",
+        },
+        {
+          label: "server/canvasRepository.js",
+          detail: "数据访问层。它决定画布只是留在内存，还是交给数据库持久化。",
+        },
+        {
+          label: "database/ 与 evidence/",
+          detail:
+            "前者定义数据如何存，后者留下 Network、日志和查询结果等证据。",
+        },
+      ],
+      sequence: [
+        "React 页面把画布 JSON 交给 fetch。",
+        "POST 路由把请求体交给 canvasRepository。",
+        "Repository 应该执行 INSERT，把记录交给 SQLite。",
+        "刷新后再用 GET 和 SELECT 把记录一路交回页面。",
+      ],
+      takeaway: "看到一个文件时，先问它位于哪一站、收到什么、应该交出什么。",
+    },
   },
   causality: {
     label: "不理解因果关系",
-    microLesson:
-      "当前故障的因果链：\n\n1. 用户点击保存 → 前端发 POST 请求\n2. 路由接收请求 → 调用 saveCanvas()\n3. saveCanvas() 把数据 push 到**内存数组**\n4. 返回 201 → 前端显示成功\n5. **关键断裂**: db.run(INSERT...) **从未被执行**\n6. 用户刷新页面 → GET 请求查询 SQLite\n7. SQLite 中没有数据 → 返回空列表\n\n一句话：写入走内存、读取走数据库，两个数据源没连上。",
+    microLesson: {
+      summary:
+        "问题不在“刷新”这个动作，而在保存时根本没有把数据写进刷新后会查询的地方。",
+      notes: [
+        {
+          label: "表面成功",
+          detail: "路由返回 201，response.ok 变成 true，所以页面亮起成功提示。",
+        },
+        {
+          label: "真正断点",
+          detail:
+            "saveCanvas 只执行 pendingCanvases.push，没有执行数据库 INSERT。",
+        },
+        {
+          label: "刷新反证",
+          detail:
+            "刷新后的 GET 查询 SQLite；数据库是 0 行，所以页面只能拿到空列表。",
+        },
+      ],
+      sequence: [
+        "用户点击保存，前端发送 POST。",
+        "路由调用 saveCanvas，数据只进入内存数组。",
+        "路由仍返回 201，页面误以为已经保存。",
+        "刷新后 GET 改去查询 SQLite。",
+        "SQLite 从未收到 INSERT，所以返回 0 行。",
+      ],
+      takeaway: "写入走内存、读取走数据库，读写没有接在同一个数据源上。",
+    },
   },
 };
 
@@ -1507,6 +1621,132 @@ export const case05Scenario: TeachingScenario = {
   projectMap: case05Map,
 };
 
+/** Java 后端路线第 2 关：事务熔炉。 */
+export const javaTransactionConsistencyScenario: TeachingScenario = {
+  scenarioId: "java-transaction-consistency",
+  projectMap: {
+    ...case05Map,
+    nodes: case05Map.nodes.map((node) => ({
+      ...node,
+      description: node.description
+        .replaceAll("草稿", "订单")
+        .replaceAll("保存", "下单"),
+    })),
+  },
+  steps: case05Scenario.steps.map((step) => {
+    const titles: Record<string, string> = {
+      "c5-map": "事务熔炉勘测",
+      "c5-concepts": "提交、回滚与唯一约束小抄",
+      "c5-code-tour-frontend": "关键代码：重复请求从哪里进来",
+      "c5-code-tour-backend": "关键代码：哪一步没有一起回滚",
+      "c5-close": "事务一致性结案报告",
+    };
+    const goals: Record<string, string> = {
+      "c5-map": "先看清一次下单如何同时影响订单、库存和数据库。",
+      "c5-concepts": "用订单和库存的比喻理解事务、回滚、唯一约束和幂等。",
+      "c5-code-tour-frontend": "只读请求入口，找到重复提交与业务动作的关系。",
+      "c5-code-tour-backend": "找出中途失败后仍留下半成品的事务边界。",
+      "c5-close": "能解释为什么事务、唯一约束和失败复测必须一起验收。",
+    };
+    const nextStep = {
+      ...step,
+      title: titles[step.id] ?? step.title,
+      goal: goals[step.id] ?? step.goal,
+    };
+    if (step.id === "c5-tour-backend") {
+      return {
+        ...nextStep,
+        codeFocus: {
+          ...step.codeFocus!,
+          filePath: "server/OrderService.java",
+          functionName: "placeOrder",
+          lines: [
+            "public Order placeOrder(String idempotencyKey, String sku) {",
+            "  Order existing = orders.findByIdempotencyKey(idempotencyKey);",
+            "  if (existing != null) return existing;",
+            "  Order order = orders.insert(idempotencyKey, sku);",
+            "  inventory.decrement(sku);",
+            "  return order;",
+            "}",
+          ],
+          observationGoal:
+            "订单写入和库存扣减没有放进同一个事务；库存失败时，订单可能已经留下。",
+        },
+      };
+    }
+    if (step.id === "c5-tour-frontend") {
+      return {
+        ...nextStep,
+        codeFocus: {
+          ...step.codeFocus!,
+          filePath: "server/OrderRepository.java",
+          functionName: "transaction",
+          observationGoal:
+            "Repository 提供事务边界，Service 应该把订单和库存这两个核心动作交给同一个事务执行。",
+        },
+      };
+    }
+    return nextStep;
+  }),
+};
+
+/** Java 后端路线第 3 关：缓存与可观测性。 */
+function buildJavaCacheObservabilityScenario(): TeachingScenario {
+  return {
+    scenarioId: "java-cache-observability",
+    projectMap: {
+      ...case06Map,
+      nodes: case06Map.nodes.map((node) => ({
+        ...node,
+        description: node.description
+          .replaceAll("页面变慢", "用户读到旧版本")
+          .replaceAll("渲染", "读取"),
+      })),
+    },
+    steps: case06Scenario.steps.map((step) => {
+      const titles: Record<string, string> = {
+        "c6-map": "缓存风廊勘测",
+        "c6-concepts": "缓存、TTL 与降级小抄",
+        "c6-tour-frontend": "关键代码：请求拿到的是哪一版",
+        "c6-tour-backend": "关键代码：缓存命中还是查库",
+        "c6-close": "缓存复测结案报告",
+      };
+      const nextStep = {
+        ...step,
+        title: titles[step.id] ?? step.title,
+        goal:
+          step.id === "c6-map"
+            ? "先看清请求可能经过缓存、数据库和异步刷新哪些站点。"
+            : step.id === "c6-concepts"
+              ? "理解命中、TTL、失效、队列和降级分别解决什么问题。"
+              : step.goal,
+      };
+      if (step.id === "c6-tour-backend") {
+        return {
+          ...nextStep,
+          codeFocus: {
+            ...step.codeFocus!,
+            filePath: "server/ProjectCacheService.java",
+            functionName: "read",
+            lines: [
+              "public Project read(String projectId) {",
+              "  Project cached = cache.get(projectId);",
+              "  if (cached != null) return cached;",
+              "  Project fresh = repository.find(projectId);",
+              "  cache.put(projectId, fresh, 60);",
+              "  return fresh;",
+              "}",
+            ],
+            observationGoal:
+              "缓存命中会直接返回旧对象；修复与验收必须说明失效、版本和降级策略。",
+          },
+        };
+      }
+      return nextStep;
+    }),
+  };
+}
+
 // ============ 主线 1-6：页面为什么慢 ============
 
 const c6Waterfall: ConceptCard = {
@@ -1741,6 +1981,45 @@ export const case06Scenario: TeachingScenario = {
     },
   ],
   projectMap: case06Map,
+};
+
+export const javaCacheObservabilityScenario =
+  buildJavaCacheObservabilityScenario();
+
+export const frontendPerformanceProofScenario: TeachingScenario = {
+  scenarioId: "frontend-performance-proof",
+  projectMap: case06Map,
+  steps: case06Scenario.steps.map((step) => {
+    const titles: Record<string, string> = {
+      "c6-map": "首屏观测塔地图",
+      "c6-concepts": "性能证据小抄",
+      "c6-tour-frontend": "关键代码：页面什么时候开始渲染",
+      "c6-tour-backend": "关键代码：接口等待还是页面等待",
+      "c6-close": "首屏性能结案报告",
+    };
+    const nextStep = {
+      ...step,
+      title: titles[step.id] ?? step.title,
+      goal:
+        step.id === "c6-map"
+          ? "先把资源、接口和渲染放到一条可测量的首屏路线。"
+          : step.id === "c6-concepts"
+            ? "理解瀑布图、TTFB、渲染画像和缓存复测各自回答什么问题。"
+            : step.goal,
+    };
+    if (step.id === "c6-tour-frontend") {
+      return {
+        ...nextStep,
+        codeFocus: {
+          ...step.codeFocus!,
+          filePath: "frontend/ProjectList.jsx",
+          observationGoal:
+            "先记录请求和渲染开始时间，再用证据区分接口返回慢与页面摆放列表慢。",
+        },
+      };
+    }
+    return nextStep;
+  }),
 };
 
 // ============ 主线 1-7：AI 接口怎么接 ============
@@ -2910,6 +3189,26 @@ export const case11Scenario: TeachingScenario = {
   projectMap: case11Map,
 };
 
+export const frontendTestingProofScenario: TeachingScenario = {
+  ...case11Scenario,
+  scenarioId: "frontend-testing-proof",
+  steps: case11Scenario.steps.map((step) => ({
+    ...step,
+    title:
+      step.id === "c11-map"
+        ? "前端回归试炼场勘测"
+        : step.id === "c11-close"
+          ? "前端交付结案报告"
+          : step.title,
+    goal:
+      step.id === "c11-map"
+        ? "先看清前端交互从失败复现到回归证据的完整路线"
+        : step.id === "c11-close"
+          ? "能说明前端修复覆盖了什么，还有哪些设备和路径需要继续复测"
+          : step.goal,
+  })),
+};
+
 // ============ 主线 1-12：Agent 任务怎么写 ============
 
 const c12Context: ConceptCard = {
@@ -3062,7 +3361,7 @@ export const case12CodeTour: TeachingStep[] = [
         "目标：把第 12 章做成委托书工坊剧情关卡，训练背景、目标、约束、验收、风险。",
         "范围：新增教学数据、剧情场景、角色图、入口测试和项目记忆。",
         "验收：npm run verify 通过；浏览器桌面/390px 能从首页进入第 12 章。",
-        "风险：不要破坏第 3-11 章入口；未接入独立沙盒要写进已知边界。",
+        "风险：不要破坏第 3-11 章共用入口；第 12 章独立沙盒、桌面和 390px 路径都要回归。",
       ],
       observationGoal:
         "好委托不是更啰嗦，而是把 Agent 需要判断的边界提前讲清，让交付可以被验证。",
@@ -3285,7 +3584,7 @@ export const case13CodeTour: TeachingStep[] = [
       lines: [
         "摘要：已接入第 13 章剧情入口。",
         "验证：npm run verify 通过；浏览器 1440px/390px 路径通过。",
-        "风险：第 13 章已有种子沙盒但尚未接完整 Lab；第 3-12 章入口为共用组件，需回归。",
+        "风险：15 章共用教学桥和 Lab 外壳；需回归旧章节、390px、刷新恢复和当前源码对应的测试证据。",
       ],
       observationGoal:
         "交付说明要能被复核。只写“已完成”不够，要写验证命令、浏览器路径和仍未覆盖的风险。",
@@ -3376,7 +3675,8 @@ export const case13Map: ProjectMap = {
   ],
   edges: [
     { from: "c13-delivery", to: "c13-diff", label: "核对改了什么" },
-    { from: "c13-diff", to: "c13-tests", label: "核对是否验证" },
+    { from: "c13-delivery", to: "c13-tests", label: "核对是否验证" },
+    { from: "c13-diff", to: "c13-boundary", label: "查改动边界" },
     { from: "c13-tests", to: "c13-boundary", label: "查漏边界" },
     { from: "c13-boundary", to: "c13-docs", label: "同步项目记忆" },
     { from: "c13-docs", to: "c13-decision", label: "形成审查结论" },
@@ -3665,6 +3965,113 @@ export const case14Scenario: TeachingScenario = {
   projectMap: case14Map,
 };
 
+export const javaReleaseHarborScenario: TeachingScenario = {
+  scenarioId: "java-release-harbor",
+  projectMap: case14Map,
+  steps: case14Scenario.steps.map((step) => {
+    const titles: Record<string, string> = {
+      "c14-map": "上线港地图",
+      "c14-concepts": "配置、健康检查与回滚小抄",
+      "c14-code-tour": "关键代码：谁可以拦住坏版本",
+      "c14-evidence": "证据连接：部署成功不等于可上线",
+      "c14-close": "上线门禁结案报告",
+    };
+    return {
+      ...step,
+      title: titles[step.id] ?? step.title,
+      goal:
+        step.id === "c14-map"
+          ? "先看清版本、配置、健康检查、监控和回滚如何接力。"
+          : step.id === "c14-concepts"
+            ? "理解环境变量、健康检查、监控和回滚分别守什么风险。"
+            : step.goal,
+      ...(step.id === "c14-code-tour"
+        ? {
+            codeFocus: {
+              ...step.codeFocus!,
+              filePath: "server/ReleaseGate.java",
+              functionName: "check",
+              lines: [
+                "public ReleaseDecision check(Environment env, Backup backup) {",
+                '  if (!env.hasRequiredSecrets()) return block("missing secret");',
+                '  if (!backup.isRestorable()) return block("backup not restorable");',
+                '  if (!env.healthCheckPasses()) return block("health check failed");',
+                "  return ReleaseDecision.ready();",
+                "}",
+              ],
+              observationGoal:
+                "上线门禁必须在部署前阻断缺密钥、不可恢复备份和健康检查失败。",
+            },
+          }
+        : {}),
+    };
+  }),
+};
+
+export const javaProductionIncidentScenario: TeachingScenario = {
+  scenarioId: "java-production-incident",
+  projectMap: case14Map,
+  steps: case14Scenario.steps.map((step) => {
+    const titles: Record<string, string> = {
+      "c14-map": "线上故障地图",
+      "c14-concepts": "日志、指标与回滚小抄",
+      "c14-code-tour": "关键代码：谁先发现故障",
+      "c14-evidence": "证据时间线：从报警到止血",
+      "c14-close": "线上事故结案报告",
+    };
+    return {
+      ...step,
+      title: titles[step.id] ?? step.title,
+      goal:
+        step.id === "c14-map"
+          ? "先画出报警、请求、日志、指标、回滚和复测怎样接力。"
+          : step.id === "c14-concepts"
+            ? "理解日志告诉你发生了什么、指标告诉你影响多大、回滚保护什么。"
+            : step.goal,
+      ...(step.id === "c14-code-tour"
+        ? {
+            codeFocus: {
+              ...step.codeFocus!,
+              filePath: "server/IncidentTimeline.java",
+              functionName: "decide",
+              lines: [
+                "public IncidentDecision decide(Signals signals, Release previous) {",
+                '  if (signals.errorRate() > 0.05) return rollback("error rate");',
+                '  if (signals.latencyP95() > 800) return hold("latency");',
+                "  return observe(previous);",
+                "}",
+              ],
+              observationGoal:
+                "事故处理不是看到红灯就重启，而是把错误率、延迟和稳定版本交给明确的决定函数。",
+            },
+          }
+        : {}),
+    };
+  }),
+};
+
+export const frontendAccessibilityProofScenario: TeachingScenario = {
+  scenarioId: "frontend-accessibility-proof",
+  projectMap: case14Map,
+  steps: case14Scenario.steps.map((step) => {
+    const titles: Record<string, string> = {
+      "c14-map": "无障碍交付庭地图",
+      "c14-concepts": "语义、焦点与响应式小抄",
+      "c14-close": "前端交付结案报告",
+    };
+    return {
+      ...step,
+      title: titles[step.id] ?? step.title,
+      goal:
+        step.id === "c14-map"
+          ? "先看清语义结构、键盘焦点、移动端和回归如何组成一份交付。"
+          : step.id === "c14-concepts"
+            ? "理解语义 HTML、ARIA、对比度、响应式和回归证据分别保护谁。"
+            : step.goal,
+    };
+  }),
+};
+
 // ============ 主线 1-15：面试怎么讲项目 ============
 
 const c15Star: ConceptCard = {
@@ -3917,4 +4324,405 @@ export const case15Scenario: TeachingScenario = {
     },
   ],
   projectMap: case15Map,
+};
+
+const javaLayeredProjectMap: ProjectMap = {
+  nodes: [
+    {
+      id: "java-request",
+      label: "HTTP 请求",
+      description: "客户端带着 userId 和 viewerId 请求用户资料。",
+      input: "GET /api/users/:id",
+      output: "进入 Controller",
+      possibleFaults: ["参数缺失", "身份上下文丢失"],
+      evidenceSources: ["Network 请求", "请求日志"],
+    },
+    {
+      id: "java-controller",
+      label: "Controller",
+      description: "接收请求、调用业务层并把结果转换成响应。",
+      input: "路径参数和身份信息",
+      output: "交给 UserService",
+      possibleFaults: ["直接访问 Repository", "把业务规则写在入口"],
+      evidenceSources: ["UserController.java", "调用日志"],
+    },
+    {
+      id: "java-service",
+      label: "Service",
+      description: "执行权限和业务规则，不负责 HTTP 细节。",
+      input: "userId + viewerId",
+      output: "通过校验后的 User",
+      possibleFaults: ["权限校验缺失", "规则分散在多个入口"],
+      evidenceSources: ["UserService.java", "失败请求日志"],
+    },
+    {
+      id: "java-repository",
+      label: "Repository",
+      description: "只负责把查询翻译成数据库访问。",
+      input: "userId",
+      output: "数据库记录",
+      possibleFaults: ["拼接错误条件", "承担业务判断"],
+      evidenceSources: ["UserRepository.java", "SQL 查询"],
+    },
+    {
+      id: "java-database",
+      label: "数据库",
+      description: "保存 users 表中的真实记录。",
+      input: "SELECT users",
+      output: "一行 User",
+      possibleFaults: ["记录不存在", "查询条件错误"],
+      evidenceSources: ["schema.sql", "database-query.txt"],
+    },
+  ],
+  edges: [
+    { from: "java-request", to: "java-controller", label: "路由分发" },
+    { from: "java-controller", to: "java-service", label: "调用业务层" },
+    { from: "java-service", to: "java-repository", label: "查询数据" },
+    { from: "java-repository", to: "java-database", label: "SELECT" },
+  ],
+};
+
+export const javaLayeredScenario: TeachingScenario = {
+  scenarioId: "java-layered-request",
+  projectMap: javaLayeredProjectMap,
+  steps: [
+    {
+      id: "java-map",
+      mode: "teaching",
+      title: "服务塔地图",
+      goal: "先看清一次 Java 请求经过哪些层，不急着背类名。",
+      concepts: [],
+    },
+    {
+      id: "java-layer-terms",
+      mode: "teaching",
+      title: "四个名词先站好位置",
+      goal: "用简单比喻理解 Controller、Service、Repository 和 DTO。",
+      concepts: [
+        {
+          id: "java-controller-term",
+          label: "Controller",
+          analogy: "像服务塔的前台：接待请求，但不替业务规则做决定。",
+          example: "它接收 userId，调用 UserService，再把 User 转成响应。",
+          prediction: {
+            question: "权限判断应该放在哪里？",
+            options: ["Controller", "Service", "数据库表名", "浏览器按钮"],
+            correctIndex: 1,
+            explanation: "Service 负责业务规则，多个入口才能复用同一条规则。",
+          },
+        },
+        {
+          id: "java-service-term",
+          label: "Service",
+          analogy: "像值班主管：根据业务规则判断请求能不能继续。",
+          example: "viewerId 不是本人时，Service 拒绝读取资料。",
+          prediction: {
+            question: "Service 最重要的职责是什么？",
+            options: ["画页面", "执行业务判断", "直接返回 HTTP 状态码", "建表"],
+            correctIndex: 1,
+            explanation: "业务规则集中在 Service，入口层只负责接待和转换。",
+          },
+        },
+      ],
+    },
+    {
+      id: "java-code-tour",
+      mode: "teaching",
+      title: "关键代码：谁绕过了谁",
+      goal: "只读 Controller 的调用行，找到越层访问的证据。",
+      projectPosition:
+        "HTTP 请求 → [Controller] → Service → Repository → 数据库",
+      codeFocus: {
+        filePath: "server/UserController.java",
+        functionName: "getUser",
+        input: "userId 与 viewerId",
+        output: "UserResponse",
+        ignore: ["package 声明", "构造函数样板", "DTO 字段细节"],
+        lines: [
+          "public UserResponse getUser(String userId) {",
+          "  User user = userRepository.findById(userId);",
+          "  return UserResponse.from(user);",
+          "}",
+        ],
+        observationGoal:
+          "Controller 直接调用 Repository，UserService 的权限判断没有机会执行。",
+      },
+      check: {
+        prompt: "用自己的话说明：Controller 直接查 Repository 会漏掉什么？",
+        correctAnswer: "会绕过 Service 的业务和权限规则",
+        acceptableAnswers: [
+          "绕过业务层",
+          "权限校验不执行",
+          "Controller 越层访问 Repository",
+        ],
+      },
+    },
+    {
+      id: "java-evidence-connect",
+      mode: "teaching",
+      title: "证据连接：200 不等于规则执行",
+      goal: "把 Network、日志和数据库查询放到同一条证据链上。",
+      concepts: [],
+    },
+    {
+      id: "java-coaching",
+      mode: "coaching",
+      title: "沙盒修复：让三层重新接上",
+      goal: "在减少提示的情况下修复 Controller 的调用边界，并运行手动测试。",
+    },
+  ],
+};
+
+const frontendComponentStateProjectMap: ProjectMap = {
+  nodes: [
+    {
+      id: "frontend-click",
+      label: "用户点击",
+      description: "用户点击加载资料，触发组件事件处理函数。",
+      input: "click 事件",
+      output: "调用 loadProfile",
+      possibleFaults: ["重复点击", "没有进入 loading"],
+      evidenceSources: ["交互记录", "组件代码"],
+    },
+    {
+      id: "frontend-state",
+      label: "状态所有者",
+      description: "组件保存请求状态，并决定页面现在应该显示什么。",
+      input: "idle / loading / success / error",
+      output: "触发重新渲染",
+      possibleFaults: ["提前显示成功", "多个状态来源互相覆盖"],
+      evidenceSources: ["ProfilePanel.jsx", "浏览器日志"],
+    },
+    {
+      id: "frontend-request",
+      label: "请求结果",
+      description: "异步请求返回成功或失败，决定状态能否继续前进。",
+      input: "GET /api/profile/me",
+      output: "response.ok + data/error",
+      possibleFaults: ["忽略 503", "错误没有进入界面"],
+      evidenceSources: ["Network 记录", "错误响应"],
+    },
+    {
+      id: "frontend-render",
+      label: "可见反馈",
+      description: "组件根据状态渲染按钮、加载提示、资料或错误。",
+      input: "状态变化",
+      output: "用户看到下一步",
+      possibleFaults: ["成功/失败文案冲突", "没有 aria-live"],
+      evidenceSources: ["交互测试", "页面截图"],
+    },
+  ],
+  edges: [
+    { from: "frontend-click", to: "frontend-state", label: "事件交给状态" },
+    { from: "frontend-state", to: "frontend-request", label: "发起请求" },
+    { from: "frontend-request", to: "frontend-state", label: "结果更新状态" },
+    { from: "frontend-state", to: "frontend-render", label: "重新渲染" },
+  ],
+};
+
+export const frontendComponentStateScenario: TeachingScenario = {
+  scenarioId: "frontend-component-state",
+  projectMap: frontendComponentStateProjectMap,
+  steps: [
+    {
+      id: "frontend-map",
+      mode: "teaching",
+      title: "组件剧场地图",
+      goal: "先看清一次点击如何变成状态变化和可见反馈。",
+    },
+    {
+      id: "frontend-state-terms",
+      mode: "teaching",
+      title: "四个前端名词先站好位置",
+      goal: "用简单比喻理解组件、props、state 和重新渲染。",
+      concepts: [
+        {
+          id: "frontend-component-term",
+          label: "组件",
+          analogy:
+            "像剧场里的一个演员：接收输入，保存必要状态，决定自己演什么。",
+          example:
+            "ProfilePanel 接收 loadProfile 函数，自己管理请求状态并展示资料。",
+          prediction: {
+            question: "组件最适合负责什么？",
+            options: [
+              "接收输入并渲染自己的界面",
+              "直接修改数据库",
+              "替后端决定权限",
+              "运行部署命令",
+            ],
+            correctIndex: 0,
+            explanation:
+              "组件负责界面和交互边界，数据与权限仍要通过明确的接口协作。",
+          },
+        },
+        {
+          id: "frontend-state-term",
+          label: "state",
+          analogy: "像剧场的灯光台：状态变了，观众看到的舞台也要跟着变。",
+          example: "loading、success、error 描述同一次请求当前走到哪一步。",
+          prediction: {
+            question: "什么时候应该显示 success？",
+            options: [
+              "用户刚点击时",
+              "收到 response.ok 后",
+              "组件第一次渲染时",
+              "请求还没发出时",
+            ],
+            correctIndex: 1,
+            explanation: "success 是请求结果，不应该在请求还没返回时提前宣布。",
+          },
+        },
+      ],
+    },
+    {
+      id: "frontend-code-tour",
+      mode: "teaching",
+      title: "关键代码：成功为什么提前亮灯",
+      goal: "只看事件处理和状态更新的几行，找到状态与请求结果脱节的证据。",
+      projectPosition:
+        "用户点击 → 状态所有者 → GET 请求 → response.ok → 重新渲染",
+      codeFocus: {
+        filePath: "frontend/ProfilePanel.jsx",
+        functionName: "load",
+        input: "click 事件",
+        output: "status + profile",
+        ignore: ["import", "section 外壳", "CSS 细节"],
+        lines: [
+          "async function load() {",
+          '  setStatus("success");',
+          "  const response = await loadProfile();",
+          "  if (response.ok) setProfile(response.data);",
+          "}",
+        ],
+        observationGoal:
+          "success 在 await 请求前就被写入，失败响应没有进入用户可见状态。",
+      },
+      check: {
+        prompt: "为什么不能在 await loadProfile() 前设置 success？",
+        correctAnswer:
+          "因为请求还没有返回，无法证明成功；失败时用户会看到错误的成功提示",
+        acceptableAnswers: [
+          "请求未完成",
+          "response.ok 还没判断",
+          "失败时显示错误成功",
+        ],
+      },
+    },
+    {
+      id: "frontend-evidence-connect",
+      mode: "teaching",
+      title: "证据连接：Network 到页面反馈",
+      goal: "把点击、Network 状态码、浏览器日志和页面文案放到同一条链路。",
+    },
+    {
+      id: "frontend-coaching",
+      mode: "coaching",
+      title: "沙盒修复：让状态和结果重新对齐",
+      goal: "在减少提示的情况下修复状态流，并用成功/失败两条路径运行测试。",
+    },
+  ],
+};
+
+/** 前端岗位第 2 关：把接口结果翻译成用户能看懂的状态。 */
+export const frontendRequestStatesScenario: TeachingScenario = {
+  scenarioId: "frontend-request-states",
+  projectMap: {
+    nodes: [
+      {
+        id: "submit-event",
+        label: "提交动作",
+        description: "用户点击提交，组件只知道请求开始了，还不知道结果。",
+        input: "点击事件与表单数据",
+        output: "进入 loading",
+        possibleFaults: ["提前显示成功", "重复点击"],
+        evidenceSources: ["交互记录", "SubmitPanel.jsx"],
+      },
+      {
+        id: "request-response",
+        label: "请求结果",
+        description: "服务端返回 201、400、503 或超时，组件要据此选择下一步。",
+        input: "POST /api/applications",
+        output: "response.ok 与错误体",
+        possibleFaults: ["只测 201", "忽略错误体"],
+        evidenceSources: ["Network 记录", "浏览器日志"],
+      },
+      {
+        id: "visible-feedback",
+        label: "可见反馈",
+        description: "页面告诉用户正在提交、已经成功、失败原因和是否可以重试。",
+        input: "loading / success / error",
+        output: "按钮、提示和下一步",
+        possibleFaults: ["失败不可见", "按钮重复提交"],
+        evidenceSources: ["页面交互", "aria-live"],
+      },
+    ],
+    edges: [
+      { from: "submit-event", to: "request-response", label: "发起请求" },
+      {
+        from: "request-response",
+        to: "visible-feedback",
+        label: "结果更新状态",
+      },
+    ],
+  },
+  steps: frontendComponentStateScenario.steps.map((step) => {
+    const copy: Record<string, { title: string; goal: string }> = {
+      "frontend-map": {
+        title: "表单传送厅地图",
+        goal: "先看清提交动作、请求结果和用户反馈如何接力。",
+      },
+      "frontend-state-terms": {
+        title: "四个状态先站好位置",
+        goal: "理解 idle、loading、success、error，不把点击误认为成功。",
+      },
+      "frontend-code-tour": {
+        title: "关键代码：成功为什么提前亮灯",
+        goal: "只读提交函数的几行，找到请求结果与页面状态脱节的证据。",
+      },
+      "frontend-evidence-connect": {
+        title: "证据连接：201、503 和超时",
+        goal: "把 Network、浏览器日志和用户看到的文案放到同一条证据链。",
+      },
+      "frontend-coaching": {
+        title: "沙盒修复：让每个结果都有下一步",
+        goal: "修复状态机，覆盖成功、失败、超时和重复提交。",
+      },
+    };
+    const next = copy[step.id];
+    if (!next) return step;
+    if (step.id !== "frontend-code-tour") {
+      return { ...step, ...next };
+    }
+    return {
+      ...step,
+      ...next,
+      projectPosition:
+        "用户点击 → loading → POST 请求 → response.ok → 成功/失败反馈",
+      codeFocus: {
+        ...step.codeFocus!,
+        filePath: "frontend/SubmitPanel.jsx",
+        functionName: "handleSubmit",
+        lines: [
+          "async function handleSubmit() {",
+          '  setStatus("success");',
+          "  const response = await submit();",
+          "  if (response.ok) return;",
+          "}",
+        ],
+        observationGoal:
+          "success 在 await 请求前就被写入，400、503 和超时都没有进入可见的失败状态。",
+        check: {
+          prompt: "为什么点击后不能马上设置 success？",
+          correctAnswer:
+            "点击只代表请求开始；只有 response.ok 为真，才有证据说明提交成功",
+          acceptableAnswers: [
+            "请求还没完成",
+            "response.ok 还没判断",
+            "失败时会显示错误的成功提示",
+          ],
+        },
+      },
+    };
+  }),
 };

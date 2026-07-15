@@ -1,0 +1,10 @@
+{
+  "context": "客服知识库需要批量导入",
+  "goal": "让上传更快",
+  "constraints": {
+    "allowed": ["frontend/ImportPanel.jsx", "server/importRoute.js"],
+    "forbidden": ["部署配置", "生产数据库迁移"]
+  },
+  "acceptance": { "expectedResult": "浏览器能看到导入结果和失败条目" },
+  "rollback": { "when": "失败率超过 5%", "action": "关闭入口并恢复旧导入路径" }
+}

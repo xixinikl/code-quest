@@ -1,0 +1,13 @@
+{
+  "request": {
+    "method": "POST",
+    "url": "/api/auth/login",
+    "body": { "staffCode": "night-17" }
+  },
+  "response": {
+    "status": 200,
+    "setCookie": "refreshToken=refresh_night_17; HttpOnly; SameSite=Lax",
+    "body": { "accessToken": "access_night_17", "expiresIn": 900 }
+  },
+  "observed": "当前页面进入夜班工作台"
+}
