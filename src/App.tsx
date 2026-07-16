@@ -913,12 +913,12 @@ function buildVerificationClue(
         "回到 repository 的 saveCanvas，确认它执行数据库 INSERT；再用刷新查询和测试报告证明记录真的落库。",
     },
     {
-      keywords: ["candidate", "候选", "方向", "mvp", "growth", "accepted"],
-      guideWords: ["planner", "candidate", "direction", "候选", "方向"],
+      keywords: ["session", "会话", "保存", "candidateids", "记录"],
+      guideWords: ["session", "after", "会话", "保存"],
       breakPoint:
-        "方向筛选这一棒还没成立：用户选择的阶段没有正确过滤进入执行草案的候选。",
+        "会话保存这一棒缺证据：系统没有完整留下本轮方向、取舍理由和下一步动作。",
       nextAction:
-        "回到规划器逻辑，只让符合 direction 的候选进入草案，同时把被拒绝的候选和理由留下。",
+        "检查保存对象字段，确认 accepted/rejected/nextStep 都进入会话记录，再重新生成测试报告。",
     },
     {
       keywords: ["brief", "目标", "user goal", "empty", "空"],
@@ -928,12 +928,12 @@ function buildVerificationClue(
       nextAction: "先补输入校验和可读错误，再用测试证明空目标不会生成假草案。",
     },
     {
-      keywords: ["session", "会话", "保存", "candidateids", "记录"],
-      guideWords: ["session", "after", "会话", "保存"],
+      keywords: ["candidate", "候选", "方向", "mvp", "growth", "accepted"],
+      guideWords: ["planner", "candidate", "direction", "候选", "方向"],
       breakPoint:
-        "会话保存这一棒缺证据：系统没有完整留下本轮方向、取舍理由和下一步动作。",
+        "方向筛选这一棒还没成立：用户选择的阶段没有正确过滤进入执行草案的候选。",
       nextAction:
-        "检查保存对象字段，确认 accepted/rejected/nextStep 都进入会话记录，再重新生成测试报告。",
+        "回到规划器逻辑，只让符合 direction 的候选进入草案，同时把被拒绝的候选和理由留下。",
     },
     {
       keywords: [

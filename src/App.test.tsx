@@ -2633,6 +2633,11 @@ describe("AI 职业路线入口", () => {
               status: "failed",
               message: "缺少已接收候选 id",
             },
+            {
+              name: "用户目标为空时给出可操作错误，而不是生成空泛方案",
+              status: "failed",
+              message: "用户目标为空时不应生成计划",
+            },
           ],
         },
       },
@@ -2657,6 +2662,13 @@ describe("AI 职业路线入口", () => {
           keyLines: ["const acceptedCandidates = candidates"],
           proves: "当前实现没有做方向取舍。",
           cannotProve: "只能证明故障点。",
+        },
+        session: {
+          place: "会话保存后：当前错误结果",
+          focus: "只看会话有没有 accepted/rejected/nextAction。",
+          keyLines: ["savedSession", "acceptedCandidateIds"],
+          proves: "当前实现缺少完整取舍记录。",
+          cannotProve: "不能单独证明方向筛选正确。",
         },
       },
     } as unknown as Parameters<typeof VerificationPanel>[0]["config"];
@@ -2685,7 +2697,7 @@ describe("AI 职业路线入口", () => {
     expect(screen.getByLabelText("本次验收目标")).toHaveTextContent(
       "解锁下一棒，并把这份证据写入成长档案",
     );
-    expect(screen.getByText("还有 2 个红灯")).toBeInTheDocument();
+    expect(screen.getByText("还有 3 个红灯")).toBeInTheDocument();
     expect(
       screen.getByText("只把所选方向的候选放进执行草案"),
     ).toBeInTheDocument();
@@ -2693,6 +2705,7 @@ describe("AI 职业路线入口", () => {
       screen.getByText("执行草案包含了非 MVP 方向候选"),
     ).toBeInTheDocument();
     expect(screen.getByText("缺少已接收候选 id")).toBeInTheDocument();
+    expect(screen.getByText("用户目标为空时不应生成计划")).toBeInTheDocument();
     expect(screen.getAllByText("流程断点").length).toBeGreaterThan(0);
     expect(screen.getAllByText("先查材料").length).toBeGreaterThan(0);
     expect(screen.getAllByText("下一步").length).toBeGreaterThan(0);
@@ -2703,6 +2716,19 @@ describe("AI 职业路线入口", () => {
       0,
     );
     expect(screen.getAllByText(/回到规划器逻辑/).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/会话保存这一棒缺证据/).length).toBeGreaterThan(
+      0,
+    );
+    expect(
+      screen.getAllByText(/会话保存后：当前错误结果/).length,
+    ).toBeGreaterThan(0);
+    expect(screen.getAllByText(/检查保存对象字段/).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/用户输入这一棒还不稳/).length).toBeGreaterThan(
+      0,
+    );
+    expect(
+      screen.getAllByText(/先补输入校验和可读错误/).length,
+    ).toBeGreaterThan(0);
   });
 
   it("第 1 章保存失败报告会指向数据层写库断点", () => {

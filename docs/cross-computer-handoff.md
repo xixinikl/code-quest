@@ -8,9 +8,9 @@
 
 - 仓库：`https://github.com/xixinikl/code-quest.git`
 - 分支：`cx/ai-career-rpg-home`
-- 当前功能基线：`dca300e fix(rpg): target persistence verification clues`
-- 当前交接刷新：应包含本次 `docs(rpg): refresh handoff before continuation`
-- 当前远端最新提交：本次检查为 `dca300e34539f47b76aa540edc7084c5b6e39659`；文档提交后会产生新 hash，最终以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 输出为准。
+- 当前功能基线：`a0774d3 fix(rpg): clarify lab closeout flow`，本轮会追加 `fix(rpg): classify case two verification clues`。
+- 当前交接刷新：应包含本次第 2 章红灯报告分类校准与交接说明更新。
+- 当前远端最新提交：本次提交前检查为 `a0774d3c07a575210b89bbfd62f0c217e35eaa2a`；本轮提交推送后会产生新 hash，最终以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 输出为准。
 - 远端默认 HEAD：当前指向 `feat/guided-learning-bridge`，不是这条 RPG 分支。另一台电脑必须显式 checkout `cx/ai-career-rpg-home`。
 - 本地状态：`cx/ai-career-rpg-home...origin/cx/ai-career-rpg-home`，工作区干净时表示没有漏推补丁。
 
@@ -52,8 +52,8 @@ git ls-remote origin refs/heads/cx/ai-career-rpg-home
 期望看到：
 
 - 当前分支是 `cx/ai-career-rpg-home`
-- 最近提交包含本次交接刷新提交，或至少包含 `dca300e fix(rpg): target persistence verification clues`
-- 最近提交列表里还能看到 `f16ec5c feat(rpg): explain verification reports` 和 `dca300e fix(rpg): target persistence verification clues`
+- 最近提交包含本次 `fix(rpg): classify case two verification clues`，或至少包含 `a0774d3 fix(rpg): clarify lab closeout flow`
+- 最近提交列表里还能看到 `f16ec5c feat(rpg): explain verification reports`、`dca300e fix(rpg): target persistence verification clues` 和 `a0774d3 fix(rpg): clarify lab closeout flow`
 - `git ls-remote` 返回的 hash 与本机或接手文档里最后一次记录的远端 hash 一致
 - `git status --short --branch` 没有未提交文件
 
@@ -75,17 +75,18 @@ git pull --ff-only
 - 教学桥后半段持续暗色 RPG 收口，补了概念卡、预测题、解释框、流程节点等关键控件的风格一致性。
 - 代码导读增加“当前行证据锚点”，每行说明为什么看、能证明什么、下一步找哪份证据；第 1 章 `response.ok` 明确提示不能证明数据库已经写入。
 - 第 1 章验收报告增加「验收证据桥」；保存失败时会把红灯解释为数据层写库断点，并提示回到 repository `saveCanvas` 找 `INSERT` 和刷新查询证据。
+- 第 2 章 CanvasStorm 失败报告已校准三类红灯：方向筛选、会话保存、空目标输入会分别指向不同断点，避免新手把会话保存问题误查成候选筛选或 Brief 输入问题。
 - 新增一批真实沙盒练习与复测材料，放在 `sandbox/`，用于训练用户读证据、写 Agent 任务、验收交付和迁移复盘。
 - 将旧大 PNG 场景替换为 WebP，保留统一暗色幻想风格并减少资源体积。
 - 更新 `HANDOFF.md`、`docs/ai-career-rpg-tasks.md`、`docs/cx-ai-career-rpg-home-merge-notes.md` 和 changelog 片段。
 
 ## 当前验证证据
 
-最新提交 `dca300e` 前后已记录的验证：
+最新一轮已记录的验证：
 
 - `npm run test -- src/App.test.tsx --run` 通过：1 个测试文件 / 47 个测试。
 - `npm run verify:quick` 通过：lint、typecheck、10 个测试文件 / 172 个测试。
-- 浏览器验收：隔离 API `4356`、临时 SQLite `/tmp/code-quest-r293.sqlite`、Vite `5206`；第 1 章实战验收页桌面和 390px 移动端无横向溢出，控制台 error 为 0，失败报告显示“数据层写库这一棒没接上”和“执行数据库 INSERT”。
+- 浏览器验收：隔离 API `4360`、临时 SQLite `/tmp/code-quest-r296.sqlite`、Vite `5210`；第 2 章实战验收页桌面和 390px 移动端无横向溢出，控制台 error 为 0，失败报告显示“方向筛选这一棒还没成立”“会话保存这一棒缺证据”“用户输入这一棒还不稳”，且不是无效报告状态。
 
 合并 PR 前仍建议重新跑完整：
 
@@ -121,9 +122,9 @@ npm run verify
 建议下一轮按这个顺序继续：
 
 1. 先在 `cx/ai-career-rpg-home` 继续，不要另起太多分支；如果必须开分支，用 `cx/` 前缀并在 `HANDOFF.md` 记录来源和目标。
-2. 先补第 1 章实战后半段流程对白：沙盒验收、Agent 委托、交付审查、因果解释、面试迁移不要出现“数据库交给数据库”的机械回退。
-3. 再把第 2 章从读 Brief 到测试/交付/面试完整走一遍，继续消除“产品逻辑看不懂”的断层。
-4. 然后抽检第 3-5 章，优先修风格断层、术语过密、移动端一屏读不完的问题。
+2. 继续把第 2 章从读 Brief 到测试/交付/面试完整走一遍，优先补“为什么看这份材料、谁交给谁、错了回哪一棒”的解释。
+3. 再抽检第 3-5 章，优先修风格断层、术语过密、移动端一屏读不完的问题。
+4. 之后做一次全站关键路径视觉终审：序章、路线大厅、教学桥、实战 Lab、结算、作品集和本地备份。
 5. 最后再考虑 PR；PR 前必须重新跑 `npm run verify`，并做桌面与 390px 浏览器关键路径验收。
 
 ## 是否现在合并
