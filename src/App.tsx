@@ -606,6 +606,7 @@ type LabStep = {
   label: string;
   icon: LucideIcon;
   kind: "baseline" | "response" | "verification";
+  flowItemIndex?: number;
   scene?: {
     location: string;
     image: string;
@@ -2493,12 +2494,59 @@ const labConfigs: Record<string, LabConfig> = {
         label: "任务委托",
         icon: CircleDot,
         kind: "baseline",
+        scene: {
+          location: "身份回廊入口 · 门牌台",
+          image: identityCorridorScene,
+          portrait: identityGuardPortrait,
+          actor: "身份回廊守卫",
+          mood: "“登录成功只是拿到门牌，刷新后还能被认出来，才算真的登记。”",
+          objective: "先把登录成功、凭证保存、受保护请求和服务端会话分开。",
+          reward: "获得身份路线委托",
+        },
+        questBrief: {
+          why: "真实工作里，登录 200 不等于登录态可恢复；刷新、换页、重新请求时才会暴露断点。",
+          evidence:
+            "先看登录响应、浏览器凭证、/api/me 401 和后端会话日志，别急着猜 Cookie 或 Token。",
+          output:
+            "一张身份路线：谁发凭证、谁保存凭证、谁带凭证、后端去哪查身份。",
+        },
+        flowDialogue: {
+          headline: "先分清拿到门牌和登记门牌不是一回事",
+          previous: "用户输入账号，只证明他请求进入身份回廊。",
+          current: "你要把登录成功、浏览器保存、后端登记和刷新恢复拆成四棒。",
+          next: "下一站会画出身份路线，判断凭证应该落在哪一处。",
+        },
       },
       {
         id: "identity-map",
         label: "画身份路线",
         icon: Search,
         kind: "response",
+        scene: {
+          location: "身份路线桌 · 门牌流向图",
+          image: identityCorridorScene,
+          portrait: identityGuardPortrait,
+          actor: "身份回廊守卫",
+          mood: "“先画路线，别急着喊 Token 丢了。门牌从哪里发、交给谁保管，得一站一站说清。”",
+          objective:
+            "画清登录响应、浏览器凭证、/api/me 和服务端会话的交接路线。",
+          reward: "获得身份路线图",
+        },
+        questBrief: {
+          why: "登录态不是一个变量，而是一条会在刷新后重新查验的路线。",
+          evidence:
+            "看登录表单、signIn、restoreCurrentUser 和 callProtectedApi 的先后关系。",
+          output:
+            "用自己的话说清：登录接口给了什么、浏览器应该保存什么、刷新后 /api/me 应该带什么。",
+        },
+        flowDialogue: {
+          headline: "登录态不是一个变量，而是一条会刷新复查的路线",
+          previous:
+            "用户把账号交给登录表单，登录接口返回 user 和 accessToken。",
+          current:
+            "你要判断这张门牌应该留在 Cookie、localStorage、Authorization 还是服务端 session。",
+          next: "下一站去查凭证存储，看它是不是只停在会丢失的 memory 里。",
+        },
         response: {
           title: "阶段 02 · 身份路线",
           prompt: "先说清登录态从哪里来、存在哪里、请求时怎么带回去",
@@ -2514,6 +2562,29 @@ const labConfigs: Record<string, LabConfig> = {
         label: "查凭证存储",
         icon: Network,
         kind: "response",
+        scene: {
+          location: "凭证存放柜 · 刷新门前",
+          image: questPortal,
+          portrait: portalScribePortrait,
+          actor: "凭证门牌书记官",
+          mood: "“只把门牌拿在手上，页面一刷新就散了；能从柜子里再取出来，才算保存。”",
+          objective: "判断凭证到底停在内存、Cookie、localStorage 还是请求头。",
+          reward: "获得凭证存放记录",
+        },
+        questBrief: {
+          why: "刷新会清空页面内存，所以只存在 memory 的用户和 token 不能支撑可恢复登录。",
+          evidence:
+            "对照 storage-before、storage-after、Set-Cookie、localStorage 和 memory.accessToken。",
+          output:
+            "一条判断：凭证现在留在了哪里，为什么刷新后拿不回来，以及下一步该看哪个请求。",
+        },
+        flowDialogue: {
+          headline: "凭证要住进可恢复的柜子，不能只在页面手里过一遍",
+          previous: "身份路线已经说明凭证应该从登录接口交给浏览器保管。",
+          current:
+            "你要比较 Cookie、localStorage 和 memory，判断哪一种刷新后还在、哪一种会丢。",
+          next: "如果凭证没有留下，/api/me 就会空手去问后端，下一站用 401 做反证。",
+        },
         response: {
           title: "阶段 03 · 凭证存放",
           prompt: "判断 Cookie、Authorization 或浏览器存储哪一处没有留下凭证",
@@ -2530,6 +2601,29 @@ const labConfigs: Record<string, LabConfig> = {
         label: "读 401 反证",
         icon: ShieldCheck,
         kind: "response",
+        scene: {
+          location: "受保护接口门 · /api/me 前",
+          image: questArchive,
+          portrait: apiClerkPortrait,
+          actor: "接口接待员",
+          mood: "“401 不是一句失败，它是一张反证：这次请求没有把可用身份带到门口。”",
+          objective: "用请求头和 401 说明后端为什么认不出当前用户。",
+          reward: "获得 401 反证",
+        },
+        questBrief: {
+          why: "受保护接口才是登录态的真实考试；页面显示用户名不等于后端知道你是谁。",
+          evidence:
+            "看 GET /api/me 的 cookie、authorization、401 状态和服务端 missing credential 日志。",
+          output:
+            "说明 401 能证明什么、不能证明什么，以及还要结合哪份存储或日志材料。",
+        },
+        flowDialogue: {
+          headline: "401 是身份链断开的报警灯，不是终点",
+          previous: "凭证存放柜已经提示凭证可能只停在刷新会丢的 memory。",
+          current:
+            "你要检查 /api/me 请求有没有带 Cookie 或 Authorization，判断后端收到的身份材料是什么。",
+          next: "如果请求空手而来，就去沙盒里修复保存和会话登记，再用测试闭环。",
+        },
         response: {
           title: "阶段 04 · 401 反证",
           prompt: "用 /api/me 401 说明后端为什么认不出当前用户",
@@ -2550,12 +2644,61 @@ const labConfigs: Record<string, LabConfig> = {
         label: "沙盒修复与测试",
         icon: TerminalSquare,
         kind: "verification",
+        flowItemIndex: 4,
+        scene: {
+          location: "刷新复查门 · 会话台",
+          image: identityCorridorScene,
+          portrait: identityGuardPortrait,
+          actor: "身份回廊守卫",
+          mood: "“刷新后还能回来，才算通关；只看登录按钮变绿，不算身份闭环。”",
+          objective: "用沙盒测试证明登录、凭证保存、/api/me 和刷新恢复都成立。",
+          reward: "获得登录态闭环证据",
+        },
+        questBrief: {
+          why: "修登录态不能只看当前页面好像有用户名，必须证明刷新后还能重新认出用户。",
+          evidence:
+            "看测试报告、源码指纹、storage-after、/api/me 成功结果和服务端 session 日志。",
+          output:
+            "一份验收报告：凭证可恢复、后端会话可查询、刷新后 /api/me 能恢复当前用户。",
+        },
+        flowDialogue: {
+          headline: "把 401 红灯修成刷新后仍能认人的闭环",
+          previous: "401 已经说明受保护接口没有收到可用身份。",
+          current:
+            "你要用沙盒测试验证 credential、session 和 restoreCurrentUser 是否重新接上。",
+          next: "有了测试证据后，才能把修复范围写成 Agent 能执行的任务。",
+        },
       },
       {
         id: "agent-brief",
         label: "给 Agent 写任务",
         icon: FileCode2,
         kind: "response",
+        flowItemIndex: 4,
+        scene: {
+          location: "委托锻造台 · 身份契约前",
+          image: agentBriefForgeScene,
+          portrait: briefForgemasterPortrait,
+          actor: "任务锻造师",
+          mood: "“修一下登录太模糊了。你要告诉 Agent：凭证、会话、刷新恢复，哪几段必须交证据。”",
+          objective: "把登录态修复写成 Agent 能执行、能验收、不过界的任务。",
+          reward: "获得身份修复委托",
+        },
+        questBrief: {
+          why: "Agent 需要清楚前端凭证、后端 session 和刷新恢复的边界，否则可能只修表面。",
+          evidence:
+            "把登录 200、storage-after、/api/me 401、服务端日志和测试报告合成任务范围。",
+          output:
+            "一份 Agent 任务：背景、目标、文件范围、禁止绕开的边界、验收命令和风险。",
+        },
+        flowDialogue: {
+          headline: "把身份链红灯铸成 Agent 能执行的修复委托",
+          previous:
+            "测试或材料已经指出凭证保存、session 登记或刷新恢复的断点。",
+          current:
+            "你要把断点写成具体任务，让 Agent 知道修哪里、别改哪里、交回什么证据。",
+          next: "Agent 交付后，审查席会判断它有没有证明登录态闭环，而不是只说登录完成。",
+        },
         response: {
           title: "阶段 06 · 协作能力",
           prompt: "把登录态修复任务交给 Agent，但写清凭证和验收边界",
@@ -2571,6 +2714,31 @@ const labConfigs: Record<string, LabConfig> = {
         label: "审查交付说明",
         icon: ShieldCheck,
         kind: "response",
+        flowItemIndex: 4,
+        scene: {
+          location: "交付审查席 · 身份证据灯下",
+          image: deliveryReviewCourtScene,
+          portrait: deliveryJudgePortrait,
+          actor: "交付审判官",
+          mood: "“页面显示用户名不是证据闭环。审查要问：刷新后 /api/me 还能认出谁？”",
+          objective:
+            "判断 Agent 交付说明有没有证明凭证保存、服务端会话和刷新恢复。",
+          reward: "获得登录态交付判断",
+        },
+        questBrief: {
+          why: "工作里不能因为 Agent 说登录完成就合并；你要检查它证明的是页面状态，还是可恢复身份。",
+          evidence:
+            "看交付说明、测试报告、/api/me、浏览器存储和 session 日志是否互相闭合。",
+          output:
+            "一条审查决定：接收、退回或要求补证据，并说明还缺哪一段身份链证明。",
+        },
+        flowDialogue: {
+          headline: "审查登录态交付，要看刷新后的证据而不是绿字",
+          previous: "Agent 可能已经提交了修复说明、绿色测试或页面截图。",
+          current:
+            "你要分清登录 200、页面用户名、Cookie/Token、session 和 /api/me 各自证明什么。",
+          next: "最后把这次排障整理成面试故事：不是背 Cookie，而是讲证据链。",
+        },
         response: {
           title: "阶段 07 · 交付审查",
           prompt: "审查 Agent 的交付说明：哪些证据不足以证明登录态修好了？",
@@ -2585,6 +2753,30 @@ const labConfigs: Record<string, LabConfig> = {
         label: "面试复盘",
         icon: FlaskConical,
         kind: "response",
+        flowItemIndex: 5,
+        scene: {
+          location: "面试讲述厅 · 身份星图前",
+          image: interviewDefenseHallScene,
+          portrait: interviewCouncilorPortrait,
+          actor: "面试策士",
+          mood: "“别背 Cookie 定义。讲你如何从登录 200、存储、401 和日志一路证明根因。”",
+          objective: "把登录态排障组织成面试官听得懂的 STAR 复盘。",
+          reward: "获得登录态面试素材",
+        },
+        questBrief: {
+          why: "面试想听的是你如何用证据定位登录态，而不是能不能背出 Cookie、Session、Token 的定义。",
+          evidence:
+            "串起登录响应、浏览器存储、/api/me 401、服务端日志、测试报告和交付审查结论。",
+          output:
+            "一段 STAR 复盘：场景、任务、行动、结果、仍未验证边界和可迁移经验。",
+        },
+        flowDialogue: {
+          headline: "把一次登录态排障讲成可信的面试故事",
+          previous: "交付审查已经分清哪些证据成立，哪些还只是口头说明。",
+          current:
+            "你要把技术证据翻译成 STAR：刷新后掉登录、你怎样查、怎样修或委托、怎样验收。",
+          next: "成长档案会收下这段素材，下一次换认证方式也能复用同一套排查路线。",
+        },
         response: {
           title: "阶段 08 · 面试复盘",
           prompt: "把这一关讲成一次登录态排障",
@@ -7408,6 +7600,21 @@ function ArtifactViewer({
   );
 }
 
+function getLabStepFlowIndex(
+  stepIdOrLabel: string,
+  activeIndex: number,
+  config: LabConfig,
+) {
+  const step = config.steps.find(
+    (candidate) =>
+      candidate.id === stepIdOrLabel || candidate.label === stepIdOrLabel,
+  );
+  return Math.min(
+    Math.max(step?.flowItemIndex ?? activeIndex, 0),
+    config.flowItems.length - 1,
+  );
+}
+
 function LabFlowMap({
   activeIndex,
   activeStepLabel,
@@ -7417,9 +7624,10 @@ function LabFlowMap({
   activeStepLabel: string;
   config: LabConfig;
 }) {
-  const activeFlowIndex = Math.min(
-    Math.max(activeIndex, 0),
-    config.flowItems.length - 1,
+  const activeFlowIndex = getLabStepFlowIndex(
+    activeStepLabel,
+    activeIndex,
+    config,
   );
   const activeFlow = config.flowItems[activeFlowIndex] ?? config.flowItems[0];
   const nextFlow = config.flowItems[activeFlowIndex + 1];
@@ -7469,9 +7677,10 @@ function LabRelayBoard({
   activeStep: LabStep;
   config: LabConfig;
 }) {
-  const activeFlowIndex = Math.min(
-    Math.max(activeIndex, 0),
-    config.flowItems.length - 1,
+  const activeFlowIndex = getLabStepFlowIndex(
+    activeStep.id,
+    activeIndex,
+    config,
   );
   const previousFlow = config.flowItems[activeFlowIndex - 1];
   const activeFlow = config.flowItems[activeFlowIndex] ?? config.flowItems[0];
@@ -7709,7 +7918,7 @@ function LabSceneGuide({
 }) {
   const scene = getLabStepScene(config, activeStep);
   const routePoint =
-    config.flowItems[Math.min(activeIndex, config.flowItems.length - 1)] ??
+    config.flowItems[getLabStepFlowIndex(activeStep.id, activeIndex, config)] ??
     config.flowItems[0];
 
   return (
@@ -7758,12 +7967,9 @@ function LabStepQuestBrief({
   config: LabConfig;
 }) {
   const guide = pickArtifactGuide(config, []);
-  const currentFlow =
-    config.flowItems[Math.min(activeIndex, config.flowItems.length - 1)] ??
-    config.flowItems[0];
-  const nextFlow =
-    config.flowItems[Math.min(activeIndex + 1, config.flowItems.length - 1)] ??
-    currentFlow;
+  const flowIndex = getLabStepFlowIndex(activeStep.id, activeIndex, config);
+  const currentFlow = config.flowItems[flowIndex] ?? config.flowItems[0];
+  const nextFlow = config.flowItems[flowIndex + 1] ?? currentFlow;
   const why =
     activeStep.questBrief?.why ??
     (activeStep.kind === "baseline"
@@ -7815,15 +8021,11 @@ function LabFlowDialogue({
   activeStep: LabStep;
   config: LabConfig;
 }) {
-  const currentFlow =
-    config.flowItems[Math.min(activeIndex, config.flowItems.length - 1)] ??
-    config.flowItems[0];
+  const flowIndex = getLabStepFlowIndex(activeStep.id, activeIndex, config);
+  const currentFlow = config.flowItems[flowIndex] ?? config.flowItems[0];
   const previousFlow =
-    config.flowItems[Math.max(0, Math.min(activeIndex - 1, activeIndex))] ??
-    currentFlow;
-  const nextFlow =
-    config.flowItems[Math.min(activeIndex + 1, config.flowItems.length - 1)] ??
-    currentFlow;
+    config.flowItems[Math.max(0, flowIndex - 1)] ?? currentFlow;
+  const nextFlow = config.flowItems[flowIndex + 1] ?? currentFlow;
   const currentTask =
     activeStep.kind === "verification"
       ? "把修复结果交给测试和验收报告复查。"

@@ -3047,6 +3047,102 @@ describe("AI 职业路线入口", () => {
     expect(window.location.hash).toBe("");
   });
 
+  it("第 3 章登录态实战会随步骤切换身份剧情和交付口令", async () => {
+    const user = userEvent.setup();
+    render(
+      <Lab
+        artifacts={case03Artifacts}
+        attempt={case03Attempt as Parameters<typeof Lab>[0]["attempt"]}
+        onBackToRoadmap={vi.fn()}
+        onSubmitted={vi.fn()}
+        setAttempt={vi.fn()}
+      />,
+    );
+
+    expect(screen.getByLabelText("实战剧情向导")).toHaveTextContent(
+      "身份回廊守卫",
+    );
+    expect(screen.getByLabelText("实战剧情向导")).toHaveTextContent(
+      "身份路线桌",
+    );
+    expect(screen.getByLabelText("本步任务卷轴")).toHaveTextContent(
+      "刷新后重新查验",
+    );
+    expect(screen.getByLabelText("流程接力小剧场")).toHaveTextContent(
+      "登录态不是一个变量",
+    );
+
+    await user.click(screen.getByRole("button", { name: /画身份路线/ }));
+    expect(screen.getByLabelText("实战剧情向导")).toHaveTextContent(
+      "身份路线桌",
+    );
+    expect(screen.getByLabelText("本步任务卷轴")).toHaveTextContent(
+      "刷新后重新查验",
+    );
+    expect(screen.getByLabelText("流程接力小剧场")).toHaveTextContent(
+      "登录态不是一个变量",
+    );
+
+    await user.click(screen.getByRole("button", { name: /查凭证存储/ }));
+    expect(screen.getByLabelText("实战剧情向导")).toHaveTextContent(
+      "凭证门牌书记官",
+    );
+    expect(screen.getByLabelText("实战剧情向导")).toHaveTextContent(
+      "凭证存放柜",
+    );
+    expect(screen.getByLabelText("本步任务卷轴")).toHaveTextContent(
+      "刷新会清空页面内存",
+    );
+
+    await user.click(screen.getByRole("button", { name: /读 401 反证/ }));
+    expect(screen.getByLabelText("实战剧情向导")).toHaveTextContent(
+      "接口接待员",
+    );
+    expect(screen.getByLabelText("流程接力小剧场")).toHaveTextContent(
+      "401 是身份链断开的报警灯",
+    );
+
+    await user.click(screen.getByRole("button", { name: /沙盒修复与测试/ }));
+    expect(screen.getByLabelText("实战剧情向导")).toHaveTextContent(
+      "刷新复查门",
+    );
+    expect(screen.getByLabelText("本步任务卷轴")).toHaveTextContent(
+      "刷新后还能重新认出用户",
+    );
+
+    await user.click(screen.getByRole("button", { name: /给 Agent 写任务/ }));
+    expect(screen.getByLabelText("实战剧情向导")).toHaveTextContent(
+      "任务锻造师",
+    );
+    expect(screen.getByLabelText("本步交付口令")).toHaveTextContent(
+      "把红灯写成 Agent 能执行的任务",
+    );
+    expect(screen.getByLabelText("流程接力小剧场")).toHaveTextContent(
+      "身份链红灯",
+    );
+    expect(screen.getByLabelText("当前这一棒")).toHaveTextContent("服务端会话");
+
+    await user.click(screen.getByRole("button", { name: /审查交付说明/ }));
+    expect(screen.getByLabelText("实战剧情向导")).toHaveTextContent(
+      "交付审判官",
+    );
+    expect(screen.getByLabelText("本步交付口令")).toHaveTextContent(
+      "先判证据够不够，再决定接收还是退回",
+    );
+    expect(screen.getByLabelText("本步任务卷轴")).toHaveTextContent(
+      "可恢复身份",
+    );
+
+    await user.click(screen.getByRole("button", { name: /面试复盘/ }));
+    expect(screen.getByLabelText("实战剧情向导")).toHaveTextContent("面试策士");
+    expect(screen.getByLabelText("本步交付口令")).toHaveTextContent(
+      "把一次排障讲成面试官听得懂的 STAR",
+    );
+    expect(screen.getByLabelText("流程接力小剧场")).toHaveTextContent(
+      "登录态排障",
+    );
+  });
+
   it("面试复盘房间可以保存五段草稿到本地学习记录", async () => {
     const user = userEvent.setup();
     let savedDossier: Record<string, unknown> | null = null;
