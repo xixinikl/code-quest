@@ -8,8 +8,9 @@
 
 - 仓库：`https://github.com/xixinikl/code-quest.git`
 - 分支：`cx/ai-career-rpg-home`
-- 当前远端提交：`d77761a8110789af61d72883cbd2191948b32fb9`
-- 提交标题：`feat(rpg): anchor code tour lines to evidence`
+- 当前功能基线：`d77761a feat(rpg): anchor code tour lines to evidence`
+- 当前交接刷新：应包含 `docs(rpg): refresh cross-computer handoff`
+- 当前远端最新提交：以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 输出为准，因为交接文档本身也会产生新的提交。
 - 本地状态：`cx/ai-career-rpg-home...origin/cx/ai-career-rpg-home`，工作区干净时表示没有漏推补丁。
 
 不要从 `main` 继续做这版 RPG 教学体验；`main` 仍是冻结审查基线。当前分支可以拉到另一台电脑继续开发，但不建议现在直接合并到 `main`。
@@ -49,11 +50,12 @@ git ls-remote origin refs/heads/cx/ai-career-rpg-home
 期望看到：
 
 - 当前分支是 `cx/ai-career-rpg-home`
-- 最近提交包含 `d77761a feat(rpg): anchor code tour lines to evidence`
-- `git ls-remote` 返回 `d77761a8110789af61d72883cbd2191948b32fb9`
+- 最近提交包含 `docs(rpg): refresh cross-computer handoff`
+- 最近提交列表里还能看到功能基线 `d77761a feat(rpg): anchor code tour lines to evidence`
+- `git ls-remote` 返回的 hash 与本机或接手文档里最后一次记录的远端 hash 一致
 - `git status --short --branch` 没有未提交文件
 
-如果另一台电脑显示的远端 hash 不是 `d77761a...`，先执行：
+如果另一台电脑显示的远端 hash 和当前记录不一致，先执行：
 
 ```bash
 git fetch origin

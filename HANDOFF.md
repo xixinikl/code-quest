@@ -8,8 +8,9 @@
 
 - 当前远端：`https://github.com/xixinikl/code-quest.git`
 - 当前分支：`cx/ai-career-rpg-home`
-- 当前已推送提交：`d77761a feat(rpg): anchor code tour lines to evidence`
-- 当前远端 hash：`d77761a8110789af61d72883cbd2191948b32fb9`
+- 当前功能基线：`d77761a feat(rpg): anchor code tour lines to evidence`
+- 当前交接刷新：`docs(rpg): refresh cross-computer handoff`
+- 当前远端 hash：以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 输出为准；交接文档更新本身会产生新提交，最终接手时先核对远端。
 - 本地核对结果：`git status --short --branch` 显示 `cx/ai-career-rpg-home...origin/cx/ai-career-rpg-home`，没有未提交文件时说明本地和远端一致。
 - AI 应用开发路线：15 章；Java 后端路线：5 章；前端工程路线：5 章。三条路线均已进入岗位档案，Java/前端不再是空白占位。
 - 已实现：暗色神秘 RPG 舞台、章节专属背景、剧情角色立绘、可爱宠物/伙伴、地点航线、流程交接、名词解释、关键代码逐行导读、证据任务、Agent 委托、验收和面试复盘。

@@ -8,7 +8,7 @@
 
 ### 当前事实快照（2026-07-16）
 
-AI 路线已扩展为 15 章，Java 后端和前端工程路线各 5 章，均有独立章节契约、剧情场景、教学桥、沙盒和成长结算入口。当前分支已推送到 `origin/cx/ai-career-rpg-home`，最新提交为 `d77761a feat(rpg): anchor code tour lines to evidence`，远端 hash 为 `d77761a8110789af61d72883cbd2191948b32fb9`，尚未合并到 `main`。
+AI 路线已扩展为 15 章，Java 后端和前端工程路线各 5 章，均有独立章节契约、剧情场景、教学桥、沙盒和成长结算入口。当前分支已推送到 `origin/cx/ai-career-rpg-home`，功能基线为 `d77761a feat(rpg): anchor code tour lines to evidence`，交接刷新提交为 `docs(rpg): refresh cross-computer handoff`。远端最新 hash 以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 为准；分支尚未合并到 `main`。
 
 最新一轮收口集中在用户反馈最强的“看不懂代码为什么要这么读、谁把东西交给谁、下一步去哪找证据”：第 2 章产品链路不再串到 AI API 安全章；教学桥关键控件已补暗色 RPG 覆盖；第 1 章代码导读新增“当前行证据锚点”，读到 `response.ok` 时明确说明它只能解释前端绿色提示，不能证明数据库已经写入。
 
