@@ -4977,11 +4977,46 @@ describe("AI 职业路线入口", () => {
     expect(screen.getByLabelText("实战剧情向导")).toHaveTextContent(
       "请求中转门",
     );
+    await user.click(screen.getByRole("button", { name: /沙盒修复与测试/ }));
+    expect(screen.getByLabelText("流程接力小剧场")).toHaveTextContent(
+      "数据层交出测试报告，再进入协作委托",
+    );
+    expect(screen.getByLabelText("流程接力小剧场")).toHaveTextContent(
+      "刷新查询和源码指纹证明修复成立",
+    );
+    expect(screen.getByLabelText("流程接力小剧场")).not.toHaveTextContent(
+      "数据库 把线索交给 数据库",
+    );
     await user.click(screen.getByRole("button", { name: /给 Agent 写任务/ }));
+    expect(screen.getByLabelText("流程接力小剧场")).toHaveTextContent(
+      "把验收报告交给 Agent，不是把愿望丢给 Agent",
+    );
+    expect(screen.getByLabelText("流程接力小剧场")).toHaveTextContent(
+      "测试报告已经告诉你",
+    );
+    expect(screen.getByLabelText("流程接力小剧场")).not.toHaveTextContent(
+      "数据库 把线索交给 数据库",
+    );
     expect(screen.getByText(/1\. 背景/)).toBeInTheDocument();
     expect(screen.getByText(/2\. 边界/)).toBeInTheDocument();
     expect(screen.getByText(/3\. 验收/)).toBeInTheDocument();
     expect(screen.getAllByText(/写出背景和现象/).length).toBeGreaterThan(0);
+    await user.click(screen.getByRole("button", { name: /审查交付说明/ }));
+    expect(screen.getByLabelText("流程接力小剧场")).toHaveTextContent(
+      "Agent 交付交给审查席，再沉淀成因果解释",
+    );
+    await user.click(screen.getByRole("button", { name: /解释故障因果/ }));
+    expect(screen.getByLabelText("流程接力小剧场")).toHaveTextContent(
+      "把交付证据整理成因果链，再迁移到面试题",
+    );
+    await user.click(screen.getByRole("button", { name: /面试迁移题/ }));
+    expect(screen.getByLabelText("流程接力小剧场")).toHaveTextContent(
+      "从故障因果走到面试迁移，不再重复追数据库节点",
+    );
+    expect(screen.getByLabelText("流程接力小剧场")).not.toHaveTextContent(
+      "数据库 把线索交给 数据库",
+    );
+    await user.click(screen.getByRole("button", { name: /给 Agent 写任务/ }));
     await user.click(screen.getByRole("button", { name: /填入骨架/ }));
     expect(screen.getByRole("textbox")).toHaveValue(
       "背景：\n目标：\n范围/约束：\n验收标准：\n风险和回滚：",

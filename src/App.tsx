@@ -1320,6 +1320,14 @@ const labConfigs: Record<string, LabConfig> = {
           objective: "用测试报告和手动路径证明修复真的产生数据库副作用。",
           reward: "获得工程闭环印记",
         },
+        flowDialogue: {
+          headline: "数据层交出测试报告，再进入协作委托",
+          previous:
+            "后端接口已经把保存动作交给数据层，但现在要确认数据层有没有真的写库。",
+          current:
+            "你要用沙盒测试、刷新查询和源码指纹证明修复成立，红灯也要说清断在哪里。",
+          next: "下一站不再追数据库本身，而是把这份证据写成 Agent 能执行的修复任务。",
+        },
       },
       {
         id: "agent-brief",
@@ -1345,6 +1353,14 @@ const labConfigs: Record<string, LabConfig> = {
           instruction:
             "不要告诉 Agent“用最好的方式修”。提供复现、证据、边界、真实副作用和失败路径。",
         },
+        flowDialogue: {
+          headline: "把验收报告交给 Agent，不是把愿望丢给 Agent",
+          previous:
+            "测试报告已经告诉你：保存成功提示和数据库事实之间哪里断了。",
+          current:
+            "你要把现象、证据、目标、禁止改动和验收标准写清楚，让 Agent 知道边界。",
+          next: "Agent 交付后，下一站要审查它有没有拿出测试、Diff 和风险说明。",
+        },
       },
       {
         id: "delivery-review",
@@ -1367,6 +1383,14 @@ const labConfigs: Record<string, LabConfig> = {
             "“编译通过”只能证明……；“页面出现”不能证明……；还必须验证……",
           minimum: 80,
           artifactIds: ["delivery"],
+        },
+        flowDialogue: {
+          headline: "Agent 交付交给审查席，再沉淀成因果解释",
+          previous:
+            "Agent 任务已经写清修复目标和验收口径，现在轮到交付说明接受审查。",
+          current:
+            "你要区分哪些证据能证明落库，哪些只是页面成功、编译通过或一句自信总结。",
+          next: "审查完之后，把成功提示、刷新读取和数据库写入整理成因果链。",
         },
       },
       {
@@ -1396,6 +1420,13 @@ const labConfigs: Record<string, LabConfig> = {
             "修复后的验证链",
           ],
         },
+        flowDialogue: {
+          headline: "把交付证据整理成因果链，再迁移到面试题",
+          previous: "交付审查已经筛掉了不能证明落库的说法，只留下可复查证据。",
+          current:
+            "你要讲清：成功提示从哪里来、刷新数据从哪里来、为什么原来两者断开。",
+          next: "最后把同一套证据链迁移到头像上传等相似工作场景。",
+        },
       },
       {
         id: "transfer-check",
@@ -1423,6 +1454,13 @@ const labConfigs: Record<string, LabConfig> = {
             title: "这只是即时迁移预演",
             body: "它会进入成长档案，但真正能打动面试官的，是你换一个可运行场景后仍能独立复现、定位和验证。",
           },
+        },
+        flowDialogue: {
+          headline: "从故障因果走到面试迁移，不再重复追数据库节点",
+          previous: "你已经能解释保存成功提示和数据库事实为什么不一致。",
+          current:
+            "现在把这套方法换到头像上传：先找表象，再查真实副作用，最后说明验证边界。",
+          next: "结案卷宗会收走你的工作复盘、Agent 委托、交付审查和面试表达。",
         },
       },
     ],
