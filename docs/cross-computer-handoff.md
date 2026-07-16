@@ -8,13 +8,28 @@
 
 - 仓库：`https://github.com/xixinikl/code-quest.git`
 - 分支：`cx/ai-career-rpg-home`
-- 当前已推送功能基线：`547ed6f feat(rpg): add lab flow translator`。
-- 本轮待推送刷新：实战保存后接力回执、交接说明刷新和任务记录；提交后最终 hash 以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 输出为准，不在文档里硬编码。
-- 当前远端最新提交：推送前至少包含 `547ed6f feat(rpg): add lab flow translator`；推送后应包含本轮新提交。
+- 当前已推送功能基线：`0080bd7 feat(rpg): clarify lab save relay`。
+- 当前远端最新提交：至少包含 `0080bd7 feat(rpg): clarify lab save relay`；最终 hash 以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 输出为准，不在文档里硬编码。
 - 远端默认 HEAD：当前指向 `feat/guided-learning-bridge`，不是这条 RPG 分支。另一台电脑必须显式 checkout `cx/ai-career-rpg-home`。
-- 本地状态：推送前可能有本轮未提交文件；推送后 `git status --short --branch` 应显示 `cx/ai-career-rpg-home...origin/cx/ai-career-rpg-home` 且没有未提交文件，才表示另一台电脑能完整拉到本轮内容。
+- 本地状态：`git status --short --branch` 应显示 `cx/ai-career-rpg-home...origin/cx/ai-career-rpg-home` 且没有未提交文件，才表示另一台电脑能完整拉到本轮内容。
 
 不要从 `main` 继续做这版 RPG 教学体验；`main` 仍是冻结审查基线。当前分支可以拉到另一台电脑继续开发，但不建议现在直接合并到 `main`。
+
+## 给协作者的最短拉取说明
+
+不要只 `git clone` 后直接开发，因为 GitHub 默认分支不是这条 RPG 分支。他必须切到 `cx/ai-career-rpg-home`：
+
+```bash
+git clone https://github.com/xixinikl/code-quest.git
+cd code-quest
+git fetch origin
+git checkout -B cx/ai-career-rpg-home origin/cx/ai-career-rpg-home
+git log --oneline -1
+npm install
+npm run verify:quick
+```
+
+`git log --oneline -1` 应显示 `0080bd7 feat(rpg): clarify lab save relay` 或更新提交。如果不是，说明没有拉到今天上传的内容，先不要继续开发。
 
 ## 另一台电脑从零拉取
 
@@ -52,7 +67,7 @@ git ls-remote origin refs/heads/cx/ai-career-rpg-home
 期望看到：
 
 - 当前分支是 `cx/ai-career-rpg-home`
-- 最近提交包含 `547ed6f feat(rpg): add lab flow translator` 或本轮更新提交；后面还能看到 `4370ddf feat(rpg): fold lab support dossier`、`1bbcced feat(rpg): consolidate lab mission director`、`6a6d876 fix(rpg): add job route map cinematics` 等岗位路线与实战页收口提交
+- 最近提交包含 `0080bd7 feat(rpg): clarify lab save relay`；后面还能看到 `547ed6f feat(rpg): add lab flow translator`、`4370ddf feat(rpg): fold lab support dossier`、`1bbcced feat(rpg): consolidate lab mission director` 等岗位路线与实战页收口提交
 - `git ls-remote` 返回的 hash 与本机 `git rev-parse origin/cx/ai-career-rpg-home` 一致
 - `git status --short --branch` 没有未提交文件
 
@@ -60,8 +75,8 @@ git ls-remote origin refs/heads/cx/ai-career-rpg-home
 
 ```bash
 git fetch origin
-git checkout cx/ai-career-rpg-home
-git pull --ff-only
+git checkout -B cx/ai-career-rpg-home origin/cx/ai-career-rpg-home
+git log --oneline -1
 ```
 
 ## 我已经做了什么

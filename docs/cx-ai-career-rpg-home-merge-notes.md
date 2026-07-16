@@ -16,6 +16,20 @@ AI 路线已扩展为 15 章，Java 后端和前端工程路线各 5 章，均�
 
 ## 另一台电脑拉取
 
+给协作者最短照抄版：
+
+```bash
+git clone https://github.com/xixinikl/code-quest.git
+cd code-quest
+git fetch origin
+git checkout -B cx/ai-career-rpg-home origin/cx/ai-career-rpg-home
+git log --oneline -1
+npm install
+npm run verify:quick
+```
+
+`git log --oneline -1` 应显示 `0080bd7 feat(rpg): clarify lab save relay` 或更新提交。不要只 clone 后停在默认分支；当前 GitHub 默认 HEAD 不是这条 RPG 分支。
+
 新电脑首次拉取：
 
 ```bash
@@ -40,7 +54,7 @@ npm install
 npm run verify:quick
 ```
 
-`git log --oneline -1` 应显示本次交接文档提交、`547ed6f feat(rpg): add lab flow translator` 或更新提交。再运行 `git rev-parse HEAD`、`git rev-parse origin/cx/ai-career-rpg-home` 和 `git ls-remote origin refs/heads/cx/ai-career-rpg-home`，三处 hash 应一致；最新远端 HEAD 以命令输出为准。如果显示 `4370ddf`、`1b3cf5d`、`9171ac8`、`1a40fe4`、`e10069f`、`fa12dbc`、`2dd44d3`、`ca2c7aa`、`3fe3db1` 或默认分支 `feat/guided-learning-bridge` 的提交，说明拉错分支或没有拉到最新远端。
+`git log --oneline -1` 应显示本次交接文档提交、`0080bd7 feat(rpg): clarify lab save relay` 或更新提交。再运行 `git rev-parse HEAD`、`git rev-parse origin/cx/ai-career-rpg-home` 和 `git ls-remote origin refs/heads/cx/ai-career-rpg-home`，三处 hash 应一致；最新远端 HEAD 以命令输出为准。如果显示 `547ed6f`、`4370ddf`、`1b3cf5d`、`9171ac8`、`1a40fe4`、`e10069f`、`fa12dbc`、`2dd44d3`、`ca2c7aa`、`3fe3db1` 或默认分支 `feat/guided-learning-bridge` 的提交，说明拉错分支或没有拉到最新远端。
 
 ## 当前主要改动
 

@@ -8,10 +8,11 @@
 
 - 当前远端：`https://github.com/xixinikl/code-quest.git`
 - 当前工作分支：`cx/ai-career-rpg-home`
-- 当前已推送功能基线：`547ed6f feat(rpg): add lab flow translator`；本轮继续补「实战保存后接力回执」与交接刷新，提交推送后最新远端 hash 以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 为准。
-- 当前本地核对：本轮开始时本地与远端同在 `547ed6f`；随后新增 `src/App.tsx`、`src/App.test.tsx`、`src/styles.css`、`docs/ai-career-rpg-tasks.md`、交接文档和 changelog 改动。推送前不可声称另一台电脑已包含本轮接力回执。
-- 当前远端核对：另一台电脑拉取后 `git log --oneline -5` 应看到 `547ed6f feat(rpg): add lab flow translator` 或本轮更新提交；如果仍停在 `4370ddf`、`1b3cf5d`、`9171ac8`、`1a40fe4`、`e10069f`、`fa12dbc`、`2dd44d3`、`ca2c7aa`、`3fe3db1` 或默认分支提交，说明还没拉到最新交接/体验细修。
+- 当前已推送功能基线：`0080bd7 feat(rpg): clarify lab save relay`；它包含实战保存后接力回执、交接刷新和 changelog。最终远端 hash 以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 为准。
+- 当前本地核对：`git status --short --branch` 显示 `cx/ai-career-rpg-home...origin/cx/ai-career-rpg-home` 且没有未提交文件，说明本地与远端一致。
+- 当前远端核对：另一台电脑拉取后 `git log --oneline -5` 应看到 `0080bd7 feat(rpg): clarify lab save relay`；如果仍停在 `547ed6f`、`4370ddf`、`1b3cf5d`、`9171ac8`、`1a40fe4`、`e10069f`、`fa12dbc`、`2dd44d3`、`ca2c7aa`、`3fe3db1` 或默认分支提交，说明还没拉到最新交接/体验细修。
 - 远端默认 HEAD：`git ls-remote --symref origin HEAD` 指向 `feat/guided-learning-bridge`，不是本分支；另一台电脑必须显式切到 `cx/ai-career-rpg-home`，不要只用 clone 后默认分支继续。
+- 给协作者的最短说明：不要直接用默认分支；拉仓库后必须切到 `cx/ai-career-rpg-home`，确认最新提交是 `0080bd7` 或更新。
 - 另一台电脑拉取命令：
   ```bash
   git clone https://github.com/xixinikl/code-quest.git
@@ -24,6 +25,17 @@
   npm install
   npm run verify:quick
   ```
+- 如果他已经在本地有项目，但不确定自己在哪个分支：
+  ```bash
+  cd code-quest
+  git fetch origin
+  git checkout -B cx/ai-career-rpg-home origin/cx/ai-career-rpg-home
+  git log --oneline -1
+  git status --short --branch
+  npm install
+  npm run verify:quick
+  ```
+  `git log --oneline -1` 应显示 `0080bd7 feat(rpg): clarify lab save relay` 或更新；如果不是，先不要继续开发。
 - 如果另一台电脑已经 clone 过：
   ```bash
   cd code-quest
@@ -60,8 +72,8 @@
 
 ### 2026-07-17 最新跨电脑核对
 
-- 推送前本地功能基线为 `547ed6f feat(rpg): add lab flow translator`，本轮提交将包含实战保存接力回执、交接文档和 changelog。推送后远端 HEAD 请以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 为准。
-- 当前沙盒内 `xixi-dev-system doctor --project .` 通过；`profile sync` 和 `updates` 因当前权限无法写 `.git/FETCH_HEAD` 被拦截，不代表项目代码失败。
+- 当前功能基线为 `0080bd7 feat(rpg): clarify lab save relay`，远端 HEAD 请以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 为准。
+- 当前沙盒内 `xixi-dev-system profile sync`、`doctor --project .` 和 `updates --project .` 已通过。
 - 另一台电脑拉下来后，用 `git rev-parse HEAD`、`git rev-parse origin/cx/ai-career-rpg-home`、`git ls-remote origin refs/heads/cx/ai-career-rpg-home` 三个值互相对照；三者应一致或本地 HEAD 是刚拉下来的同一提交。
 - 当前仍是“可继续开发的阶段分支”，不是 ready 合并态。合并前要再跑完整 `npm run verify`，并做桌面与 390px 关键路径视觉终审。
 
