@@ -1,0 +1,3 @@
+- Java 第 5 关事故 Lab now teaches incident response through alert metrics, requestId, stack traces, version evidence, impact scope, mitigation/rollback, and recovery retest.
+- The visible Lab copy no longer inherits release-readiness wording such as production variables, backup restore, or release gates.
+- Added regression coverage and browser evidence for the Java production incident deep link into the Lab at desktop and 390px widths.

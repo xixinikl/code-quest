@@ -327,6 +327,60 @@ describe("岗位路线实战场景契约", () => {
     expect(accessibility).not.toContain("备份恢复");
     expect(accessibility).not.toContain("上线门禁");
   });
+
+  it("Java 事故 Lab 聚焦线上排障，剩余岗位 Lab 保持本职主题", () => {
+    const incident = JSON.stringify({
+      label: getLabConfig("java-production-incident").missionLabel,
+      baseline: getLabConfig("java-production-incident").baseline,
+      practical: getLabConfig("java-production-incident").practical,
+      flowTitle: getLabConfig("java-production-incident").flowTitle,
+      flowItems: getLabConfig("java-production-incident").flowItems,
+      steps: getLabConfig("java-production-incident").steps,
+      guides: getLabConfig("java-production-incident").artifactGuides,
+      result: {
+        label: getLabConfig("java-production-incident").result.label,
+        title: getLabConfig("java-production-incident").result.title,
+        body: getLabConfig("java-production-incident").result.body(0),
+        proved: getLabConfig("java-production-incident").result.proved,
+        recorded: getLabConfig("java-production-incident").result.recorded,
+        pending: getLabConfig("java-production-incident").result.pending,
+        nextItems: getLabConfig("java-production-incident").result.nextItems,
+      },
+    });
+
+    expect(incident).toContain("Java 后端 · 第 5 关");
+    expect(incident).toContain("报警");
+    expect(incident).toContain("requestId");
+    expect(incident).toContain("异常栈");
+    expect(incident).toContain("回滚");
+    expect(incident).not.toContain("上线门禁");
+    expect(incident).not.toContain("生产变量");
+    expect(incident).not.toContain("备份恢复");
+
+    const frontendPerformance = JSON.stringify({
+      label: getLabConfig("frontend-performance-proof").missionLabel,
+      flowTitle: getLabConfig("frontend-performance-proof").flowTitle,
+      practical: getLabConfig("frontend-performance-proof").practical,
+    });
+    expect(frontendPerformance).toContain("前端工程 · 第 3 关");
+    expect(frontendPerformance).toContain("资源");
+    expect(frontendPerformance).toContain("接口");
+    expect(frontendPerformance).toContain("渲染");
+
+    const frontendTesting = JSON.stringify({
+      label: getLabConfig("frontend-testing-proof").missionLabel,
+      flowTitle: getLabConfig("frontend-testing-proof").flowTitle,
+      practical: getLabConfig("frontend-testing-proof").practical,
+      result: {
+        title: getLabConfig("frontend-testing-proof").result.title,
+        nextItems: getLabConfig("frontend-testing-proof").result.nextItems,
+      },
+    });
+    expect(frontendTesting).toContain("前端工程 · 第 5 关");
+    expect(frontendTesting).toContain("测试");
+    expect(frontendTesting).toContain("浏览器回归");
+    expect(frontendTesting).toContain("用户路径");
+  });
 });
 
 const attempt = {
