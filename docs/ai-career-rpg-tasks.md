@@ -61,6 +61,15 @@
 
 验收：新电脑按文档命令能拉到 `cx/ai-career-rpg-home`，看到 `2dd44d3` 或更新提交；接手者能先读交接再继续第 5 章实战体验细修或第 1 章后半段打磨，而不是误从旧默认分支开发。
 
+### R306：跨电脑拉取完整性与交接二次校准
+
+- [x] 核对本地 `cx/ai-career-rpg-home` 与 `origin/cx/ai-career-rpg-home` 对齐，当前远端 hash 为 `1b3cf5dd30bbed6aa2e79d2356c869d6feae6e12`。
+- [x] 确认远端默认 HEAD 仍指向 `feat/guided-learning-bridge`，另一台电脑不能只依赖 clone 默认分支，必须显式切到 `cx/ai-career-rpg-home`。
+- [x] 刷新 `HANDOFF.md` 和 `docs/cx-ai-career-rpg-home-merge-notes.md`，把旧的 `9171ac8` / `1a40fe4` 核对口径改成当前真实 HEAD，并补充 `git rev-parse HEAD` 与 `git rev-parse origin/cx/ai-career-rpg-home` 一致性检查。
+- [x] 明确当前可以跨电脑完整拉取继续开发，但仍不建议直接合并到 `main`；合并前还需要实战 Lab 深链抽检、全站视觉终审、PR 审查和真人试玩。
+
+验收：另一台电脑按交接命令拉取后，`git log --oneline -1` 应为 `1b3cf5d feat(rpg): keep job route identity visible` 或更新提交，且 `git rev-parse HEAD` 等于 `git rev-parse origin/cx/ai-career-rpg-home`。如果不是，先不要继续开发，先修正分支。
+
 ### R300：第 3 章登录态实战剧情导演层
 
 - [x] 第 3 章实战步骤补齐场景、角色、任务卷轴和流程接力：身份路线、凭证存储、401 反证、刷新复查、Agent 委托、交付审查和面试复盘都明确“谁把凭证交给谁，刷新后谁来认人”。

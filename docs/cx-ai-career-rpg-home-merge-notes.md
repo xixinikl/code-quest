@@ -40,7 +40,7 @@ npm install
 npm run verify:quick
 ```
 
-`git log --oneline -1` 应显示 `9171ac8 docs(rpg): refresh merge readiness handoff` 或更新提交；下一条应能看到功能基线 `1a40fe4 feat(rpg): guide case one backhalf evidence bridge`。如果显示 `e10069f`、`fa12dbc`、`2dd44d3`、`ca2c7aa`、`3fe3db1` 或默认分支 `feat/guided-learning-bridge` 的提交，说明拉错分支或没有拉到最新远端。
+`git log --oneline -1` 应显示 `1b3cf5d feat(rpg): keep job route identity visible` 或更新提交。再运行 `git rev-parse HEAD` 和 `git rev-parse origin/cx/ai-career-rpg-home`，两行应该一致；当前已核对的远端 hash 是 `1b3cf5dd30bbed6aa2e79d2356c869d6feae6e12`。如果显示 `9171ac8`、`1a40fe4`、`e10069f`、`fa12dbc`、`2dd44d3`、`ca2c7aa`、`3fe3db1` 或默认分支 `feat/guided-learning-bridge` 的提交，说明拉错分支或没有拉到最新远端。
 
 ## 当前主要改动
 

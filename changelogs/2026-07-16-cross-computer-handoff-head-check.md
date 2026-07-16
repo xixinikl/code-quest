@@ -1,0 +1,2 @@
+- Cross-computer handoff now names the current pushed HEAD `1b3cf5d` and adds a `git rev-parse` equality check, so another machine can verify it pulled the complete `cx/ai-career-rpg-home` branch instead of the old default branch.
+- The merge notes continue to mark the branch as safe to pull but not ready for direct merge; remaining gates are practical Lab deep-link checks, final visual review, PR review, and human playtesting.
