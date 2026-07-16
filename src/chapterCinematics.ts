@@ -3,7 +3,15 @@ import { normalizeScenarioId } from "./scenarioIds";
 export type ChapterScenarioId =
   | "canvas-save-persistence"
   | "java-layered-request"
+  | "java-transaction-consistency"
+  | "java-cache-observability"
+  | "java-release-harbor"
+  | "java-production-incident"
   | "frontend-component-state"
+  | "frontend-request-states"
+  | "frontend-performance-proof"
+  | "frontend-accessibility-proof"
+  | "frontend-testing-proof"
   | "case-002"
   | "case-003-login-state"
   | "case-004-api-error"
@@ -100,6 +108,150 @@ const cinematics: ChapterCinematic[] = [
     mapLandmark: "状态灯控台",
     mapAccent: "#f0b77b",
     mapAccentSoft: "rgba(240, 183, 123, 0.16)",
+  },
+  {
+    scenarioId: "java-transaction-consistency",
+    chapterId: "java-2",
+    chapterTitle: "事务熔炉",
+    cameraLabel: "俯视订单、库存和事务边界汇入同一炉心",
+    mapTopology: "consistency-convergence",
+    mapLabel: "订单事务汇流图",
+    mapInstruction:
+      "用户下单、库存扣减、订单写入和回滚验证必须汇成一个事务结果。",
+    shots: ["top-down", "tracking", "low-angle"],
+    focus: "50% 50%",
+    cameraDuration: "17s",
+    cameraEasing: "cubic-bezier(0.22, 1, 0.36, 1)",
+    mapTerrain: "订单熔铸港",
+    mapLandmark: "事务回滚炉心",
+    mapAccent: "#b8dc78",
+    mapAccentSoft: "rgba(184, 220, 120, 0.16)",
+  },
+  {
+    scenarioId: "java-cache-observability",
+    chapterId: "java-3",
+    chapterTitle: "缓存观测塔",
+    cameraLabel: "沿缓存命中、数据库版本和 TTL 逐层下潜",
+    mapTopology: "performance-waterfall",
+    mapLabel: "缓存版本观测图",
+    mapInstruction:
+      "从接口读取走到缓存命中、数据库版本、TTL 和异步刷新，证明旧数据会收敛。",
+    shots: ["establishing", "top-down", "tracking"],
+    focus: "55% 43%",
+    cameraDuration: "20s",
+    cameraEasing: "linear",
+    mapTerrain: "缓存风廊",
+    mapLandmark: "版本回声钟塔",
+    mapAccent: "#82bdf2",
+    mapAccentSoft: "rgba(130, 189, 242, 0.16)",
+  },
+  {
+    scenarioId: "java-release-harbor",
+    chapterId: "java-4",
+    chapterTitle: "上线港",
+    cameraLabel: "逐道推进 Java 服务上线门与回滚吊桥",
+    mapTopology: "release-gates",
+    mapLabel: "Java 上线连续门禁",
+    mapInstruction:
+      "计划、配置、备份、390px 冒烟、监控和回滚是一串门禁，任一缺证都不能放行。",
+    shots: ["establishing", "low-angle", "locked"],
+    focus: "50% 55%",
+    cameraDuration: "18s",
+    cameraEasing: "cubic-bezier(0.7, 0, 0.84, 0)",
+    mapTerrain: "Java 上线港",
+    mapLandmark: "回滚吊桥",
+    mapAccent: "#91d28a",
+    mapAccentSoft: "rgba(145, 210, 138, 0.16)",
+  },
+  {
+    scenarioId: "java-production-incident",
+    chapterId: "java-5",
+    chapterTitle: "事故回声塔",
+    cameraLabel: "从报警塔俯冲到 requestId 与回滚决定",
+    mapTopology: "fault-tree",
+    mapLabel: "事故排障故障树",
+    mapInstruction:
+      "从报警指标分辨日志、影响范围、止血动作和回滚复测，先恢复服务再复盘根因。",
+    shots: ["low-angle", "close-up", "over-shoulder-right"],
+    focus: "50% 54%",
+    cameraDuration: "14s",
+    cameraEasing: "cubic-bezier(0.5, 0, 0.75, 0)",
+    mapTerrain: "报警风暴塔",
+    mapLandmark: "requestId 回声井",
+    mapAccent: "#ef8c8c",
+    mapAccentSoft: "rgba(239, 140, 140, 0.16)",
+  },
+  {
+    scenarioId: "frontend-request-states",
+    chapterId: "frontend-2",
+    chapterTitle: "请求状态剧场",
+    cameraLabel: "跟随加载、成功和失败状态在舞台上切换",
+    mapTopology: "session-loop",
+    mapLabel: "请求状态回路",
+    mapInstruction:
+      "用户动作触发请求，loading、success、error 和重试都要回到可见反馈。",
+    shots: ["tracking", "over-shoulder-left", "low-angle"],
+    focus: "48% 45%",
+    cameraDuration: "16s",
+    cameraEasing: "cubic-bezier(0.33, 1, 0.68, 1)",
+    mapTerrain: "请求状态剧场",
+    mapLandmark: "错误反馈灯控台",
+    mapAccent: "#f0b77b",
+    mapAccentSoft: "rgba(240, 183, 123, 0.16)",
+  },
+  {
+    scenarioId: "frontend-performance-proof",
+    chapterId: "frontend-3",
+    chapterTitle: "首屏观测塔",
+    cameraLabel: "沿首屏瀑布从资源滑到接口与渲染画像",
+    mapTopology: "performance-waterfall",
+    mapLabel: "前端首屏瀑布图",
+    mapInstruction:
+      "按资源、接口 TTFB、后端日志、React 渲染和复测顺序判断慢在哪里。",
+    shots: ["establishing", "top-down", "tracking"],
+    focus: "56% 42%",
+    cameraDuration: "22s",
+    cameraEasing: "linear",
+    mapTerrain: "首屏观测塔",
+    mapLandmark: "React 渲染钟面",
+    mapAccent: "#82bdf2",
+    mapAccentSoft: "rgba(130, 189, 242, 0.16)",
+  },
+  {
+    scenarioId: "frontend-accessibility-proof",
+    chapterId: "frontend-4",
+    chapterTitle: "无障碍交付庭",
+    cameraLabel: "在语义、键盘和读屏证据之间切换审查",
+    mapTopology: "audit-diamond",
+    mapLabel: "无障碍交付菱形",
+    mapInstruction:
+      "用户任务分流到语义、键盘、读屏和移动端证据，汇合后才能接收交付。",
+    shots: ["over-shoulder-left", "over-shoulder-right", "locked"],
+    focus: "50% 47%",
+    cameraDuration: "12s",
+    cameraEasing: "cubic-bezier(0.55, 0, 1, 0.45)",
+    mapTerrain: "无障碍交付庭",
+    mapLandmark: "焦点顺序裁决台",
+    mapAccent: "#f08f9f",
+    mapAccentSoft: "rgba(240, 143, 159, 0.16)",
+  },
+  {
+    scenarioId: "frontend-testing-proof",
+    chapterId: "frontend-5",
+    chapterTitle: "回归试炼场",
+    cameraLabel: "双线跟拍红灯复现与浏览器回归证据",
+    mapTopology: "proof-lanes",
+    mapLabel: "前端回归双轨场",
+    mapInstruction:
+      "旧故障红灯、单测、集成、浏览器手测和 sourceHash 最终汇入可信交付判断。",
+    shots: ["establishing", "over-shoulder-right", "locked"],
+    focus: "50% 48%",
+    cameraDuration: "21s",
+    cameraEasing: "cubic-bezier(0.37, 0, 0.63, 1)",
+    mapTerrain: "回归试炼竞技场",
+    mapLandmark: "sourceHash 证据门",
+    mapAccent: "#89c9ff",
+    mapAccentSoft: "rgba(137, 201, 255, 0.16)",
   },
   {
     scenarioId: "canvas-save-persistence",

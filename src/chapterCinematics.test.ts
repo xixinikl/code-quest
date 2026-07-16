@@ -3,6 +3,7 @@ import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import {
   chapterScenarioIds,
+  type ChapterScenarioId,
   getChapterCinematic,
   getChapterShot,
   getMapNodePlacement,
@@ -14,6 +15,23 @@ import {
   getTeachingStorySceneImages,
   getTeachingStoryScenes,
 } from "./TeachingBridge";
+
+const aiScenarioIds = chapterScenarioIds.filter((scenarioId) =>
+  /^\d+$/.test(getChapterCinematic(scenarioId).chapterId),
+);
+
+const jobScenarioIds: ChapterScenarioId[] = [
+  "java-layered-request",
+  "java-transaction-consistency",
+  "java-cache-observability",
+  "java-release-harbor",
+  "java-production-incident",
+  "frontend-component-state",
+  "frontend-request-states",
+  "frontend-performance-proof",
+  "frontend-accessibility-proof",
+  "frontend-testing-proof",
+];
 
 describe("十五章镜头与地图契约", () => {
   it("运行时入口不再导入旧风格角色宠物 SVG 或旧 PNG 场景", () => {
@@ -76,13 +94,7 @@ describe("十五章镜头与地图契约", () => {
   });
 
   it("每章都有独立地图拓扑与可解释的镜头契约", () => {
-    const configs = chapterScenarioIds
-      .filter(
-        (scenarioId) =>
-          scenarioId !== "java-layered-request" &&
-          scenarioId !== "frontend-component-state",
-      )
-      .map(getChapterCinematic);
+    const configs = aiScenarioIds.map(getChapterCinematic);
 
     expect(configs).toHaveLength(15);
     expect(new Set(configs.map((config) => config.chapterId)).size).toBe(15);
@@ -111,7 +123,7 @@ describe("十五章镜头与地图契约", () => {
   });
 
   it("十五种拓扑坐标签名不同且节点始终落在十二列地图内", () => {
-    const configs = chapterScenarioIds.map(getChapterCinematic);
+    const configs = aiScenarioIds.map(getChapterCinematic);
     const signatures = configs.map((config) =>
       getTopologySignature(config.mapTopology),
     );
@@ -174,6 +186,42 @@ describe("十五章镜头与地图契约", () => {
     expect(case02Scenes.map((scene) => scene.place)).toContain("产品复盘厅");
     expect(case02Scenes.map((scene) => scene.place)).not.toContain("AI 状态台");
     expect(JSON.stringify(case02Scenes)).not.toContain("API Key");
+  });
+
+  it("岗位路线第 2-5 章都有自己的地图镜头，不回退到第一章失忆数据库", () => {
+    const configs = jobScenarioIds.map(getChapterCinematic);
+
+    expect(configs.map((config) => config.chapterId)).toEqual([
+      "java-1",
+      "java-2",
+      "java-3",
+      "java-4",
+      "java-5",
+      "frontend-1",
+      "frontend-2",
+      "frontend-3",
+      "frontend-4",
+      "frontend-5",
+    ]);
+    for (const config of configs) {
+      expect(config.mapLabel).not.toBe("数据接力路线");
+      expect(config.mapTerrain).not.toBe("断流档案河");
+      expect(config.mapLandmark).not.toBe("失忆数据库");
+      expect(config.mapInstruction.length).toBeGreaterThan(24);
+    }
+
+    expect(getChapterCinematic("java-release-harbor")).toEqual(
+      expect.objectContaining({
+        mapLabel: "Java 上线连续门禁",
+        mapLandmark: "回滚吊桥",
+      }),
+    );
+    expect(getChapterCinematic("frontend-testing-proof")).toEqual(
+      expect.objectContaining({
+        mapLabel: "前端回归双轨场",
+        mapLandmark: "sourceHash 证据门",
+      }),
+    );
   });
 
   it("每个章节的每个地点都有角色、背景和可理解的证据任务", () => {
