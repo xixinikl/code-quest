@@ -1,0 +1,3 @@
+- Java 第 3 关缓存观测 Lab now talks about stale data, cache hits, database versions, TTL, async refresh, and retest convergence instead of generic page-speed wording.
+- 前端第 4 关无障碍 Lab now focuses on semantic controls, keyboard paths, screen-reader-visible feedback, focus order, 390px mobile, and regression evidence instead of release-gate production variables and backup/rollback copy.
+- Added regression coverage for the full visible Lab configs so route-specific Lab pages do not silently inherit the wrong mainline vocabulary again.

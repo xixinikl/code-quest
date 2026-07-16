@@ -271,6 +271,62 @@ describe("岗位路线实战场景契约", () => {
     expect(visibleCopy).not.toContain("SaveDraftButton.jsx");
     expect(visibleCopy).not.toContain("draftRepository.js");
   });
+
+  it("Java 缓存和前端无障碍 Lab 不沿用错误主线语境", () => {
+    const javaCache = JSON.stringify({
+      label: getLabConfig("java-cache-observability").missionLabel,
+      baseline: getLabConfig("java-cache-observability").baseline,
+      practical: getLabConfig("java-cache-observability").practical,
+      flowTitle: getLabConfig("java-cache-observability").flowTitle,
+      flowItems: getLabConfig("java-cache-observability").flowItems,
+      steps: getLabConfig("java-cache-observability").steps,
+      guides: getLabConfig("java-cache-observability").artifactGuides,
+      result: {
+        label: getLabConfig("java-cache-observability").result.label,
+        title: getLabConfig("java-cache-observability").result.title,
+        body: getLabConfig("java-cache-observability").result.body(0),
+        proved: getLabConfig("java-cache-observability").result.proved,
+        recorded: getLabConfig("java-cache-observability").result.recorded,
+        pending: getLabConfig("java-cache-observability").result.pending,
+        nextItems: getLabConfig("java-cache-observability").result.nextItems,
+      },
+    });
+
+    expect(javaCache).toContain("Java 后端 · 第 3 关");
+    expect(javaCache).toContain("旧数据");
+    expect(javaCache).toContain("缓存");
+    expect(javaCache).toContain("数据库");
+    expect(javaCache).not.toContain("项目列表首屏慢");
+    expect(javaCache).not.toContain("loading 文案");
+
+    const accessibility = JSON.stringify({
+      label: getLabConfig("frontend-accessibility-proof").missionLabel,
+      baseline: getLabConfig("frontend-accessibility-proof").baseline,
+      practical: getLabConfig("frontend-accessibility-proof").practical,
+      flowTitle: getLabConfig("frontend-accessibility-proof").flowTitle,
+      flowItems: getLabConfig("frontend-accessibility-proof").flowItems,
+      steps: getLabConfig("frontend-accessibility-proof").steps,
+      guides: getLabConfig("frontend-accessibility-proof").artifactGuides,
+      result: {
+        label: getLabConfig("frontend-accessibility-proof").result.label,
+        title: getLabConfig("frontend-accessibility-proof").result.title,
+        body: getLabConfig("frontend-accessibility-proof").result.body(0),
+        proved: getLabConfig("frontend-accessibility-proof").result.proved,
+        recorded: getLabConfig("frontend-accessibility-proof").result.recorded,
+        pending: getLabConfig("frontend-accessibility-proof").result.pending,
+        nextItems: getLabConfig("frontend-accessibility-proof").result.nextItems,
+      },
+    });
+
+    expect(accessibility).toContain("前端工程 · 第 4 关");
+    expect(accessibility).toContain("键盘");
+    expect(accessibility).toContain("读屏");
+    expect(accessibility).toContain("390px");
+    expect(accessibility).not.toContain("AI_API_KEY");
+    expect(accessibility).not.toContain("生产变量");
+    expect(accessibility).not.toContain("备份恢复");
+    expect(accessibility).not.toContain("上线门禁");
+  });
 });
 
 const attempt = {
