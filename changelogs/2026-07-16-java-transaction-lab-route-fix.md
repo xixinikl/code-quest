@@ -1,0 +1,3 @@
+- Java 第 2 关教学完成后的伙伴会合页现在显示 Java 后端岗位路线，不再误标成 AI 应用开发主线。
+- Java 事务实战 Lab 的可见文案改为订单、库存、下单和事务回滚语境，移除旧的草稿保存、`SaveDraftButton.jsx`、`draftRepository.js` 继承痕迹。
+- Added regression coverage for route identity and Java transaction Lab copy, plus browser evidence for desktop and 390px entry into the Lab.

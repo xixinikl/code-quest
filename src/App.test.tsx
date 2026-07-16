@@ -24,6 +24,10 @@ import {
   javaTransactionConsistencyScenario,
   teachingScenario,
 } from "./teaching";
+import {
+  getChapterRouteIdentity,
+  getScenarioRouteIdentity,
+} from "./routeIdentity";
 
 const diagnosticActive = {
   id: "diagnostic-001",
@@ -223,6 +227,49 @@ describe("岗位路线实战场景契约", () => {
       expect(images.length).toBeGreaterThanOrEqual(4);
       expect(new Set(images).size).toBe(images.length);
     }
+  });
+
+  it("岗位路线实战和会合身份不会串回 AI 主线旧语境", () => {
+    expect(getScenarioRouteIdentity("java-transaction-consistency")).toEqual({
+      label: "Java 后端",
+      kind: "岗位路线",
+    });
+    expect(getScenarioRouteIdentity("frontend-testing-proof")).toEqual({
+      label: "前端工程",
+      kind: "岗位路线",
+    });
+    expect(getChapterRouteIdentity("java-2")).toEqual({
+      label: "Java 后端",
+      kind: "岗位路线",
+    });
+    expect(getChapterRouteIdentity("frontend-5")).toEqual({
+      label: "前端工程",
+      kind: "岗位路线",
+    });
+
+    const javaTransaction = getLabConfig("java-transaction-consistency");
+    const visibleCopy = JSON.stringify({
+      label: javaTransaction.missionLabel,
+      title: javaTransaction.missionTitle,
+      flowTitle: javaTransaction.flowTitle,
+      baseline: javaTransaction.baseline,
+      steps: javaTransaction.steps,
+      guides: javaTransaction.artifactGuides,
+      result: {
+        proved: javaTransaction.result.proved,
+        recorded: javaTransaction.result.recorded,
+        pending: javaTransaction.result.pending,
+        nextItems: javaTransaction.result.nextItems,
+      },
+    });
+
+    expect(visibleCopy).toContain("Java 后端 · 第 2 关");
+    expect(visibleCopy).toContain("订单");
+    expect(visibleCopy).toContain("库存");
+    expect(visibleCopy).toContain("事务");
+    expect(visibleCopy).not.toContain("草稿");
+    expect(visibleCopy).not.toContain("SaveDraftButton.jsx");
+    expect(visibleCopy).not.toContain("draftRepository.js");
   });
 });
 

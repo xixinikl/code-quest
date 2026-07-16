@@ -84,6 +84,7 @@ import {
   type CareerRoute,
   type SharedCoreAbilityId,
 } from "./careerRoadmap";
+import { getChapterRouteIdentity } from "./routeIdentity";
 import {
   loadDeveloper,
   saveDeveloper,
@@ -729,6 +730,31 @@ function pickArtifactGuide(
   });
 
   return matched?.[1] ?? entries[0]?.[1];
+}
+
+function rewriteLabCopy<T>(
+  value: T,
+  replacements: Array<[from: string, to: string]>,
+): T {
+  if (typeof value === "string") {
+    let rewritten: string = value;
+    for (const [from, to] of replacements) {
+      rewritten = rewritten.split(from).join(to);
+    }
+    return rewritten as unknown as T;
+  }
+  if (Array.isArray(value)) {
+    return value.map((item) => rewriteLabCopy(item, replacements)) as T;
+  }
+  if (typeof value === "object" && value !== null) {
+    return Object.fromEntries(
+      Object.entries(value).map(([key, item]) => [
+        key,
+        rewriteLabCopy(item, replacements),
+      ]),
+    ) as T;
+  }
+  return value;
 }
 
 function getLabStepScene(config: LabConfig, step: LabStep) {
@@ -7036,16 +7062,31 @@ labConfigs[JAVA_TRANSACTION_SCENARIO_ID] = {
     "数据库里订单有、库存没有，说明异常发生后没有把核心写入放在同一个回滚边界。",
     "最终验收不能只看接口返回，要同时查记录数、库存变化和失败复测结果。",
   ],
+  steps: labConfigs[CASE05_SCENARIO_ID].steps.map((step) =>
+    rewriteLabCopy(step, [
+      ["草稿", "订单"],
+      ["保存", "下单"],
+      ["drafts", "orders"],
+      ["draftRepository.js", "orderRepository.js"],
+      ["saveDraft", "placeOrder"],
+      ["SaveDraftButton.jsx", "PlaceOrderButton.jsx"],
+      ["auditLogs", "inventoryLogs"],
+      ["审计日志", "库存扣减记录"],
+      ["审计失败", "库存扣减失败"],
+      ["同一份", "同一笔"],
+      ["title", "orderId"],
+    ]),
+  ),
   artifactGuides: {
     frontend: {
-      place: "下单入口 · SaveDraftButton.jsx",
+      place: "下单入口 · PlaceOrderButton.jsx",
       focus: "只看请求 id、幂等键和重复点击如何形成两次请求。",
       keyLines: ["Idempotency-Key", "requestId", "POST"],
       proves: "重复请求确实抵达了后端。",
       cannotProve: "前端不能独自保证并发下数据库只有一份。",
     },
     repository: {
-      place: "事务熔炉 · draftRepository.js",
+      place: "事务熔炉 · orderRepository.js",
       focus: "看查重、写入和异常处理是否在同一业务边界。",
       keyLines: ["findByIdempotencyKey", "insert", "rollback"],
       proves: "服务端如何处理重复与失败。",
@@ -9263,6 +9304,7 @@ function ChapterRewardGate({
   const earned = reward.phase === "earned";
   const stageBackground = getChapterDossierBackground(reward.chapter);
   const adventureProgress = getAdventureProgress(developer.xp);
+  const routeIdentity = getChapterRouteIdentity(reward.chapter.id);
 
   return (
     <main
@@ -9278,8 +9320,10 @@ function ChapterRewardGate({
           <strong>{developer.xp} XP</strong>
         </div>
         <div>
-          <span>主线</span>
-          <strong>第 {displayChapterNumber(reward.chapter)} 章</strong>
+          <span>{routeIdentity.label}</span>
+          <strong>
+            {routeIdentity.kind} · 第 {displayChapterNumber(reward.chapter)} 章
+          </strong>
         </div>
       </header>
 
@@ -10689,7 +10733,7 @@ export function Lab({
               body:
                 activeIndex === 0
                   ? "你已经看过本章事故现场，接下来要把剧情线索变成真实项目证据。"
-                  : "上一题已经收录到本地成长档案草稿，现在继续把证据链补完整。",
+                  : "上一题已经收录到本地成长记录草案，现在继续把证据链补完整。",
             }}
             current={{
               label: activeStep.label,
@@ -12627,18 +12671,19 @@ export default function App() {
                                                       : case02Scenario;
     const handleTeachingComplete = () => {
       scrollPageToTop();
+      const rewardScenarioId = attempt?.scenarioId ?? activeScenarioId;
       const activeRoute = careerRoutes.find((route) =>
-        activeScenarioId === JAVA_SCENARIO_ID ||
-        activeScenarioId === JAVA_TRANSACTION_SCENARIO_ID ||
-        activeScenarioId === JAVA_CACHE_SCENARIO_ID ||
-        activeScenarioId === JAVA_RELEASE_SCENARIO_ID ||
-        activeScenarioId === JAVA_INCIDENT_SCENARIO_ID
+        rewardScenarioId === JAVA_SCENARIO_ID ||
+        rewardScenarioId === JAVA_TRANSACTION_SCENARIO_ID ||
+        rewardScenarioId === JAVA_CACHE_SCENARIO_ID ||
+        rewardScenarioId === JAVA_RELEASE_SCENARIO_ID ||
+        rewardScenarioId === JAVA_INCIDENT_SCENARIO_ID
           ? route.id === "java-backend"
-          : activeScenarioId === FRONTEND_ACCESSIBILITY_SCENARIO_ID ||
-              activeScenarioId === FRONTEND_TESTING_SCENARIO_ID ||
-              activeScenarioId === FRONTEND_PERFORMANCE_SCENARIO_ID ||
-              activeScenarioId === FRONTEND_REQUEST_STATES_SCENARIO_ID ||
-              activeScenarioId === FRONTEND_SCENARIO_ID
+          : rewardScenarioId === FRONTEND_ACCESSIBILITY_SCENARIO_ID ||
+              rewardScenarioId === FRONTEND_TESTING_SCENARIO_ID ||
+              rewardScenarioId === FRONTEND_PERFORMANCE_SCENARIO_ID ||
+              rewardScenarioId === FRONTEND_REQUEST_STATES_SCENARIO_ID ||
+              rewardScenarioId === FRONTEND_SCENARIO_ID
             ? route.id === "frontend-engineering"
             : route.id === "ai-development",
       );
@@ -12892,18 +12937,19 @@ export default function App() {
       }}
       onSubmitted={(options = { showReward: true }) => {
         scrollPageToTop();
+        const rewardScenarioId = attempt?.scenarioId ?? activeScenarioId;
         const activeRoute = careerRoutes.find((route) =>
-          activeScenarioId === JAVA_SCENARIO_ID ||
-          activeScenarioId === JAVA_TRANSACTION_SCENARIO_ID ||
-          activeScenarioId === JAVA_CACHE_SCENARIO_ID ||
-          activeScenarioId === JAVA_RELEASE_SCENARIO_ID ||
-          activeScenarioId === JAVA_INCIDENT_SCENARIO_ID
+          rewardScenarioId === JAVA_SCENARIO_ID ||
+          rewardScenarioId === JAVA_TRANSACTION_SCENARIO_ID ||
+          rewardScenarioId === JAVA_CACHE_SCENARIO_ID ||
+          rewardScenarioId === JAVA_RELEASE_SCENARIO_ID ||
+          rewardScenarioId === JAVA_INCIDENT_SCENARIO_ID
             ? route.id === "java-backend"
-            : activeScenarioId === FRONTEND_ACCESSIBILITY_SCENARIO_ID ||
-                activeScenarioId === FRONTEND_TESTING_SCENARIO_ID ||
-                activeScenarioId === FRONTEND_PERFORMANCE_SCENARIO_ID ||
-                activeScenarioId === FRONTEND_REQUEST_STATES_SCENARIO_ID ||
-                activeScenarioId === FRONTEND_SCENARIO_ID
+            : rewardScenarioId === FRONTEND_ACCESSIBILITY_SCENARIO_ID ||
+                rewardScenarioId === FRONTEND_TESTING_SCENARIO_ID ||
+                rewardScenarioId === FRONTEND_PERFORMANCE_SCENARIO_ID ||
+                rewardScenarioId === FRONTEND_REQUEST_STATES_SCENARIO_ID ||
+                rewardScenarioId === FRONTEND_SCENARIO_ID
               ? route.id === "frontend-engineering"
               : route.id === "ai-development",
         );

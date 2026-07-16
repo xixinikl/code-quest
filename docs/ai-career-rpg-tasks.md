@@ -70,6 +70,15 @@
 
 验收：另一台电脑按交接命令拉取后，`git log --oneline -1` 应为 `1b3cf5d feat(rpg): keep job route identity visible` 或更新提交，且 `git rev-parse HEAD` 等于 `git rev-parse origin/cx/ai-career-rpg-home`。如果不是，先不要继续开发，先修正分支。
 
+### R307：Java 第 2 关实战会合与 Lab 语境修复
+
+- [x] 修复章节教学完成后的伙伴会合页路线身份：会合页现在按章节 id 显示 `Java 后端 / 前端工程 / AI 应用开发`，不再把 Java/前端岗位路线误标成 AI 主线。
+- [x] 修复 Java 第 2 关事务 Lab 继承旧 AI 数据一致性文案的问题：实战正文、步骤、材料导览和代码位置改为订单、库存、下单、`PlaceOrderButton.jsx`、`orderRepository.js` 语境，不再出现 `SaveDraftButton.jsx` 或 `draftRepository.js`。
+- [x] 新增岗位路线契约测试，锁定 Java/前端路线身份解析，并防止 Java 事务 Lab 可见配置重新出现旧草稿保存语境。
+- [x] 浏览器验收：隔离 API `4374`、临时 SQLite `/tmp/code-quest-r307.sqlite`、Vite `5224`；`#chapter-java-2` 完成教学 → 伙伴会合 → 进入实战 Lab。会合页显示 `Java 后端 / 岗位路线 · 第 2 章`；Lab 显示 `Java 后端 · 第 2 关`、订单/库存/事务证据；桌面 1200 和 390px 均无横向溢出，控制台无 error。
+
+验收边界：本轮完成 Java 第 2 关深链到 Lab 的代表性修复；Java/前端第 3-5 关仍需逐关做同样的会合页、实战语境、材料导览和移动端抽检。
+
 ### R300：第 3 章登录态实战剧情导演层
 
 - [x] 第 3 章实战步骤补齐场景、角色、任务卷轴和流程接力：身份路线、凭证存储、401 反证、刷新复查、Agent 委托、交付审查和面试复盘都明确“谁把凭证交给谁，刷新后谁来认人”。
