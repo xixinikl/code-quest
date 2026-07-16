@@ -8803,6 +8803,70 @@ function LabCaseRouteBoard({ config }: { config: LabConfig }) {
   );
 }
 
+function LabSupportDossier({
+  activeIndex,
+  activeStep,
+  config,
+}: {
+  activeIndex: number;
+  activeStep: LabStep;
+  config: LabConfig;
+}) {
+  const [open, setOpen] = useState(false);
+  const flowIndex = getLabStepFlowIndex(activeStep.id, activeIndex, config);
+  const currentFlow = config.flowItems[flowIndex] ?? config.flowItems[0];
+  const nextFlow = config.flowItems[flowIndex + 1];
+
+  return (
+    <section className="lab-support-dossier" aria-label="辅助卷宗">
+      <header>
+        <div>
+          <span>辅助卷宗</span>
+          <strong>先完成当前任务，需要时再展开全图</strong>
+          <small>完整流程：{config.flowTitle}</small>
+          <p>
+            当前停在「{currentFlow?.label ?? activeStep.label}」：
+            {currentFlow?.detail ?? "把这一题的证据先讲清楚。"}
+            {nextFlow ? ` 下一棒会接到「${nextFlow.title}」。` : ""}
+          </p>
+          <div className="lab-support-current" aria-label="当前这一棒">
+            <span>当前这一棒</span>
+            <strong>
+              {currentFlow?.label ?? activeStep.label} 把「
+              {currentFlow?.title ?? activeStep.label}」交给{" "}
+              {nextFlow?.label ?? "结案卷宗"}
+            </strong>
+          </div>
+        </div>
+        <button
+          aria-expanded={open}
+          className="lab-support-toggle"
+          onClick={() => setOpen((current) => !current)}
+          type="button"
+        >
+          {open ? "收起辅助卷宗" : "展开流程地图"}
+          <ChevronRight size={15} />
+        </button>
+      </header>
+      {open && (
+        <div className="lab-support-dossier-body">
+          <LabFlowMap
+            activeIndex={activeIndex}
+            activeStepLabel={activeStep.label}
+            config={config}
+          />
+          <LabCaseRouteBoard config={config} />
+          <LabRelayBoard
+            activeIndex={activeIndex}
+            activeStep={activeStep}
+            config={config}
+          />
+        </div>
+      )}
+    </section>
+  );
+}
+
 function LabAbilityMark({
   activeStep,
   config,
@@ -11324,13 +11388,7 @@ export function Lab({
               savedStep={lastSavedStep}
             />
           )}
-          <LabFlowMap
-            activeIndex={activeIndex}
-            activeStepLabel={activeStep.label}
-            config={config}
-          />
-          <LabCaseRouteBoard config={config} />
-          <LabRelayBoard
+          <LabSupportDossier
             activeIndex={activeIndex}
             activeStep={activeStep}
             config={config}

@@ -5533,10 +5533,17 @@ describe("AI 职业路线入口", () => {
     expect(screen.getByLabelText("当前能力印记")).toHaveTextContent(
       "排查路径、提示次数与解释",
     );
+    expect(screen.getByLabelText("辅助卷宗")).toHaveTextContent(
+      "先完成当前任务，需要时再展开全图",
+    );
+    expect(screen.getByLabelText("辅助卷宗")).toHaveTextContent("发出 POST");
+    expect(screen.queryByLabelText("本关案件路线牌")).not.toBeInTheDocument();
+    expect(screen.queryByLabelText("实战接力板")).not.toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: /展开流程地图/ }));
     expect(screen.getAllByText(/当前这一棒/).length).toBeGreaterThan(0);
     expect(
-      screen.getByText(/前端\s*把「发出 POST」交给\s*后端接口/),
-    ).toBeInTheDocument();
+      screen.getAllByText(/前端\s*把「发出 POST」交给\s*后端接口/).length,
+    ).toBeGreaterThan(0);
     expect(screen.getByLabelText("本关案件路线牌")).toBeInTheDocument();
     expect(screen.getByText("案件路线牌")).toBeInTheDocument();
     expect(screen.getByLabelText("本关完整路线")).toHaveTextContent("用户");
