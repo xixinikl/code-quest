@@ -7236,6 +7236,39 @@ labConfigs[FRONTEND_PERFORMANCE_SCENARIO_ID] = {
   flowAriaLabel: "前端首屏性能路线",
   flowEyebrow: "性能证据路线",
   flowTitle: "页面变慢时，如何证明慢在资源、接口还是渲染",
+  flowItems: [
+    {
+      label: "打开页面",
+      title: "把体感慢变成时间账本",
+      detail: "先确认用户看到的是白屏、转圈、卡顿还是数据迟到",
+    },
+    {
+      label: "Network",
+      title: "读首屏瀑布图",
+      detail: "区分 JS 资源、接口 TTFB、下载时间和缓存状态",
+    },
+    {
+      label: "接口",
+      title: "拆后端等待",
+      detail: "用日志和 Server-Timing 说明 db/cache/app 谁在耗时",
+    },
+    {
+      label: "渲染",
+      title: "看 React 画像",
+      detail: "接口回了以后还卡，就查一次性渲染和 long task",
+    },
+    {
+      label: "复测",
+      title: "证明第二次更快",
+      detail: "缓存命中、列表分批渲染和旧数据边界都要留下证据",
+    },
+  ],
+  baseline: {
+    label: "首屏观测委托已领取",
+    title: "先别急着优化，把慢拆成可测的几段",
+    body: "这关训练前端性能排障。用户只会说“页面慢”，你要把它拆成资源下载、接口等待、后端查询、缓存命中、React 渲染和第二次访问复测，判断慢到底发生在哪一段。",
+    action: "进入首屏观测塔",
+  },
   practical: {
     title: "在独立前端沙盒里修正性能证据与渲染边界",
     sandboxPath: "sandbox/frontend-performance-proof",
@@ -7247,7 +7280,47 @@ labConfigs[FRONTEND_PERFORMANCE_SCENARIO_ID] = {
     ...labConfigs[CASE06_SCENARIO_ID].result,
     label: "首屏观测闭环通过 · 成长档案已更新",
     title: "你已经能用证据定位页面变慢",
+    body: (hintLevel) =>
+      `你把“页面慢”拆成了 JS 资源、/api/projects 的 TTFB、后端查询、缓存命中、React 渲染画像和第二次访问复测。本次独立程度：L${hintLevel >= 3 ? "1" : "2"}。`,
+    proved: "首屏性能证据覆盖资源、接口等待、后端日志、渲染画像、缓存命中和复测结果",
+    recorded:
+      "Network 瀑布图、Server-Timing 缺口、backend.log、render-profile、cache-retest 和 Agent 交付说明",
+    pending:
+      "换一个仪表盘、搜索列表或 AI 对话页继续判断慢在资源、接口、渲染还是缓存",
+    nextTitle: "这关如何变成前端性能能力？",
+    nextItems: [
+      "不要把“慢”当成一个整体，要先分清资源下载、接口 TTFB、后端查询和浏览器渲染。",
+      "用 Network、Server-Timing、后端日志和 React profile 让每个判断都有证据。",
+      "面试中讲清优化前后怎么复测，尤其说明缓存变快不等于可以让用户看到旧数据。",
+    ],
   },
+  hints: [
+    "先看 network-waterfall：JS 资源不是主要瓶颈，/api/projects 的 TTFB 和第二次 MISS 更关键。",
+    "再看 backend.log 和 projectPerformance.js：缓存写入了，但读取永远拿不到，数据库每次都查 2500 条。",
+    "最后看 render-profile：接口返回后还一次性渲染 2500 条，前端也有自己的卡顿责任。",
+  ],
+  steps: labConfigs[CASE06_SCENARIO_ID].steps.map((step) =>
+    rewriteLabCopy(step, [
+      ["慢速迷雾", "首屏观测塔"],
+      ["页面慢", "首屏慢"],
+      ["项目列表首屏慢", "前端项目列表首屏慢"],
+      ["首屏时间账本", "首屏瀑布账本"],
+      ["后端迷雾灯", "接口等待灯"],
+      ["舞台卡顿画像", "React 渲染画像"],
+      ["缓存复测", "第二次访问复测"],
+      ["loading 文案", "加载提示"],
+      ["更顺滑", "有证据地变快"],
+      ["更快", "第二次真的更快"],
+    ]),
+  ),
+  artifactGuides: rewriteLabCopy(labConfigs[CASE06_SCENARIO_ID].artifactGuides, [
+    ["慢速迷雾", "首屏观测塔"],
+    ["页面慢", "首屏慢"],
+    ["性能", "前端性能"],
+    ["loading 文案", "加载提示"],
+    ["前端渲染", "React 渲染"],
+    ["Server-Timing", "Server-Timing / X-Cache"],
+  ]),
 };
 
 labConfigs[JAVA_RELEASE_SCENARIO_ID] = {
@@ -7517,6 +7590,39 @@ labConfigs[FRONTEND_TESTING_SCENARIO_ID] = {
   flowAriaLabel: "前端测试与回归证据路线",
   flowEyebrow: "测试证据路线",
   flowTitle: "绿色报告怎样证明当前前端交付真的可靠",
+  flowItems: [
+    {
+      label: "旧故障",
+      title: "先复现红灯",
+      detail: "没有失败复现，就不知道测试是不是抓住了原问题",
+    },
+    {
+      label: "单测",
+      title: "守报告校验器",
+      detail: "校验 passed 数、sourceHash、manual 和风险字段",
+    },
+    {
+      label: "集成",
+      title: "串用户路径",
+      detail: "Network 只能做旁证，不能替代测试报告和当前源码",
+    },
+    {
+      label: "浏览器",
+      title: "写手动复测",
+      detail: "步骤、期望、实际、边界和回归风险都要写清楚",
+    },
+    {
+      label: "接收",
+      title: "审 Agent 交付",
+      detail: "全绿但 hash 过期、缺红灯或缺风险说明都不能接收",
+    },
+  ],
+  baseline: {
+    label: "回归试炼委托已领取",
+    title: "先别相信全绿截图，证明它对应当前前端交付",
+    body: "这关训练前端验收能力。Agent 说测试全过不等于交付可信，你要确认旧问题先红过、单测和集成测试覆盖关键路径、手动浏览器复测写清边界，报告 sourceHash 也要对应当前代码。",
+    action: "进入回归试炼场",
+  },
   practical: {
     title: "在独立前端沙盒里审查测试报告和浏览器回归证据",
     sandboxPath: "sandbox/frontend-testing-proof",
@@ -7529,7 +7635,56 @@ labConfigs[FRONTEND_TESTING_SCENARIO_ID] = {
     ...labConfigs[CASE11_SCENARIO_ID].result,
     label: "前端回归证据通过 · 成长档案已更新",
     title: "你已经能审查前端测试是否真的覆盖用户路径",
+    body: (hintLevel) =>
+      `你把“测试全绿”拆成了旧故障复现、报告校验器单测、Network 旁证、浏览器手动复测、sourceHash 当前性、回归风险和 Agent 交付审查。本次独立程度：L${hintLevel >= 3 ? "1" : "2"}。`,
+    proved:
+      "前端验收证据覆盖失败复现、单元边界、集成路径、手动浏览器复测、当前源码指纹和回归风险",
+    recorded:
+      "failing-before、passing-after-stale、network-test-run、manual-report、backend.log、verificationReport.js 和 Agent 交付说明",
+    pending:
+      "换一个登录表单、上传组件或筛选列表继续训练前端回归验收",
+    nextTitle: "这关如何变成前端交付审查能力？",
+    nextItems: [
+      "先看旧故障是否真的红过，再看修复后的单测、集成和手动路径是否覆盖同一个问题。",
+      "全绿报告必须和当前源码 hash 对上；过期报告只能说明旧版本可能通过。",
+      "面试中把验收讲成 red-green、浏览器复测、风险边界和接收/拒收决定，而不是只说我会写测试。",
+    ],
   },
+  hints: [
+    "先看 failing-before：没有旧问题红灯，绿灯就可能只是没测到真正的问题。",
+    "再看 passing-after-stale 和 backend.log：全绿报告绑定旧 sourceHash，不能证明当前代码。",
+    "最后看 manual-report、network-test-run 和 agent-delivery：浏览器路径是旁证，还要写清回归风险和接收决定。",
+  ],
+  steps: labConfigs[CASE11_SCENARIO_ID].steps.map((step) =>
+    rewriteLabCopy(step, [
+      ["验收试炼场", "回归试炼场"],
+      ["可信验收", "前端回归验收"],
+      ["画布", "前端交付"],
+      ["canvas", "verification"],
+      ["Canvas", "Verification"],
+      ["/api/canvases", "前端用户路径"],
+      ["POST 后再 GET", "用户路径复测"],
+      ["保存逻辑会写入仓库", "报告校验器拒绝不可信证据"],
+      ["刷新后仍能看到刚保存的画布", "旧问题复现用例必须先亮红灯"],
+      ["新增一张画布", "走一遍前端交付路径"],
+      ["验收试炼画布", "回归试炼交付"],
+      ["保存并读回同一条记录", "用户路径和报告指纹能对上"],
+      ["保存", "交付"],
+    ]),
+  ),
+  artifactGuides: rewriteLabCopy(labConfigs[CASE11_SCENARIO_ID].artifactGuides, [
+    ["验收试炼场", "回归试炼场"],
+    ["可信验收", "前端回归验收"],
+    ["画布", "前端交付"],
+    ["canvas", "verification"],
+    ["Canvas", "Verification"],
+    ["/api/canvases", "前端用户路径"],
+    ["POST 后再 GET", "用户路径复测"],
+    ["保存逻辑会写入仓库", "报告校验器拒绝不可信证据"],
+    ["刷新后仍能看到刚保存的画布", "旧问题复现用例必须先亮红灯"],
+    ["保存并读回同一条记录", "用户路径和报告指纹能对上"],
+    ["保存", "交付"],
+  ]),
 };
 
 // The route contract test reads the same registry used by Lab.

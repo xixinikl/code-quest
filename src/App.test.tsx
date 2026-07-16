@@ -359,20 +359,47 @@ describe("岗位路线实战场景契约", () => {
 
     const frontendPerformance = JSON.stringify({
       label: getLabConfig("frontend-performance-proof").missionLabel,
+      baseline: getLabConfig("frontend-performance-proof").baseline,
       flowTitle: getLabConfig("frontend-performance-proof").flowTitle,
+      flowItems: getLabConfig("frontend-performance-proof").flowItems,
       practical: getLabConfig("frontend-performance-proof").practical,
+      steps: getLabConfig("frontend-performance-proof").steps,
+      guides: getLabConfig("frontend-performance-proof").artifactGuides,
+      result: {
+        label: getLabConfig("frontend-performance-proof").result.label,
+        title: getLabConfig("frontend-performance-proof").result.title,
+        body: getLabConfig("frontend-performance-proof").result.body(0),
+        proved: getLabConfig("frontend-performance-proof").result.proved,
+        recorded: getLabConfig("frontend-performance-proof").result.recorded,
+        pending: getLabConfig("frontend-performance-proof").result.pending,
+        nextItems: getLabConfig("frontend-performance-proof").result.nextItems,
+      },
     });
     expect(frontendPerformance).toContain("前端工程 · 第 3 关");
     expect(frontendPerformance).toContain("资源");
     expect(frontendPerformance).toContain("接口");
     expect(frontendPerformance).toContain("渲染");
+    expect(frontendPerformance).toContain("Server-Timing");
+    expect(frontendPerformance).toContain("X-Cache");
+    expect(frontendPerformance).toContain("React");
+    expect(frontendPerformance).not.toContain("主线 1-6");
+    expect(frontendPerformance).not.toContain("AI 应用开发");
 
     const frontendTesting = JSON.stringify({
       label: getLabConfig("frontend-testing-proof").missionLabel,
+      baseline: getLabConfig("frontend-testing-proof").baseline,
       flowTitle: getLabConfig("frontend-testing-proof").flowTitle,
+      flowItems: getLabConfig("frontend-testing-proof").flowItems,
       practical: getLabConfig("frontend-testing-proof").practical,
+      steps: getLabConfig("frontend-testing-proof").steps,
+      guides: getLabConfig("frontend-testing-proof").artifactGuides,
       result: {
+        label: getLabConfig("frontend-testing-proof").result.label,
         title: getLabConfig("frontend-testing-proof").result.title,
+        body: getLabConfig("frontend-testing-proof").result.body(0),
+        proved: getLabConfig("frontend-testing-proof").result.proved,
+        recorded: getLabConfig("frontend-testing-proof").result.recorded,
+        pending: getLabConfig("frontend-testing-proof").result.pending,
         nextItems: getLabConfig("frontend-testing-proof").result.nextItems,
       },
     });
@@ -380,6 +407,12 @@ describe("岗位路线实战场景契约", () => {
     expect(frontendTesting).toContain("测试");
     expect(frontendTesting).toContain("浏览器回归");
     expect(frontendTesting).toContain("用户路径");
+    expect(frontendTesting).toContain("sourceHash");
+    expect(frontendTesting).toContain("回归风险");
+    expect(frontendTesting).not.toContain("主线 1-11");
+    expect(frontendTesting).not.toContain("AI 应用开发");
+    expect(frontendTesting).not.toContain("/api/canvases");
+    expect(frontendTesting).not.toContain("验收试炼画布");
   });
 });
 
