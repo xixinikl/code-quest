@@ -8,9 +8,9 @@
 
 - 当前远端：`https://github.com/xixinikl/code-quest.git`
 - 当前工作分支：`cx/ai-career-rpg-home`
-- 当前已推送功能基线：功能代码以 `1a40fe4 feat(rpg): guide case one backhalf evidence bridge` 为基线；当前远端最新提交为 `9171ac8 docs(rpg): refresh merge readiness handoff`，用于补齐交接和合并前检查记录。
+- 当前已推送功能基线：功能代码以 `1a40fe4 feat(rpg): guide case one backhalf evidence bridge` 为基线；交接文档至少包含 `9171ac8 docs(rpg): refresh merge readiness handoff`，最终远端 hash 以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 为准。
 - 本地核对结果：`git status --short --branch` 显示 `cx/ai-career-rpg-home...origin/cx/ai-career-rpg-home` 且没有未提交文件，说明本地已上传内容与远端分支一致。
-- 当前远端核对：`git ls-remote origin refs/heads/cx/ai-career-rpg-home` 返回 `9171ac89909d7873563a17a990b930307b37529f`。另一台电脑拉取后 `git log --oneline -1` 应看到 `9171ac8 docs(rpg): refresh merge readiness handoff` 或更新提交；如果仍停在 `1a40fe4`、`e10069f`、`fa12dbc`、`2dd44d3`、`ca2c7aa`、`3fe3db1` 或默认分支提交，说明还没拉到最新交接/体验细修。
+- 当前远端核对：另一台电脑拉取后 `git log --oneline -5` 应看到 `9171ac8 docs(rpg): refresh merge readiness handoff` 或更新的交接提交，并能在后面看到 `1a40fe4 feat(rpg): guide case one backhalf evidence bridge` 功能基线；如果仍停在 `1a40fe4`、`e10069f`、`fa12dbc`、`2dd44d3`、`ca2c7aa`、`3fe3db1` 或默认分支提交，说明还没拉到最新交接/体验细修。
 - 远端默认 HEAD：`git ls-remote --symref origin HEAD` 指向 `feat/guided-learning-bridge`，不是本分支；另一台电脑必须显式切到 `cx/ai-career-rpg-home`，不要只用 clone 后默认分支继续。
 - 另一台电脑拉取命令：
   ```bash
@@ -44,7 +44,7 @@
 ### 2026-07-16 跨电脑/合并决策补充
 
 - 本地分支 `cx/ai-career-rpg-home` 已与 `origin/cx/ai-career-rpg-home` 对齐，`git status --short --branch` 没有未提交文件。
-- 远端核对命令：`git ls-remote origin refs/heads/cx/ai-career-rpg-home` 返回 `9171ac89909d7873563a17a990b930307b37529f`。
+- 远端核对命令：`git ls-remote origin refs/heads/cx/ai-career-rpg-home` 的输出应等于另一台电脑 `git rev-parse origin/cx/ai-career-rpg-home`；不要依赖文档里的旧 hash。
 - 另一台电脑可以完整拉取当前阶段成果继续开发；不要只 clone 后使用默认分支，因为远端默认 HEAD 仍不是本工作分支。
 - 当前不建议直接合并：完整 `npm run verify` 已通过，但全站最终视觉终审、PR 审查和真人试玩还没完成。
 - 如果时间紧，可以先以当前分支继续开发或开 Draft PR 备份审查；不要把它当最终可发布主线直接 merge。
