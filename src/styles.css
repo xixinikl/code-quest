@@ -4596,6 +4596,32 @@ textarea:focus {
   background: rgba(23, 91, 72, 0.24);
 }
 
+.teaching-bridge .prediction-option.wrong {
+  border-color: rgba(255, 134, 154, 0.55);
+  color: #ffb4c1;
+  background:
+    linear-gradient(135deg, rgba(255, 134, 154, 0.12), transparent 48%),
+    rgba(78, 22, 38, 0.26);
+}
+
+.teaching-bridge .teaching-footer {
+  margin-top: 26px;
+  padding-top: 18px;
+  border-top-color: rgba(217, 184, 110, 0.18);
+}
+
+.teaching-bridge .teaching-footer .map-hint {
+  display: inline-flex;
+  min-height: 38px;
+  align-items: center;
+  justify-content: center;
+  padding: 0 14px;
+  border: 1px solid rgba(217, 184, 110, 0.18);
+  border-radius: 999px;
+  background: rgba(217, 184, 110, 0.08);
+  color: #d9cda8 !important;
+}
+
 .teaching-bridge .tour-observation blockquote {
   border-left-color: rgba(217, 184, 110, 0.66);
   line-height: 1.8;
@@ -4627,6 +4653,23 @@ textarea:focus {
 
 .flowchart-node small {
   color: #aebfc9;
+}
+
+.flowchart-node-idx {
+  background:
+    linear-gradient(135deg, var(--map-accent, #e9c878), #93efd0), #e9c878;
+  color: #06120f;
+}
+
+.flowchart-node.seen .flowchart-node-idx {
+  background: #93efd0;
+  color: #04120f;
+}
+
+.flowchart-arrow-label {
+  border: 1px solid rgba(147, 239, 208, 0.2);
+  background: rgba(147, 239, 208, 0.08);
+  color: #9fe8cf;
 }
 
 .map-quest-shell {
@@ -4807,6 +4850,34 @@ textarea:focus {
     rgba(2, 8, 14, 0.58);
 }
 
+.concept-section {
+  position: relative;
+  overflow: hidden;
+}
+
+.concept-section::before {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 42px;
+  height: 42px;
+  content: "";
+  border: 1px solid rgba(217, 184, 110, 0.13);
+  border-radius: 999px;
+  background: radial-gradient(
+    circle,
+    rgba(217, 184, 110, 0.14),
+    transparent 68%
+  );
+  pointer-events: none;
+}
+
+.concept-section h3 {
+  position: relative;
+  z-index: 1;
+  color: #fff4ce;
+}
+
 .reveal-btn,
 .prediction-option,
 .remediation-trigger {
@@ -4834,6 +4905,30 @@ textarea:focus {
 
 .concept-revealed {
   border-left-color: #e9c878;
+}
+
+.explanation-box {
+  color: #dfe8ee;
+}
+
+.explanation-box strong {
+  display: block;
+  color: #fff4ce;
+  line-height: 1.75;
+}
+
+.explanation-box.correct {
+  border-color: rgba(147, 239, 208, 0.42);
+  background:
+    linear-gradient(135deg, rgba(147, 239, 208, 0.12), transparent 50%),
+    rgba(16, 58, 50, 0.28);
+}
+
+.explanation-box.incorrect {
+  border-color: rgba(255, 134, 154, 0.5);
+  background:
+    linear-gradient(135deg, rgba(255, 134, 154, 0.12), transparent 50%),
+    rgba(78, 22, 38, 0.28);
 }
 
 .prediction-option.correct {

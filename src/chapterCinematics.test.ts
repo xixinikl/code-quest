@@ -35,6 +35,46 @@ describe("十五章镜头与地图契约", () => {
     }
   });
 
+  it("教学桥关键学习控件保持暗色 RPG 覆盖，不退回白色课件壳", () => {
+    const styles = readFileSync(
+      join(process.cwd(), "src", "styles.css"),
+      "utf8",
+    );
+    const requiredSelectors = [
+      ".teaching-bridge .prediction-option.wrong",
+      ".teaching-bridge .teaching-footer .map-hint",
+      ".concept-section::before",
+      ".explanation-box.correct",
+      ".explanation-box.incorrect",
+      ".flowchart-node-idx",
+      ".flowchart-arrow-label",
+    ];
+
+    for (const selector of requiredSelectors) {
+      expect(styles).toContain(selector);
+    }
+
+    const selectorBlock = (selector: string) => {
+      const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      const match = styles.match(new RegExp(`${escaped}\\s*\\{[^}]+\\}`));
+      expect(
+        match,
+        `${selector} should have a concrete CSS block`,
+      ).toBeTruthy();
+      return match?.[0] ?? "";
+    };
+
+    for (const selector of requiredSelectors) {
+      const block = selectorBlock(selector);
+      expect(block).not.toMatch(/background:\s*white;/);
+      expect(block).not.toMatch(/background:\s*#fff(?:;|\s)/i);
+    }
+
+    expect(
+      selectorBlock(".teaching-bridge .teaching-footer .map-hint"),
+    ).toContain("rgba(217, 184, 110");
+  });
+
   it("每章都有独立地图拓扑与可解释的镜头契约", () => {
     const configs = chapterScenarioIds
       .filter(

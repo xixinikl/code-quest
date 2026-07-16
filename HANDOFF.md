@@ -1078,3 +1078,14 @@ TeachingBridge 继续保持 `React.lazy` 按需加载，并把懒加载期间的
 - 移动抽检：390×844 下第二幕显示「产品链路带读官」「方向筛选台」「真实 AI 产品不是把所有点子都做进去」「候选池像装备栏」，`clientWidth = scrollWidth = 390`，背景为暗色，console error 为 0。截图：`.playwright-cli/page-2026-07-16T08-33-50-456Z.png`。
 - 自动化验证：Node `v24.13.1` 下 `npm run test -- src/chapterCinematics.test.ts src/App.test.tsx --run` 通过 2 个测试文件 / 53 个测试；`npm run verify:quick` 通过 lint、typecheck、10 个测试文件 / 170 个测试。
 - 当前状态：浏览器证据、代码修复、自动化验证和交接记录已补；等待本轮提交和推送。
+
+## R289：教学桥控件暗色 RPG 收口
+
+本轮继续处理用户指出的“风格断层/像白色课件后台”的问题，范围收敛在教学桥关键控件，不重写业务数据。
+
+- 实现：`src/styles.css` 补齐概念卡、预测题、预测错误态、解释框、流程图节点编号、节点接力标签和 footer 继续提示的暗色 RPG 覆盖。
+- 测试：`src/chapterCinematics.test.ts` 增加样式回归断言，要求这些关键教学控件有具体暗色规则块，且不回退到 `background: white` / `#fff`。
+- 文档：`docs/ai-career-rpg-tasks.md` 新增 R289 记录；新增 changelog fragment `changelogs/2026-07-16-teaching-control-dark-rpg.md`。
+- 浏览器验收：隔离 API `4350`、临时 SQLite `/tmp/code-quest-r289.sqlite`、Vite `5200`。第 1 章剧情页显示完整流程卷轴、名词小抄、本幕复盘和下一地点预告；桌面 `clientWidth = scrollWidth = 1200`，390×844 下 `clientWidth = scrollWidth = 390`，body 背景为暗色，console error 为 0。
+- 自动化验证：Node `v24.13.1` 下 `npm run test -- src/chapterCinematics.test.ts --run` 通过 1 个测试文件 / 8 个测试；`npm run format:check` 通过；`npm run verify:quick` 通过 lint、typecheck、10 个测试文件 / 171 个测试。
+- 当前状态：本轮 UI 收口、测试、浏览器证据和交接记录已补；仍未声称“全站最终 UI 完成”，后续应继续按章节检查白色断层和学习可理解性。

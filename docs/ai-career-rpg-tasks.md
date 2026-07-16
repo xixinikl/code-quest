@@ -1568,3 +1568,16 @@ Goal 模式的完成口径必须比“能点进去”更严格：只接剧情教
 - [x] Node `v24.13.1` 下 `npm run verify:quick` 通过：lint、typecheck、10 个测试文件 / 170 个测试。
 
 验收目标：第 2 章不再把 AI API 安全内容提前塞入产品链路章；真实浏览器证明第 2 章会合、实战首幕、保存后第二幕和 390px 布局不会断层。
+
+## R289：教学桥控件暗色 RPG 收口
+
+- [x] 概念卡、预测题、预测错误态、解释框、流程图节点编号、节点接力标签和 footer 继续提示补齐暗色 RPG 覆盖。
+- [x] 保留现有章节角色与场景资产，不新增仓促图片；优先把已有 WebP 人物和场景所在的教学壳统一起来。
+- [x] 新增 changelog fragment：`changelogs/2026-07-16-teaching-control-dark-rpg.md`。
+- [x] `src/chapterCinematics.test.ts` 增加样式回归断言，保护教学桥关键控件不退回白底课件壳。
+- [x] Node `v24.13.1` 下 `npm run test -- src/chapterCinematics.test.ts --run` 通过：1 个测试文件 / 8 个测试。
+- [x] Node `v24.13.1` 下 `npm run verify:quick` 通过：lint、typecheck、10 个测试文件 / 171 个测试。
+- [x] 浏览器桌面验收：隔离 API `4350`、临时 SQLite `/tmp/code-quest-r289.sqlite`、Vite `5200`；第 1 章剧情页显示完整流程卷轴、名词小抄、本幕复盘和下一地点预告，控制台 error 为 0，`clientWidth = scrollWidth = 1200`，body 背景为暗色。
+- [x] 浏览器 390×844 抽检：第 1 章剧情页仍显示完整流程卷轴、名词小抄、本幕复盘；`clientWidth = scrollWidth = 390`，body 背景为暗色。
+
+验收目标：用户在项目地图、概念卡和预测题之间切换时，不再感觉从神秘剧情 RPG 突然跳回白色课程后台。
