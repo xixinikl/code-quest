@@ -2954,12 +2954,60 @@ const labConfigs: Record<string, LabConfig> = {
         label: "任务委托",
         icon: CircleDot,
         kind: "baseline",
+        flowItemIndex: 0,
+        scene: {
+          location: "接口审判庭入口 · 证词台",
+          image: apiErrorCourtScene,
+          portrait: apiClerkPortrait,
+          actor: "接口接待员",
+          mood: "“别急着说接口坏了。先把请求体、状态码、错误体和日志一份份摆上证词台。”",
+          objective:
+            "把提交失败拆成请求体、接口路由、错误响应和后端日志四类证据。",
+          reward: "获得接口审判委托",
+        },
+        questBrief: {
+          why: "真实工作里，用户只会说提交失败；开发者必须判断是用户少填、前端没拦、后端校验错，还是服务器真的炸了。",
+          evidence:
+            "先看 payload、500 response、expectedShape、backend.log 和 requestId，不要先猜框架问题。",
+          output:
+            "一条接口错误路线：谁提交了什么、路由怎么判、响应怎么告诉用户、日志怎么追踪。",
+        },
+        flowDialogue: {
+          headline: "先把“接口坏了”拆成四份证词",
+          previous: "用户提交 Brief，只说明他把一份草稿交到了门口。",
+          current:
+            "你要判断草稿里缺了什么、接口应该给什么判词、日志能不能串回同一次请求。",
+          next: "下一站会检查请求体证词，看缺字段是不是可预期的校验错误。",
+        },
       },
       {
         id: "payload-inspection",
         label: "检查请求体",
         icon: Search,
         kind: "response",
+        scene: {
+          location: "请求体证词台 · Payload 卷宗前",
+          image: apiErrorCourtScene,
+          portrait: apiClerkPortrait,
+          actor: "接口接待员",
+          mood: "“payload 是第一份证词。它说清前端到底交了什么，也暴露了 userGoal 空着。”",
+          objective: "确认前端实际发送的字段、缺失字段和 requestId。",
+          reward: "获得请求体证词",
+        },
+        questBrief: {
+          why: "不先看请求体，就会把用户少填字段、前端漏传字段和后端异常混在一起。",
+          evidence:
+            "看 POST /api/briefs、x-request-id、projectName、userGoal:'' 和 constraints。",
+          output:
+            "一段判断：前端实际交了哪些字段，userGoal 缺失说明什么，还不能证明什么。",
+        },
+        flowDialogue: {
+          headline: "payload 先作证：这次提交缺了 userGoal",
+          previous: "用户点击提交，把 Brief 草稿交给前端。",
+          current:
+            "你要从请求体里找 projectName、userGoal 和 requestId，确认缺字段是事实，不是感觉。",
+          next: "下一站把这份证词交给状态码判席，判断应该是 400 还是 500。",
+        },
         response: {
           title: "阶段 02 · 请求体证词",
           prompt: "先说清前端实际把哪些字段交给了后端，缺了什么",
@@ -2976,6 +3024,29 @@ const labConfigs: Record<string, LabConfig> = {
         label: "判断状态码",
         icon: AlertTriangle,
         kind: "response",
+        scene: {
+          location: "状态码判席 · 红色判词灯下",
+          image: apiErrorCourtScene,
+          portrait: deliveryJudgePortrait,
+          actor: "状态码审判官",
+          mood: "“400 是证词不完整，500 是审判庭自己出事故。判错了，用户就不知道该补什么。”",
+          objective: "区分可预期校验错误和真正服务器异常。",
+          reward: "获得状态码判词",
+        },
+        questBrief: {
+          why: "状态码是前后端协作语言。把缺字段说成 500，会误导前端、用户和排障同事。",
+          evidence:
+            "对照 wrong-response 的 500、expected status 400、VALIDATION_ERROR 和 fields.userGoal。",
+          output:
+            "一条判词：为什么缺 userGoal 应该是 400，当前 500 会造成什么误解。",
+        },
+        flowDialogue: {
+          headline: "状态码不是装饰，它决定下一步该谁修",
+          previous: "请求体证词已经证明 userGoal 缺失。",
+          current:
+            "你要判断这类错误应由用户补字段，还是由后端修内部异常，所以判词应该是 400。",
+          next: "下一站进入沙盒，把错误体改成用户和前端都能理解的结构。",
+        },
         response: {
           title: "阶段 03 · 状态码判词",
           prompt: "判断这次应该是 400 校验错误，还是 500 服务器异常",
@@ -2993,12 +3064,61 @@ const labConfigs: Record<string, LabConfig> = {
         label: "沙盒修复与测试",
         icon: TerminalSquare,
         kind: "verification",
+        flowItemIndex: 3,
+        scene: {
+          location: "错误体修复庭 · 字段提示席",
+          image: apiErrorCourtScene,
+          portrait: apiClerkPortrait,
+          actor: "接口接待员",
+          mood: "“修好不是把红字换掉，而是让 400、code、fields 和 requestId 都能接住同一份证词。”",
+          objective:
+            "用测试证明缺 userGoal 时返回结构化 400，并给出字段级提示。",
+          reward: "获得错误路径验收证据",
+        },
+        questBrief: {
+          why: "接口错误处理要让用户知道补什么，也让开发者能追踪同一次请求。",
+          evidence:
+            "看测试报告、400 VALIDATION_ERROR、fields.userGoal、requestId 和前端提示。",
+          output:
+            "一份验收报告：缺字段返回 400，错误体结构稳定，前端能展示可行动提示。",
+        },
+        flowDialogue: {
+          headline: "把 500 误判修成可行动的 400 错误体",
+          previous: "状态码判席已经确认 userGoal 缺失不该伪装成服务器爆炸。",
+          current:
+            "你要用沙盒测试证明错误响应包含 code、fields 和 requestId，而不是泛泛提交失败。",
+          next: "下一站用日志把请求体、响应和后端原因串成同一条证据链。",
+        },
       },
       {
         id: "log-correlation",
         label: "串日志证据",
         icon: Server,
         kind: "response",
+        flowItemIndex: 4,
+        scene: {
+          location: "后端日志档案室 · requestId 索引柜",
+          image: questArchive,
+          portrait: archiveKeeperPortrait,
+          actor: "日志档案官",
+          mood: "“requestId 是案卷编号。没有它，payload、响应和后端原因就散成三张纸。”",
+          objective: "用 requestId 串起请求体、错误响应和后端日志。",
+          reward: "获得日志追踪证词",
+        },
+        questBrief: {
+          why: "排障时只看前端报错不够；日志要证明请求到过后端、后端怎么判、为什么返回这个状态。",
+          evidence:
+            "对照 req_brief_042 在 payload、wrong-response 和 backend.log 里的同一条记录。",
+          output:
+            "一条日志串证：同一个 requestId 下，payload 缺什么，后端记录什么，响应告诉用户什么。",
+        },
+        flowDialogue: {
+          headline: "requestId 把三份证词订成同一本案卷",
+          previous: "错误体修复庭已经要求响应告诉前端该补哪个字段。",
+          current:
+            "你要用日志证明后端收到同一请求，并记录了 userGoal required 的可追踪原因。",
+          next: "下一站把这份错误路径证据写成 Agent 能执行的修复任务。",
+        },
         response: {
           title: "阶段 05 · 日志串证",
           prompt: "用 requestId 把请求体、响应和后端日志连起来",
@@ -3021,6 +3141,30 @@ const labConfigs: Record<string, LabConfig> = {
         label: "给 Agent 写任务",
         icon: FileCode2,
         kind: "response",
+        flowItemIndex: 4,
+        scene: {
+          location: "委托锻造台 · 错误路径契约前",
+          image: agentBriefForgeScene,
+          portrait: briefForgemasterPortrait,
+          actor: "任务锻造师",
+          mood: "“优化错误处理太宽了。把缺字段、400、fields、requestId 和前端提示写进契约。”",
+          objective: "把接口错误路径修复写成 Agent 能执行、能验收的任务。",
+          reward: "获得接口修复委托",
+        },
+        questBrief: {
+          why: "Agent 需要明确正常路径和错误路径都要验收，否则它可能只证明 201 正常。",
+          evidence:
+            "把 invalid payload、wrong response、expected shape、backend.log 和前端泛化提示合成任务边界。",
+          output:
+            "一份 Agent 任务：修什么错误路径、不改什么正常逻辑、用哪些测试和浏览器路径验收。",
+        },
+        flowDialogue: {
+          headline: "把接口红灯写成 Agent 能执行的错误路径委托",
+          previous: "日志档案已经证明这是同一个 requestId 下的缺字段校验问题。",
+          current:
+            "你要告诉 Agent 修 400 VALIDATION_ERROR、fields.userGoal、requestId 和前端字段提示。",
+          next: "Agent 交付后，审查席会检查它是不是只拿正常 201 冒充完成。",
+        },
         response: {
           title: "阶段 06 · 协作能力",
           prompt: "把接口错误修复任务交给 Agent，但写清错误路径验收",
@@ -3036,6 +3180,30 @@ const labConfigs: Record<string, LabConfig> = {
         label: "审查交付说明",
         icon: ShieldCheck,
         kind: "response",
+        flowItemIndex: 4,
+        scene: {
+          location: "交付审查席 · 错误路径证据灯下",
+          image: deliveryReviewCourtScene,
+          portrait: deliveryJudgePortrait,
+          actor: "交付审判官",
+          mood: "“正常请求 201 不能证明错误路径修好了。审查要看缺 userGoal 时用户能不能知道补什么。”",
+          objective: "判断 Agent 交付有没有证明 400/500 区分和字段级提示。",
+          reward: "获得接口交付判断",
+        },
+        questBrief: {
+          why: "工作里不能只测 happy path。接口错误处理的价值在用户犯错、参数缺失、日志追踪时才出现。",
+          evidence:
+            "看交付说明有没有覆盖缺字段 payload、400 响应、fields.userGoal、requestId 日志和前端提示。",
+          output:
+            "一条审查决定：接收、退回或要求补证据，并说明还缺哪一段错误路径证明。",
+        },
+        flowDialogue: {
+          headline: "交付审查要看错误路径，不被正常 201 带跑",
+          previous: "Agent 可能已经证明正常提交能创建 Brief。",
+          current:
+            "你要检查它有没有证明缺 userGoal 时返回 400、字段提示和可追踪 requestId。",
+          next: "最后把这次接口排障整理成面试官听得懂的定位过程。",
+        },
         response: {
           title: "阶段 07 · 交付审查",
           prompt:
@@ -3051,6 +3219,30 @@ const labConfigs: Record<string, LabConfig> = {
         label: "面试复盘",
         icon: FlaskConical,
         kind: "response",
+        flowItemIndex: 5,
+        scene: {
+          location: "面试讲述厅 · 接口证词星图前",
+          image: interviewDefenseHallScene,
+          portrait: interviewCouncilorPortrait,
+          actor: "面试策士",
+          mood: "“别背状态码表。讲你如何用 payload、response body 和 backend.log 定位这一层。”",
+          objective: "把接口错误定位组织成面试官听得懂的 STAR 复盘。",
+          reward: "获得接口排障面试素材",
+        },
+        questBrief: {
+          why: "面试想听的是你如何判断问题在哪一层，而不是只说 400、500 的定义。",
+          evidence:
+            "串起缺字段 payload、500 反证、期望 400、requestId 日志、测试报告和交付审查结论。",
+          output:
+            "一段 STAR 复盘：场景、任务、定位证据、修复或委托、验收结果和迁移经验。",
+        },
+        flowDialogue: {
+          headline: "把一次接口失败定位讲成可信的面试故事",
+          previous: "交付审查已经分清正常路径证据和错误路径证据。",
+          current:
+            "你要把技术证据翻译成 STAR：用户提交失败、你怎样查 payload/response/log、怎样验收。",
+          next: "成长档案会收下这段素材，下一次换接口也能复用同一套定位路线。",
+        },
         response: {
           title: "阶段 08 · 面试复盘",
           prompt: "把这一关讲成一次接口失败定位",
