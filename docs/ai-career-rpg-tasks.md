@@ -77,6 +77,14 @@
 
 验收：`npm run test -- src/App.test.tsx --run` 通过 49 个测试；`npm run verify:quick` 通过 lint、typecheck、10 个测试文件 / 174 个测试；浏览器隔离 API `4367`、临时 SQLite `/tmp/code-quest-r301.sqlite`、Vite `5217` 下确认桌面与 390px 手机无横向溢出、控制台 error 为 0。
 
+### R302：第 5 章数据一致性实战剧情导演层
+
+- [x] 第 5 章实战步骤补齐场景、角色、任务卷轴和流程接力：熔炉入口、Network 双轨、幂等锤印、唯一约束城门、事务炉心、Agent 委托、交付审查和面试复盘都明确“同一动作为什么不能写出两条记录”。
+- [x] 数据一致性学习继续使用真实沙盒证据：重复提交 Network、Idempotency-Key、clientMutationId、数据库前后记录、后端日志、Agent 交付说明和事务回滚测试报告。
+- [x] 新增回归测试，确保第 5 章实战随步骤切换索引执衡官、回声取证官、数据库守门员、任务锻造师、交付审判官和面试策士，并用 `flowItemIndex` 避免后半段流程高亮错位。
+
+验收：`npm run test -- src/App.test.tsx --run` 通过 50 个测试；`npm run verify:quick` 通过 lint、typecheck、10 个测试文件 / 175 个测试；浏览器隔离 API `4368`、临时 SQLite `/tmp/code-quest-r302.sqlite`、Vite `5218` 下确认桌面 1280 与 390px 手机无横向溢出、控制台 error 为 0。
+
 ### R174：第五章 RAG 索引并发延迟迁移复测
 
 - 新增 `rag-index-concurrency-retest` 独立沙盒：单次知识文档上传后，两个 Worker 因非原子领取同时处理 job 417，并写出重复 chunks。

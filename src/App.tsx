@@ -3416,12 +3416,60 @@ const labConfigs: Record<string, LabConfig> = {
         label: "任务委托",
         icon: CircleDot,
         kind: "baseline",
+        scene: {
+          location: "一致性熔炉入口 · 双写警钟前",
+          image: idempotencyForgeScene,
+          portrait: indexArbiterPortrait,
+          actor: "索引执衡官",
+          mood: "“先别急着骂用户手抖。连点、刷新、重试和并发都会把同一个动作送进熔炉两次。”",
+          objective: "先分清重复点击和重复写库，再决定该在哪一层兜底。",
+          reward: "获得一致性调查令",
+        },
+        questBrief: {
+          why: "真实工作里，重复数据常常不是“用户点了两次”这么简单，而是网络重试、页面刷新、后端并发和数据库约束一起没守住。",
+          evidence:
+            "先读两次 POST、同一枚 Idempotency-Key、相同 clientMutationId、数据库前后记录和后端日志。",
+          output:
+            "一条故障假设：同一次保存动作被系统当成两次新保存处理，导致重复草稿或半截写入。",
+        },
+        flowDialogue: {
+          headline: "先分清重复动作和重复写入不是一回事",
+          previous:
+            "委托刚领取，熔炉只知道草稿被重复锻造，还不知道断点在哪一层。",
+          current:
+            "用户可能只想保存一次，但前端、后端和数据库每一层都要证明自己没有把它变成两条记录。",
+          next: "下一站去 Network 连点现场，看两次请求到底是不是同一枚锤印。",
+        },
       },
       {
         id: "duplicate-reproduction",
         label: "复现重复提交",
         icon: Search,
         kind: "response",
+        scene: {
+          location: "连点回声台 · Network 双轨前",
+          image: idempotencyForgeScene,
+          portrait: echoForensicsPortrait,
+          actor: "回声取证官",
+          mood: "“两条 POST 看起来像两次保存，但先看锤印：同一个 key、同一个 mutationId，就不是两份独立草稿。”",
+          objective: "证明重复来自同一次用户动作被重复送达。",
+          reward: "获得双轨 Network 证词",
+        },
+        questBrief: {
+          why: "如果不先证明“两次请求是不是同一个动作”，后面很容易把幂等修复和正常多次保存混在一起。",
+          evidence:
+            "引用 double-submit 里的 Idempotency-Key、clientMutationId、title 和两次 POST 状态。",
+          output:
+            "一句判断：这两次请求应该共享第一次处理结果，而不是各自创建一条新草稿。",
+        },
+        flowDialogue: {
+          headline: "Network 先作证：同一枚锤印不该铸两把剑",
+          previous:
+            "熔炉入口只提出假设：重复写入可能来自同一次动作被重复送达。",
+          current:
+            "你要用 Idempotency-Key 和 clientMutationId 证明两次 POST 属于同一保存动作。",
+          next: "证明确实同一动作后，再去幂等锤印台判断后端有没有查旧结果。",
+        },
         response: {
           title: "阶段 02 · 连点现场",
           prompt: "先证明这是同一次用户动作被重复送达，不是两份不同草稿",
@@ -3438,6 +3486,29 @@ const labConfigs: Record<string, LabConfig> = {
         label: "检查幂等键",
         icon: Network,
         kind: "response",
+        scene: {
+          location: "幂等锤印台 · 旧结果回收槽前",
+          image: idempotencyForgeScene,
+          portrait: indexArbiterPortrait,
+          actor: "索引执衡官",
+          mood: "“幂等不是让按钮灰掉。真正的契约是：同一枚锤印回来时，系统认出它并交回第一次的结果。”",
+          objective:
+            "解释 Idempotency-Key 和 clientMutationId 分别守住哪一段。",
+          reward: "获得幂等锤印规则",
+        },
+        questBrief: {
+          why: "前端防连点挡不住刷新重试和并发请求；幂等键是前后端约定“这还是同一件事”的凭证。",
+          evidence:
+            "对照 double-submit 的 key、repository 里是否查旧记录、logs 里 repeated key 的处理。",
+          output:
+            "说明第一次请求应创建并记录结果，第二次同 key 请求应返回旧结果，而不是再次 insert。",
+        },
+        flowDialogue: {
+          headline: "幂等键是重复请求的身份证，不是装饰字段",
+          previous: "Network 已经证明两次 POST 是同一保存动作。",
+          current: "你要检查后端有没有拿这枚锤印先查旧结果，没有旧结果才创建。",
+          next: "如果应用层漏查，数据库唯一约束还必须做最后一道城门。",
+        },
         response: {
           title: "阶段 03 · 幂等锤印",
           prompt: "解释 Idempotency-Key 和 clientMutationId 应该如何防重复",
@@ -3455,6 +3526,30 @@ const labConfigs: Record<string, LabConfig> = {
         label: "查数据库数量",
         icon: Database,
         kind: "response",
+        scene: {
+          location: "唯一约束城门 · 重复记录栅栏前",
+          image: questArchive,
+          portrait: archiveKeeperPortrait,
+          actor: "数据库守门员",
+          mood: "“应用层会犯困，并发会插队。最后一道城门要问：同一 userId 加同一 mutationId，凭什么进两次？”",
+          objective:
+            "用数据库前后记录证明重复写入真实发生，并指出唯一约束应挡住什么。",
+          reward: "获得数据库反证",
+        },
+        questBrief: {
+          why: "数据库记录是最终事实源。前端绿灯、接口 201 和日志都不能替代最终有几条核心记录。",
+          evidence:
+            "比较 database-before 和 database-after，数相同 userId + clientMutationId 出现了几次。",
+          output:
+            "一句数据库结论：当前实现允许同一用户同一 mutationId 重复写入，必须用唯一约束兜底。",
+        },
+        flowDialogue: {
+          headline: "数据库数量是最终反证",
+          previous: "幂等键告诉系统这是同一个动作，但后端可能没有真正使用它。",
+          current:
+            "你要用相同 userId + clientMutationId 的记录数，证明重复写入已经发生。",
+          next: "修复时不只要挡重复，还要保证草稿和审计日志一起成功或一起回滚。",
+        },
         response: {
           title: "阶段 04 · 数据库反证",
           prompt: "用数据库前后记录证明当前实现已经写重复了",
@@ -3477,12 +3572,61 @@ const labConfigs: Record<string, LabConfig> = {
         label: "沙盒修复与测试",
         icon: TerminalSquare,
         kind: "verification",
+        flowItemIndex: 4,
+        scene: {
+          location: "事务边界炉心 · 回滚刻线前",
+          image: idempotencyForgeScene,
+          portrait: echoForensicsPortrait,
+          actor: "回声取证官",
+          mood: "“只挡重复还不够。审计日志炸了，草稿却留下来，这也是错乱。”",
+          objective: "用沙盒测试证明重复请求、唯一约束和审计失败回滚都成立。",
+          reward: "获得一致性测试报告",
+        },
+        questBrief: {
+          why: "真实项目里一次保存常常会同时写核心数据和审计/消息记录，事务边界决定会不会留下半截状态。",
+          evidence:
+            "人工运行沙盒测试，看同 key 只写一条、不同 key 可正常写、审计失败时草稿回滚。",
+          output:
+            "一份测试报告说明：重复被挡住，正常创建没坏，半失败不会留下脏数据。",
+        },
+        flowDialogue: {
+          headline: "事务边界证明没有半截写入",
+          previous:
+            "唯一约束城门挡住同一 userId + clientMutationId 的重复核心记录。",
+          current: "你要让测试同时覆盖幂等返回、唯一约束冲突和审计失败回滚。",
+          next: "测试报告通过后，把这三层兜底写成 Agent 能执行的委托。",
+        },
       },
       {
         id: "agent-brief",
         label: "给 Agent 写任务",
         icon: FileCode2,
         kind: "response",
+        flowItemIndex: 4,
+        scene: {
+          location: "委托锻造台 · 三层兜底契约前",
+          image: agentBriefForgeScene,
+          portrait: briefForgemasterPortrait,
+          actor: "任务锻造师",
+          mood: "“‘防止重复点击’太薄了。把重复请求、幂等返回、唯一约束、事务回滚和测试都写进契约。”",
+          objective: "把数据一致性修复写成 Agent 能执行、能验收的任务。",
+          reward: "获得一致性修复委托",
+        },
+        questBrief: {
+          why: "Agent 需要知道不要只改按钮，也不要只让测试变绿；它要守住前端、后端和数据库三层边界。",
+          evidence:
+            "把双 POST、database-after、repository 代码、logs、失败测试和交付说明合成任务范围。",
+          output:
+            "一份 Agent 任务：修什么、不能只改什么、怎么验收重复请求和事务回滚。",
+        },
+        flowDialogue: {
+          headline: "把重复写入红灯写成三层兜底委托",
+          previous:
+            "测试目标已经明确：同 key 一条记录、正常路径不坏、审计失败要回滚。",
+          current:
+            "你要告诉 Agent 同时处理幂等查询、唯一约束和事务边界，并写出可复测证据。",
+          next: "Agent 交付后，审查席会检查它是不是只拿 POST 201 冒充完成。",
+        },
         response: {
           title: "阶段 06 · 协作能力",
           prompt: "把数据一致性修复任务交给 Agent，但写清三层兜底",
@@ -3498,6 +3642,30 @@ const labConfigs: Record<string, LabConfig> = {
         label: "审查交付说明",
         icon: ShieldCheck,
         kind: "response",
+        flowItemIndex: 4,
+        scene: {
+          location: "交付审查席 · 重复记录证据灯下",
+          image: deliveryReviewCourtScene,
+          portrait: deliveryJudgePortrait,
+          actor: "交付审判官",
+          mood: "“POST 201 只能证明能创建。我要看同一个 key 第二次来时有没有复用旧结果，审计失败有没有回滚。”",
+          objective: "判断 Agent 交付有没有证明一致性真的成立。",
+          reward: "获得一致性交付判断",
+        },
+        questBrief: {
+          why: "工作里的交付审查不能被绿色创建路径带跑；一致性要看重复、并发、冲突和半失败。",
+          evidence:
+            "看交付说明有没有覆盖双 POST、相同 key 一条记录、唯一约束、事务回滚和数据库前后对照。",
+          output:
+            "一条审查决定：接收、退回或要求补证据，并说明缺哪一种一致性证明。",
+        },
+        flowDialogue: {
+          headline: "交付审查要看重复和半失败，不被 201 带跑",
+          previous: "Agent 可能已经证明普通保存能创建草稿。",
+          current:
+            "你要检查它有没有证明同 key 不重复、不同 key 不误伤、审计失败会回滚。",
+          next: "最后把这次一致性排障整理成面试官听得懂的工作故事。",
+        },
         response: {
           title: "阶段 07 · 交付审查",
           prompt: "审查 Agent 的交付说明：哪些证据不足以证明一致性成立？",
@@ -3512,6 +3680,30 @@ const labConfigs: Record<string, LabConfig> = {
         label: "面试复盘",
         icon: FlaskConical,
         kind: "response",
+        flowItemIndex: 5,
+        scene: {
+          location: "面试讲述厅 · 一致性星图前",
+          image: interviewDefenseHallScene,
+          portrait: interviewCouncilorPortrait,
+          actor: "面试策士",
+          mood: "“别背幂等定义。讲你如何证明重复发生，如何让系统承受重试，如何验收没有半截写入。”",
+          objective: "把重复提交和事务边界排障组织成 STAR 复盘。",
+          reward: "获得数据一致性面试素材",
+        },
+        questBrief: {
+          why: "面试官想听你如何把抽象数据库术语落到真实证据，而不是只说“我了解事务”。",
+          evidence:
+            "串起双 POST、Idempotency-Key、database-after、repository、logs、测试报告和交付审查结论。",
+          output:
+            "一段 STAR 复盘：场景、任务、定位证据、修复或委托、验收结果和迁移经验。",
+        },
+        flowDialogue: {
+          headline: "把一次数据一致性排障讲成可信的面试故事",
+          previous: "交付审查已经分清正常创建证据和一致性证据。",
+          current:
+            "你要把技术证据翻译成 STAR：用户连点、你怎样查 Network/数据库/log、怎样验收三层兜底。",
+          next: "成长档案会收下这段素材，下一次换支付、下单或收藏场景也能复用。",
+        },
         response: {
           title: "阶段 08 · 面试复盘",
           prompt: "把这一关讲成一次重复提交和事务边界排障",

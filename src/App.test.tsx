@@ -3229,6 +3229,110 @@ describe("AI 职业路线入口", () => {
     );
   });
 
+  it("第 5 章数据一致性实战会随步骤切换熔炉剧情和事务口令", async () => {
+    const user = userEvent.setup();
+    render(
+      <Lab
+        artifacts={case05Artifacts}
+        attempt={case05Attempt as Parameters<typeof Lab>[0]["attempt"]}
+        onBackToRoadmap={vi.fn()}
+        onSubmitted={vi.fn()}
+        setAttempt={vi.fn()}
+      />,
+    );
+
+    expect(screen.getByLabelText("实战剧情向导")).toHaveTextContent(
+      "回声取证官",
+    );
+    expect(screen.getByLabelText("实战剧情向导")).toHaveTextContent(
+      "连点回声台",
+    );
+    expect(screen.getByLabelText("本步任务卷轴")).toHaveTextContent(
+      "两次请求是不是同一个动作",
+    );
+    expect(screen.getByLabelText("流程接力小剧场")).toHaveTextContent(
+      "同一枚锤印",
+    );
+
+    await user.click(screen.getByRole("button", { name: /复现重复提交/ }));
+    expect(screen.getByLabelText("实战剧情向导")).toHaveTextContent(
+      "回声取证官",
+    );
+    expect(screen.getByLabelText("实战剧情向导")).toHaveTextContent(
+      "连点回声台",
+    );
+    expect(screen.getByLabelText("本步任务卷轴")).toHaveTextContent(
+      "两次请求是不是同一个动作",
+    );
+    expect(screen.getByLabelText("流程接力小剧场")).toHaveTextContent(
+      "同一枚锤印",
+    );
+
+    await user.click(screen.getByRole("button", { name: /检查幂等键/ }));
+    expect(screen.getByLabelText("实战剧情向导")).toHaveTextContent(
+      "幂等锤印台",
+    );
+    expect(screen.getByLabelText("本步任务卷轴")).toHaveTextContent(
+      "前端防连点挡不住",
+    );
+    expect(screen.getByLabelText("流程接力小剧场")).toHaveTextContent(
+      "重复请求的身份证",
+    );
+    expect(screen.getByLabelText("当前这一棒")).toHaveTextContent("后端数据层");
+
+    await user.click(screen.getByRole("button", { name: /查数据库数量/ }));
+    expect(screen.getByLabelText("实战剧情向导")).toHaveTextContent(
+      "数据库守门员",
+    );
+    expect(screen.getByLabelText("本步任务卷轴")).toHaveTextContent(
+      "数据库记录是最终事实源",
+    );
+    expect(screen.getByLabelText("流程接力小剧场")).toHaveTextContent(
+      "数据库数量是最终反证",
+    );
+    expect(screen.getByLabelText("当前这一棒")).toHaveTextContent("数据库约束");
+
+    await user.click(screen.getByRole("button", { name: /沙盒修复与测试/ }));
+    expect(screen.getByLabelText("实战剧情向导")).toHaveTextContent(
+      "事务边界炉心",
+    );
+    expect(screen.getByLabelText("本步任务卷轴")).toHaveTextContent("半截状态");
+    expect(screen.getByLabelText("当前这一棒")).toHaveTextContent("事务边界");
+
+    await user.click(screen.getByRole("button", { name: /给 Agent 写任务/ }));
+    expect(screen.getByLabelText("实战剧情向导")).toHaveTextContent(
+      "任务锻造师",
+    );
+    expect(screen.getByLabelText("本步交付口令")).toHaveTextContent(
+      "把红灯写成 Agent 能执行的任务",
+    );
+    expect(screen.getByLabelText("流程接力小剧场")).toHaveTextContent(
+      "三层兜底委托",
+    );
+    expect(screen.getByLabelText("当前这一棒")).toHaveTextContent("事务边界");
+
+    await user.click(screen.getByRole("button", { name: /审查交付说明/ }));
+    expect(screen.getByLabelText("实战剧情向导")).toHaveTextContent(
+      "交付审判官",
+    );
+    expect(screen.getByLabelText("本步交付口令")).toHaveTextContent(
+      "先判证据够不够，再决定接收还是退回",
+    );
+    expect(screen.getByLabelText("本步任务卷轴")).toHaveTextContent(
+      "绿色创建路径",
+    );
+
+    await user.click(screen.getByRole("button", { name: /面试复盘/ }));
+    expect(screen.getByLabelText("实战剧情向导")).toHaveTextContent("面试策士");
+    expect(screen.getByLabelText("本步交付口令")).toHaveTextContent(
+      "把一次排障讲成面试官听得懂的 STAR",
+    );
+    expect(screen.getByLabelText("流程接力小剧场")).toHaveTextContent(
+      "数据一致性排障",
+    );
+    expect(screen.getByLabelText("当前这一棒")).toHaveTextContent("面试表达");
+  });
+
   it("面试复盘房间可以保存五段草稿到本地学习记录", async () => {
     const user = userEvent.setup();
     let savedDossier: Record<string, unknown> | null = null;
