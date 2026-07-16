@@ -1374,6 +1374,7 @@ describe("AI 职业路线入口", () => {
       routePrefix,
       forbiddenText,
     }) => {
+      const user = userEvent.setup();
       window.history.replaceState(null, "", `/${hash}`);
       const fetchMock = vi.fn(
         (input: RequestInfo | URL, init?: RequestInit) => {
@@ -1420,6 +1421,16 @@ describe("AI 职业路线入口", () => {
         `/api/scenarios/${scenarioId}`,
         expect.any(Object),
       );
+
+      await user.click(screen.getByRole("button", { name: /开始闯关/ }));
+      const routeIdentity = await screen.findByRole("region", {
+        name: "当前路线身份",
+      });
+      expect(routeIdentity).toHaveTextContent(
+        hash.includes("frontend") ? "前端工程成长路线" : "Java 后端成长路线",
+      );
+      expect(routeIdentity).toHaveTextContent("当前");
+      expect(screen.queryByText(/AI 应用开发主线/)).not.toBeInTheDocument();
     },
   );
 

@@ -6968,6 +6968,7 @@ function EvidenceStoryQuest({
   scenes = questScenes,
   journey = questJourney,
   journeyTitle = "保存数据的完整旅行路线",
+  routeFamilyLabel = "AI 应用开发主线",
   stepLabel = "地点",
   workBackground,
   initialProgress,
@@ -6980,6 +6981,7 @@ function EvidenceStoryQuest({
   scenes?: QuestScene[];
   journey?: QuestJourneyItem[];
   journeyTitle?: string;
+  routeFamilyLabel?: string;
   stepLabel?: string;
   workBackground?: string;
   initialProgress?: StoryProgressSnapshot;
@@ -7226,6 +7228,14 @@ function EvidenceStoryQuest({
           </div>
         )}
       </header>
+
+      <section className="quest-route-identity" aria-label="当前路线身份">
+        <span>{routeFamilyLabel}</span>
+        <strong>{scene.title}</strong>
+        <small>
+          当前{stepLabel}：{scene.place} · {scene.speaker}
+        </small>
+      </section>
 
       <nav className="quest-scene-rail" aria-label="本章地点航线">
         <div className="quest-scene-rail-heading">
@@ -9450,6 +9460,11 @@ export function TeachingBridge({
                                                 ? "面试回答从证据到追问定稿的路线"
                                                 : "保存数据的完整旅行路线";
   const storyStepLabel = isCanvasStorm ? "章节" : "地点";
+  const routeFamilyLabel = isFrontendRouteScenario
+    ? "前端工程成长路线"
+    : isJavaRouteScenario
+      ? "Java 后端成长路线"
+      : "AI 应用开发主线";
 
   if (showIntro) {
     const introConfig = isFrontendTesting
@@ -10017,6 +10032,7 @@ export function TeachingBridge({
         scenes={storyScenes}
         journey={storyJourney}
         journeyTitle={storyRouteLabel}
+        routeFamilyLabel={routeFamilyLabel}
         stepLabel={storyStepLabel}
         workBackground={workBackground}
         initialProgress={initialStoryProgress}
@@ -10711,6 +10727,14 @@ export function TeachingBridge({
       <div className="teaching-score">
         <span>🏆 进度 {teachingProgressPercent}%</span>
       </div>
+
+      <section className="teaching-route-identity" aria-label="当前路线身份">
+        <span>{routeFamilyLabel}</span>
+        <strong>{storyRouteLabel}</strong>
+        <small>
+          当前这一站：{scenario.steps[currentStepIdx]?.title ?? "剧情探索"}
+        </small>
+      </section>
 
       <ChapterMentorCompanion
         key={storyScenes[currentStepIdx]?.id ?? currentStepIdx}
