@@ -1059,3 +1059,11 @@ TeachingBridge 继续保持 `React.lazy` 按需加载，并把懒加载期间的
 - 实现：`canvasstorm-product-brief` 的 `LabStep.scene` 覆盖 7 个步骤；首个作答步骤为「灵感萤火 · Brief 星图桌」，保存后进入「产品链路带读官 · 方向筛选台」。
 - 验证：`src/App.test.tsx` 主流程覆盖第 2 章进入实战后的首幕场景和保存后的第二幕场景；Node `v24.13.1` 下 `npm run test -- src/App.test.tsx --run` 通过 46 个测试。
 - 当前状态：代码、测试断言、changelog 和任务文档已补；`npm run test -- src/App.test.tsx --run` 与 `npm run verify:quick` 已通过。仍需按时间决定是否补浏览器抽检；提交推送前不得写成已合并或学习效果已验证。
+
+## R287：第 2 章产品链路新手翻译
+
+第 2 章实战在场景导演层之上补充专属学习解释：每个步骤可以配置自己的「为什么学 / 先看什么 / 最后交什么」和流程接力对白，避免产品链路继续套用第一章保存链路的通用话术。
+
+- 实现：`LabStep` 新增 `questBrief` 与 `flowDialogue`；第 2 章 7 个步骤已补齐产品链路专属解释。读 Brief 会说明 Project Brief 是 AI 功能的任务契约；筛候选会用“候选池像装备栏”解释 MVP 取舍。
+- 验证：`src/App.test.tsx` 已加入第 2 章首幕和保存后第二幕断言；Node `v24.13.1` 下 `npm run test -- src/App.test.tsx --run` 通过 46 个测试，`npm run verify:quick` 通过 10 个测试文件 / 170 个测试。
+- 当前状态：代码、测试断言、changelog 和任务文档已补；仍未声称浏览器抽检或真人学习效果完成。

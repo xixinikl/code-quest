@@ -615,6 +615,17 @@ type LabStep = {
     objective: string;
     reward: string;
   };
+  questBrief?: {
+    why: string;
+    evidence: string;
+    output: string;
+  };
+  flowDialogue?: {
+    headline: string;
+    previous: string;
+    current: string;
+    next: string;
+  };
   response?: {
     title: string;
     prompt: string;
@@ -1856,6 +1867,20 @@ const labConfigs: Record<string, LabConfig> = {
           objective: "把模糊 AI 想法翻译成用户目标、阶段和约束。",
           reward: "获得产品链路委托",
         },
+        questBrief: {
+          why: "真实工作里，AI 项目最容易一开始就散掉：大家都在说灵感，却没人说用户到底要完成什么。",
+          evidence:
+            "先看 Project Brief 的目标、阶段和约束，不急着看模型或界面效果。",
+          output:
+            "一张产品链路委托：用户要什么、本轮能做什么、哪些想法先放下。",
+        },
+        flowDialogue: {
+          headline: "先把灵感收成 Brief，再交给候选筛选",
+          previous: "用户只带来了模糊愿望：想让 AI 帮忙整理点子。",
+          current:
+            "你要先把愿望翻译成目标、输入、输出和约束，否则后面每个候选都会看起来有道理。",
+          next: "下一站会拿这份 Brief 去筛候选，判断哪些点子属于本轮 MVP。",
+        },
       },
       {
         id: "product-brief",
@@ -1870,6 +1895,20 @@ const labConfigs: Record<string, LabConfig> = {
           mood: "“每个闪光点都像愿望，但只有写清目标、输入和约束，愿望才会变成任务。”",
           objective: "先说清用户目标、输入、输出和当前阶段不能做什么。",
           reward: "点亮 Brief 星图",
+        },
+        questBrief: {
+          why: "因为 Project Brief 是 AI 功能的任务契约。它没写清，后端规划器和 Agent 都只能猜。",
+          evidence:
+            "看 `userGoal`、`stage`、`constraints` 和 `direction = 'mvp'`，它们决定本轮候选边界。",
+          output:
+            "用自己的话复述：用户目标是什么、输入是什么、输出该是什么、当前阶段不能做什么。",
+        },
+        flowDialogue: {
+          headline: "Brief 不是介绍文案，它是后端筛选候选的尺子",
+          previous: "用户把项目名、目标、阶段和约束交给前端表单。",
+          current:
+            "你要确认这些字段有没有真的进入请求体，并说明它们如何限制本轮方向。",
+          next: "后端规划器会拿这把尺子去筛候选，决定哪些进入执行草案。",
         },
         response: {
           title: "阶段 02 · 读懂 Brief",
@@ -1894,6 +1933,20 @@ const labConfigs: Record<string, LabConfig> = {
           mood: "“MVP 不是把未来全部塞进今天，而是先选能证明用户会用的最薄一层。”",
           objective: "解释为什么 growth 候选有价值，但不该进入本轮执行草案。",
           reward: "获得候选取舍证据",
+        },
+        questBrief: {
+          why: "真实 AI 产品不是把所有点子都做进去，而是按当前阶段选择最小可验证的一步。",
+          evidence:
+            "对比 `direction: mvp`、`acceptedCandidates` 和 `growth-share-loop`，看不该进入本轮的候选是否混进来了。",
+          output:
+            "解释：这个候选为什么有价值、为什么现在不做、应该被记录到拒绝理由而不是执行草案。",
+        },
+        flowDialogue: {
+          headline: "候选池像装备栏，本轮只能拿解决当前任务的装备",
+          previous: "Brief 已经交代本轮方向是 MVP，不是增长玩法或运营扩展。",
+          current:
+            "你要抓住混入的 growth 候选，说明它为什么违反当前阶段的取舍规则。",
+          next: "会话记录要保存这次取舍，让刷新后仍能看到为什么选和为什么放弃。",
         },
         response: {
           title: "阶段 03 · 候选取舍",
@@ -1920,6 +1973,20 @@ const labConfigs: Record<string, LabConfig> = {
           objective: "用沙盒测试证明方向筛选和会话保存都成立。",
           reward: "获得会话保存证据",
         },
+        questBrief: {
+          why: "产品取舍如果只停在页面上，刷新后团队就失去上下文；会话保存要留下选择和拒绝的理由。",
+          evidence:
+            "看测试报告、`savedSession`、`candidateIds` 和 `rejectedCandidateIds`，证明取舍被持久记录。",
+          output:
+            "一份测试验收：方向筛选正确、会话保存了接受项和拒绝项、失败路径也可复查。",
+        },
+        flowDialogue: {
+          headline: "从候选筛选走到会话账本，证明取舍不会丢",
+          previous: "后端规划器应该已经把本轮候选和拒绝候选分开。",
+          current:
+            "你要用沙盒测试证明会话里保存了取舍结果，而不是只看到接口返回成功。",
+          next: "有了证据后，才能把修复范围写成 Agent 能执行的任务。",
+        },
       },
       {
         id: "agent-brief",
@@ -1934,6 +2001,19 @@ const labConfigs: Record<string, LabConfig> = {
           mood: "“一句优化产品逻辑会让 Agent 乱跑；写清背景、范围和验收，才是可交付委托。”",
           objective: "把产品链路修复写成 Agent 能执行、能验收的任务。",
           reward: "获得 Agent 协作 brief",
+        },
+        questBrief: {
+          why: "Agent 很会执行，但模糊任务会让它乱改。你要把背景、范围、验收和风险写清楚。",
+          evidence: "把 Brief、候选取舍、会话保存和测试失败点合成任务边界。",
+          output:
+            "一份 Agent 任务：修什么、不改什么、用哪些测试验收、哪些风险要回退。",
+        },
+        flowDialogue: {
+          headline: "把证据铸成任务，而不是喊一句优化产品逻辑",
+          previous: "会话账本已经暴露了方向筛选和保存证据的缺口。",
+          current:
+            "你要把缺口写成可执行委托，让 Agent 知道文件范围、行为目标和验收口径。",
+          next: "Agent 交付后，交付审查席会检查它有没有拿出真正证据。",
         },
         response: {
           title: "阶段 05 · 协作能力",
@@ -1959,6 +2039,19 @@ const labConfigs: Record<string, LabConfig> = {
           objective: "指出交付说明漏掉的关键证据，避免把响应成功当成完成。",
           reward: "获得交付审查判断",
         },
+        questBrief: {
+          why: "工作里不能因为 Agent 说完成就合并。你要检查它证明了产品链路，而不是只证明接口有响应。",
+          evidence:
+            "看交付说明有没有覆盖方向筛选、拒绝理由、会话保存和测试报告。",
+          output: "一条审查结论：可接收、需补证据，或必须退回，并说明原因。",
+        },
+        flowDialogue: {
+          headline: "交付审查要问证据，不问语气自不自信",
+          previous: "Agent 可能已经给出修复说明和绿色结果。",
+          current:
+            "你要逐项核对：MVP 候选、拒绝候选、会话保存和测试证据是否真的齐了。",
+          next: "最后把这次判断整理成能讲给面试官听的产品链路复盘。",
+        },
         response: {
           title: "阶段 06 · 交付审查",
           prompt: "审查 Agent 的交付说明：它漏掉了哪些关键证据？",
@@ -1981,6 +2074,19 @@ const labConfigs: Record<string, LabConfig> = {
           mood: "“把 AI 点子讲成产品链路：谁有痛点、输入是什么、为什么取舍、怎么证明。”",
           objective: "把 Brief、候选取舍、会话保存和测试证据组织成面试复盘。",
           reward: "获得产品能力面试素材",
+        },
+        questBrief: {
+          why: "面试不是背术语，而是讲你如何把模糊 AI 需求变成可验证交付。",
+          evidence: "串起 Brief、候选取舍、会话保存、测试报告和交付审查判断。",
+          output:
+            "一段面试复盘：问题背景、你的判断、修复或委托动作、验证结果和可迁移经验。",
+        },
+        flowDialogue: {
+          headline: "把一次闯关整理成面试官听得懂的项目故事",
+          previous: "交付审查已经帮你分清了哪些证据可信、哪些还缺。",
+          current:
+            "你要把技术证据翻译成 STAR：场景、任务、行动、结果，以及你学会的取舍原则。",
+          next: "成长档案会收下这段素材，后续换项目时继续复用这套拆解方法。",
         },
         response: {
           title: "阶段 07 · 面试复盘",
@@ -7425,25 +7531,28 @@ function LabStepQuestBrief({
     config.flowItems[Math.min(activeIndex + 1, config.flowItems.length - 1)] ??
     currentFlow;
   const why =
-    activeStep.kind === "baseline"
+    activeStep.questBrief?.why ??
+    (activeStep.kind === "baseline"
       ? config.baseline.title
       : activeStep.kind === "verification"
         ? "把修复从“我觉得好了”变成能复查的证据。"
-        : (activeStep.response?.prompt ?? activeStep.label);
+        : (activeStep.response?.prompt ?? activeStep.label));
   const evidence =
-    activeStep.kind === "verification"
+    activeStep.questBrief?.evidence ??
+    (activeStep.kind === "verification"
       ? "测试报告、源码指纹、通过/失败清单和手动路径。"
       : activeStep.response?.artifactIds?.length
         ? "打开本步指定材料，先看关键行、能证明什么、不能证明什么。"
         : guide
           ? `${guide.place}：${guide.focus}`
-          : `${currentFlow.label} → ${nextFlow.label} 的接力证据。`;
+          : `${currentFlow.label} → ${nextFlow.label} 的接力证据。`);
   const output =
-    activeStep.kind === "baseline"
+    activeStep.questBrief?.output ??
+    (activeStep.kind === "baseline"
       ? config.baseline.action
       : activeStep.kind === "verification"
         ? "一份能说明修复有效和仍有边界的验收报告。"
-        : `一段包含证据、含义和下一步的作答，沉淀为${config.result.recorded}。`;
+        : `一段包含证据、含义和下一步的作答，沉淀为${config.result.recorded}。`);
 
   return (
     <section className="lab-step-quest-brief" aria-label="本步任务卷轴">
@@ -7493,30 +7602,36 @@ function LabFlowDialogue({
       <header>
         <span>流程接力小剧场</span>
         <strong>
-          {previousFlow.label} 把线索交给 {currentFlow.label}，再去找{" "}
-          {nextFlow.label}
+          {activeStep.flowDialogue?.headline ??
+            `${previousFlow.label} 把线索交给 ${currentFlow.label}，再去找 ${nextFlow.label}`}
         </strong>
       </header>
       <div>
         <article>
           <span>上一棒 · {previousFlow.label}</span>
           <p>
-            “我已经把「{previousFlow.title}」交出来了：{previousFlow.detail}
-            。”
+            “
+            {activeStep.flowDialogue?.previous ??
+              `我已经把「${previousFlow.title}」交出来了：${previousFlow.detail}。`}
+            ”
           </p>
         </article>
         <article className="active">
           <span>当前棒 · {currentFlow.label}</span>
           <p>
-            “现在看我有没有真的完成「{currentFlow.title}」。这一题要做的是：
-            {currentTask}”
+            “
+            {activeStep.flowDialogue?.current ??
+              `现在看我有没有真的完成「${currentFlow.title}」。这一题要做的是：${currentTask}`}
+            ”
           </p>
         </article>
         <article>
           <span>下一棒 · {nextFlow.label}</span>
           <p>
-            “等你说清这一棒，我才知道要检查「{nextFlow.title}」：
-            {nextFlow.detail}。”
+            “
+            {activeStep.flowDialogue?.next ??
+              `等你说清这一棒，我才知道要检查「${nextFlow.title}」：${nextFlow.detail}。`}
+            ”
           </p>
         </article>
       </div>

@@ -2840,6 +2840,16 @@ describe("AI 职业路线入口", () => {
     expect(screen.getByLabelText("实战剧情向导")).toHaveTextContent(
       "点亮 Brief 星图",
     );
+    expect(screen.getByLabelText("本步任务卷轴")).toHaveTextContent(
+      "Project Brief 是 AI 功能的任务契约",
+    );
+    expect(screen.getByLabelText("本步任务卷轴")).toHaveTextContent("userGoal");
+    expect(screen.getByLabelText("流程接力小剧场")).toHaveTextContent(
+      "Brief 不是介绍文案",
+    );
+    expect(screen.getByLabelText("流程接力小剧场")).toHaveTextContent(
+      "后端规划器会拿这把尺子去筛候选",
+    );
     await user.type(
       screen.getByRole("textbox"),
       "用户想要把 AI 点子变成可执行草案。输入是项目名、用户目标、阶段和约束，输出应该是符合 MVP 方向的候选和下一步。当前阶段不能把增长方案也塞进执行草案。",
@@ -2851,6 +2861,12 @@ describe("AI 职业路线入口", () => {
     expect(screen.getByAltText("产品链路带读官实战向导")).toBeInTheDocument();
     expect(screen.getByLabelText("实战剧情向导")).toHaveTextContent(
       "方向筛选台",
+    );
+    expect(screen.getByLabelText("本步任务卷轴")).toHaveTextContent(
+      "真实 AI 产品不是把所有点子都做进去",
+    );
+    expect(screen.getByLabelText("流程接力小剧场")).toHaveTextContent(
+      "候选池像装备栏",
     );
     expect(screen.getByLabelText("刚刚收录的证据")).toHaveTextContent(
       "读 Project Brief",
