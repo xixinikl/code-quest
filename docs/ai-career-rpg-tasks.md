@@ -1739,7 +1739,7 @@ Goal 模式的完成口径必须比“能点进去”更严格：只接剧情教
 ## R304：合并前跨电脑完整性复核
 
 - [x] 重新运行 `xixi-dev-system profile sync`、`doctor --project .` 和 `updates --project .`；doctor 通过。
-- [x] 核对本地与远端：`git status --short --branch` 显示 `cx/ai-career-rpg-home...origin/cx/ai-career-rpg-home`；`git ls-remote origin refs/heads/cx/ai-career-rpg-home` 返回 `1a40fe453b5170042410ac3b0aa7455b36005fd0`。
+- [x] 核对本地与远端：功能代码核对到 `1a40fe453b5170042410ac3b0aa7455b36005fd0`；交接文档提交后 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 返回 `9171ac89909d7873563a17a990b930307b37529f`。
 - [x] Node `v24.13.1` 下完整 `npm run verify` 通过：格式、Lint、TypeScript、10 个测试文件 / 176 个测试、生产构建和 TeachingBridge 懒加载检查。Vite 主包体积 warning 是已知债务，不是失败。
 - [x] 补充浏览器抽检记录：隔离 API `4370`、临时 SQLite `/tmp/code-quest-r304.sqlite`、Vite `5220`；桌面 1280 与 390px 下序章、证据选择、领取委托、三路线大厅均无横向溢出，控制台 error 为 0。
 - [x] 更新 `HANDOFF.md`、`docs/cross-computer-handoff.md` 和 `docs/cx-ai-career-rpg-home-merge-notes.md`：写清楚拉哪个分支、当前最新提交、验证证据、当前完成约 70%、为什么仍不建议直接合并、下一步怎么接。

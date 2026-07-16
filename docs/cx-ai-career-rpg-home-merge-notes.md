@@ -40,7 +40,7 @@ npm install
 npm run verify:quick
 ```
 
-`git log --oneline -1` 应显示 `1a40fe4 feat(rpg): guide case one backhalf evidence bridge` 或更新提交；如果显示 `e10069f`、`fa12dbc`、`2dd44d3`、`ca2c7aa`、`3fe3db1` 或默认分支 `feat/guided-learning-bridge` 的提交，说明拉错分支或没有拉到最新远端。
+`git log --oneline -1` 应显示 `9171ac8 docs(rpg): refresh merge readiness handoff` 或更新提交；下一条应能看到功能基线 `1a40fe4 feat(rpg): guide case one backhalf evidence bridge`。如果显示 `e10069f`、`fa12dbc`、`2dd44d3`、`ca2c7aa`、`3fe3db1` 或默认分支 `feat/guided-learning-bridge` 的提交，说明拉错分支或没有拉到最新远端。
 
 ## 当前主要改动
 
