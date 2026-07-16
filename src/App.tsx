@@ -9093,6 +9093,48 @@ function LabStepQuestBrief({
   );
 }
 
+function LabFlowTranslator({
+  activeIndex,
+  activeStep,
+  config,
+}: {
+  activeIndex: number;
+  activeStep: LabStep;
+  config: LabConfig;
+}) {
+  const flowIndex = getLabStepFlowIndex(activeStep.id, activeIndex, config);
+  const currentFlow = config.flowItems[flowIndex] ?? config.flowItems[0];
+  const previousFlow = config.flowItems[flowIndex - 1];
+  const nextFlow = config.flowItems[flowIndex + 1];
+  const currentTask =
+    activeStep.kind === "verification"
+      ? "跑测试、读报告、补手动路径"
+      : activeStep.kind === "baseline"
+        ? "把剧情委托翻译成真实工作问题"
+        : (activeStep.response?.prompt ?? activeStep.label);
+
+  return (
+    <section className="lab-flow-translator" aria-label="本幕流程翻译">
+      <span>本幕流程翻译</span>
+      <strong>
+        {previousFlow
+          ? `${previousFlow.label} 已经交出「${previousFlow.title}」`
+          : "剧情现场已经交出事故线索"}
+        ，现在只盯住「{currentFlow.title}」。
+      </strong>
+      <p>
+        你不用一口气记完整项目；这一幕先做「{activeStep.label}」：
+        {currentTask}。写清后再交给「{nextFlow?.title ?? "结案卷宗"}」。
+      </p>
+      <ol>
+        <li>先看当前地点和关键材料。</li>
+        <li>再说它能证明什么、不能证明什么。</li>
+        <li>最后决定下一棒还需要哪份证据。</li>
+      </ol>
+    </section>
+  );
+}
+
 function LabFlowDialogue({
   activeIndex,
   activeStep,
@@ -11384,6 +11426,11 @@ export function Lab({
               />
               <div className="lab-director-stack">
                 <LabStepQuestBrief
+                  activeIndex={activeIndex}
+                  activeStep={activeStep}
+                  config={config}
+                />
+                <LabFlowTranslator
                   activeIndex={activeIndex}
                   activeStep={activeStep}
                   config={config}

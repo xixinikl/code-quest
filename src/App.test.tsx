@@ -516,6 +516,15 @@ describe("岗位路线实战场景契约", () => {
       expect(screen.getByLabelText("任务导演台")).toHaveTextContent(
         activeStep.scene?.actor ?? activeStep.label,
       );
+      expect(screen.getByLabelText("本幕流程翻译")).toHaveTextContent(
+        currentFlow.title,
+      );
+      expect(screen.getByLabelText("本幕流程翻译")).toHaveTextContent(
+        "能证明什么、不能证明什么",
+      );
+      expect(screen.getByLabelText("本幕流程翻译")).toHaveTextContent(
+        nextFlow?.title ?? "结案卷宗",
+      );
       expect(screen.getByLabelText("辅助卷宗")).toHaveTextContent(
         config.flowTitle,
       );
@@ -5637,6 +5646,16 @@ describe("AI 职业路线入口", () => {
     );
     expect(screen.getByLabelText("本步任务卷轴")).toHaveTextContent(
       "先看这一棒在流程里的位置",
+    );
+    expect(screen.getByLabelText("本幕流程翻译")).toBeInTheDocument();
+    expect(screen.getByLabelText("本幕流程翻译")).toHaveTextContent(
+      "现在只盯住",
+    );
+    expect(screen.getByLabelText("本幕流程翻译")).toHaveTextContent(
+      "先看当前地点和关键材料",
+    );
+    expect(screen.getByLabelText("本幕流程翻译")).toHaveTextContent(
+      "能证明什么、不能证明什么",
     );
     expect(screen.getByLabelText("流程接力小剧场")).toBeInTheDocument();
     expect(screen.getByLabelText("流程接力小剧场")).toHaveTextContent("上一棒");
