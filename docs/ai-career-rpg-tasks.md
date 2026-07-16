@@ -1870,3 +1870,18 @@ Goal 模式的完成口径必须比“能点进去”更严格：只接剧情教
 - [x] 浏览器批量验收：隔离 API `4371`、临时 SQLite `/tmp/code-quest-r305.sqlite`、Vite `5221`；`#chapter-java-2..5` 与 `#chapter-frontend-2..5` 桌面 1280 和 390px 手机进入剧情探索后，均显示当前路线身份、完整流程卷轴、名词小抄；`scrollWidth === clientWidth`，暗色背景 `rgb(7, 12, 20)`，控制台 error 为 0。
 
 验收目标：用户从 Java/前端第 2-5 章深链进入后，不会只在封面知道自己选了哪个岗位；进入剧情探索和教学正文后仍能持续确认路线身份、当前案件和当前地点。
+
+## R319：实战保存后接力回执
+
+- [x] `LabStepReceipt` 新增「刚刚到下一步的接力」，保存一道实战回答后直接显示“刚刚停在 → 现在进入”，避免页面自动跳到下一步时用户忘记上一棒在讲什么。
+- [x] 接力回执读取 `LabConfig.flowItems` 和每步 `flowItemIndex`，显示当前步骤对应的流程棒、下一棒标题，以及“只盯住当前证据，写清后再交给下一棒”的人话提醒。
+- [x] 暗色 RPG 样式已补，桌面横向接力，390px 移动端单列，箭头转为向下，避免窄屏挤压。
+- [x] `src/App.test.tsx` 新增定向回归：前端性能实战保存后必须出现「刚刚收录的证据」「刚刚到下一步的接力」「刚刚停在」「现在进入」「只盯住」和下一棒标题。
+- [x] 当前已通过定向测试：`npm run test -- src/App.test.tsx --run -t "实战保存后会显示具体接力回执"`，1 个测试通过。
+- [x] 构建通过：`npm run build` 完成 TypeScript、Vite 生产构建和 TeachingBridge 懒加载 chunk 检查；Vite 主包体积 warning 仍是已知债务，不是失败。
+- [x] 低并发测试补充证据：`npm run test -- --no-file-parallelism --maxWorkers=1` 跑过除 `src/App.test.tsx` 外的 9 个测试文件，126 个测试通过；`src/App.test.tsx` 在本机 worker 启动阶段超时，未拿到整文件通过证据。
+- [x] 默认完整门禁已如实记录：`npm run verify` 的格式、Lint、TypeScript 已通过，但全量 Vitest 默认并行启动 worker 超时，结果为 4 个测试文件 / 60 个测试通过、6 个 worker 启动失败，因此本轮不能声称完整 `npm run verify` 通过。
+- [x] 浏览器部分验收：隔离 API `4392`、临时 SQLite `/tmp/code-quest-r319.sqlite`、Vite `5242`，从 `#chapter-frontend-3` 进入前端第 3 关剧情探索，首屏显示前端路线身份、地点航线、流程卷轴、名词小抄和 2/10 线索收集；尚未走到实战保存回执。
+- [ ] 待补完整浏览器验收：从实战页真实保存一道回答，确认桌面和 390px 均显示接力回执、无横向溢出、控制台 error 为 0。
+
+验收目标：用户保存答案后，不只是看到“记录已保存”，而是马上知道上一处证据已经交给谁、现在应该只看哪份材料、下一步为什么出现。

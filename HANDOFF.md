@@ -4,13 +4,13 @@
 
 `cx/ai-career-rpg-home` 分支，基于冻结 `main` 开发；当前阶段成果已经推送到 GitHub。
 
-### 当前事实快照（2026-07-16）
+### 当前事实快照（2026-07-17）
 
 - 当前远端：`https://github.com/xixinikl/code-quest.git`
 - 当前工作分支：`cx/ai-career-rpg-home`
-- 当前已推送功能基线：`4370ddf feat(rpg): fold lab support dossier`；它包含第 1 章实战后半段证据桥、Java/前端第 2-5 章剧情深链路线身份、岗位教学桥地图修复、实战页任务导演台、辅助卷宗默认折叠以及最新交接与合并说明。最终远端 hash 以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 为准。
-- 本地核对结果：`git status --short --branch` 显示 `cx/ai-career-rpg-home...origin/cx/ai-career-rpg-home` 且没有未提交文件，说明本地已上传内容与远端分支一致。
-- 当前远端核对：另一台电脑拉取后 `git log --oneline -5` 应看到 `4370ddf feat(rpg): fold lab support dossier` 或更新提交；如果仍停在 `1b3cf5d`、`9171ac8`、`1a40fe4`、`e10069f`、`fa12dbc`、`2dd44d3`、`ca2c7aa`、`3fe3db1` 或默认分支提交，说明还没拉到最新交接/体验细修。
+- 当前已推送功能基线：`547ed6f feat(rpg): add lab flow translator`；本轮继续补「实战保存后接力回执」与交接刷新，提交推送后最新远端 hash 以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 为准。
+- 当前本地核对：本轮开始时本地与远端同在 `547ed6f`；随后新增 `src/App.tsx`、`src/App.test.tsx`、`src/styles.css`、`docs/ai-career-rpg-tasks.md`、交接文档和 changelog 改动。推送前不可声称另一台电脑已包含本轮接力回执。
+- 当前远端核对：另一台电脑拉取后 `git log --oneline -5` 应看到 `547ed6f feat(rpg): add lab flow translator` 或本轮更新提交；如果仍停在 `4370ddf`、`1b3cf5d`、`9171ac8`、`1a40fe4`、`e10069f`、`fa12dbc`、`2dd44d3`、`ca2c7aa`、`3fe3db1` 或默认分支提交，说明还没拉到最新交接/体验细修。
 - 远端默认 HEAD：`git ls-remote --symref origin HEAD` 指向 `feat/guided-learning-bridge`，不是本分支；另一台电脑必须显式切到 `cx/ai-career-rpg-home`，不要只用 clone 后默认分支继续。
 - 另一台电脑拉取命令：
   ```bash
@@ -40,7 +40,7 @@
 - 已实现：暗色神秘 RPG 舞台、章节专属背景、剧情角色立绘、可爱宠物/伙伴、地点航线、流程交接、名词解释、关键代码逐行导读、证据任务、Agent 委托、验收和面试复盘。
 - 最新体验收口：第 2 章产品链路不再串到 AI API 章；教学桥关键控件已暗色 RPG 化；代码导读新增“为什么看这一行 / 检查点 / 下一份证据”，第 1 章 `response.ok` 明确提示不能证明数据库写入。
 - 最新实战收口：第 1 章测试报告页新增「验收证据桥」；第 1 章保存失败报告会优先指向“数据层写库没接上 / repository `INSERT` 缺证据”，不会误串到第 2 章会话保存话术。第 1 章实战后半段已补齐沙盒验收、Agent 委托、交付审查、因果解释和面试迁移的任务卷轴与流程棒，明确页面绿灯、接口 201、数据库写入和刷新读回是四种不同证据。第 2 章 CanvasStorm 失败报告会把方向筛选、会话保存、空目标输入解释为三个断点，并用「红灯总指挥」给出排查顺序和 Agent 口令。第 3 章登录态实战已补齐身份路线、凭证存储、401 反证、刷新复查、Agent 委托、交付审查和面试复盘的剧情向导、任务卷轴与流程接力。第 4 章接口审判庭实战已补齐请求体证词、状态码判词、错误体修复、日志串证、Agent 委托、交付审查和面试复盘的导演层，并用 `flowItemIndex` 避免后半段流程高亮错位。第 5 章一致性熔炉实战已补齐 Network 双轨、幂等锤印、唯一约束城门、事务炉心、Agent 委托、交付审查和面试复盘的导演层。
-- 最新自动化验证：Node `v24.13.1` 下完整 `npm run verify` 通过：格式、Lint、TypeScript、10 个测试文件 / 176 个测试、生产构建和 TeachingBridge 懒加载 chunk 检查；Vite 主包体积 warning 仍是已知债务，不是失败。上一轮定向 `npm run test -- src/App.test.tsx --run` 通过 51 个测试，`npm run verify:quick` 通过 176 个测试。
+- 最新自动化验证：本轮定向 `npm run test -- src/App.test.tsx --run -t "实战保存后会显示具体接力回执"` 通过 1 个测试；`npm run build` 通过 TypeScript、Vite 生产构建和 TeachingBridge 懒加载 chunk 检查。默认 `npm run verify` 的格式、Lint、TypeScript 已通过，但全量 Vitest 默认并行启动 worker 超时，结果为 4 个测试文件 / 60 个测试通过、6 个 worker 启动失败；低并发补跑除 `src/App.test.tsx` 外的 9 个测试文件，126 个测试通过。不能把本轮记为完整 `npm run verify` 通过。
 - 最新浏览器验收：隔离 API `4369`、临时 SQLite `/tmp/code-quest-r303.sqlite`、Vite `5219`；第 1 章从剧情探索完整收集 8/8 线索 → 伙伴会合 → 实战 Lab 通过。桌面 1280 和 390px 手机均无横向溢出，控制台 error 为 0；后半段 Agent、审查、因果和面试迁移步骤都显示新任务卷轴与流程接力。合并前追加抽检过首页和路线大厅：隔离 API `4370`、临时 SQLite `/tmp/code-quest-r304.sqlite`、Vite `5220`；桌面 1280 与 390px 下序章、证据选择、领取委托、三路线大厅均无横向溢出，控制台 error 为 0。
 - 最新岗位路线收口：Java/前端第 2-5 章深链进入剧情探索后会持续显示「当前路线身份」铭牌，标明 Java 后端或前端工程成长路线、当前案件和当前地点，避免用户从封面进入剧情后失去岗位方向。隔离 API `4371`、临时 SQLite `/tmp/code-quest-r305.sqlite`、Vite `5221` 下，8 个深链桌面 1280 与 390px 均无横向溢出，暗色背景保持，控制台 error 为 0。
 - 最新实战深链收口：Java 第 2 关从 `#chapter-java-2` 完成教学后，伙伴会合页显示 `Java 后端 / 岗位路线 · 第 2 章`，进入 Lab 后保持 `Java 后端 · 第 2 关`。事务 Lab 可见文案已从旧“保存草稿”语境修正为订单、库存、下单、事务回滚语境；桌面 1200 与 390px 无横向溢出，控制台无 error。剩余 Java/前端第 3-5 关仍需逐关做同类 Lab 抽检。
@@ -54,13 +54,14 @@
 - 最新岗位 Lab 护栏：新增渲染级回归测试，覆盖 Java 上线港、前端性能塔和前端回归试炼场。岗位 Lab 默认只显示 `任务导演台`、`辅助卷宗` 和 `当前这一棒`，不会直接铺满案件路线牌/接力板；点击「展开流程地图」后才显示完整流程、案件路线牌和实战接力板，并且不出现 AI 主线旧词、`/api/canvases` 或 `验收试炼画布`。`App.test.tsx` 单文件 55 项通过，`npm run verify:quick` 通过 10 个测试文件 / 181 个测试。
 - 最新浏览器发现与修复：隔离 API `4390`、临时 SQLite `/tmp/code-quest-r317.sqlite`、Vite `5240` 下，Playwright 从 `#chapter-frontend-5` 进入前端第 5 关，逐幕收集 8/8 线索并进入实战会合与 Lab；剧情页角色和地点按 `测试仲裁官 → 交互取证师 → 路径审查官 → 交付守门人` 变化，控制台 error 为 0。浏览器发现 Lab 第一题「复现旧故障」却显示当前棒为「单测」的流程错位；已给 `frontend-testing-proof` 补岗位专属 `flowItemIndex`，现在第一题停在「旧故障」，后续单测、集成、浏览器、接收各自对应正确流程棒。完整 `npm run verify` 通过：10 个测试文件 / 181 个测试、生产构建和 TeachingBridge 懒加载检查均通过。
 - 最新导演台流程翻译：实战 `任务导演台` 新增 `本幕流程翻译`，把上一棒交来的材料、当前只盯的证据和下一棒接收对象翻译成一段人话，并固定“先看当前地点和关键材料 → 再说能证明/不能证明 → 最后决定下一份证据”的三步顺序。该卡跟随 `LabConfig.flowItems` 动态生成。验证：完整 `npm run verify` 通过 10 个测试文件 / 181 个测试；隔离 API `4391`、临时 SQLite `/tmp/code-quest-r318.sqlite`、Vite `5241` 下，Playwright 从 `#chapter-frontend-5` 收集 8/8 线索进入前端测试 Lab，首屏可见 `本幕流程翻译`、`能证明什么、不能证明什么` 和下一棒 `守报告校验器`；390×844 下 `scrollWidth = clientWidth = 390`，暗色背景，控制台 error 为 0。
+- 本轮实战保存接力回执：保存一道实战回答后，`LabStepReceipt` 会显示「刚刚到下一步的接力」，把“刚刚停在 → 现在进入 → 只盯住哪份证据”摆出来，避免用户被自动跳步弄丢流程。定向测试已通过；浏览器部分验收使用隔离 API `4392`、临时 SQLite `/tmp/code-quest-r319.sqlite`、Vite `5242`，从 `#chapter-frontend-3` 进入前端第 3 关剧情探索，确认前端路线身份、地点航线、流程卷轴和名词小抄可见，但尚未走到实战保存回执。
 - 尚未声称完成：真人学习效果、所有章节达到第一章同等细致程度、真实沙盒修复与报告回读、全站最终视觉终审、分支合并审查，以及第 1 章实战后半段“沙盒验收 → Agent 委托 → 交付审查 → 因果解释 → 面试迁移”的对白进一步打磨。
 - 版本状态：当前分支可以被另一台电脑完整拉取继续开发，但尚未合并到 `main`。不建议直接合并；如果时间紧，先开 Draft PR 或继续在本分支开发。转 ready/合并前仍要做 PR 审查、关键路径桌面与 390px 视觉终审，并明确“自动化通过不等于真人学会”。
 
-### 2026-07-16 最新跨电脑核对
+### 2026-07-17 最新跨电脑核对
 
-- 业务功能基线核对到 `4370ddfc02a17cf1a756b398053f50a9525defc2`；交接文档提交后远端 HEAD 会更新，当前最新值请以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 为准。
-- `git status --short --branch` 显示 `cx/ai-career-rpg-home...origin/cx/ai-career-rpg-home`，核对时没有未提交业务代码。
+- 推送前本地功能基线为 `547ed6f feat(rpg): add lab flow translator`，本轮提交将包含实战保存接力回执、交接文档和 changelog。推送后远端 HEAD 请以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 为准。
+- 当前沙盒内 `xixi-dev-system doctor --project .` 通过；`profile sync` 和 `updates` 因当前权限无法写 `.git/FETCH_HEAD` 被拦截，不代表项目代码失败。
 - 另一台电脑拉下来后，用 `git rev-parse HEAD`、`git rev-parse origin/cx/ai-career-rpg-home`、`git ls-remote origin refs/heads/cx/ai-career-rpg-home` 三个值互相对照；三者应一致或本地 HEAD 是刚拉下来的同一提交。
 - 当前仍是“可继续开发的阶段分支”，不是 ready 合并态。合并前要再跑完整 `npm run verify`，并做桌面与 390px 关键路径视觉终审。
 

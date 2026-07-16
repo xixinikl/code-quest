@@ -17158,6 +17158,62 @@ textarea:focus {
   line-height: 1.55;
 }
 
+.lab-step-receipt-relay {
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1.35fr);
+  gap: 8px;
+  align-items: stretch;
+  padding: 9px;
+  border: 1px solid rgba(227, 193, 116, 0.16);
+  border-radius: 6px;
+  background:
+    linear-gradient(90deg, rgba(143, 230, 210, 0.08), transparent 70%),
+    rgba(3, 10, 16, 0.48);
+}
+
+.lab-step-receipt-relay article {
+  min-width: 0;
+  padding: 9px 10px;
+  border: 1px solid rgba(157, 233, 218, 0.14);
+  border-radius: 5px;
+  background: rgba(3, 9, 15, 0.55);
+}
+
+.lab-step-receipt-relay article.active {
+  border-color: rgba(227, 193, 116, 0.34);
+  background:
+    linear-gradient(120deg, rgba(227, 193, 116, 0.12), transparent 58%),
+    rgba(5, 11, 17, 0.68);
+}
+
+.lab-step-receipt-relay span {
+  display: block;
+  color: #8fe6d2;
+  font-size: 10px;
+  font-weight: 900;
+}
+
+.lab-step-receipt-relay strong {
+  display: block;
+  margin-top: 4px;
+  color: #fff4ce;
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.lab-step-receipt-relay p {
+  margin-top: 4px;
+  color: #c9d4de;
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+.lab-step-receipt-relay svg {
+  align-self: center;
+  color: #d8c27b;
+}
+
 .lab-step-receipt dl {
   display: grid;
   grid-column: 1 / -1;
@@ -18866,6 +18922,20 @@ textarea:focus {
     width: 1px;
     height: 10px;
     background: linear-gradient(180deg, rgba(216, 194, 123, 0.75), transparent);
+  }
+
+  .lab-step-receipt {
+    grid-template-columns: 1fr;
+  }
+
+  .lab-step-receipt-relay,
+  .lab-step-receipt dl {
+    grid-template-columns: 1fr;
+  }
+
+  .lab-step-receipt-relay svg {
+    justify-self: start;
+    transform: rotate(90deg);
   }
 
   .lab-rpg-shell .response-card,

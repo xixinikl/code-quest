@@ -8921,6 +8921,25 @@ function LabStepReceipt({
   nextStep: LabStep;
   savedStep: LabStep;
 }) {
+  const savedStepIndex = config.steps.findIndex(
+    (step) => step.id === savedStep.id,
+  );
+  const nextStepIndex = config.steps.findIndex(
+    (step) => step.id === nextStep.id,
+  );
+  const savedFlowIndex = getLabStepFlowIndex(
+    savedStep.id,
+    Math.max(savedStepIndex, 0),
+    config,
+  );
+  const nextFlowIndex = getLabStepFlowIndex(
+    nextStep.id,
+    Math.max(nextStepIndex, 0),
+    config,
+  );
+  const savedFlow = config.flowItems[savedFlowIndex] ?? config.flowItems[0];
+  const nextFlow = config.flowItems[nextFlowIndex] ?? config.flowItems[0];
+  const followingFlow = config.flowItems[nextFlowIndex + 1];
   const savedOutput =
     savedStep.kind === "baseline"
       ? config.baseline.action
@@ -8942,6 +8961,24 @@ function LabStepReceipt({
         这一步已经写入本地练习记录。现在进入「{nextStep.label}
         」，继续把上一棒证据交给下一棒。
       </p>
+      <div className="lab-step-receipt-relay" aria-label="刚刚到下一步的接力">
+        <article>
+          <span>刚刚停在</span>
+          <strong>{savedFlow.label}</strong>
+          <p>{savedFlow.title}</p>
+        </article>
+        <ArrowRight size={16} aria-hidden="true" />
+        <article className="active">
+          <span>现在进入</span>
+          <strong>{nextFlow.label}</strong>
+          <p>
+            只盯住「{nextFlow.title}」。
+            {followingFlow
+              ? `写清后再交给「${followingFlow.title}」。`
+              : "写清后就进入结案卷宗。"}
+          </p>
+        </article>
+      </div>
       <dl>
         <div>
           <dt>刚刚沉淀</dt>

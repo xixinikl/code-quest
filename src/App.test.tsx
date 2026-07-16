@@ -569,6 +569,91 @@ describe("岗位路线实战场景契约", () => {
       unmount();
     }
   });
+
+  it("实战保存后会显示具体接力回执，避免自动跳步后迷路", async () => {
+    const user = userEvent.setup();
+    const config = getLabConfig("frontend-performance-proof");
+    const firstResponse = config.steps.find((step) => step.kind === "response");
+    expect(firstResponse).toBeTruthy();
+    const nextStep =
+      config.steps[
+        config.steps.findIndex((step) => step.id === firstResponse?.id) + 1
+      ];
+    const nextStepIndex = config.steps.findIndex(
+      (step) => step.id === nextStep.id,
+    );
+    const nextFlow =
+      config.flowItems[
+        Math.min(
+          Math.max(nextStep.flowItemIndex ?? nextStepIndex, 0),
+          config.flowItems.length - 1,
+        )
+      ];
+    const jobArtifacts = Object.entries(config.artifactGuides).map(
+      ([id, guide]) => ({
+        id,
+        label: guide.place,
+        language: "txt",
+        relativePath: `${config.practical.sandboxPath}/${id}.txt`,
+        content: guide.keyLines.join("\n"),
+      }),
+    );
+    const answer =
+      "我看到首屏 Network 里接口等待很长，它说明慢不只在浏览器资源。Server-Timing 还缺少后端阶段拆分，所以现在不能直接判断是数据库慢、接口慢还是 React 渲染慢。下一步我要继续看后端日志、缓存命中和 render profile，把 TTFB、接口处理、下载和渲染分开证明。";
+    const updatedAttempt = {
+      id: "attempt-frontend-performance-proof",
+      scenarioId: "frontend-performance-proof",
+      status: "active",
+      hintLevel: 0,
+      verificationStatus: "not_run",
+      steps: {
+        [firstResponse!.id]: {
+          response: {
+            text: answer,
+          },
+          savedAt: "2026-07-17T00:00:00.000Z",
+        },
+      },
+    };
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(() => response(updatedAttempt)),
+    );
+
+    render(
+      <Lab
+        artifacts={jobArtifacts}
+        attempt={
+          {
+            ...updatedAttempt,
+            steps: {},
+          } as Parameters<typeof Lab>[0]["attempt"]
+        }
+        onBackToRoadmap={vi.fn()}
+        onSubmitted={vi.fn()}
+        setAttempt={vi.fn()}
+      />,
+    );
+
+    await user.type(screen.getByRole("textbox"), answer);
+    await user.click(screen.getByRole("button", { name: /保存并继续/ }));
+
+    expect(await screen.findByLabelText("刚刚收录的证据")).toHaveTextContent(
+      firstResponse!.label,
+    );
+    expect(screen.getByLabelText("刚刚到下一步的接力")).toHaveTextContent(
+      "刚刚停在",
+    );
+    expect(screen.getByLabelText("刚刚到下一步的接力")).toHaveTextContent(
+      "现在进入",
+    );
+    expect(screen.getByLabelText("刚刚到下一步的接力")).toHaveTextContent(
+      "只盯住",
+    );
+    expect(screen.getByLabelText("刚刚到下一步的接力")).toHaveTextContent(
+      nextFlow.title,
+    );
+  });
 });
 
 const attempt = {
@@ -5779,6 +5864,15 @@ describe("AI 职业路线入口", () => {
     );
     expect(screen.getByLabelText("刚刚收录的证据")).toHaveTextContent(
       "继续把上一棒证据交给下一棒",
+    );
+    expect(screen.getByLabelText("刚刚到下一步的接力")).toHaveTextContent(
+      "刚刚停在",
+    );
+    expect(screen.getByLabelText("刚刚到下一步的接力")).toHaveTextContent(
+      "现在进入",
+    );
+    expect(screen.getByLabelText("刚刚到下一步的接力")).toHaveTextContent(
+      "只盯住",
     );
     expect(screen.getByLabelText("刚刚收录的证据")).toHaveTextContent(
       "刚刚沉淀",
