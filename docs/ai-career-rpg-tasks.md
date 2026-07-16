@@ -1581,3 +1581,16 @@ Goal 模式的完成口径必须比“能点进去”更严格：只接剧情教
 - [x] 浏览器 390×844 抽检：第 1 章剧情页仍显示完整流程卷轴、名词小抄、本幕复盘；`clientWidth = scrollWidth = 390`，body 背景为暗色。
 
 验收目标：用户在项目地图、概念卡和预测题之间切换时，不再感觉从神秘剧情 RPG 突然跳回白色课程后台。
+
+## R290：代码导读当前行证据锚点
+
+- [x] `GuidedCodeTour` 增加“当前行证据锚点”：每行都显示为什么看这一行、检查点、下一份证据。
+- [x] 第 1 章读到 `response.ok` 时明确提示：它解释绿色成功提示为什么会亮，但不能证明数据库已经写入，下一步要看 Network、后端日志和数据库 SELECT。
+- [x] 390px 下当前行证据锚点改成单列，避免代码阅读页挤压。
+- [x] 新增 changelog fragment：`changelogs/2026-07-16-code-tour-evidence-anchor.md`。
+- [x] Node `v24.13.1` 下 `npm run test -- src/App.test.tsx --run` 通过：1 个测试文件 / 46 个测试。
+- [x] Node `v24.13.1` 下 `npm run verify:quick` 通过：lint、typecheck、10 个测试文件 / 171 个测试。
+- [x] 浏览器桌面验收：隔离 API `4352`、临时 SQLite `/tmp/code-quest-r290.sqlite`、Vite `5202`；第 1 章 `tour-frontend` 代码导读页显示当前行证据锚点。跳到 `response.ok` 行后可见“绿色成功提示为什么会亮”“不能证明数据库已经写入”“Network 状态码、后端日志、数据库 SELECT 结果”；console error 为 0，`clientWidth = scrollWidth = 1200`，body 背景为暗色。
+- [x] 浏览器 390×844 抽检：第 1 章代码导读页仍显示“为什么看这一行”“下一份证据”“不能证明数据库已经写入”；`clientWidth = scrollWidth = 390`，body 背景为暗色。
+
+验收目标：用户进入代码阅读页时，不只是看到一行代码和语法解释，还能知道“为什么现在看它、它能证明什么、下一步要去哪找证据”。

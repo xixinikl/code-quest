@@ -1089,3 +1089,15 @@ TeachingBridge 继续保持 `React.lazy` 按需加载，并把懒加载期间的
 - 浏览器验收：隔离 API `4350`、临时 SQLite `/tmp/code-quest-r289.sqlite`、Vite `5200`。第 1 章剧情页显示完整流程卷轴、名词小抄、本幕复盘和下一地点预告；桌面 `clientWidth = scrollWidth = 1200`，390×844 下 `clientWidth = scrollWidth = 390`，body 背景为暗色，console error 为 0。
 - 自动化验证：Node `v24.13.1` 下 `npm run test -- src/chapterCinematics.test.ts --run` 通过 1 个测试文件 / 8 个测试；`npm run format:check` 通过；`npm run verify:quick` 通过 lint、typecheck、10 个测试文件 / 171 个测试。
 - 当前状态：本轮 UI 收口、测试、浏览器证据和交接记录已补；仍未声称“全站最终 UI 完成”，后续应继续按章节检查白色断层和学习可理解性。
+
+## R290：代码导读当前行证据锚点
+
+本轮继续处理用户说的“看代码还是晕，不知道谁传给谁、下一步去哪”的问题，范围收敛在 `GuidedCodeTour`。
+
+- 实现：`src/TeachingBridge.tsx` 新增 `buildLineEvidenceAnchor`，并在逐行翻译卡片中展示“为什么看这一行 / 检查点 / 下一份证据”。第 1 章读到 `response.ok` 时会明确提醒它只解释绿色成功提示，不能证明数据库已经写入。
+- UI：`src/styles.css` 新增 `.line-evidence-anchor` 暗色任务卡；390px 下改成单列，避免代码阅读页挤压。
+- 测试：`src/App.test.tsx` 覆盖第 1 章和第 2 章代码导读的新锚点；第 1 章会断言 `response.ok` 行出现“绿色成功提示为什么会亮”“不能证明数据库已经写入”“数据库 SELECT 结果”。
+- 文档：`docs/ai-career-rpg-tasks.md` 新增 R290 记录；新增 changelog fragment `changelogs/2026-07-16-code-tour-evidence-anchor.md`。
+- 自动化验证：Node `v24.13.1` 下 `npm run test -- src/App.test.tsx --run` 通过 1 个测试文件 / 46 个测试；`npm run verify:quick` 通过 lint、typecheck、10 个测试文件 / 171 个测试。
+- 浏览器验收：隔离 API `4352`、临时 SQLite `/tmp/code-quest-r290.sqlite`、Vite `5202`。第 1 章 `tour-frontend` 代码导读页显示当前行证据锚点；跳到 `response.ok` 行后可见“绿色成功提示为什么会亮”“不能证明数据库已经写入”“Network 状态码、后端日志、数据库 SELECT 结果”。桌面 `clientWidth = scrollWidth = 1200`，390×844 下 `clientWidth = scrollWidth = 390`，body 背景为暗色，console error 为 0。
+- 当前状态：代码导读页更接近“任务指引式读码”，但仍未声称第一章全流程和全站最终体验已经完成；后续应继续验收实战修复页、章节结算页和 2-15 章读码页的一致性。

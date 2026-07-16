@@ -5281,6 +5281,39 @@ textarea:focus {
   line-height: 1.65;
 }
 
+.line-evidence-anchor {
+  display: grid;
+  grid-column: 2;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 7px;
+  margin-top: 10px;
+}
+
+.line-evidence-anchor div {
+  min-width: 0;
+  padding: 9px;
+  border: 1px solid rgba(217, 184, 110, 0.18);
+  border-radius: 6px;
+  background:
+    linear-gradient(135deg, rgba(217, 184, 110, 0.08), transparent 62%),
+    rgba(255, 255, 255, 0.035);
+}
+
+.line-evidence-anchor span {
+  display: block;
+  margin-bottom: 5px;
+  color: #e9c878;
+  font-size: 10px;
+  font-weight: 900;
+}
+
+.line-evidence-anchor strong {
+  display: block;
+  color: #dfe8ee;
+  font-size: 11px;
+  line-height: 1.55;
+}
+
 .line-handoff-card {
   display: grid;
   grid-column: 2;
@@ -11109,6 +11142,10 @@ textarea:focus {
 
   .tour-line-notes article {
     grid-template-columns: 32px minmax(0, 1fr);
+  }
+
+  .line-evidence-anchor {
+    grid-template-columns: 1fr;
   }
 
   .line-handoff-card {

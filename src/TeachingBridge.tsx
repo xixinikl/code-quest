@@ -8233,6 +8233,92 @@ function buildCodeHandoff(line: string, focus: CodeFocus) {
   };
 }
 
+function buildLineEvidenceAnchor(line: string, focus: CodeFocus) {
+  const compact = line.trim();
+  if (!compact) {
+    return {
+      why: "这一行只是留白，用来把代码分成更容易读的段落。",
+      checkpoint: "继续读下一行，找真正发生交接的位置。",
+      nextEvidence: "下一行代码",
+    };
+  }
+  if (compact.startsWith("//")) {
+    return {
+      why: "注释像地图旁的标牌，告诉你作者希望读代码的人先看什么。",
+      checkpoint: "它不执行业务动作，所以不能当作修复证据。",
+      nextEvidence: "继续看注释下面的真实代码",
+    };
+  }
+  if (compact.includes("fetch(") || compact.includes("POST")) {
+    return {
+      why: "这里是页面真正把材料送出门的瞬间，前端舞台开始把任务交给传送门。",
+      checkpoint: `确认请求里有没有带上「${focus.input}」。`,
+      nextEvidence: "Network 的 method、url、payload 和 status",
+    };
+  }
+  if (compact.includes("response.ok")) {
+    return {
+      why: "这里解释了绿色成功提示为什么会亮：页面相信了 HTTP 状态码。",
+      checkpoint: "记住它只能证明接口回信成功，不能证明数据库已经写入。",
+      nextEvidence: "Network 状态码、后端日志、数据库 SELECT 结果",
+    };
+  }
+  if (compact.includes("response.json")) {
+    return {
+      why: "这里把后端回信拆开，页面后面能展示什么就从这里来。",
+      checkpoint: `核对响应体是否真的包含「${focus.output}」。`,
+      nextEvidence: "Response body 和页面状态变化",
+    };
+  }
+  if (compact.includes("JSON.stringify")) {
+    return {
+      why: "这里把页面状态打包成后端能读懂的信封。",
+      checkpoint: "后端收不到的字段，不可能在后面凭空保存成功。",
+      nextEvidence: "Network Payload",
+    };
+  }
+  if (compact.includes("INSERT") || compact.includes("db.run")) {
+    return {
+      why: "这里才接近真正的落库动作，能把临时数据变成可刷新恢复的记录。",
+      checkpoint: "写库之后必须能被查询或测试再次证明。",
+      nextEvidence: "SQLite SELECT、测试报告、刷新后列表",
+    };
+  }
+  if (compact.includes("SELECT") || compact.includes("db.get")) {
+    return {
+      why: "这里是在向数据库要事实，不再只看页面怎么说。",
+      checkpoint: "查不到就是强反证：前面的成功提示不够可信。",
+      nextEvidence: "查询行数和返回记录",
+    };
+  }
+  if (compact.includes("return ")) {
+    return {
+      why: "这里是当前函数把结果交出去的收口动作。",
+      checkpoint: `看调用方是否继续拿到「${focus.output}」。`,
+      nextEvidence: "调用方代码、响应体或页面展示",
+    };
+  }
+  if (compact.includes("const ") || compact.includes("let ")) {
+    return {
+      why: "这里给中间材料起名字，方便你沿着变量继续追踪。",
+      checkpoint: "不要停在变量名上，继续看它有没有被传给下一层。",
+      nextEvidence: "后续使用这个变量的行",
+    };
+  }
+  if (compact.includes("setStatus") || compact.includes("setLoading")) {
+    return {
+      why: "这里改变的是用户看到的状态灯。",
+      checkpoint: "状态灯属于界面反馈，不等于真实副作用。",
+      nextEvidence: "后端响应、数据库记录或测试结果",
+    };
+  }
+  return {
+    why: "这一行在处理当前材料，要把它放回上一棒和下一棒之间理解。",
+    checkpoint: `继续判断它是否帮助产出「${focus.output}」。`,
+    nextEvidence: "下一行代码和后续运行证据",
+  };
+}
+
 function splitProjectPosition(position?: string) {
   return (position ?? "")
     .split(/\s*→\s*/)
@@ -8322,6 +8408,7 @@ function GuidedCodeTour({
   const agentBrief = `请只围绕 ${focus.filePath} 的 ${focus.functionName} 检查「${step.projectPosition ?? step.goal}」：输入是「${focus.input}」，输出应该是「${focus.output}」。请说明这几行能证明什么、不能证明什么，并给出下一步验收证据。`;
   const activeLine = focus.lines[activeLineIndex] ?? "";
   const activeHandoff = buildCodeHandoff(activeLine, focus);
+  const activeEvidenceAnchor = buildLineEvidenceAnchor(activeLine, focus);
 
   return (
     <section className="teaching-shell code-tour-shell">
@@ -8551,6 +8638,20 @@ function GuidedCodeTour({
         <article>
           <code>{String(activeLineIndex + 1).padStart(2, "0")}</code>
           <p>{explainCodeLine(activeLine, focus, step.projectPosition)}</p>
+          <div className="line-evidence-anchor" aria-label="当前行证据锚点">
+            <div>
+              <span>为什么看这一行</span>
+              <strong>{activeEvidenceAnchor.why}</strong>
+            </div>
+            <div>
+              <span>检查点</span>
+              <strong>{activeEvidenceAnchor.checkpoint}</strong>
+            </div>
+            <div>
+              <span>下一份证据</span>
+              <strong>{activeEvidenceAnchor.nextEvidence}</strong>
+            </div>
+          </div>
           <dl className="line-handoff-card" aria-label="读码交接单">
             <div>
               <dt>收到</dt>

@@ -1606,6 +1606,12 @@ describe("AI 职业路线入口", () => {
     ).toBeGreaterThan(0);
     expect(screen.getByText(/逐行翻译/)).toBeInTheDocument();
     expect(screen.getByText(/先看人话，再看语法/)).toBeInTheDocument();
+    expect(screen.getByLabelText("当前行证据锚点")).toHaveTextContent(
+      "为什么看这一行",
+    );
+    expect(screen.getByLabelText("当前行证据锚点")).toHaveTextContent(
+      "下一份证据",
+    );
     expect(screen.getByLabelText("谁把什么交给谁")).toHaveTextContent(
       "用户输入",
     );
@@ -1661,6 +1667,15 @@ describe("AI 职业路线入口", () => {
       await user.click(screen.getByRole("button", { name: "下一行" }));
     }
     expect(screen.getByText(/判断这次接口回信是否成功/)).toBeInTheDocument();
+    expect(screen.getByLabelText("当前行证据锚点")).toHaveTextContent(
+      "绿色成功提示为什么会亮",
+    );
+    expect(screen.getByLabelText("当前行证据锚点")).toHaveTextContent(
+      "不能证明数据库已经写入",
+    );
+    expect(screen.getByLabelText("当前行证据锚点")).toHaveTextContent(
+      "数据库 SELECT 结果",
+    );
     expect(screen.getByText(/不能证明数据库已保存/)).toBeInTheDocument();
   });
 
