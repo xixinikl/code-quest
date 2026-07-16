@@ -16596,6 +16596,93 @@ textarea:focus {
   padding: 28px;
 }
 
+.lab-director-stage {
+  display: grid;
+  gap: 12px;
+  margin-bottom: 14px;
+  padding: 13px;
+  border: 1px solid rgba(227, 193, 116, 0.28);
+  border-radius: 6px;
+  background:
+    linear-gradient(135deg, rgba(216, 194, 123, 0.1), transparent 48%),
+    linear-gradient(90deg, rgba(143, 230, 210, 0.08), transparent 72%),
+    rgba(4, 10, 16, 0.78);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 244, 214, 0.04),
+    0 22px 48px rgba(0, 0, 0, 0.28);
+}
+
+.lab-director-stage > header {
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
+  justify-content: space-between;
+  min-width: 0;
+}
+
+.lab-director-stage > header span {
+  color: #8fe6d2;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.lab-director-stage > header strong {
+  min-width: 0;
+  color: #fff4ce;
+  font-size: 13px;
+  line-height: 1.45;
+  text-align: right;
+}
+
+.lab-director-stage > div {
+  display: grid;
+  grid-template-columns: minmax(380px, 0.9fr) minmax(0, 1fr);
+  gap: 12px;
+  align-items: stretch;
+}
+
+.lab-director-stage .lab-scene-guide,
+.lab-director-stage .lab-step-quest-brief,
+.lab-director-stage .lab-flow-dialogue {
+  margin-bottom: 0;
+}
+
+.lab-director-stage .lab-scene-guide {
+  grid-template-columns: 82px minmax(0, 1fr);
+  grid-template-areas:
+    "portrait story"
+    "details details";
+  align-items: start;
+  height: 100%;
+}
+
+.lab-director-stage .lab-scene-guide > img {
+  grid-area: portrait;
+}
+
+.lab-director-stage .lab-scene-guide-story {
+  grid-area: story;
+}
+
+.lab-director-stage .lab-scene-guide dl {
+  grid-area: details;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.lab-director-stack {
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+}
+
+.lab-director-stage .lab-step-quest-brief {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.lab-director-stage .lab-flow-dialogue > div {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
 .lab-scene-guide {
   position: relative;
   overflow: hidden;
@@ -18516,6 +18603,37 @@ textarea:focus {
 
   .lab-rpg-shell .quest-log article:not(.active) p {
     display: none;
+  }
+
+  .lab-director-stage {
+    gap: 10px;
+    padding: 10px;
+  }
+
+  .lab-director-stage > header {
+    display: grid;
+    gap: 4px;
+  }
+
+  .lab-director-stage > header strong {
+    text-align: left;
+  }
+
+  .lab-director-stage > div {
+    grid-template-columns: 1fr;
+  }
+
+  .lab-director-stage .lab-scene-guide {
+    grid-template-columns: 64px minmax(0, 1fr);
+    grid-template-areas:
+      "portrait story"
+      "details details";
+  }
+
+  .lab-director-stage .lab-scene-guide dl,
+  .lab-director-stage .lab-step-quest-brief,
+  .lab-director-stage .lab-flow-dialogue > div {
+    grid-template-columns: 1fr;
   }
 
   .lab-scene-guide {

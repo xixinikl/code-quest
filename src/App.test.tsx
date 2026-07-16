@@ -314,7 +314,8 @@ describe("岗位路线实战场景契约", () => {
         proved: getLabConfig("frontend-accessibility-proof").result.proved,
         recorded: getLabConfig("frontend-accessibility-proof").result.recorded,
         pending: getLabConfig("frontend-accessibility-proof").result.pending,
-        nextItems: getLabConfig("frontend-accessibility-proof").result.nextItems,
+        nextItems: getLabConfig("frontend-accessibility-proof").result
+          .nextItems,
       },
     });
 
@@ -5477,6 +5478,14 @@ describe("AI 职业路线入口", () => {
     ).toBeInTheDocument();
     expect(screen.getByLabelText(/实战追踪/)).toHaveTextContent("冒险日志");
     expect(screen.getByLabelText(/实战追踪/)).toHaveTextContent("当前任务");
+    expect(screen.getByLabelText("任务导演台")).toHaveTextContent(
+      "先看角色、目标和接力，再开始读代码",
+    );
+    expect(screen.getByLabelText("任务导演台")).toHaveTextContent(
+      "传送门书记官",
+    );
+    expect(screen.getByLabelText("任务导演台")).toHaveTextContent("为什么学");
+    expect(screen.getByLabelText("任务导演台")).toHaveTextContent("后端接口");
     expect(screen.getByLabelText("实战剧情向导")).toBeInTheDocument();
     expect(screen.getByLabelText("实战剧情向导")).toHaveTextContent(
       "传送门书记官",

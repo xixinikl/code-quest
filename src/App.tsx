@@ -7178,7 +7178,8 @@ labConfigs[JAVA_CACHE_SCENARIO_ID] = {
     body: (hintLevel) =>
       `你把“读到旧数据”拆成了 Network 请求、缓存命中、数据库版本、TTL、异步刷新和复测收敛。本次独立程度：L${hintLevel >= 3 ? "1" : "2"}。`,
     proved: "旧数据来源被拆成缓存、数据库版本和异步刷新时间线",
-    recorded: "Network、Java Service、缓存日志、数据库版本、复测记录和 Agent 交付说明",
+    recorded:
+      "Network、Java Service、缓存日志、数据库版本、复测记录和 Agent 交付说明",
     pending: "换一个订单状态、库存状态或消息未读数场景继续迁移",
     nextTitle: "这关如何变成后端排障能力？",
     nextItems: [
@@ -7213,17 +7214,20 @@ labConfigs[JAVA_CACHE_SCENARIO_ID] = {
       ["更快", "不再读旧值"],
     ]),
   ),
-  artifactGuides: rewriteLabCopy(labConfigs[CASE06_SCENARIO_ID].artifactGuides, [
-    ["页面慢", "读到旧数据"],
-    ["页面真的变快", "旧数据真的收敛"],
-    ["性能", "缓存观测"],
-    ["loading 文案", "旧数据提示"],
-    ["更顺滑", "旧数据会收敛"],
-    ["前端渲染", "客户端展示"],
-    ["接口 TTFB", "缓存/数据库等待"],
-    ["Server-Timing", "缓存命中、DB version 和 TTL"],
-    ["变快", "不再返回旧版本"],
-  ]),
+  artifactGuides: rewriteLabCopy(
+    labConfigs[CASE06_SCENARIO_ID].artifactGuides,
+    [
+      ["页面慢", "读到旧数据"],
+      ["页面真的变快", "旧数据真的收敛"],
+      ["性能", "缓存观测"],
+      ["loading 文案", "旧数据提示"],
+      ["更顺滑", "旧数据会收敛"],
+      ["前端渲染", "客户端展示"],
+      ["接口 TTFB", "缓存/数据库等待"],
+      ["Server-Timing", "缓存命中、DB version 和 TTL"],
+      ["变快", "不再返回旧版本"],
+    ],
+  ),
 };
 
 labConfigs[FRONTEND_PERFORMANCE_SCENARIO_ID] = {
@@ -7282,7 +7286,8 @@ labConfigs[FRONTEND_PERFORMANCE_SCENARIO_ID] = {
     title: "你已经能用证据定位页面变慢",
     body: (hintLevel) =>
       `你把“页面慢”拆成了 JS 资源、/api/projects 的 TTFB、后端查询、缓存命中、React 渲染画像和第二次访问复测。本次独立程度：L${hintLevel >= 3 ? "1" : "2"}。`,
-    proved: "首屏性能证据覆盖资源、接口等待、后端日志、渲染画像、缓存命中和复测结果",
+    proved:
+      "首屏性能证据覆盖资源、接口等待、后端日志、渲染画像、缓存命中和复测结果",
     recorded:
       "Network 瀑布图、Server-Timing 缺口、backend.log、render-profile、cache-retest 和 Agent 交付说明",
     pending:
@@ -7313,14 +7318,17 @@ labConfigs[FRONTEND_PERFORMANCE_SCENARIO_ID] = {
       ["更快", "第二次真的更快"],
     ]),
   ),
-  artifactGuides: rewriteLabCopy(labConfigs[CASE06_SCENARIO_ID].artifactGuides, [
-    ["慢速迷雾", "首屏观测塔"],
-    ["页面慢", "首屏慢"],
-    ["性能", "前端性能"],
-    ["loading 文案", "加载提示"],
-    ["前端渲染", "React 渲染"],
-    ["Server-Timing", "Server-Timing / X-Cache"],
-  ]),
+  artifactGuides: rewriteLabCopy(
+    labConfigs[CASE06_SCENARIO_ID].artifactGuides,
+    [
+      ["慢速迷雾", "首屏观测塔"],
+      ["页面慢", "首屏慢"],
+      ["性能", "前端性能"],
+      ["loading 文案", "加载提示"],
+      ["前端渲染", "React 渲染"],
+      ["Server-Timing", "Server-Timing / X-Cache"],
+    ],
+  ),
 };
 
 labConfigs[JAVA_RELEASE_SCENARIO_ID] = {
@@ -7382,8 +7390,7 @@ labConfigs[JAVA_RELEASE_SCENARIO_ID] = {
       "上线门禁覆盖计划、配置、密钥边界、备份恢复、冒烟路径、监控信号和回滚方案",
     recorded:
       "release-plan、environment-check、backup-record、smoke-test、monitoring-snapshot、rollback-plan、ReleaseGate 和 Agent 交付说明",
-    pending:
-      "换一个配置缺失、数据迁移或灰度发布场景继续训练上线前门禁",
+    pending: "换一个配置缺失、数据迁移或灰度发布场景继续训练上线前门禁",
     nextTitle: "这关如何变成上线能力？",
     nextItems: [
       "构建通过只证明代码能打包，不证明生产配置、数据恢复和监控退路已经准备好。",
@@ -7418,26 +7425,29 @@ labConfigs[JAVA_RELEASE_SCENARIO_ID] = {
       ["部署", "上线放行"],
     ]),
   ),
-  artifactGuides: rewriteLabCopy(labConfigs[CASE14_SCENARIO_ID].artifactGuides, [
-    ["第 14 章上线前夜", "Java 服务上线港"],
-    ["AI 应用开发", "Java 后端"],
-    ["上线前夜", "上线港"],
-    ["构建通过", "构建通过但未必可上线"],
-    ["可以上线", "可以放行"],
-    ["生产变量", "生产配置"],
-    ["环境变量", "生产配置"],
-    ["AI_API_KEY", "AI_API_KEY / APP_ORIGIN"],
-    ["备份恢复", "备份恢复验证"],
-    ["备份", "备份恢复"],
-    ["冒烟测试", "桌面与 390px 冒烟"],
-    ["监控信号", "错误率、P95、保存成功率和 AI 失败率"],
-    ["监控", "上线监控"],
-    ["回滚方案", "回滚条件、步骤和回滚后验证"],
-    ["回滚", "回滚和恢复验证"],
-    ["负责人", "发布负责人"],
-    ["值守人", "上线观察人"],
-    ["部署", "上线放行"],
-  ]),
+  artifactGuides: rewriteLabCopy(
+    labConfigs[CASE14_SCENARIO_ID].artifactGuides,
+    [
+      ["第 14 章上线前夜", "Java 服务上线港"],
+      ["AI 应用开发", "Java 后端"],
+      ["上线前夜", "上线港"],
+      ["构建通过", "构建通过但未必可上线"],
+      ["可以上线", "可以放行"],
+      ["生产变量", "生产配置"],
+      ["环境变量", "生产配置"],
+      ["AI_API_KEY", "AI_API_KEY / APP_ORIGIN"],
+      ["备份恢复", "备份恢复验证"],
+      ["备份", "备份恢复"],
+      ["冒烟测试", "桌面与 390px 冒烟"],
+      ["监控信号", "错误率、P95、保存成功率和 AI 失败率"],
+      ["监控", "上线监控"],
+      ["回滚方案", "回滚条件、步骤和回滚后验证"],
+      ["回滚", "回滚和恢复验证"],
+      ["负责人", "发布负责人"],
+      ["值守人", "上线观察人"],
+      ["部署", "上线放行"],
+    ],
+  ),
 };
 
 labConfigs[JAVA_INCIDENT_SCENARIO_ID] = {
@@ -7496,7 +7506,8 @@ labConfigs[JAVA_INCIDENT_SCENARIO_ID] = {
     body: (hintLevel) =>
       `你把“线上出事了”拆成了报警指标、requestId、异常栈、版本号、影响范围、止血动作、回滚决定和恢复复测。本次独立程度：L${hintLevel >= 3 ? "1" : "2"}。`,
     proved: "事故证据覆盖报警、日志、影响范围、止血/回滚和恢复复测",
-    recorded: "错误率、P95、requestId、异常堆栈、版本号、冒烟测试、回滚决定和 Agent 事故说明",
+    recorded:
+      "错误率、P95、requestId、异常堆栈、版本号、冒烟测试、回滚决定和 Agent 事故说明",
     pending: "换一个支付失败、缓存雪崩或登录异常场景继续训练事故复盘",
     nextTitle: "这关如何变成线上排障能力？",
     nextItems: [
@@ -7534,28 +7545,31 @@ labConfigs[JAVA_INCIDENT_SCENARIO_ID] = {
       ["可以上线", "可以恢复服务"],
     ]),
   ),
-  artifactGuides: rewriteLabCopy(labConfigs[CASE14_SCENARIO_ID].artifactGuides, [
-    ["上线", "事故处理"],
-    ["发布窗口", "事故窗口"],
-    ["影响范围", "受影响用户和业务范围"],
-    ["负责人", "值班负责人"],
-    ["值守人", "观察人"],
-    ["生产配置", "运行环境"],
-    ["生产变量", "运行配置"],
-    ["环境变量", "运行配置"],
-    ["AI_API_KEY", "事故特征开关"],
-    ["备份恢复", "恢复演练"],
-    ["备份", "恢复演练"],
-    ["冒烟测试", "止血后冒烟"],
-    ["监控信号", "日志与指标"],
-    ["监控", "日志与指标"],
-    ["回滚方案", "回滚决定"],
-    ["回滚", "回滚或降级"],
-    ["构建通过", "报警解除"],
-    ["部署", "止血"],
-    ["门禁", "事故复盘"],
-    ["可以上线", "可以恢复服务"],
-  ]),
+  artifactGuides: rewriteLabCopy(
+    labConfigs[CASE14_SCENARIO_ID].artifactGuides,
+    [
+      ["上线", "事故处理"],
+      ["发布窗口", "事故窗口"],
+      ["影响范围", "受影响用户和业务范围"],
+      ["负责人", "值班负责人"],
+      ["值守人", "观察人"],
+      ["生产配置", "运行环境"],
+      ["生产变量", "运行配置"],
+      ["环境变量", "运行配置"],
+      ["AI_API_KEY", "事故特征开关"],
+      ["备份恢复", "恢复演练"],
+      ["备份", "恢复演练"],
+      ["冒烟测试", "止血后冒烟"],
+      ["监控信号", "日志与指标"],
+      ["监控", "日志与指标"],
+      ["回滚方案", "回滚决定"],
+      ["回滚", "回滚或降级"],
+      ["构建通过", "报警解除"],
+      ["部署", "止血"],
+      ["门禁", "事故复盘"],
+      ["可以上线", "可以恢复服务"],
+    ],
+  ),
 };
 
 labConfigs[FRONTEND_ACCESSIBILITY_SCENARIO_ID] = {
@@ -7614,7 +7628,8 @@ labConfigs[FRONTEND_ACCESSIBILITY_SCENARIO_ID] = {
     body: (hintLevel) =>
       `你把“页面好看”拆成了语义按钮、键盘路径、读屏提示、焦点顺序、对比度、390px 移动端和回归证据。本次独立程度：L${hintLevel >= 3 ? "1" : "2"}。`,
     proved: "关键交互能被键盘、读屏和 390px 手机用户完成",
-    recorded: "组件语义、键盘路径、aria-live、移动端复测、自动检查和 Agent 交付说明",
+    recorded:
+      "组件语义、键盘路径、aria-live、移动端复测、自动检查和 Agent 交付说明",
     pending: "换一个表单、弹窗或上传流程继续验证无障碍交付",
     nextTitle: "这关如何变成前端交付能力？",
     nextItems: [
@@ -7654,24 +7669,27 @@ labConfigs[FRONTEND_ACCESSIBILITY_SCENARIO_ID] = {
       ["生产", "交付"],
     ]),
   ),
-  artifactGuides: rewriteLabCopy(labConfigs[CASE14_SCENARIO_ID].artifactGuides, [
-    ["上线", "前端交付"],
-    ["生产配置", "语义与键盘"],
-    ["生产变量", "可访问状态"],
-    ["环境变量", "ARIA 状态"],
-    ["AI_API_KEY", "aria-live 错误反馈"],
-    ["密钥", "状态提示"],
-    ["备份恢复", "移动端复测"],
-    ["备份", "移动端复测"],
-    ["监控信号", "可访问性检查结果"],
-    ["监控", "自动检查"],
-    ["回滚", "回归"],
-    ["负责人", "键盘路径"],
-    ["值守人", "读屏提示"],
-    ["构建通过", "截图好看"],
-    ["部署", "交付"],
-    ["生产", "交付"],
-  ]),
+  artifactGuides: rewriteLabCopy(
+    labConfigs[CASE14_SCENARIO_ID].artifactGuides,
+    [
+      ["上线", "前端交付"],
+      ["生产配置", "语义与键盘"],
+      ["生产变量", "可访问状态"],
+      ["环境变量", "ARIA 状态"],
+      ["AI_API_KEY", "aria-live 错误反馈"],
+      ["密钥", "状态提示"],
+      ["备份恢复", "移动端复测"],
+      ["备份", "移动端复测"],
+      ["监控信号", "可访问性检查结果"],
+      ["监控", "自动检查"],
+      ["回滚", "回归"],
+      ["负责人", "键盘路径"],
+      ["值守人", "读屏提示"],
+      ["构建通过", "截图好看"],
+      ["部署", "交付"],
+      ["生产", "交付"],
+    ],
+  ),
 };
 
 labConfigs[FRONTEND_TESTING_SCENARIO_ID] = {
@@ -7735,8 +7753,7 @@ labConfigs[FRONTEND_TESTING_SCENARIO_ID] = {
       "前端验收证据覆盖失败复现、单元边界、集成路径、手动浏览器复测、当前源码指纹和回归风险",
     recorded:
       "failing-before、passing-after-stale、network-test-run、manual-report、backend.log、verificationReport.js 和 Agent 交付说明",
-    pending:
-      "换一个登录表单、上传组件或筛选列表继续训练前端回归验收",
+    pending: "换一个登录表单、上传组件或筛选列表继续训练前端回归验收",
     nextTitle: "这关如何变成前端交付审查能力？",
     nextItems: [
       "先看旧故障是否真的红过，再看修复后的单测、集成和手动路径是否覆盖同一个问题。",
@@ -7766,19 +7783,22 @@ labConfigs[FRONTEND_TESTING_SCENARIO_ID] = {
       ["保存", "交付"],
     ]),
   ),
-  artifactGuides: rewriteLabCopy(labConfigs[CASE11_SCENARIO_ID].artifactGuides, [
-    ["验收试炼场", "回归试炼场"],
-    ["可信验收", "前端回归验收"],
-    ["画布", "前端交付"],
-    ["canvas", "verification"],
-    ["Canvas", "Verification"],
-    ["/api/canvases", "前端用户路径"],
-    ["POST 后再 GET", "用户路径复测"],
-    ["保存逻辑会写入仓库", "报告校验器拒绝不可信证据"],
-    ["刷新后仍能看到刚保存的画布", "旧问题复现用例必须先亮红灯"],
-    ["保存并读回同一条记录", "用户路径和报告指纹能对上"],
-    ["保存", "交付"],
-  ]),
+  artifactGuides: rewriteLabCopy(
+    labConfigs[CASE11_SCENARIO_ID].artifactGuides,
+    [
+      ["验收试炼场", "回归试炼场"],
+      ["可信验收", "前端回归验收"],
+      ["画布", "前端交付"],
+      ["canvas", "verification"],
+      ["Canvas", "Verification"],
+      ["/api/canvases", "前端用户路径"],
+      ["POST 后再 GET", "用户路径复测"],
+      ["保存逻辑会写入仓库", "报告校验器拒绝不可信证据"],
+      ["刷新后仍能看到刚保存的画布", "旧问题复现用例必须先亮红灯"],
+      ["保存并读回同一条记录", "用户路径和报告指纹能对上"],
+      ["保存", "交付"],
+    ],
+  ),
 };
 
 // The route contract test reads the same registry used by Lab.
@@ -11271,21 +11291,31 @@ export function Lab({
                     : "最后生成成长档案，把本关产出整理成工作、Agent 和面试三种表达。",
             }}
           />
-          <LabSceneGuide
-            activeIndex={activeIndex}
-            activeStep={activeStep}
-            config={config}
-          />
-          <LabStepQuestBrief
-            activeIndex={activeIndex}
-            activeStep={activeStep}
-            config={config}
-          />
-          <LabFlowDialogue
-            activeIndex={activeIndex}
-            activeStep={activeStep}
-            config={config}
-          />
+          <section className="lab-director-stage" aria-label="任务导演台">
+            <header>
+              <span>任务导演台</span>
+              <strong>先看角色、目标和接力，再开始读代码</strong>
+            </header>
+            <div>
+              <LabSceneGuide
+                activeIndex={activeIndex}
+                activeStep={activeStep}
+                config={config}
+              />
+              <div className="lab-director-stack">
+                <LabStepQuestBrief
+                  activeIndex={activeIndex}
+                  activeStep={activeStep}
+                  config={config}
+                />
+                <LabFlowDialogue
+                  activeIndex={activeIndex}
+                  activeStep={activeStep}
+                  config={config}
+                />
+              </div>
+            </div>
+          </section>
           <LabAbilityMark activeStep={activeStep} config={config} />
           {lastSavedStep && lastSavedStep.id !== activeStep.id && (
             <LabStepReceipt
