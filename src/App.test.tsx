@@ -3309,12 +3309,12 @@ describe("AI 职业路线入口", () => {
     );
     await user.click(screen.getByRole("button", { name: /^继续下一地点$/ }));
     expect(
-      await screen.findByRole("heading", { name: /连上 AI，也不能泄露钥匙/ }),
+      await screen.findByRole("heading", { name: /把 AI 点子讲成产品链路/ }),
     ).toBeInTheDocument();
-    await user.click(screen.getByRole("button", { name: /检查 AI 灯塔/ }));
-    await user.click(screen.getByRole("button", { name: /AI 熄灯后怎么办/ }));
+    await user.click(screen.getByRole("button", { name: /串起产品链路/ }));
+    await user.click(screen.getByRole("button", { name: /把证据变成复盘/ }));
     await sealRecall(
-      "接上 AI 也要说明边界和失败处理，不能把不确定的结果当成完成。",
+      "这一章要把 Brief、方向、取舍和保存证据讲成产品链路，而不是只说 AI 生成了点子。",
     );
     await user.click(screen.getByRole("button", { name: /进入实战修复/ }));
 

@@ -7492,7 +7492,7 @@ function LabSceneGuide({
         </span>
         <strong>这一幕先看懂：{activeStep.label}</strong>
         <p>
-          “{scene.mood}” 你现在站在「{routePoint.label}」这一棒：
+          {scene.mood} 你现在站在「{routePoint.label}」这一棒：
           {routePoint.detail}。
         </p>
       </div>

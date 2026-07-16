@@ -130,6 +130,10 @@ describe("十五章镜头与地图契约", () => {
         image.includes("quest-archive"),
       ),
     ).toBe(true);
+    const case02Scenes = getTeachingStoryScenes("canvasstorm-product-brief");
+    expect(case02Scenes.map((scene) => scene.place)).toContain("产品复盘厅");
+    expect(case02Scenes.map((scene) => scene.place)).not.toContain("AI 状态台");
+    expect(JSON.stringify(case02Scenes)).not.toContain("API Key");
   });
 
   it("每个章节的每个地点都有角色、背景和可理解的证据任务", () => {

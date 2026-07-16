@@ -1554,3 +1554,17 @@ Goal 模式的完成口径必须比“能点进去”更严格：只接剧情教
 - [x] Node `v24.13.1` 下 `npm run verify:quick` 通过：10 个测试文件 / 170 个测试。
 
 验收目标：用户进入第 2 章实战时，不只是看到新背景和新角色，还能直接读懂“这一步为什么学、该看什么证据、要交给下一棒什么”，减少从剧情到产品逻辑之间的断层。
+
+## R288：第 2 章浏览器验收与串章修复
+
+- [x] 修复第 2 章教学完成页串章：不再用「AI 状态台 / 安全记录员 / API Key」作为会合前夜场景，改为「产品复盘厅 / 面试策士」收束产品链路表达。
+- [x] `canvasStormScenes` 保持 4 个本章相关地点：Project Brief 前台、方向选择大厅、会话档案库、产品复盘厅。
+- [x] `src/chapterCinematics.test.ts` 增加防回退断言：第 2 章教学场景包含产品复盘厅，不包含 AI 状态台，也不包含 API Key 文案。
+- [x] 浏览器桌面验收：隔离 API `4348`、临时 SQLite `/tmp/code-quest-r288.sqlite`、Vite `5198`；第 2 章会合页显示「产品复盘厅 / 面试策士」，无「AI 状态台」。
+- [x] 浏览器桌面实战：进入「读 Project Brief」首幕后可见「灵感萤火」「Brief 星图桌」「Project Brief 是 AI 功能的任务契约」「Brief 不是介绍文案」和关键行导读；`clientWidth = scrollWidth = 1200`，背景为暗色。
+- [x] 浏览器桌面保存流：填写 Brief 作答并保存后进入「产品链路带读官 · 方向筛选台」，显示「真实 AI 产品不是把所有点子都做进去」「候选池像装备栏」和「刚刚沉淀 / 读 Project Brief」回执；`clientWidth = scrollWidth = 1200`。
+- [x] 浏览器 390×844 抽检：第 2 章第二幕显示「产品链路带读官」「方向筛选台」「真实 AI 产品不是把所有点子都做进去」「候选池像装备栏」；`clientWidth = scrollWidth = 390`，背景为暗色，console error 为 0。截图：`.playwright-cli/page-2026-07-16T08-33-50-456Z.png`。
+- [x] Node `v24.13.1` 下 `npm run test -- src/chapterCinematics.test.ts src/App.test.tsx --run` 通过：2 个测试文件 / 53 个测试。
+- [x] Node `v24.13.1` 下 `npm run verify:quick` 通过：lint、typecheck、10 个测试文件 / 170 个测试。
+
+验收目标：第 2 章不再把 AI API 安全内容提前塞入产品链路章；真实浏览器证明第 2 章会合、实战首幕、保存后第二幕和 390px 布局不会断层。

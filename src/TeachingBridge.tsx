@@ -1152,7 +1152,6 @@ const scenePortraitOverrides: Record<string, string> = {
   "archive-vault": knowledgeKeeperPortrait,
   "repair-bench": briefForgemasterPortrait,
   "cs-direction": briefForgemasterPortrait,
-  "cs-ai-status": stormDispatcherPortrait,
   "cookie-portal": portalScribePortrait,
   "session-vault": archiveKeeperPortrait,
   "expiry-bench": echoForensicsPortrait,
@@ -1890,12 +1889,12 @@ const canvasStormJourney: QuestJourneyItem[] = [
     plain: "用户的思考过程要能保存，刷新后还在，产品才可信。",
   },
   {
-    sceneId: "cs-ai-status",
-    from: "后端环境变量",
-    to: "前端状态灯",
-    payload: "只告诉是否配置 AI，不暴露 API Key",
-    proof: "/api/storm/status 不返回密钥",
-    plain: "AI 能力可以展示给用户，密钥必须留在后端。",
+    sceneId: "cs-product-recap",
+    from: "会话档案",
+    to: "面试复盘",
+    payload: "Brief、方向、取舍和保存证据",
+    proof: "能把 AI 点子讲成输入、决策、输出和验证",
+    plain: "这一章最后要把产品链路讲清楚，而不是只说 AI 生成了几个点子。",
   },
 ];
 
@@ -2252,49 +2251,53 @@ const canvasStormScenes: QuestScene[] = [
     ],
   },
   {
-    id: "cs-ai-status",
-    image: questWorkbench,
-    portrait: portalScribePortrait,
-    place: "AI 状态台",
-    title: "连上 AI，也不能泄露钥匙",
-    speaker: "安全记录员",
+    id: "cs-product-recap",
+    image: interviewDefenseHallScene,
+    portrait: interviewCouncilorPortrait,
+    place: "产品复盘厅",
+    title: "把 AI 点子讲成产品链路",
+    speaker: "面试策士",
     dialogue:
-      "CanvasStorm 会调用 DeepSeek 生成候选，但前端不能看到 API Key。它只通过 /api/storm/status 显示“AI 已连接”或“本地示例”。",
-    goal: "理解 AI 功能里的安全边界和降级体验。",
+      "你已经看过 Brief、方向筛选和会话保存。现在要把它们讲成一条能被同事和面试官听懂的产品链路。",
+    goal: "把本章产出整理成工作复盘和面试表达。",
     mentor:
-      "用户只需要知道 AI 能不能用，不需要也不应该看到密钥。AI 不可用时，项目还要有本地模板兜底。",
+      "不要说“我做了一个 AI 生成工具”。要说清楚用户输入是什么、系统如何筛选、为什么取舍、最后用什么证据证明保存下来了。",
     terms: [
       {
-        term: "API Key",
-        meaning: "调用 AI 服务的密钥。它只能放后端环境变量，不能暴露给浏览器。",
+        term: "产品链路",
+        meaning:
+          "从用户目标到系统处理、候选取舍、保存记录和最终输出的一整条工作路线。",
       },
       {
-        term: "降级",
-        meaning: "外部 AI 不可用时，用本地模板继续演示核心流程。",
+        term: "面试复盘",
+        meaning:
+          "把问题背景、你的判断、采取的行动、验证结果和反思讲成一段可信经历。",
       },
     ],
     clues: [
       {
-        id: "status-api",
-        label: "检查 AI 灯塔",
-        action: "前端能看到什么，不能看到什么",
+        id: "product-chain-story",
+        label: "串起产品链路",
+        action: "把 Brief、方向、候选和会话保存连成一句话",
         result:
-          "状态接口只告诉前端 AI 是否可用、当前模型是什么，不把 API Key 交给浏览器。用户需要状态反馈，密钥必须留在后端。",
+          "CanvasStorm 的价值不是“AI 多生成几个点子”，而是先让用户写清背景，再按方向筛候选，最后把取舍和草案保存下来。",
         snippet:
-          'GET /api/storm/status\n返回：{ configured: true, model: "deepseek-chat" }\n不返回：API Key',
-        question: "AI 应用开发很重要的一条线：能力可以展示，密钥不能暴露。",
-        skill: "掌握 AI 应用开发的安全边界：密钥不上前端。",
+          "Brief -> direction=mvp -> candidates -> accepted/rejected -> session saved",
+        question:
+          "面试里要讲链路：输入是什么、怎么决策、输出是什么、证据在哪里。",
+        skill: "把 AI 功能从炫技描述转成产品链路表达。",
       },
       {
-        id: "fallback-template",
-        label: "AI 熄灯后怎么办",
-        action: "外部服务失败时，主流程如何继续",
+        id: "proof-to-interview",
+        label: "把证据变成复盘",
+        action: "把技术证据翻译成 STAR 里的行动和结果",
         result:
-          "AI 不可用时，CanvasStorm 用本地模板生成示例候选。这样用户仍然能体验“写 Brief、选方向、筛候选、出草案”的主流程。",
+          "Network、日志和会话记录不是孤立材料。它们共同证明你能定位“点子空泛”的原因，并用产品取舍和保存证据收束问题。",
         snippet:
-          "DeepSeek 可用 -> 调 AI 生成候选\nDeepSeek 不可用 -> 本地模板生成示例\n共同目标 -> 主流程不断掉",
-        question: "这叫降级体验：外部服务坏了，产品仍然能让用户走完核心路径。",
-        skill: "理解工程化体验：外部服务失败时，主流程不能直接崩。",
+          "现象：点子发散\n行动：补 Brief + 方向筛选 + 保存取舍\n结果：执行草案只保留本轮候选",
+        question:
+          "这章的面试素材不是背 MVP，而是证明你能把 AI 点子变成可执行方案。",
+        skill: "把工程证据组织成求职表达。",
       },
     ],
   },

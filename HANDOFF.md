@@ -1067,3 +1067,14 @@ TeachingBridge 继续保持 `React.lazy` 按需加载，并把懒加载期间的
 - 实现：`LabStep` 新增 `questBrief` 与 `flowDialogue`；第 2 章 7 个步骤已补齐产品链路专属解释。读 Brief 会说明 Project Brief 是 AI 功能的任务契约；筛候选会用“候选池像装备栏”解释 MVP 取舍。
 - 验证：`src/App.test.tsx` 已加入第 2 章首幕和保存后第二幕断言；Node `v24.13.1` 下 `npm run test -- src/App.test.tsx --run` 通过 46 个测试，`npm run verify:quick` 通过 10 个测试文件 / 170 个测试。
 - 当前状态：代码、测试断言、changelog 和任务文档已补；仍未声称浏览器抽检或真人学习效果完成。
+
+## R288：第 2 章浏览器验收与串章修复
+
+第 2 章教学完成页曾在真实浏览器里显示「AI 状态台 / 安全记录员」，这是第 7 章 AI API 安全内容，不应出现在产品链路章。本轮把第 2 章第四个教学地点改为「产品复盘厅 / 面试策士」，收束 Brief、方向取舍、会话保存和面试表达。
+
+- 实现：`canvasStormScenes` 和 `canvasStormJourney` 移除 `cs-ai-status`，新增 `cs-product-recap`；第 2 章仍保持 4 个教学地点，但不再提前讲 API Key。
+- 测试：`src/chapterCinematics.test.ts` 增加断言，确保第 2 章包含产品复盘厅、不包含 AI 状态台、不包含 API Key。
+- 浏览器验收：隔离 API `4348`、临时 SQLite `/tmp/code-quest-r288.sqlite`、Vite `5198`。桌面第 2 章会合页显示「产品复盘厅 / 面试策士」；实战首幕显示「灵感萤火」「Brief 星图桌」「Project Brief 是 AI 功能的任务契约」和关键行导读；保存 Brief 后进入「产品链路带读官 · 方向筛选台」，桌面 `clientWidth = scrollWidth = 1200`。
+- 移动抽检：390×844 下第二幕显示「产品链路带读官」「方向筛选台」「真实 AI 产品不是把所有点子都做进去」「候选池像装备栏」，`clientWidth = scrollWidth = 390`，背景为暗色，console error 为 0。截图：`.playwright-cli/page-2026-07-16T08-33-50-456Z.png`。
+- 自动化验证：Node `v24.13.1` 下 `npm run test -- src/chapterCinematics.test.ts src/App.test.tsx --run` 通过 2 个测试文件 / 53 个测试；`npm run verify:quick` 通过 lint、typecheck、10 个测试文件 / 170 个测试。
+- 当前状态：浏览器证据、代码修复、自动化验证和交接记录已补；等待本轮提交和推送。
