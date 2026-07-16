@@ -15,7 +15,7 @@
 - 已验证：独立 Playwright 390px 新用户移动会话从序章「走进档案馆」→「调取现场证据」→「领取委托」进入路线大厅；AI、Java 后端、前端工程路线均 `scrollWidth === 390`、暗色背景、无白色后台断层、Java/前端不串 AI 第 15 章；控制台 0 error。
 - 已验证：隔离 API/SQLite + 独立 Vite origin 下，AI 15 章教学入口桌面 `1200×760` 与移动 `390×844` 批量抽检通过；Java/前端第 1 章教学入口桌面与移动抽检通过。
 - 尚未声称完成：真人学习效果、Java/前端第 2-5 章教学入口逐章浏览器回归、真实沙盒修复与报告回读、分支合并审查。
-- 版本状态：当前分支已提交并推送到 `origin/cx/ai-career-rpg-home`，最新提交为 `09c3228 feat(rpg): expand guided career adventure`；尚未合并到 `main`。
+- 版本状态：当前分支阶段成果已提交并推送到 `origin/cx/ai-career-rpg-home`；R286「第 2 章产品链路实战场景导演层」已在本文记录，接手时用 `git status --short --branch` 与 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 核对是否已经推送。分支尚未合并到 `main`。
 
 ### 2026-07-15 R272：AI 15 章教学入口桌面/移动批量回归
 
@@ -1051,3 +1051,11 @@ TeachingBridge 继续保持 `React.lazy` 按需加载，并把懒加载期间的
 - 浏览器验收：隔离 API `4345`、临时 SQLite `/tmp/code-quest-r285.sqlite`、Vite `5195`；从第 1 章教学完成页进入实战，桌面确认第一步显示「传送门书记官」「前端讯号窗」，填写证据答案保存后自动进入「还原数据流」，显示「接口接待员」「请求中转门」和「刚刚收录的证据」。
 - 移动验收：390×844 下 `scrollWidth = clientWidth = 390`，向导与回执完整可读，控制台 error 为 0；截图在 `.playwright-cli/page-2026-07-15T18-51-10-368Z.png`。
 - 当前状态：代码、测试断言、changelog、任务文档、浏览器验收证据和完整门禁证据已补；分支仍未提交、未推送、未合并。
+
+## R286：第 2 章产品链路实战场景导演层
+
+第 2 章 CanvasStorm 实战页也补上逐步场景导演层：读 Brief、筛方向候选、会话保存、Agent 委托、交付审查和面试复盘都会切换不同地点、角色、背景、目标和通关收获。这样第 2 章不会在进入实战后掉回通用表单感，也不会复用第 1 章的前端/数据库剧情语义。
+
+- 实现：`canvasstorm-product-brief` 的 `LabStep.scene` 覆盖 7 个步骤；首个作答步骤为「灵感萤火 · Brief 星图桌」，保存后进入「产品链路带读官 · 方向筛选台」。
+- 验证：`src/App.test.tsx` 主流程覆盖第 2 章进入实战后的首幕场景和保存后的第二幕场景；Node `v24.13.1` 下 `npm run test -- src/App.test.tsx --run` 通过 46 个测试。
+- 当前状态：代码、测试断言、changelog 和任务文档已补；`npm run test -- src/App.test.tsx --run` 与 `npm run verify:quick` 已通过。仍需按时间决定是否补浏览器抽检；提交推送前不得写成已合并或学习效果已验证。

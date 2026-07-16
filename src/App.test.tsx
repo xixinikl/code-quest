@@ -2771,6 +2771,23 @@ describe("AI 职业路线入口", () => {
         ) {
           return response({ ok: true });
         }
+        if (
+          url === "/api/attempts/attempt-case-02/steps/product-brief" &&
+          init?.method === "PATCH"
+        ) {
+          const body = JSON.parse(String(init.body ?? "{}")) as {
+            response?: Record<string, unknown>;
+          };
+          return response({
+            ...case02Attempt,
+            steps: {
+              "product-brief": {
+                response: body.response,
+                savedAt: "2026-07-05T00:02:00.000Z",
+              },
+            },
+          });
+        }
         return response({ error: "NOT_FOUND", message: "unexpected" }, 404);
       }),
     );
@@ -2815,6 +2832,29 @@ describe("AI 职业路线入口", () => {
       0,
     );
     expect(screen.getAllByText(/读 Project Brief/).length).toBeGreaterThan(0);
+    expect(screen.getByLabelText("实战剧情向导")).toHaveTextContent("灵感萤火");
+    expect(screen.getByAltText("灵感萤火实战向导")).toBeInTheDocument();
+    expect(screen.getByLabelText("实战剧情向导")).toHaveTextContent(
+      "Brief 星图桌",
+    );
+    expect(screen.getByLabelText("实战剧情向导")).toHaveTextContent(
+      "点亮 Brief 星图",
+    );
+    await user.type(
+      screen.getByRole("textbox"),
+      "用户想要把 AI 点子变成可执行草案。输入是项目名、用户目标、阶段和约束，输出应该是符合 MVP 方向的候选和下一步。当前阶段不能把增长方案也塞进执行草案。",
+    );
+    await user.click(screen.getByRole("button", { name: /保存并继续/ }));
+    expect(await screen.findByLabelText("实战剧情向导")).toHaveTextContent(
+      "产品链路带读官",
+    );
+    expect(screen.getByAltText("产品链路带读官实战向导")).toBeInTheDocument();
+    expect(screen.getByLabelText("实战剧情向导")).toHaveTextContent(
+      "方向筛选台",
+    );
+    expect(screen.getByLabelText("刚刚收录的证据")).toHaveTextContent(
+      "读 Project Brief",
+    );
     expect(window.location.hash).toBe("");
   });
 
