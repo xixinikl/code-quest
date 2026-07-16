@@ -2670,6 +2670,15 @@ describe("AI 职业路线入口", () => {
     );
 
     expect(screen.getByLabelText("测试报告译文")).toBeInTheDocument();
+    expect(screen.getByLabelText("验收证据桥")).toHaveTextContent(
+      "把测试报告翻译成工作、Agent 和面试都能用的话",
+    );
+    expect(screen.getByLabelText("验收证据桥")).toHaveTextContent(
+      "失败报告已经指出下一处断点",
+    );
+    expect(screen.getByLabelText("验收证据桥")).toHaveTextContent(
+      "把红灯变成 Agent 任务",
+    );
     expect(screen.getByLabelText("本次验收目标")).toHaveTextContent(
       "修复不是“看起来对”，而是测试能复现、能通过",
     );
@@ -2727,6 +2736,11 @@ describe("AI 职业路线入口", () => {
               statusPassed: "产品链路测试已通过。",
               statusFailed: "还有失败证据。",
             },
+            result: {
+              proved: "产品取舍和会话保存有自动化证据",
+              recorded: "测试报告、取舍理由和会话保存边界",
+              pending: "仍要人工复测真实浏览器里的空目标提示",
+            },
           } as unknown as Parameters<typeof VerificationPanel>[0]["config"]
         }
         onVerify={vi.fn()}
@@ -2734,6 +2748,18 @@ describe("AI 职业路线入口", () => {
     );
 
     expect(screen.getByText("全部通过 · 2 项证据")).toBeInTheDocument();
+    expect(screen.getByLabelText("验收证据桥")).toHaveTextContent(
+      "测试已经接住这次修复",
+    );
+    expect(screen.getByLabelText("验收证据桥")).toHaveTextContent(
+      "绿色报告不等于所有风险消失",
+    );
+    expect(screen.getByLabelText("验收证据桥")).toHaveTextContent(
+      "写进 Agent 交付和面试复盘",
+    );
+    expect(screen.getByLabelText("验收证据桥")).toHaveTextContent(
+      "仍要人工复测真实浏览器里的空目标提示",
+    );
     expect(screen.getByText("只保留 MVP 候选")).toBeInTheDocument();
     expect(screen.getByText("保存取舍理由")).toBeInTheDocument();
     const passport = screen.getByLabelText("报告证据护照");

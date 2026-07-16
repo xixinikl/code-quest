@@ -656,6 +656,12 @@ type VerificationClue = {
   nextAction: string;
 };
 
+type VerificationEvidenceBridgeItem = {
+  label: string;
+  title: string;
+  body: string;
+};
+
 type LabConfig = {
   scenarioId: string;
   missionLabel: string;
@@ -1038,6 +1044,123 @@ function buildVerificationClue(
     material: guide ? `${guide.place}：${guide.focus}` : fallback.material,
     nextAction: matchedRule.nextAction,
   };
+}
+
+function buildVerificationEvidenceBridge(
+  status: Attempt["verificationStatus"],
+  config: LabConfig,
+  passedCount: number,
+  failedCount: number,
+): VerificationEvidenceBridgeItem[] {
+  const result = config.result;
+  const proved = result?.proved ?? "修复行为已经被测试报告重新复核";
+  const pending =
+    result?.pending ?? "仍要说明哪些风险、路径或人工复测还没有覆盖";
+  const recorded = result?.recorded ?? "测试报告、排查路径、风险边界和复盘表达";
+
+  if (status === "passed") {
+    return [
+      {
+        label: "证明了什么",
+        title: "测试已经接住这次修复",
+        body:
+          proved || `这份报告至少说明 ${passedCount} 个关键行为已经重新跑过。`,
+      },
+      {
+        label: "还没证明什么",
+        title: "绿色报告不等于所有风险消失",
+        body:
+          pending ||
+          "仍要说明哪些浏览器路径、异常分支、旧数据或移动端场景还需要人工复测。",
+      },
+      {
+        label: "怎么带走",
+        title: "写进 Agent 交付和面试复盘",
+        body: `把这份报告写成：我用 ${passedCount} 项测试复核了修复，同时记录边界：${recorded}。`,
+      },
+    ];
+  }
+
+  if (status === "failed") {
+    return [
+      {
+        label: "证明了什么",
+        title: "失败报告已经指出下一处断点",
+        body:
+          failedCount > 0
+            ? `现在不是“完全不会”，而是还有 ${failedCount} 个红灯在告诉你哪一棒没有交接成功。`
+            : "报告还没有形成可用通过证据，需要先确认测试结果是否完整。",
+      },
+      {
+        label: "还没证明什么",
+        title: "不能把局部修改当成修好",
+        body: "只要还有红灯，就不能写“已完成”。要先回到对应材料、代码和日志，把失败原因补成可复述证据。",
+      },
+      {
+        label: "下一步怎么做",
+        title: "把红灯变成 Agent 任务",
+        body: `任务里写清背景「${config.missionTitle}」、失败测试名、你怀疑的断点，以及希望 Agent 交回的修复和验收报告。`,
+      },
+    ];
+  }
+
+  return [
+    {
+      label: "下一步",
+      title: "先跑测试，再读报告",
+      body: "没有报告时不要猜结论。先在沙盒终端手动运行测试，再回来读取结果。",
+    },
+    {
+      label: "要看什么",
+      title: "测试名、失败信息、源码指纹",
+      body: "测试名告诉你验证哪个行为，失败信息告诉你断在哪里，源码指纹帮助避免旧报告冒充新修复。",
+    },
+    {
+      label: "最终产出",
+      title: "一段可信的工作证据",
+      body: `通过后把它写成：${proved}`,
+    },
+  ];
+}
+
+function VerificationEvidenceBridge({
+  status,
+  config,
+  passedCount,
+  failedCount,
+}: {
+  status: Attempt["verificationStatus"];
+  config: LabConfig;
+  passedCount: number;
+  failedCount: number;
+}) {
+  const items = buildVerificationEvidenceBridge(
+    status,
+    config,
+    passedCount,
+    failedCount,
+  );
+
+  return (
+    <section className="verification-evidence-bridge" aria-label="验收证据桥">
+      <header>
+        <span>验收证据桥</span>
+        <strong>把测试报告翻译成工作、Agent 和面试都能用的话</strong>
+        <p>
+          测试不是最后的绿色烟花，而是告诉你“哪条工程链路已经复核、哪条还要继续查”的证据。
+        </p>
+      </header>
+      <div>
+        {items.map((item) => (
+          <article key={item.label}>
+            <span>{item.label}</span>
+            <strong>{item.title}</strong>
+            <p>{item.body}</p>
+          </article>
+        ))}
+      </div>
+    </section>
+  );
 }
 
 const labConfigs: Record<string, LabConfig> = {
@@ -8088,6 +8211,12 @@ export function VerificationPanel({
             </strong>
           </header>
           {reportMessage && <p>{reportMessage}</p>}
+          <VerificationEvidenceBridge
+            config={config}
+            failedCount={failedCount}
+            passedCount={passedCount}
+            status={status}
+          />
           {status === "passed" && passedTests.length > 0 && (
             <div className="verification-passed-proof">
               <span>这份报告证明</span>
