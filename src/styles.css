@@ -17924,6 +17924,94 @@ textarea:focus {
   line-height: 1.58;
 }
 
+.failure-battle-plan {
+  display: grid;
+  gap: 12px;
+  grid-column: 1 / -1;
+  padding: 13px;
+  border: 1px solid rgba(255, 176, 189, 0.22);
+  border-radius: 6px;
+  background:
+    radial-gradient(
+      circle at 10% 10%,
+      rgba(255, 176, 189, 0.16),
+      transparent 34%
+    ),
+    linear-gradient(135deg, rgba(240, 217, 154, 0.1), transparent 58%),
+    rgba(12, 7, 14, 0.58);
+}
+
+.failure-battle-plan header {
+  display: grid;
+  gap: 5px;
+}
+
+.failure-battle-plan header span,
+.failure-battle-plan > div > span {
+  color: #ffb0bd;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.failure-battle-plan header strong {
+  color: #fff4ce;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.failure-battle-plan header p,
+.failure-battle-plan > div p {
+  margin: 0;
+  color: #e6d9e1;
+  font-size: 12px;
+  line-height: 1.65;
+}
+
+.failure-battle-plan ol {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.failure-battle-plan li {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+  padding: 10px;
+  border: 1px solid rgba(240, 217, 154, 0.16);
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.045);
+}
+
+.failure-battle-plan li b {
+  color: var(--lab-gold);
+  font-size: 10px;
+}
+
+.failure-battle-plan li strong {
+  color: #fff4ce;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.failure-battle-plan li span {
+  color: #dbeae5;
+  font-size: 11px;
+  line-height: 1.55;
+}
+
+.failure-battle-plan > div {
+  display: grid;
+  gap: 5px;
+  padding: 10px;
+  border: 1px solid rgba(157, 233, 218, 0.15);
+  border-radius: 5px;
+  background: rgba(157, 233, 218, 0.055);
+}
+
 .lab-rpg-shell .verification-passed-proof {
   margin-top: 12px;
   padding: 12px;
@@ -18395,6 +18483,14 @@ textarea:focus {
   }
 
   .verification-evidence-bridge > div {
+    grid-template-columns: 1fr;
+  }
+
+  .failure-battle-plan {
+    padding: 11px;
+  }
+
+  .failure-battle-plan ol {
     grid-template-columns: 1fr;
   }
 

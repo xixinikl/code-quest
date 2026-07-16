@@ -1117,7 +1117,7 @@ function buildVerificationEvidenceBridge(
       {
         label: "下一步怎么做",
         title: "把红灯变成 Agent 任务",
-        body: `任务里写清背景「${config.missionTitle}」、失败测试名、你怀疑的断点，以及希望 Agent 交回的修复和验收报告。`,
+        body: `任务里写清背景「${config.missionTitle ?? config.practical.title}」、失败测试名、你怀疑的断点，以及希望 Agent 交回的修复和验收报告。`,
       },
     ];
   }
@@ -1176,6 +1176,51 @@ function VerificationEvidenceBridge({
             <p>{item.body}</p>
           </article>
         ))}
+      </div>
+    </section>
+  );
+}
+
+function FailureBattlePlan({
+  failedTestClues,
+}: {
+  failedTestClues: Array<{
+    test: NonNullable<
+      NonNullable<Attempt["latestVerification"]>["report"]["tests"]
+    >[number];
+    clue: VerificationClue;
+  }>;
+}) {
+  if (failedTestClues.length === 0) return null;
+
+  const firstClues = failedTestClues.slice(0, 3);
+  const agentBrief = firstClues
+    .map(({ test, clue }, index) => {
+      return `${index + 1}. ${test.name}：${clue.breakPoint} 下一步：${clue.nextAction}`;
+    })
+    .join(" ");
+
+  return (
+    <section className="failure-battle-plan" aria-label="红灯作战顺序">
+      <header>
+        <span>红灯总指挥</span>
+        <strong>先按顺序查，不要三处一起改</strong>
+        <p>
+          每个红灯都是剧情里的一个断点。先找到最早断掉的交接棒，再把修复和测试证据交给下一棒。
+        </p>
+      </header>
+      <ol>
+        {firstClues.map(({ test, clue }, index) => (
+          <li key={test.name}>
+            <b>第 {index + 1} 棒</b>
+            <strong>{test.name}</strong>
+            <span>{clue.breakPoint}</span>
+          </li>
+        ))}
+      </ol>
+      <div>
+        <span>交给 Agent 的口令</span>
+        <p>{agentBrief}</p>
       </div>
     </section>
   );
@@ -8311,6 +8356,7 @@ export function VerificationPanel({
           )}
           {failedTests.length > 0 && (
             <div>
+              <FailureBattlePlan failedTestClues={failedTestClues} />
               {failedTestClues.slice(0, 3).map(({ test, clue }) => (
                 <article key={test.name}>
                   <span>红灯测试</span>

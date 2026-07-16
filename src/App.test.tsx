@@ -2691,6 +2691,18 @@ describe("AI 职业路线入口", () => {
     expect(screen.getByLabelText("验收证据桥")).toHaveTextContent(
       "把红灯变成 Agent 任务",
     );
+    expect(screen.getByLabelText("红灯作战顺序")).toHaveTextContent(
+      "先按顺序查，不要三处一起改",
+    );
+    expect(screen.getByLabelText("红灯作战顺序")).toHaveTextContent("第 1 棒");
+    expect(screen.getByLabelText("红灯作战顺序")).toHaveTextContent("第 2 棒");
+    expect(screen.getByLabelText("红灯作战顺序")).toHaveTextContent("第 3 棒");
+    expect(screen.getByLabelText("红灯作战顺序")).toHaveTextContent(
+      "交给 Agent 的口令",
+    );
+    expect(screen.getByLabelText("红灯作战顺序")).toHaveTextContent(
+      "会话保存这一棒缺证据",
+    );
     expect(screen.getByLabelText("本次验收目标")).toHaveTextContent(
       "修复不是“看起来对”，而是测试能复现、能通过",
     );
@@ -2699,8 +2711,8 @@ describe("AI 职业路线入口", () => {
     );
     expect(screen.getByText("还有 3 个红灯")).toBeInTheDocument();
     expect(
-      screen.getByText("只把所选方向的候选放进执行草案"),
-    ).toBeInTheDocument();
+      screen.getAllByText("只把所选方向的候选放进执行草案").length,
+    ).toBeGreaterThan(0);
     expect(
       screen.getByText("执行草案包含了非 MVP 方向候选"),
     ).toBeInTheDocument();
