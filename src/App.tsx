@@ -7333,6 +7333,39 @@ labConfigs[JAVA_RELEASE_SCENARIO_ID] = {
   flowAriaLabel: "Java 服务上线路线",
   flowEyebrow: "上线可控路线",
   flowTitle: "一个 Java 服务怎样做到可发现、可恢复、可回滚",
+  flowItems: [
+    {
+      label: "计划",
+      title: "确认窗口和负责人",
+      detail: "发布窗口、影响范围、发布人和值守人要先写清",
+    },
+    {
+      label: "配置",
+      title: "核生产变量",
+      detail: "DATABASE_URL、AI_API_KEY、APP_ORIGIN 和前端密钥泄露都要查",
+    },
+    {
+      label: "数据",
+      title: "备份必须可恢复",
+      detail: "有备份文件不够，还要证明恢复步骤真的跑过",
+    },
+    {
+      label: "冒烟",
+      title: "覆盖关键路径和 390px",
+      detail: "桌面通过不代表移动端和登录后保存路径稳定",
+    },
+    {
+      label: "退路",
+      title: "监控和回滚条件",
+      detail: "错误率、P95、成功率、AI 失败率和回滚后验证一起决定放行",
+    },
+  ],
+  baseline: {
+    label: "上线港委托已领取",
+    title: "先别把构建通过当成可以上线",
+    body: "这关训练 Java 服务上线门禁。你要核对上线计划、生产配置、密钥边界、备份恢复、390px 冒烟、监控信号和回滚条件，判断这次发布是可以放行，还是必须暂缓补证。",
+    action: "进入上线港",
+  },
   practical: {
     title: "在独立后端沙盒里补齐上线门禁",
     sandboxPath: "sandbox/java-release-harbor",
@@ -7343,7 +7376,68 @@ labConfigs[JAVA_RELEASE_SCENARIO_ID] = {
     ...labConfigs[CASE14_SCENARIO_ID].result,
     label: "上线港门禁通过 · 成长档案已更新",
     title: "你已经能把部署成功和可控上线区分开",
+    body: (hintLevel) =>
+      `你把“构建通过”拆成了发布窗口、影响范围、负责人、生产配置、备份恢复、390px 冒烟、监控信号、回滚条件和回滚后验证。本次独立程度：L${hintLevel >= 3 ? "1" : "2"}。`,
+    proved:
+      "上线门禁覆盖计划、配置、密钥边界、备份恢复、冒烟路径、监控信号和回滚方案",
+    recorded:
+      "release-plan、environment-check、backup-record、smoke-test、monitoring-snapshot、rollback-plan、ReleaseGate 和 Agent 交付说明",
+    pending:
+      "换一个配置缺失、数据迁移或灰度发布场景继续训练上线前门禁",
+    nextTitle: "这关如何变成上线能力？",
+    nextItems: [
+      "构建通过只证明代码能打包，不证明生产配置、数据恢复和监控退路已经准备好。",
+      "上线前要能说清谁负责、影响谁、怎么发现问题、怎么回滚、回滚后怎么证明恢复。",
+      "面试中把上线讲成风险门禁和退路设计，而不是只说我会部署。",
+    ],
   },
+  hints: [
+    "先看 release-plan：发布窗口有了，但 owner 和 observer 为空，出事时没人做回滚判断。",
+    "再看 environment-check、backup-record 和 smoke-test：AI_API_KEY 缺失，备份没有恢复验证，390px 冒烟缺失。",
+    "最后看 monitoring-snapshot、rollback-plan 和 backend.log：监控缺 AI 失败率，回滚条件和回滚后验证都没写清。",
+  ],
+  steps: labConfigs[CASE14_SCENARIO_ID].steps.map((step) =>
+    rewriteLabCopy(step, [
+      ["第 14 章上线前夜", "Java 服务上线港"],
+      ["AI 应用开发", "Java 后端"],
+      ["上线前夜", "上线港"],
+      ["构建通过", "构建通过但未必可上线"],
+      ["可以上线", "可以放行"],
+      ["生产变量", "生产配置"],
+      ["环境变量", "生产配置"],
+      ["AI_API_KEY", "AI_API_KEY / APP_ORIGIN"],
+      ["备份恢复", "备份恢复验证"],
+      ["备份", "备份恢复"],
+      ["冒烟测试", "桌面与 390px 冒烟"],
+      ["监控信号", "错误率、P95、保存成功率和 AI 失败率"],
+      ["监控", "上线监控"],
+      ["回滚方案", "回滚条件、步骤和回滚后验证"],
+      ["回滚", "回滚和恢复验证"],
+      ["负责人", "发布负责人"],
+      ["值守人", "上线观察人"],
+      ["部署", "上线放行"],
+    ]),
+  ),
+  artifactGuides: rewriteLabCopy(labConfigs[CASE14_SCENARIO_ID].artifactGuides, [
+    ["第 14 章上线前夜", "Java 服务上线港"],
+    ["AI 应用开发", "Java 后端"],
+    ["上线前夜", "上线港"],
+    ["构建通过", "构建通过但未必可上线"],
+    ["可以上线", "可以放行"],
+    ["生产变量", "生产配置"],
+    ["环境变量", "生产配置"],
+    ["AI_API_KEY", "AI_API_KEY / APP_ORIGIN"],
+    ["备份恢复", "备份恢复验证"],
+    ["备份", "备份恢复"],
+    ["冒烟测试", "桌面与 390px 冒烟"],
+    ["监控信号", "错误率、P95、保存成功率和 AI 失败率"],
+    ["监控", "上线监控"],
+    ["回滚方案", "回滚条件、步骤和回滚后验证"],
+    ["回滚", "回滚和恢复验证"],
+    ["负责人", "发布负责人"],
+    ["值守人", "上线观察人"],
+    ["部署", "上线放行"],
+  ]),
 };
 
 labConfigs[JAVA_INCIDENT_SCENARIO_ID] = {

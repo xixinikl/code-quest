@@ -329,6 +329,34 @@ describe("岗位路线实战场景契约", () => {
   });
 
   it("Java 事故 Lab 聚焦线上排障，剩余岗位 Lab 保持本职主题", () => {
+    const release = JSON.stringify({
+      label: getLabConfig("java-release-harbor").missionLabel,
+      baseline: getLabConfig("java-release-harbor").baseline,
+      practical: getLabConfig("java-release-harbor").practical,
+      flowTitle: getLabConfig("java-release-harbor").flowTitle,
+      flowItems: getLabConfig("java-release-harbor").flowItems,
+      steps: getLabConfig("java-release-harbor").steps,
+      guides: getLabConfig("java-release-harbor").artifactGuides,
+      result: {
+        label: getLabConfig("java-release-harbor").result.label,
+        title: getLabConfig("java-release-harbor").result.title,
+        body: getLabConfig("java-release-harbor").result.body(0),
+        proved: getLabConfig("java-release-harbor").result.proved,
+        recorded: getLabConfig("java-release-harbor").result.recorded,
+        pending: getLabConfig("java-release-harbor").result.pending,
+        nextItems: getLabConfig("java-release-harbor").result.nextItems,
+      },
+    });
+
+    expect(release).toContain("Java 后端 · 第 4 关");
+    expect(release).toContain("构建通过");
+    expect(release).toContain("生产配置");
+    expect(release).toContain("备份恢复");
+    expect(release).toContain("390px");
+    expect(release).toContain("回滚后验证");
+    expect(release).not.toContain("主线 1-14");
+    expect(release).not.toContain("AI 应用开发");
+
     const incident = JSON.stringify({
       label: getLabConfig("java-production-incident").missionLabel,
       baseline: getLabConfig("java-production-incident").baseline,
