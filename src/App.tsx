@@ -7766,8 +7766,19 @@ labConfigs[FRONTEND_TESTING_SCENARIO_ID] = {
     "再看 passing-after-stale 和 backend.log：全绿报告绑定旧 sourceHash，不能证明当前代码。",
     "最后看 manual-report、network-test-run 和 agent-delivery：浏览器路径是旁证，还要写清回归风险和接收决定。",
   ],
-  steps: labConfigs[CASE11_SCENARIO_ID].steps.map((step) =>
-    rewriteLabCopy(step, [
+  steps: labConfigs[CASE11_SCENARIO_ID].steps.map((step) => {
+    const flowItemIndexes: Partial<Record<string, number>> = {
+      "baseline-plan": 0,
+      "repro-case": 0,
+      "unit-boundary": 1,
+      "integration-flow": 2,
+      "manual-report": 3,
+      "regression-risk": 4,
+      "agent-brief": 4,
+      "delivery-review": 4,
+      "interview-dossier": 4,
+    };
+    const rewritten = rewriteLabCopy(step, [
       ["验收试炼场", "回归试炼场"],
       ["可信验收", "前端回归验收"],
       ["画布", "前端交付"],
@@ -7781,8 +7792,13 @@ labConfigs[FRONTEND_TESTING_SCENARIO_ID] = {
       ["验收试炼画布", "回归试炼交付"],
       ["保存并读回同一条记录", "用户路径和报告指纹能对上"],
       ["保存", "交付"],
-    ]),
-  ),
+    ]);
+
+    return {
+      ...rewritten,
+      flowItemIndex: flowItemIndexes[step.id] ?? rewritten.flowItemIndex,
+    };
+  }),
   artifactGuides: rewriteLabCopy(
     labConfigs[CASE11_SCENARIO_ID].artifactGuides,
     [

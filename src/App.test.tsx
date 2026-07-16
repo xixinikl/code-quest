@@ -459,6 +459,7 @@ describe("岗位路线实战场景契约", () => {
       },
       {
         scenarioId: "frontend-testing-proof",
+        expectedFirstFlowLabel: "旧故障",
         forbidden: [
           "主线 1-11",
           "AI 应用开发",
@@ -521,6 +522,14 @@ describe("岗位路线实战场景契约", () => {
       expect(screen.getByLabelText("当前这一棒")).toHaveTextContent(
         currentFlow.label,
       );
+      if (
+        "expectedFirstFlowLabel" in labCase &&
+        labCase.expectedFirstFlowLabel
+      ) {
+        expect(screen.getByLabelText("当前这一棒")).toHaveTextContent(
+          labCase.expectedFirstFlowLabel,
+        );
+      }
       expect(screen.getByLabelText("当前这一棒")).toHaveTextContent(
         currentFlow.title,
       );

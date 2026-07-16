@@ -156,6 +156,16 @@
 
 验收：`npx vitest run src/App.test.tsx --reporter dot` 通过 55 项测试；`npm run verify:quick` 通过 lint、typecheck、10 个测试文件 / 181 个测试。
 
+### R317：前端测试 Lab 当前流程棒错位修复
+
+- [x] 浏览器验收使用隔离 API `4390`、临时 SQLite `/tmp/code-quest-r317.sqlite`、Vite `5240`，从 `#chapter-frontend-5` 进入前端第 5 关，逐幕收集 8/8 线索并进入伙伴会合与实战 Lab。
+- [x] 确认教学剧情页持续显示岗位路线身份，四个地点和角色按前端测试路线切换：测试仲裁官、交互取证师、路径审查官、交付守门人；Playwright 控制台 error 为 0。
+- [x] 发现并修复实战 Lab 流程错位：第一题 `复现旧故障` 不应显示当前棒为 `单测`，否则新手会误以为刚开始就跳到报告校验器。
+- [x] 给 `frontend-testing-proof` 的复用步骤补专属 `flowItemIndex`：复现旧故障 → 旧故障；守单元边界 → 单测；串集成流程 → 集成；沙盒手动报告 → 浏览器；过期报告、Agent、审查和面试 → 接收。
+- [x] 扩展岗位 Lab 渲染测试，锁定前端测试 Lab 第一题默认 `当前这一棒` 必须是 `旧故障`。
+
+验收：`npx vitest run src/App.test.tsx -t "岗位 Lab 默认收束辅助资料"` 通过；完整 `npm run verify` 通过格式、lint、typecheck、10 个测试文件 / 181 个测试、生产构建和 TeachingBridge 懒加载检查。Vite 主包体积 warning 仍是已知债务，不是失败。
+
 ### R300：第 3 章登录态实战剧情导演层
 
 - [x] 第 3 章实战步骤补齐场景、角色、任务卷轴和流程接力：身份路线、凭证存储、401 反证、刷新复查、Agent 委托、交付审查和面试复盘都明确“谁把凭证交给谁，刷新后谁来认人”。
