@@ -54,12 +54,12 @@
 
 ### R299：跨电脑交接与合并边界复核
 
-- [x] 核对本地分支 `cx/ai-career-rpg-home` 与远端 `origin/cx/ai-career-rpg-home` 对齐；最新已推送提交为 `3fe3db159283b2dfadd8a9cf8fa8fa67f6470afb feat(rpg): guide case two output contracts`。
+- [x] 核对本地分支 `cx/ai-career-rpg-home` 与远端 `origin/cx/ai-career-rpg-home` 对齐；最新已推送提交为 `2dd44d3927a9d2de4b5e96f3737553e35d1a3f68 feat(rpg): guide case four lab scenes`。
 - [x] 明确远端默认 HEAD 仍指向旧 `feat/guided-learning-bridge`，另一台电脑必须显式切换到 `cx/ai-career-rpg-home`，否则会拉到旧工作线。
 - [x] 刷新 `HANDOFF.md` 与 `docs/cx-ai-career-rpg-home-merge-notes.md`：补充拉取命令、当前完成度、不能直接合并的原因、下一步开发顺序和验收边界。
 - [x] 当前可以跨电脑继续开发；不建议直接合并到 `main`。合并前仍需 PR 审查、完整 `npm run verify`、桌面与 390px 浏览器抽检。
 
-验收：新电脑按文档命令能拉到 `cx/ai-career-rpg-home`，看到 `3fe3db1` 或更新提交；接手者能先读交接再继续第 3 章实战体验细修，而不是误从旧默认分支开发。
+验收：新电脑按文档命令能拉到 `cx/ai-career-rpg-home`，看到 `2dd44d3` 或更新提交；接手者能先读交接再继续第 5 章实战体验细修或第 1 章后半段打磨，而不是误从旧默认分支开发。
 
 ### R300：第 3 章登录态实战剧情导演层
 
@@ -75,7 +75,7 @@
 - [x] 接口错误学习继续使用真实沙盒证据：无效请求体、500 反证、期望 400 结构、后端日志、Agent 交付说明和错误路径测试报告。
 - [x] 新增回归测试，确保第 4 章实战随步骤切换接口接待员、状态码审判官、日志档案官、任务锻造师、交付审判官和面试策士，不再退回普通表单体验。
 
-验收：`npm run test -- src/App.test.tsx --run` 通过 49 个测试；浏览器验收需继续确认桌面与 390px 手机无横向溢出、控制台无错误。
+验收：`npm run test -- src/App.test.tsx --run` 通过 49 个测试；`npm run verify:quick` 通过 lint、typecheck、10 个测试文件 / 174 个测试；浏览器隔离 API `4367`、临时 SQLite `/tmp/code-quest-r301.sqlite`、Vite `5217` 下确认桌面与 390px 手机无横向溢出、控制台 error 为 0。
 
 ### R174：第五章 RAG 索引并发延迟迁移复测
 

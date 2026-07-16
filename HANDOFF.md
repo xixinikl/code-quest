@@ -8,9 +8,9 @@
 
 - 当前远端：`https://github.com/xixinikl/code-quest.git`
 - 当前工作分支：`cx/ai-career-rpg-home`
-- 当前已推送功能基线：以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 和 `git log --oneline -1` 为准；本轮 R300 会追加第 3 章登录态实战导演层提交。
+- 当前已推送功能基线：`2dd44d3927a9d2de4b5e96f3737553e35d1a3f68 feat(rpg): guide case four lab scenes`；后续仍以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 和 `git log --oneline -1` 双重核对为准。
 - 本地核对结果：`git status --short --branch` 显示 `cx/ai-career-rpg-home...origin/cx/ai-career-rpg-home` 且没有未提交文件，说明本地已上传内容与远端分支一致。
-- 当前远端核对：另一台电脑拉取后应看到 `ca2c7aa docs(rpg): refresh cross computer merge handoff` 或更新提交；如果仍停在 `3fe3db1`，说明还没拉到最新交接/体验细修。
+- 当前远端核对：另一台电脑拉取后应看到 `2dd44d3 feat(rpg): guide case four lab scenes` 或更新提交；如果仍停在 `ca2c7aa`、`3fe3db1` 或默认分支提交，说明还没拉到最新交接/体验细修。
 - 远端默认 HEAD：`git ls-remote --symref origin HEAD` 指向 `feat/guided-learning-bridge`，不是本分支；另一台电脑必须显式切到 `cx/ai-career-rpg-home`，不要只用 clone 后默认分支继续。
 - 另一台电脑拉取命令：
   ```bash
@@ -40,6 +40,14 @@
 - 最新浏览器验收：隔离 API `4367`、临时 SQLite `/tmp/code-quest-r301.sqlite`、Vite `5217`；第 4 章从教学完成页 → 伙伴会合 → 实战 Lab 通过。桌面 1280 和 390px 手机均无横向溢出，控制台 error 为 0；Agent 步骤高亮「后端日志」，面试步骤显示面试策士、STAR 口令和“不是背状态码表”边界。
 - 尚未声称完成：真人学习效果、所有章节达到第一章同等细致程度、真实沙盒修复与报告回读、全站最终视觉终审、分支合并审查，以及第 1 章实战后半段“沙盒验收 → Agent 委托 → 交付审查 → 因果解释 → 面试迁移”的对白进一步打磨。
 - 版本状态：当前分支可以被另一台电脑完整拉取继续开发，但尚未合并到 `main`。不建议现在直接合并；合并前必须开 PR 审查，重新跑完整 `npm run verify`，并做桌面与 390px 浏览器抽检。
+
+### 2026-07-16 跨电脑/合并决策补充
+
+- 本地分支 `cx/ai-career-rpg-home` 已与 `origin/cx/ai-career-rpg-home` 对齐，`git status --short --branch` 没有未提交文件。
+- 远端核对命令：`git ls-remote origin refs/heads/cx/ai-career-rpg-home` 返回 `2dd44d3927a9d2de4b5e96f3737553e35d1a3f68`。
+- 另一台电脑可以完整拉取当前阶段成果继续开发；不要只 clone 后使用默认分支，因为远端默认 HEAD 仍不是本工作分支。
+- 当前不建议合并：第 5 章实战导演层、第 1 章后半段细修、全站最终视觉抽检和完整 `npm run verify` 合并前复核还没做完。
+- 如果时间紧，可以先以当前分支继续开发或开 Draft PR 备份审查；不要把它当最终可发布主线直接 merge。
 
 ### 继续开发优先级
 

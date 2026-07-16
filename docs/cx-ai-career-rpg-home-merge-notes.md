@@ -8,7 +8,7 @@
 
 ### 当前事实快照（2026-07-16）
 
-AI 路线已扩展为 15 章，Java 后端和前端工程路线各 5 章，均有独立章节契约、剧情场景、教学桥、沙盒和成长结算入口。当前分支已推送到 `origin/cx/ai-career-rpg-home`；远端最新 hash 以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 为准。分支尚未合并到 `main`。当前远端默认 HEAD 指向旧 `feat/guided-learning-bridge`，接手和合并前必须显式选择本分支。
+AI 路线已扩展为 15 章，Java 后端和前端工程路线各 5 章，均有独立章节契约、剧情场景、教学桥、沙盒和成长结算入口。当前分支已推送到 `origin/cx/ai-career-rpg-home`；本轮核对的远端最新提交是 `2dd44d3927a9d2de4b5e96f3737553e35d1a3f68 feat(rpg): guide case four lab scenes`，后续仍以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 为准。分支尚未合并到 `main`。当前远端默认 HEAD 指向旧 `feat/guided-learning-bridge`，接手和合并前必须显式选择本分支。
 
 最新一轮收口集中在用户反馈最强的“看不懂代码为什么要这么读、谁把东西交给谁、下一步去哪找证据”：第 2 章产品链路不再串到 AI API 安全章；教学桥关键控件已补暗色 RPG 覆盖；第 1 章代码导读新增“当前行证据锚点”，读到 `response.ok` 时明确说明它只能解释前端绿色提示，不能证明数据库已经写入；第 1 章失败测试报告会优先指向数据层写库断点；第 2 章失败测试报告能把方向筛选、会话保存、空目标输入分成三类红灯，并先给出「红灯总指挥」排查顺序；第 3 章登录态实战已补齐身份路线、凭证存储、401 反证、刷新复查、Agent 委托、交付审查和面试复盘的剧情向导、任务卷轴、流程接力和交付口令；第 4 章接口审判庭实战已补齐请求体证词、状态码判词、错误体修复、日志串证、Agent 委托、交付审查和面试复盘导演层。
 
@@ -40,7 +40,7 @@ npm install
 npm run verify:quick
 ```
 
-`git log --oneline -1` 应显示 `ca2c7aa docs(rpg): refresh cross computer merge handoff` 或更新提交；如果显示默认分支 `feat/guided-learning-bridge` 的提交，说明拉错分支。
+`git log --oneline -1` 应显示 `2dd44d3 feat(rpg): guide case four lab scenes` 或更新提交；如果显示 `ca2c7aa`、`3fe3db1` 或默认分支 `feat/guided-learning-bridge` 的提交，说明拉错分支或没有拉到最新远端。
 
 ## 当前主要改动
 
@@ -91,6 +91,12 @@ npm run verify
 - 最新快速门禁：`npm run verify:quick` 通过，包含 lint、typecheck、10 个测试文件 / 174 个测试。
 - 最新浏览器验收：隔离 API `4367`、临时 SQLite `/tmp/code-quest-r301.sqlite`、Vite `5217`；第 4 章实战后半段 Agent、审查、面试三步桌面与 390px 移动端无横向溢出，控制台 error 为 0，三步均显示角色、流程接力和对应「本步交付口令」。
 - 合并前仍需重跑完整 `npm run verify`，确认 Prettier、ESLint、TypeScript、Vitest、生产构建和 `TeachingBridge` 懒加载检查全部通过。
+
+## 当前拉取/合并判断
+
+- 可以拉取：是。`cx/ai-career-rpg-home` 当前本地和远端一致，另一台电脑按上面的命令能完整拿到当前阶段成果。
+- 不建议直接合并：当前还是阶段性 RPG 化分支，不是最终完成版。第 5 章实战导演层、第 1 章后半段细修、全站视觉节奏抽检和合并前完整 `npm run verify` 仍要做。
+- 时间紧的处理：可以先继续在本分支开发，或开 Draft PR 让 GitHub 保留审查入口；等上述收尾完成后再转 ready PR。
 
 ## 合并前建议
 
