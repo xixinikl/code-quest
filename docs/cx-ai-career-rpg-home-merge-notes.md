@@ -40,7 +40,7 @@ npm install
 npm run verify:quick
 ```
 
-`git log --oneline -1` 应显示 `4370ddf feat(rpg): fold lab support dossier` 或更新提交。再运行 `git rev-parse HEAD`、`git rev-parse origin/cx/ai-career-rpg-home` 和 `git ls-remote origin refs/heads/cx/ai-career-rpg-home`，三处 hash 应一致；当前已核对的远端 hash 是 `4370ddfc02a17cf1a756b398053f50a9525defc2`。如果显示 `1b3cf5d`、`9171ac8`、`1a40fe4`、`e10069f`、`fa12dbc`、`2dd44d3`、`ca2c7aa`、`3fe3db1` 或默认分支 `feat/guided-learning-bridge` 的提交，说明拉错分支或没有拉到最新远端。
+`git log --oneline -1` 应显示本次交接文档提交、`4370ddf feat(rpg): fold lab support dossier` 或更新提交。再运行 `git rev-parse HEAD`、`git rev-parse origin/cx/ai-career-rpg-home` 和 `git ls-remote origin refs/heads/cx/ai-career-rpg-home`，三处 hash 应一致；业务功能基线核对到 `4370ddfc02a17cf1a756b398053f50a9525defc2`，最新远端 HEAD 以命令输出为准。如果显示 `1b3cf5d`、`9171ac8`、`1a40fe4`、`e10069f`、`fa12dbc`、`2dd44d3`、`ca2c7aa`、`3fe3db1` 或默认分支 `feat/guided-learning-bridge` 的提交，说明拉错分支或没有拉到最新远端。
 
 ## 当前主要改动
 

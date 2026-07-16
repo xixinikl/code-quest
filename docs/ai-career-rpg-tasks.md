@@ -140,11 +140,11 @@
 
 ### R315：跨电脑拉取口径校准
 
-- [x] 核对本机 `HEAD`、`origin/cx/ai-career-rpg-home` 和 GitHub 远端分支一致，当前 hash 为 `4370ddfc02a17cf1a756b398053f50a9525defc2`。
+- [x] 核对本机 `HEAD`、`origin/cx/ai-career-rpg-home` 和 GitHub 远端分支一致；业务功能基线为 `4370ddfc02a17cf1a756b398053f50a9525defc2`，交接文档提交后的最新远端 HEAD 以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 为准。
 - [x] 刷新 `HANDOFF.md`、`docs/cx-ai-career-rpg-home-merge-notes.md` 和 `docs/cross-computer-handoff.md`，把旧的 `1b3cf5d`、`1a40fe4`、`9171ac8` 核对口径升级为当前真实 HEAD。
 - [x] 明确另一台电脑必须显式拉取并切换 `cx/ai-career-rpg-home`，不要依赖远端默认 HEAD；拉完后用 `git rev-parse HEAD`、`git rev-parse origin/cx/ai-career-rpg-home` 和 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 三方比对。
 
-验收：另一台电脑按交接命令拉取后，`git log --oneline -1` 应为 `4370ddf feat(rpg): fold lab support dossier` 或更新提交，且本地 HEAD 与远端分支 hash 一致。当前分支可以完整拉取继续开发，但仍不建议直接合并到 `main`；合并前还要做 PR 审查、完整 `npm run verify` 和桌面/390px 视觉终审。
+验收：另一台电脑按交接命令拉取后，`git log --oneline -1` 应为本次交接文档提交、`4370ddf feat(rpg): fold lab support dossier` 或更新提交，且本地 HEAD 与远端分支 hash 一致。当前分支可以完整拉取继续开发，但仍不建议直接合并到 `main`；合并前还要做 PR 审查、完整 `npm run verify` 和桌面/390px 视觉终审。
 
 ### R300：第 3 章登录态实战剧情导演层
 

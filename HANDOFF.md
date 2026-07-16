@@ -56,7 +56,7 @@
 
 ### 2026-07-16 最新跨电脑核对
 
-- 本机 `HEAD`、`origin/cx/ai-career-rpg-home` 和 GitHub 远端 `refs/heads/cx/ai-career-rpg-home` 已核对一致：`4370ddfc02a17cf1a756b398053f50a9525defc2`。
+- 业务功能基线核对到 `4370ddfc02a17cf1a756b398053f50a9525defc2`；交接文档提交后远端 HEAD 会更新，当前最新值请以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 为准。
 - `git status --short --branch` 显示 `cx/ai-career-rpg-home...origin/cx/ai-career-rpg-home`，核对时没有未提交业务代码。
 - 另一台电脑拉下来后，用 `git rev-parse HEAD`、`git rev-parse origin/cx/ai-career-rpg-home`、`git ls-remote origin refs/heads/cx/ai-career-rpg-home` 三个值互相对照；三者应一致或本地 HEAD 是刚拉下来的同一提交。
 - 当前仍是“可继续开发的阶段分支”，不是 ready 合并态。合并前要再跑完整 `npm run verify`，并做桌面与 390px 关键路径视觉终审。
