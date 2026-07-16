@@ -2,20 +2,22 @@
 
 ## 当前状态
 
-`cx/ai-career-rpg-home` 分支，基于冻结 `main` (`d21721e`) 开发。
+`cx/ai-career-rpg-home` 分支，基于冻结 `main` 开发；当前阶段成果已经推送到 GitHub。
 
-### 当前事实快照（2026-07-15）
+### 当前事实快照（2026-07-16）
 
+- 当前远端：`https://github.com/xixinikl/code-quest.git`
+- 当前分支：`cx/ai-career-rpg-home`
+- 当前已推送提交：`d77761a feat(rpg): anchor code tour lines to evidence`
+- 当前远端 hash：`d77761a8110789af61d72883cbd2191948b32fb9`
+- 本地核对结果：`git status --short --branch` 显示 `cx/ai-career-rpg-home...origin/cx/ai-career-rpg-home`，没有未提交文件时说明本地和远端一致。
 - AI 应用开发路线：15 章；Java 后端路线：5 章；前端工程路线：5 章。三条路线均已进入岗位档案，Java/前端不再是空白占位。
 - 已实现：暗色神秘 RPG 舞台、章节专属背景、剧情角色立绘、可爱宠物/伙伴、地点航线、流程交接、名词解释、关键代码逐行导读、证据任务、Agent 委托、验收和面试复盘。
-- 已验收：新用户隔离空间从序章进入第 1 章；正式浏览器可打开职业档案并进入 Java 第 1 章；后续章节可看卷宗，只有当前章节进入实战。
-- 已验证：Node `v24.13.1` 下 `npm run verify`，9 个测试文件 / 167 个测试、构建和 TeachingBridge 懒加载检查通过。
-- 已验证：隔离空白空间从序章走到路线大厅；AI、Java 后端、前端工程三条路线均实际切换到各自章节名称、目标和章节数量。复杂入口测试预算已调整为 60 秒，避免把真实剧情流程误判为超时。
-- 已验证：正式 `http://127.0.0.1:5173/` 复访入口为暗色终章归城；职业档案切换 Java 后端和前端工程时均显示 5 章、第 2 至 5 章后续地图，且没有串回 AI 第 15 章或面试议会；浏览器控制台 0 error。
-- 已验证：独立 Playwright 390px 新用户移动会话从序章「走进档案馆」→「调取现场证据」→「领取委托」进入路线大厅；AI、Java 后端、前端工程路线均 `scrollWidth === 390`、暗色背景、无白色后台断层、Java/前端不串 AI 第 15 章；控制台 0 error。
-- 已验证：隔离 API/SQLite + 独立 Vite origin 下，AI 15 章教学入口桌面 `1200×760` 与移动 `390×844` 批量抽检通过；Java/前端第 1 章教学入口桌面与移动抽检通过。
-- 尚未声称完成：真人学习效果、Java/前端第 2-5 章教学入口逐章浏览器回归、真实沙盒修复与报告回读、分支合并审查。
-- 版本状态：当前分支阶段成果已提交并推送到 `origin/cx/ai-career-rpg-home`；R286「第 2 章产品链路实战场景导演层」已在本文记录，接手时用 `git status --short --branch` 与 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 核对是否已经推送。分支尚未合并到 `main`。
+- 最新体验收口：第 2 章产品链路不再串到 AI API 章；教学桥关键控件已暗色 RPG 化；代码导读新增“为什么看这一行 / 检查点 / 下一份证据”，第 1 章 `response.ok` 明确提示不能证明数据库写入。
+- 最新自动化验证：Node `v24.13.1` 下 `npm run test -- src/App.test.tsx --run` 通过 46 个测试；`npm run verify:quick` 通过 lint、typecheck、10 个测试文件 / 171 个测试。
+- 最新浏览器验收：隔离 API `4352`、临时 SQLite `/tmp/code-quest-r290.sqlite`、Vite `5202`；第 1 章代码导读页桌面与 390px 移动端无横向溢出，控制台 error 为 0。
+- 尚未声称完成：真人学习效果、所有章节达到第一章同等细致程度、真实沙盒修复与报告回读、全站最终视觉终审、分支合并审查。
+- 版本状态：当前分支可以被另一台电脑拉取继续开发，但尚未合并到 `main`；合并前必须开 PR 审查，并重新跑完整 `npm run verify`。
 
 ### 2026-07-15 R272：AI 15 章教学入口桌面/移动批量回归
 
