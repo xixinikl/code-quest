@@ -61,14 +61,14 @@
 
 验收：新电脑按文档命令能拉到 `cx/ai-career-rpg-home`，看到 `2dd44d3` 或更新提交；接手者能先读交接再继续第 5 章实战体验细修或第 1 章后半段打磨，而不是误从旧默认分支开发。
 
-### R306：跨电脑拉取完整性与交接二次校准
+### R306：跨电脑拉取完整性与交接二次校准（历史记录，最新以 R315 为准）
 
-- [x] 核对本地 `cx/ai-career-rpg-home` 与 `origin/cx/ai-career-rpg-home` 对齐，当前远端 hash 为 `1b3cf5dd30bbed6aa2e79d2356c869d6feae6e12`。
+- [x] 当时核对本地 `cx/ai-career-rpg-home` 与 `origin/cx/ai-career-rpg-home` 对齐，远端 hash 为 `1b3cf5dd30bbed6aa2e79d2356c869d6feae6e12`；该记录已被 R315 的 `4370ddf` 核对替代。
 - [x] 确认远端默认 HEAD 仍指向 `feat/guided-learning-bridge`，另一台电脑不能只依赖 clone 默认分支，必须显式切到 `cx/ai-career-rpg-home`。
 - [x] 刷新 `HANDOFF.md` 和 `docs/cx-ai-career-rpg-home-merge-notes.md`，把旧的 `9171ac8` / `1a40fe4` 核对口径改成当前真实 HEAD，并补充 `git rev-parse HEAD` 与 `git rev-parse origin/cx/ai-career-rpg-home` 一致性检查。
 - [x] 明确当前可以跨电脑完整拉取继续开发，但仍不建议直接合并到 `main`；合并前还需要实战 Lab 深链抽检、全站视觉终审、PR 审查和真人试玩。
 
-验收：另一台电脑按交接命令拉取后，`git log --oneline -1` 应为 `1b3cf5d feat(rpg): keep job route identity visible` 或更新提交，且 `git rev-parse HEAD` 等于 `git rev-parse origin/cx/ai-career-rpg-home`。如果不是，先不要继续开发，先修正分支。
+验收：这是历史口径。当前另一台电脑按交接命令拉取后，`git log --oneline -1` 应为 R315 记录的 `4370ddf feat(rpg): fold lab support dossier` 或更新提交，且本地 HEAD 与远端分支 hash 一致。若看到 `1b3cf5d`，说明还停在旧阶段，需要继续 `git fetch` / `git pull --ff-only`。
 
 ### R307：Java 第 2 关实战会合与 Lab 语境修复
 
@@ -137,6 +137,14 @@
 - [x] 验证：完整 `npm run verify` 通过，10 个测试文件 / 180 个测试、生产构建和 TeachingBridge 懒加载检查均通过。浏览器隔离 API `4381`、临时 SQLite `/tmp/code-quest-r314.sqlite`、Vite `5231` 下，第一章剧情页点击开始闯关后 390×844 无横向溢出，暗色背景 `rgb(7, 12, 20)`，地点航线、名词小抄和完整流程卷轴仍可见，控制台 0 error。
 
 验收边界：本轮优化实战页信息层级和移动端负担；完整实战 Lab 桌面/手机逐步截图验收仍需继续补。
+
+### R315：跨电脑拉取口径校准
+
+- [x] 核对本机 `HEAD`、`origin/cx/ai-career-rpg-home` 和 GitHub 远端分支一致，当前 hash 为 `4370ddfc02a17cf1a756b398053f50a9525defc2`。
+- [x] 刷新 `HANDOFF.md`、`docs/cx-ai-career-rpg-home-merge-notes.md` 和 `docs/cross-computer-handoff.md`，把旧的 `1b3cf5d`、`1a40fe4`、`9171ac8` 核对口径升级为当前真实 HEAD。
+- [x] 明确另一台电脑必须显式拉取并切换 `cx/ai-career-rpg-home`，不要依赖远端默认 HEAD；拉完后用 `git rev-parse HEAD`、`git rev-parse origin/cx/ai-career-rpg-home` 和 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 三方比对。
+
+验收：另一台电脑按交接命令拉取后，`git log --oneline -1` 应为 `4370ddf feat(rpg): fold lab support dossier` 或更新提交，且本地 HEAD 与远端分支 hash 一致。当前分支可以完整拉取继续开发，但仍不建议直接合并到 `main`；合并前还要做 PR 审查、完整 `npm run verify` 和桌面/390px 视觉终审。
 
 ### R300：第 3 章登录态实战剧情导演层
 
@@ -1813,10 +1821,10 @@ Goal 模式的完成口径必须比“能点进去”更严格：只接剧情教
 
 验收目标：第 2 章后半段不再只是普通文本框；用户进入 Agent、审查和面试步骤时，能先看到对应的工作产出结构，再开始写答案。
 
-## R304：合并前跨电脑完整性复核
+## R304：合并前跨电脑完整性复核（历史记录，最新以 R315 为准）
 
 - [x] 重新运行 `xixi-dev-system profile sync`、`doctor --project .` 和 `updates --project .`；doctor 通过。
-- [x] 核对本地与远端：功能代码核对到 `1a40fe453b5170042410ac3b0aa7455b36005fd0`；交接文档至少包含 `9171ac8 docs(rpg): refresh merge readiness handoff`，最终远端 hash 用 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 与 `git rev-parse origin/cx/ai-career-rpg-home` 比对，不再硬编码到任务文档里。
+- [x] 当时核对本地与远端：功能代码核对到 `1a40fe453b5170042410ac3b0aa7455b36005fd0`；交接文档至少包含 `9171ac8 docs(rpg): refresh merge readiness handoff`。该记录已被 R315 的 `4370ddf` 核对替代，当前远端 hash 以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 与 `git rev-parse origin/cx/ai-career-rpg-home` 比对结果为准。
 - [x] Node `v24.13.1` 下完整 `npm run verify` 通过：格式、Lint、TypeScript、10 个测试文件 / 176 个测试、生产构建和 TeachingBridge 懒加载检查。Vite 主包体积 warning 是已知债务，不是失败。
 - [x] 补充浏览器抽检记录：隔离 API `4370`、临时 SQLite `/tmp/code-quest-r304.sqlite`、Vite `5220`；桌面 1280 与 390px 下序章、证据选择、领取委托、三路线大厅均无横向溢出，控制台 error 为 0。
 - [x] 更新 `HANDOFF.md`、`docs/cross-computer-handoff.md` 和 `docs/cx-ai-career-rpg-home-merge-notes.md`：写清楚拉哪个分支、当前最新提交、验证证据、当前完成约 70%、为什么仍不建议直接合并、下一步怎么接。

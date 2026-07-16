@@ -8,9 +8,9 @@
 
 - 当前远端：`https://github.com/xixinikl/code-quest.git`
 - 当前工作分支：`cx/ai-career-rpg-home`
-- 当前已推送功能基线：`1b3cf5d feat(rpg): keep job route identity visible`；它包含第 1 章实战后半段证据桥、Java/前端第 2-5 章剧情深链路线身份、最新交接与合并说明。最终远端 hash 以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 为准。
+- 当前已推送功能基线：`4370ddf feat(rpg): fold lab support dossier`；它包含第 1 章实战后半段证据桥、Java/前端第 2-5 章剧情深链路线身份、岗位教学桥地图修复、实战页任务导演台、辅助卷宗默认折叠以及最新交接与合并说明。最终远端 hash 以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 为准。
 - 本地核对结果：`git status --short --branch` 显示 `cx/ai-career-rpg-home...origin/cx/ai-career-rpg-home` 且没有未提交文件，说明本地已上传内容与远端分支一致。
-- 当前远端核对：另一台电脑拉取后 `git log --oneline -5` 应看到 `1b3cf5d feat(rpg): keep job route identity visible` 或更新提交；如果仍停在 `9171ac8`、`1a40fe4`、`e10069f`、`fa12dbc`、`2dd44d3`、`ca2c7aa`、`3fe3db1` 或默认分支提交，说明还没拉到最新交接/体验细修。
+- 当前远端核对：另一台电脑拉取后 `git log --oneline -5` 应看到 `4370ddf feat(rpg): fold lab support dossier` 或更新提交；如果仍停在 `1b3cf5d`、`9171ac8`、`1a40fe4`、`e10069f`、`fa12dbc`、`2dd44d3`、`ca2c7aa`、`3fe3db1` 或默认分支提交，说明还没拉到最新交接/体验细修。
 - 远端默认 HEAD：`git ls-remote --symref origin HEAD` 指向 `feat/guided-learning-bridge`，不是本分支；另一台电脑必须显式切到 `cx/ai-career-rpg-home`，不要只用 clone 后默认分支继续。
 - 另一台电脑拉取命令：
   ```bash
@@ -53,6 +53,13 @@
 - 最新辅助卷宗收口：实战页的完整流程图、案件路线牌和实战接力板已移入默认折叠的 `辅助卷宗`，主屏只保留完整流程标题、当前这一棒和展开按钮；点击「展开流程地图」后仍能看到完整辅助资料。完整 `npm run verify` 通过：10 个测试文件 / 180 个测试、生产构建和 TeachingBridge 懒加载检查均通过；隔离 API `4381`、临时 SQLite `/tmp/code-quest-r314.sqlite`、Vite `5231` 下，第一章剧情入口 390×844 无横向溢出，暗色背景，控制台 0 error。
 - 尚未声称完成：真人学习效果、所有章节达到第一章同等细致程度、真实沙盒修复与报告回读、全站最终视觉终审、分支合并审查，以及第 1 章实战后半段“沙盒验收 → Agent 委托 → 交付审查 → 因果解释 → 面试迁移”的对白进一步打磨。
 - 版本状态：当前分支可以被另一台电脑完整拉取继续开发，但尚未合并到 `main`。不建议直接合并；如果时间紧，先开 Draft PR 或继续在本分支开发。转 ready/合并前仍要做 PR 审查、关键路径桌面与 390px 视觉终审，并明确“自动化通过不等于真人学会”。
+
+### 2026-07-16 最新跨电脑核对
+
+- 本机 `HEAD`、`origin/cx/ai-career-rpg-home` 和 GitHub 远端 `refs/heads/cx/ai-career-rpg-home` 已核对一致：`4370ddfc02a17cf1a756b398053f50a9525defc2`。
+- `git status --short --branch` 显示 `cx/ai-career-rpg-home...origin/cx/ai-career-rpg-home`，核对时没有未提交业务代码。
+- 另一台电脑拉下来后，用 `git rev-parse HEAD`、`git rev-parse origin/cx/ai-career-rpg-home`、`git ls-remote origin refs/heads/cx/ai-career-rpg-home` 三个值互相对照；三者应一致或本地 HEAD 是刚拉下来的同一提交。
+- 当前仍是“可继续开发的阶段分支”，不是 ready 合并态。合并前要再跑完整 `npm run verify`，并做桌面与 390px 关键路径视觉终审。
 
 ### 2026-07-16 跨电脑/合并决策补充
 

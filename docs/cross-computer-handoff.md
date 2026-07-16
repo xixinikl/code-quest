@@ -8,9 +8,9 @@
 
 - 仓库：`https://github.com/xixinikl/code-quest.git`
 - 分支：`cx/ai-career-rpg-home`
-- 当前功能基线：`1a40fe4 feat(rpg): guide case one backhalf evidence bridge`。
+- 当前功能基线：`4370ddf feat(rpg): fold lab support dossier`。
 - 当前交接刷新：应包含第 1 章实战后半段证据桥、第 3/4/5 章实战导演层、合并前完整门禁和跨电脑拉取说明。
-- 当前远端最新提交：至少包含 `9171ac8 docs(rpg): refresh merge readiness handoff` 这份交接刷新；最终 hash 以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 输出为准，不在文档里硬编码。
+- 当前远端最新提交：至少包含 `4370ddf feat(rpg): fold lab support dossier`；最终 hash 以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 输出为准，不在文档里硬编码。
 - 远端默认 HEAD：当前指向 `feat/guided-learning-bridge`，不是这条 RPG 分支。另一台电脑必须显式 checkout `cx/ai-career-rpg-home`。
 - 本地状态：`cx/ai-career-rpg-home...origin/cx/ai-career-rpg-home`，工作区干净时表示没有漏推补丁。
 
@@ -52,8 +52,7 @@ git ls-remote origin refs/heads/cx/ai-career-rpg-home
 期望看到：
 
 - 当前分支是 `cx/ai-career-rpg-home`
-- 最近提交包含 `9171ac8 docs(rpg): refresh merge readiness handoff`，并紧跟功能基线 `1a40fe4 feat(rpg): guide case one backhalf evidence bridge`
-- 最近提交列表里还能看到 `e10069f feat(rpg): guide case five lab scenes`、`2dd44d3 feat(rpg): guide case four lab scenes` 和 `be60ed5 feat(rpg): guide case three lab scenes`
+- 最近提交包含 `4370ddf feat(rpg): fold lab support dossier`；后面还能看到 `1bbcced feat(rpg): consolidate lab mission director`、`6a6d876 fix(rpg): add job route map cinematics`、`b66469a fix(rpg): align java release lab copy` 等岗位路线与实战页收口提交
 - `git ls-remote` 返回的 hash 与本机 `git rev-parse origin/cx/ai-career-rpg-home` 一致
 - `git status --short --branch` 没有未提交文件
 
