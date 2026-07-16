@@ -76,6 +76,7 @@ git pull --ff-only
 - 代码导读增加“当前行证据锚点”，每行说明为什么看、能证明什么、下一步找哪份证据；第 1 章 `response.ok` 明确提示不能证明数据库已经写入。
 - 第 1 章验收报告增加「验收证据桥」；保存失败时会把红灯解释为数据层写库断点，并提示回到 repository `saveCanvas` 找 `INSERT` 和刷新查询证据。
 - 第 2 章 CanvasStorm 失败报告已校准三类红灯：方向筛选、会话保存、空目标输入会分别指向不同断点，并新增「红灯总指挥」把多个红灯整理成排查顺序和 Agent 口令。
+- 第 2 章后半段新增「本步交付口令」：Agent 委托显示背景/边界/验收，交付审查显示已证明/未证明/决定，面试复盘显示场景/行动/结果。
 - 新增一批真实沙盒练习与复测材料，放在 `sandbox/`，用于训练用户读证据、写 Agent 任务、验收交付和迁移复盘。
 - 将旧大 PNG 场景替换为 WebP，保留统一暗色幻想风格并减少资源体积。
 - 更新 `HANDOFF.md`、`docs/ai-career-rpg-tasks.md`、`docs/cx-ai-career-rpg-home-merge-notes.md` 和 changelog 片段。
@@ -86,7 +87,7 @@ git pull --ff-only
 
 - `npm run test -- src/App.test.tsx --run` 通过：1 个测试文件 / 47 个测试。
 - `npm run verify:quick` 通过：lint、typecheck、10 个测试文件 / 172 个测试。
-- 浏览器验收：隔离 API `4362`、临时 SQLite `/tmp/code-quest-r297.sqlite`、Vite `5212`；第 2 章实战验收页桌面和 390px 移动端无横向溢出，控制台 error 为 0，失败报告显示「红灯总指挥」「第 1 棒 / 第 2 棒 / 第 3 棒」「交给 Agent 的口令」，且不是无效报告状态。
+- 浏览器验收：隔离 API `4364`、临时 SQLite `/tmp/code-quest-r298.sqlite`、Vite `5214`；第 2 章实战后半段 Agent、审查、面试三步桌面和 390px 移动端无横向溢出，控制台 error 为 0，三步均显示对应「本步交付口令」。
 
 合并 PR 前仍建议重新跑完整：
 

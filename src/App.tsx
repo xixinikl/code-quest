@@ -662,6 +662,16 @@ type VerificationEvidenceBridgeItem = {
   body: string;
 };
 
+type StepOutputContract = {
+  eyebrow: string;
+  title: string;
+  intro: string;
+  items: Array<{
+    label: string;
+    body: string;
+  }>;
+};
+
 type LabConfig = {
   scenarioId: string;
   missionLabel: string;
@@ -7901,6 +7911,102 @@ function QuestLog({
   );
 }
 
+function getStepOutputContract(stepId: string): StepOutputContract | null {
+  if (stepId === "agent-brief") {
+    return {
+      eyebrow: "Agent 协作口令",
+      title: "把红灯写成 Agent 能执行的任务",
+      intro:
+        "这一幕不是请 Agent 自由发挥，而是把背景、范围、验收和风险交清楚，让它知道哪里能动、哪里不能动。",
+      items: [
+        {
+          label: "1. 背景",
+          body: "说明真实现象和你已经看到的证据，不用形容词替代测试名、日志或 Network。",
+        },
+        {
+          label: "2. 边界",
+          body: "写清允许修改的文件、禁止改动的范围，以及不能为了过测试绕开业务规则。",
+        },
+        {
+          label: "3. 验收",
+          body: "要求交回测试命令、通过报告、手动路径、风险和仍未覆盖的边界。",
+        },
+      ],
+    };
+  }
+
+  if (stepId === "delivery-review") {
+    return {
+      eyebrow: "交付审查口令",
+      title: "先判证据够不够，再决定接收还是退回",
+      intro:
+        "这一幕训练你像审查官一样看交付：不是看 Agent 说得多自信，而是看它有没有证明关键链路已经闭合。",
+      items: [
+        {
+          label: "1. 已证明",
+          body: "列出交付说明、Diff、测试报告或浏览器路径真正证明了什么。",
+        },
+        {
+          label: "2. 未证明",
+          body: "指出缺少的反证、移动端、异常路径、旧数据或文档同步证据。",
+        },
+        {
+          label: "3. 决定",
+          body: "明确写接收、退回或补证据后再看，并说明下一步验收动作。",
+        },
+      ],
+    };
+  }
+
+  if (stepId === "interview-dossier") {
+    return {
+      eyebrow: "面试复盘口令",
+      title: "把一次排障讲成面试官听得懂的 STAR",
+      intro:
+        "这一幕不是背答案，而是把项目背景、你的判断、行动证据和结果边界连成一段可信故事。",
+      items: [
+        {
+          label: "1. 场景",
+          body: "讲清业务背景和问题现象：谁遇到了什么卡点，为什么它影响交付。",
+        },
+        {
+          label: "2. 行动",
+          body: "讲你按哪条流程查证据、怎样委托 Agent、怎样审查交付。",
+        },
+        {
+          label: "3. 结果",
+          body: "讲测试或报告证明了什么、还没覆盖什么，以及换项目时能迁移的原则。",
+        },
+      ],
+    };
+  }
+
+  return null;
+}
+
+function StepOutputContractCard({ stepId }: { stepId: string }) {
+  const contract = getStepOutputContract(stepId);
+  if (!contract) return null;
+
+  return (
+    <section className="step-output-contract" aria-label="本步交付口令">
+      <header>
+        <span>{contract.eyebrow}</span>
+        <strong>{contract.title}</strong>
+        <p>{contract.intro}</p>
+      </header>
+      <div>
+        {contract.items.map((item) => (
+          <article key={item.label}>
+            <span>{item.label}</span>
+            <p>{item.body}</p>
+          </article>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 function ResponseForm({
   stepId,
   title,
@@ -8066,6 +8172,7 @@ function ResponseForm({
         </div>
       </div>
       {children}
+      <StepOutputContractCard stepId={stepId} />
       <div className="answer-ritual" aria-label="作答支架">
         <div className="answer-ritual-heading">
           <span>作答支架</span>

@@ -16986,6 +16986,74 @@ textarea:focus {
   line-height: 1.65;
 }
 
+.step-output-contract {
+  display: grid;
+  gap: 12px;
+  margin: 12px 0;
+  padding: 14px;
+  border: 1px solid rgba(157, 233, 218, 0.22);
+  border-radius: 6px;
+  background:
+    radial-gradient(
+      circle at 8% 0%,
+      rgba(157, 233, 218, 0.16),
+      transparent 34%
+    ),
+    linear-gradient(135deg, rgba(227, 193, 116, 0.1), transparent 58%),
+    rgba(3, 10, 15, 0.62);
+}
+
+.step-output-contract header {
+  display: grid;
+  gap: 5px;
+}
+
+.step-output-contract header span {
+  color: var(--lab-cyan);
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.step-output-contract header strong {
+  color: #fff4ce;
+  font-size: 15px;
+  line-height: 1.4;
+}
+
+.step-output-contract header p {
+  margin: 0;
+  color: #c9d4de;
+  font-size: 12px;
+  line-height: 1.65;
+}
+
+.step-output-contract > div {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 9px;
+}
+
+.step-output-contract article {
+  min-width: 0;
+  padding: 11px;
+  border: 1px solid rgba(227, 193, 116, 0.15);
+  border-radius: 5px;
+  background: rgba(255, 244, 214, 0.045);
+}
+
+.step-output-contract article span {
+  color: var(--lab-gold);
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.step-output-contract article p {
+  margin: 7px 0 0;
+  color: #dce8ed;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
 .lab-rpg-shell .answer-ritual {
   border-color: rgba(157, 233, 218, 0.2);
   border-radius: 6px;
@@ -18584,6 +18652,14 @@ textarea:focus {
   }
 
   .beginner-primer > div {
+    grid-template-columns: 1fr;
+  }
+
+  .step-output-contract {
+    padding: 11px;
+  }
+
+  .step-output-contract > div {
     grid-template-columns: 1fr;
   }
 

@@ -3013,6 +3013,37 @@ describe("AI 职业路线入口", () => {
     expect(screen.getByLabelText("刚刚收录的证据")).toHaveTextContent(
       "读 Project Brief",
     );
+    await user.click(screen.getByRole("button", { name: /给 Agent 写任务/ }));
+    expect(screen.getByLabelText("实战剧情向导")).toHaveTextContent(
+      "任务锻造师",
+    );
+    expect(screen.getByLabelText("本步交付口令")).toHaveTextContent(
+      "把红灯写成 Agent 能执行的任务",
+    );
+    expect(screen.getByLabelText("本步交付口令")).toHaveTextContent("1. 背景");
+    expect(screen.getByLabelText("本步交付口令")).toHaveTextContent("2. 边界");
+    expect(screen.getByLabelText("本步交付口令")).toHaveTextContent("3. 验收");
+    expect(screen.getByLabelText("本步交付口令")).toHaveTextContent(
+      "不能为了过测试绕开业务规则",
+    );
+    await user.click(screen.getByRole("button", { name: /审查交付说明/ }));
+    expect(screen.getByLabelText("实战剧情向导")).toHaveTextContent(
+      "交付审判官",
+    );
+    expect(screen.getByLabelText("本步交付口令")).toHaveTextContent(
+      "先判证据够不够，再决定接收还是退回",
+    );
+    expect(screen.getByLabelText("本步交付口令")).toHaveTextContent("已证明");
+    expect(screen.getByLabelText("本步交付口令")).toHaveTextContent("未证明");
+    expect(screen.getByLabelText("本步交付口令")).toHaveTextContent("决定");
+    await user.click(screen.getByRole("button", { name: /面试复盘/ }));
+    expect(screen.getByLabelText("实战剧情向导")).toHaveTextContent("面试策士");
+    expect(screen.getByLabelText("本步交付口令")).toHaveTextContent(
+      "把一次排障讲成面试官听得懂的 STAR",
+    );
+    expect(screen.getByLabelText("本步交付口令")).toHaveTextContent("场景");
+    expect(screen.getByLabelText("本步交付口令")).toHaveTextContent("行动");
+    expect(screen.getByLabelText("本步交付口令")).toHaveTextContent("结果");
     expect(window.location.hash).toBe("");
   });
 
@@ -5035,9 +5066,9 @@ describe("AI 职业路线入口", () => {
     expect(screen.getByLabelText("流程接力小剧场")).not.toHaveTextContent(
       "数据库 把线索交给 数据库",
     );
-    expect(screen.getByText(/1\. 背景/)).toBeInTheDocument();
-    expect(screen.getByText(/2\. 边界/)).toBeInTheDocument();
-    expect(screen.getByText(/3\. 验收/)).toBeInTheDocument();
+    expect(screen.getAllByText(/1\. 背景/).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/2\. 边界/).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/3\. 验收/).length).toBeGreaterThan(0);
     expect(screen.getAllByText(/写出背景和现象/).length).toBeGreaterThan(0);
     await user.click(screen.getByRole("button", { name: /审查交付说明/ }));
     expect(screen.getByLabelText("流程接力小剧场")).toHaveTextContent(
