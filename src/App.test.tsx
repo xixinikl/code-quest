@@ -2705,6 +2705,69 @@ describe("AI 职业路线入口", () => {
     expect(screen.getAllByText(/回到规划器逻辑/).length).toBeGreaterThan(0);
   });
 
+  it("第 1 章保存失败报告会指向数据层写库断点", () => {
+    const failedAttempt = {
+      ...attempt,
+      verificationStatus: "failed",
+      latestVerification: {
+        status: "failed",
+        observedAt: "2026-07-05T00:00:00.000Z",
+        report: {
+          tests: [
+            {
+              name: "POST 成功后重新查询仍能读到画布",
+              status: "failed",
+              message: "预期数据库中有 1 条记录，实际 0 条",
+            },
+          ],
+        },
+      },
+    } as Parameters<typeof VerificationPanel>[0]["attempt"];
+
+    const config = {
+      missionTitle: "数据消失事件",
+      flowItems: [
+        { label: "前端", title: "发出 POST", detail: "收到成功提示" },
+        { label: "数据层", title: "应该写库", detail: "现在断在这里" },
+        { label: "数据库", title: "查询反证", detail: "SELECT 结果为 0 行" },
+      ],
+      practical: {
+        title: "在独立沙盒里定位并修复故障",
+        sandboxPath: "sandbox/canvas-save-persistence",
+        statusPassed: "行为证据成立，但还需要解释和迁移复测。",
+        statusFailed: "这是有效学习证据：请根据失败信息继续定位。",
+      },
+      artifactGuides: {
+        repository: {
+          place: "第 4 棒：数据层函数 → 数据库",
+          focus: "只看 saveCanvas 是否执行 INSERT。",
+          keyLines: ["saveCanvas", "INSERT"],
+          proves: "读写位置不一致。",
+          cannotProve: "还需要测试复核。",
+        },
+      },
+    } as unknown as Parameters<typeof VerificationPanel>[0]["config"];
+
+    render(
+      <VerificationPanel
+        attempt={failedAttempt}
+        config={config}
+        onVerify={vi.fn()}
+      />,
+    );
+
+    expect(screen.getByLabelText("测试报告译文")).toHaveTextContent(
+      "POST 成功后重新查询仍能读到画布",
+    );
+    expect(screen.getByText("流程断点").parentElement).toHaveTextContent(
+      "数据层写库这一棒没接上",
+    );
+    expect(screen.getByText("下一步").parentElement).toHaveTextContent(
+      "执行数据库 INSERT",
+    );
+    expect(screen.queryByText(/会话保存这一棒缺证据/)).not.toBeInTheDocument();
+  });
+
   it("实战测试通过后会展示通过测试作为可复述证据", () => {
     const passedAttempt = {
       ...case02Attempt,

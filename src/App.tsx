@@ -895,6 +895,24 @@ function buildVerificationClue(
     nextAction: string;
   }> = [
     {
+      keywords: [
+        "重新查询",
+        "读到画布",
+        "画布",
+        "数据库",
+        "0 条",
+        "0 rows",
+        "insert",
+        "持久化",
+        "刷新",
+      ],
+      guideWords: ["repository", "database", "select", "insert", "数据库"],
+      breakPoint:
+        "数据层写库这一棒没接上：接口返回成功，但刷新后的数据库查询仍然读不到记录。",
+      nextAction:
+        "回到 repository 的 saveCanvas，确认它执行数据库 INSERT；再用刷新查询和测试报告证明记录真的落库。",
+    },
+    {
       keywords: ["candidate", "候选", "方向", "mvp", "growth", "accepted"],
       guideWords: ["planner", "candidate", "direction", "候选", "方向"],
       breakPoint:
