@@ -8,9 +8,9 @@
 
 - 当前远端：`https://github.com/xixinikl/code-quest.git`
 - 当前工作分支：`cx/ai-career-rpg-home`
-- 当前已推送功能基线：以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 和 `git log --oneline -1` 双重核对为准；本轮 R303 会追加第 1 章实战后半段证据交接细修提交。
+- 当前已推送功能基线：以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 和 `git log --oneline -1` 双重核对为准；2026-07-16 本机核对到 `1a40fe4 feat(rpg): guide case one backhalf evidence bridge`，本轮只补交接和合并前检查记录。
 - 本地核对结果：`git status --short --branch` 显示 `cx/ai-career-rpg-home...origin/cx/ai-career-rpg-home` 且没有未提交文件，说明本地已上传内容与远端分支一致。
-- 当前远端核对：另一台电脑拉取后应看到 `e10069f feat(rpg): guide case five lab scenes` 或更新提交；如果仍停在 `fa12dbc`、`2dd44d3`、`ca2c7aa`、`3fe3db1` 或默认分支提交，说明还没拉到最新交接/体验细修。
+- 当前远端核对：`git ls-remote origin refs/heads/cx/ai-career-rpg-home` 返回 `1a40fe453b5170042410ac3b0aa7455b36005fd0`。另一台电脑拉取后 `git log --oneline -1` 应看到 `1a40fe4 feat(rpg): guide case one backhalf evidence bridge` 或更新提交；如果仍停在 `e10069f`、`fa12dbc`、`2dd44d3`、`ca2c7aa`、`3fe3db1` 或默认分支提交，说明还没拉到最新交接/体验细修。
 - 远端默认 HEAD：`git ls-remote --symref origin HEAD` 指向 `feat/guided-learning-bridge`，不是本分支；另一台电脑必须显式切到 `cx/ai-career-rpg-home`，不要只用 clone 后默认分支继续。
 - 另一台电脑拉取命令：
   ```bash
@@ -36,24 +36,24 @@
 - 已实现：暗色神秘 RPG 舞台、章节专属背景、剧情角色立绘、可爱宠物/伙伴、地点航线、流程交接、名词解释、关键代码逐行导读、证据任务、Agent 委托、验收和面试复盘。
 - 最新体验收口：第 2 章产品链路不再串到 AI API 章；教学桥关键控件已暗色 RPG 化；代码导读新增“为什么看这一行 / 检查点 / 下一份证据”，第 1 章 `response.ok` 明确提示不能证明数据库写入。
 - 最新实战收口：第 1 章测试报告页新增「验收证据桥」；第 1 章保存失败报告会优先指向“数据层写库没接上 / repository `INSERT` 缺证据”，不会误串到第 2 章会话保存话术。第 1 章实战后半段已补齐沙盒验收、Agent 委托、交付审查、因果解释和面试迁移的任务卷轴与流程棒，明确页面绿灯、接口 201、数据库写入和刷新读回是四种不同证据。第 2 章 CanvasStorm 失败报告会把方向筛选、会话保存、空目标输入解释为三个断点，并用「红灯总指挥」给出排查顺序和 Agent 口令。第 3 章登录态实战已补齐身份路线、凭证存储、401 反证、刷新复查、Agent 委托、交付审查和面试复盘的剧情向导、任务卷轴与流程接力。第 4 章接口审判庭实战已补齐请求体证词、状态码判词、错误体修复、日志串证、Agent 委托、交付审查和面试复盘的导演层，并用 `flowItemIndex` 避免后半段流程高亮错位。第 5 章一致性熔炉实战已补齐 Network 双轨、幂等锤印、唯一约束城门、事务炉心、Agent 委托、交付审查和面试复盘的导演层。
-- 最新自动化验证：Node `v24.13.1` 下 `npm run test -- src/App.test.tsx --run` 通过 51 个测试；`npm run verify:quick` 通过 lint、typecheck、10 个测试文件 / 176 个测试。
-- 最新浏览器验收：隔离 API `4369`、临时 SQLite `/tmp/code-quest-r303.sqlite`、Vite `5219`；第 1 章从剧情探索完整收集 8/8 线索 → 伙伴会合 → 实战 Lab 通过。桌面 1280 和 390px 手机均无横向溢出，控制台 error 为 0；后半段 Agent、审查、因果和面试迁移步骤都显示新任务卷轴与流程接力。
+- 最新自动化验证：Node `v24.13.1` 下完整 `npm run verify` 通过：格式、Lint、TypeScript、10 个测试文件 / 176 个测试、生产构建和 TeachingBridge 懒加载 chunk 检查；Vite 主包体积 warning 仍是已知债务，不是失败。上一轮定向 `npm run test -- src/App.test.tsx --run` 通过 51 个测试，`npm run verify:quick` 通过 176 个测试。
+- 最新浏览器验收：隔离 API `4369`、临时 SQLite `/tmp/code-quest-r303.sqlite`、Vite `5219`；第 1 章从剧情探索完整收集 8/8 线索 → 伙伴会合 → 实战 Lab 通过。桌面 1280 和 390px 手机均无横向溢出，控制台 error 为 0；后半段 Agent、审查、因果和面试迁移步骤都显示新任务卷轴与流程接力。合并前追加抽检过首页和路线大厅：隔离 API `4370`、临时 SQLite `/tmp/code-quest-r304.sqlite`、Vite `5220`；桌面 1280 与 390px 下序章、证据选择、领取委托、三路线大厅均无横向溢出，控制台 error 为 0。
 - 尚未声称完成：真人学习效果、所有章节达到第一章同等细致程度、真实沙盒修复与报告回读、全站最终视觉终审、分支合并审查，以及第 1 章实战后半段“沙盒验收 → Agent 委托 → 交付审查 → 因果解释 → 面试迁移”的对白进一步打磨。
-- 版本状态：当前分支可以被另一台电脑完整拉取继续开发，但尚未合并到 `main`。不建议现在直接合并；合并前必须开 PR 审查，重新跑完整 `npm run verify`，并做桌面与 390px 浏览器抽检。
+- 版本状态：当前分支可以被另一台电脑完整拉取继续开发，但尚未合并到 `main`。不建议直接合并；如果时间紧，先开 Draft PR 或继续在本分支开发。转 ready/合并前仍要做 PR 审查、关键路径桌面与 390px 视觉终审，并明确“自动化通过不等于真人学会”。
 
 ### 2026-07-16 跨电脑/合并决策补充
 
 - 本地分支 `cx/ai-career-rpg-home` 已与 `origin/cx/ai-career-rpg-home` 对齐，`git status --short --branch` 没有未提交文件。
-- 远端核对命令：`git ls-remote origin refs/heads/cx/ai-career-rpg-home` 返回 `2dd44d3927a9d2de4b5e96f3737553e35d1a3f68`。
+- 远端核对命令：`git ls-remote origin refs/heads/cx/ai-career-rpg-home` 返回 `1a40fe453b5170042410ac3b0aa7455b36005fd0`。
 - 另一台电脑可以完整拉取当前阶段成果继续开发；不要只 clone 后使用默认分支，因为远端默认 HEAD 仍不是本工作分支。
-- 当前不建议合并：全站最终视觉抽检和完整 `npm run verify` 合并前复核还没做完。
+- 当前不建议直接合并：完整 `npm run verify` 已通过，但全站最终视觉终审、PR 审查和真人试玩还没完成。
 - 如果时间紧，可以先以当前分支继续开发或开 Draft PR 备份审查；不要把它当最终可发布主线直接 merge。
 
 ### 继续开发优先级
 
 1. 回看第 1 章和第 5 章真人视角文案密度，确认新手不会被术语压住。
-2. 做全站视觉与单屏节奏抽检：桌面和 390px 手机都要看首屏是否知道“我在哪、要看什么、下一步点哪里”，避免用户为了理解两个信息点反复上下滑。
-3. 然后做全站视觉与单屏节奏抽检：桌面和 390px 手机都要看首屏是否知道“我在哪、要看什么、下一步点哪里”，避免用户为了理解两个信息点反复上下滑。
+2. 做全站视觉与单屏节奏终审：桌面和 390px 手机都要看首屏是否知道“我在哪、要看什么、下一步点哪里”，避免用户为了理解两个信息点反复上下滑。
+3. 把 Java/前端第 2-5 章逐章抽检补齐，确认岗位路线不是空壳或 AI 主线误跳。
 4. 最后才进入 PR 合并审查：先写清楚这是阶段成果，不是学习效果已被真人证明的最终产品。
 
 ### 2026-07-15 R272：AI 15 章教学入口桌面/移动批量回归

@@ -8,9 +8,9 @@
 
 - 仓库：`https://github.com/xixinikl/code-quest.git`
 - 分支：`cx/ai-career-rpg-home`
-- 当前功能基线：`a0774d3 fix(rpg): clarify lab closeout flow`，本轮会追加 `fix(rpg): classify case two verification clues`。
-- 当前交接刷新：应包含本次第 2 章红灯报告分类校准与交接说明更新。
-- 当前远端最新提交：本次提交前检查为 `a0774d3c07a575210b89bbfd62f0c217e35eaa2a`；本轮提交推送后会产生新 hash，最终以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 输出为准。
+- 当前功能基线：`1a40fe4 feat(rpg): guide case one backhalf evidence bridge`。
+- 当前交接刷新：应包含第 1 章实战后半段证据桥、第 3/4/5 章实战导演层、合并前完整门禁和跨电脑拉取说明。
+- 当前远端最新提交：本次提交前检查为 `1a40fe453b5170042410ac3b0aa7455b36005fd0`；本轮交接文档提交推送后会产生新 hash，最终以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 输出为准。
 - 远端默认 HEAD：当前指向 `feat/guided-learning-bridge`，不是这条 RPG 分支。另一台电脑必须显式 checkout `cx/ai-career-rpg-home`。
 - 本地状态：`cx/ai-career-rpg-home...origin/cx/ai-career-rpg-home`，工作区干净时表示没有漏推补丁。
 
@@ -52,8 +52,8 @@ git ls-remote origin refs/heads/cx/ai-career-rpg-home
 期望看到：
 
 - 当前分支是 `cx/ai-career-rpg-home`
-- 最近提交包含本次 `fix(rpg): classify case two verification clues`，或至少包含 `a0774d3 fix(rpg): clarify lab closeout flow`
-- 最近提交列表里还能看到 `f16ec5c feat(rpg): explain verification reports`、`dca300e fix(rpg): target persistence verification clues` 和 `a0774d3 fix(rpg): clarify lab closeout flow`
+- 最近提交包含 `1a40fe4 feat(rpg): guide case one backhalf evidence bridge` 或更新提交
+- 最近提交列表里还能看到 `e10069f feat(rpg): guide case five lab scenes`、`2dd44d3 feat(rpg): guide case four lab scenes` 和 `be60ed5 feat(rpg): guide case three lab scenes`
 - `git ls-remote` 返回的 hash 与本机或接手文档里最后一次记录的远端 hash 一致
 - `git status --short --branch` 没有未提交文件
 
@@ -77,6 +77,8 @@ git pull --ff-only
 - 第 1 章验收报告增加「验收证据桥」；保存失败时会把红灯解释为数据层写库断点，并提示回到 repository `saveCanvas` 找 `INSERT` 和刷新查询证据。
 - 第 2 章 CanvasStorm 失败报告已校准三类红灯：方向筛选、会话保存、空目标输入会分别指向不同断点，并新增「红灯总指挥」把多个红灯整理成排查顺序和 Agent 口令。
 - 第 2 章后半段新增「本步交付口令」：Agent 委托显示背景/边界/验收，交付审查显示已证明/未证明/决定，面试复盘显示场景/行动/结果。
+- 第 3 章登录态、第 4 章接口错误、第 5 章数据一致性实战已补齐场景、角色、任务卷轴和流程接力，不再退回普通表单体验。
+- 第 1 章实战后半段已补齐沙盒验收、Agent 委托、交付审查、因果解释和面试迁移的证据交接，强调页面绿灯、接口 201、数据库写入和刷新读回是四种不同证据。
 - 新增一批真实沙盒练习与复测材料，放在 `sandbox/`，用于训练用户读证据、写 Agent 任务、验收交付和迁移复盘。
 - 将旧大 PNG 场景替换为 WebP，保留统一暗色幻想风格并减少资源体积。
 - 更新 `HANDOFF.md`、`docs/ai-career-rpg-tasks.md`、`docs/cx-ai-career-rpg-home-merge-notes.md` 和 changelog 片段。
@@ -85,9 +87,11 @@ git pull --ff-only
 
 最新一轮已记录的验证：
 
-- `npm run test -- src/App.test.tsx --run` 通过：1 个测试文件 / 47 个测试。
-- `npm run verify:quick` 通过：lint、typecheck、10 个测试文件 / 172 个测试。
-- 浏览器验收：隔离 API `4364`、临时 SQLite `/tmp/code-quest-r298.sqlite`、Vite `5214`；第 2 章实战后半段 Agent、审查、面试三步桌面和 390px 移动端无横向溢出，控制台 error 为 0，三步均显示对应「本步交付口令」。
+- `npm run test -- src/App.test.tsx --run` 通过：1 个测试文件 / 51 个测试。
+- `npm run verify:quick` 通过：lint、typecheck、10 个测试文件 / 176 个测试。
+- `npm run verify` 通过：格式、Lint、TypeScript、10 个测试文件 / 176 个测试、生产构建和 TeachingBridge 懒加载检查；Vite 主包体积 warning 是已知债务，不是失败。
+- 浏览器验收：隔离 API `4369`、临时 SQLite `/tmp/code-quest-r303.sqlite`、Vite `5219`；第 1 章完整剧情探索到实战 Lab，桌面和 390px 移动端无横向溢出，控制台 error 为 0。
+- 合并前追加抽检：隔离 API `4370`、临时 SQLite `/tmp/code-quest-r304.sqlite`、Vite `5220`；桌面 1280 与 390px 下序章、证据选择、领取委托、三路线大厅均无横向溢出，控制台 error 为 0。
 
 合并 PR 前仍建议重新跑完整：
 
@@ -97,7 +101,7 @@ npm run verify
 
 ## 当前完成情况
 
-这是阶段成果，不是最终完成版。按产品完整度估计约 65%。
+这是阶段成果，不是最终完成版。按产品完整度估计约 70%。
 
 已经具备：
 
@@ -106,6 +110,7 @@ npm run verify
 - Java/前端岗位路线入口
 - 第一章较完整的新手教学与实战理解链
 - 第二章产品链路实战已明显向第一章体验靠齐
+- 第三到第五章实战已有导演层和证据链讲解，不再是普通题目列表
 - 第一章测试报告已经能把红灯翻译成“能证明什么 / 不能证明什么 / 下一步怎么交给 Agent”
 - 沙盒、迁移复测材料、自动化测试和构建门禁
 
@@ -123,8 +128,8 @@ npm run verify
 建议下一轮按这个顺序继续：
 
 1. 先在 `cx/ai-career-rpg-home` 继续，不要另起太多分支；如果必须开分支，用 `cx/` 前缀并在 `HANDOFF.md` 记录来源和目标。
-2. 继续把第 2 章从读 Brief 到测试/交付/面试完整走一遍，优先补“为什么看这份材料、谁交给谁、错了回哪一棒”的解释。
-3. 再抽检第 3-5 章，优先修风格断层、术语过密、移动端一屏读不完的问题。
+2. 回看第 1 章和第 5 章真人阅读负担，优先修术语过密、解释不够像故事、移动端一屏读不完的问题。
+3. 补齐 Java/前端第 2-5 章逐章浏览器抽检，确认岗位路线不会回退到 AI 章节或旧白底界面。
 4. 之后做一次全站关键路径视觉终审：序章、路线大厅、教学桥、实战 Lab、结算、作品集和本地备份。
 5. 最后再考虑 PR；PR 前必须重新跑 `npm run verify`，并做桌面与 390px 浏览器关键路径验收。
 
