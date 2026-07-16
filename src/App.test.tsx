@@ -3047,6 +3047,80 @@ describe("AI 职业路线入口", () => {
     expect(window.location.hash).toBe("");
   });
 
+  it("第 1 章实战后半段会解释验收、委托、审查和迁移证据链", async () => {
+    const user = userEvent.setup();
+    render(
+      <Lab
+        artifacts={artifacts}
+        attempt={attempt as Parameters<typeof Lab>[0]["attempt"]}
+        onBackToRoadmap={vi.fn()}
+        onSubmitted={vi.fn()}
+        setAttempt={vi.fn()}
+      />,
+    );
+
+    await user.click(screen.getByRole("button", { name: /沙盒修复与测试/ }));
+    expect(screen.getByLabelText("实战剧情向导")).toHaveTextContent(
+      "持久化熔炉",
+    );
+    expect(screen.getByLabelText("本步任务卷轴")).toHaveTextContent(
+      "页面显示保存成功，不等于数据库真的保存成功",
+    );
+    expect(screen.getByLabelText("本步任务卷轴")).toHaveTextContent("源码指纹");
+    expect(screen.getByLabelText("当前这一棒")).toHaveTextContent("数据层");
+
+    await user.click(screen.getByRole("button", { name: /给 Agent 写任务/ }));
+    expect(screen.getByLabelText("实战剧情向导")).toHaveTextContent(
+      "任务锻造师",
+    );
+    expect(screen.getByLabelText("本步任务卷轴")).toHaveTextContent(
+      "Agent 不能靠猜你想要什么",
+    );
+    expect(screen.getByLabelText("本步任务卷轴")).toHaveTextContent(
+      "不可绕开的真实写库",
+    );
+    expect(screen.getByLabelText("流程接力小剧场")).toHaveTextContent(
+      "不是把愿望丢给 Agent",
+    );
+
+    await user.click(screen.getByRole("button", { name: /审查交付说明/ }));
+    expect(screen.getByLabelText("实战剧情向导")).toHaveTextContent(
+      "交付审判官",
+    );
+    expect(screen.getByLabelText("本步任务卷轴")).toHaveTextContent(
+      "有没有证明从页面到数据库的链路真的闭合",
+    );
+    expect(screen.getByLabelText("本步交付口令")).toHaveTextContent(
+      "先判证据够不够，再决定接收还是退回",
+    );
+    expect(screen.getByLabelText("当前这一棒")).toHaveTextContent("数据库");
+
+    await user.click(screen.getByRole("button", { name: /解释故障因果/ }));
+    expect(screen.getByLabelText("实战剧情向导")).toHaveTextContent(
+      "镜面编辑师",
+    );
+    expect(screen.getByLabelText("本步任务卷轴")).toHaveTextContent(
+      "把页面状态、接口响应和数据库事实拆开",
+    );
+    expect(screen.getByLabelText("流程接力小剧场")).toHaveTextContent(
+      "成功提示从哪里来",
+    );
+
+    await user.click(screen.getByRole("button", { name: /面试迁移题/ }));
+    expect(screen.getByLabelText("实战剧情向导")).toHaveTextContent("面试策士");
+    expect(screen.getByLabelText("本步任务卷轴")).toHaveTextContent(
+      "掌握的是证据链方法",
+    );
+    expect(screen.getByLabelText("本步任务卷轴")).toHaveTextContent("头像上传");
+    expect(screen.getByText("这只是即时迁移预演")).toBeInTheDocument();
+    expect(screen.getAllByText(/重新登录后恢复旧头像/).length).toBeGreaterThan(
+      0,
+    );
+    expect(screen.getByLabelText("流程接力小剧场")).toHaveTextContent(
+      "从故障因果走到面试迁移",
+    );
+  });
+
   it("第 3 章登录态实战会随步骤切换身份剧情和交付口令", async () => {
     const user = userEvent.setup();
     render(

@@ -85,6 +85,14 @@
 
 验收：`npm run test -- src/App.test.tsx --run` 通过 50 个测试；`npm run verify:quick` 通过 lint、typecheck、10 个测试文件 / 175 个测试；浏览器隔离 API `4368`、临时 SQLite `/tmp/code-quest-r302.sqlite`、Vite `5218` 下确认桌面 1280 与 390px 手机无横向溢出、控制台 error 为 0。
 
+### R303：第 1 章实战后半段证据交接细修
+
+- [x] 第 1 章沙盒验收、Agent 委托、交付审查、因果解释和面试迁移补齐任务卷轴：每一步都解释为什么学、先看什么证据、最后交出什么判断。
+- [x] 第 1 章后半段补齐流程棒映射：沙盒验收和 Agent 委托停在数据层，交付审查、因果解释和迁移停在数据库反证，避免用户以为又回到前端成功提示。
+- [x] 新增回归测试，确保第 1 章后半段显示“页面绿灯不等于数据库成功”“Agent 不能靠猜”“审查看链路闭合”“因果解释拆页面/接口/数据库”“迁移到头像上传”等新手提示。
+
+验收：`npm run test -- src/App.test.tsx --run` 通过 51 个测试；`npm run verify:quick` 通过 lint、typecheck、10 个测试文件 / 176 个测试；浏览器隔离 API `4369`、临时 SQLite `/tmp/code-quest-r303.sqlite`、Vite `5219` 下从第 1 章剧情探索完整走到实战 Lab，桌面 1280 与 390px 手机无横向溢出，控制台 error 为 0。
+
 ### R174：第五章 RAG 索引并发延迟迁移复测
 
 - 新增 `rag-index-concurrency-retest` 独立沙盒：单次知识文档上传后，两个 Worker 因非原子领取同时处理 job 417，并写出重复 chunks。

@@ -1367,6 +1367,7 @@ const labConfigs: Record<string, LabConfig> = {
         label: "沙盒修复与测试",
         icon: TerminalSquare,
         kind: "verification",
+        flowItemIndex: 3,
         scene: {
           location: "持久化熔炉 · SQLite 工位",
           image: idempotencyForgeScene,
@@ -1375,6 +1376,13 @@ const labConfigs: Record<string, LabConfig> = {
           mood: "熔炉只承认可重复验证的副作用：写进去，刷新后还在。",
           objective: "用测试报告和手动路径证明修复真的产生数据库副作用。",
           reward: "获得工程闭环印记",
+        },
+        questBrief: {
+          why: "第一关最容易误会：页面显示保存成功，不等于数据库真的保存成功。验收要证明真实副作用。",
+          evidence:
+            "看沙盒测试报告、POST 201、刷新后的 GET、SQLite SELECT 结果和源码指纹是否指向同一份修复。",
+          output:
+            "一份验收判断：哪条测试证明写库成功，哪条证据还需要人工浏览器复测，哪些红灯不能跳过。",
         },
         flowDialogue: {
           headline: "数据层交出测试报告，再进入协作委托",
@@ -1390,6 +1398,7 @@ const labConfigs: Record<string, LabConfig> = {
         label: "给 Agent 写任务",
         icon: FileCode2,
         kind: "response",
+        flowItemIndex: 3,
         scene: {
           location: "任务锻造间 · Brief 台",
           image: agentBriefForgeScene,
@@ -1399,6 +1408,13 @@ const labConfigs: Record<string, LabConfig> = {
           objective:
             "把背景、目标、约束、验收和风险写成 Agent 可以执行的委托。",
           reward: "解锁协作委托模板",
+        },
+        questBrief: {
+          why: "真实协作里，Agent 不能靠猜你想要什么。你必须把现象、证据、修改范围和验收边界交清楚。",
+          evidence:
+            "把 POST 201、数据库 0 行、repository 读写不一致、测试报告和禁止改动范围合成任务。",
+          output:
+            "一份 Agent 委托：背景、目标、可改文件、不可绕开的真实写库、副作用验收和失败路径。",
         },
         response: {
           title: "阶段 05 · 协作能力",
@@ -1423,6 +1439,7 @@ const labConfigs: Record<string, LabConfig> = {
         label: "审查交付说明",
         icon: ShieldCheck,
         kind: "response",
+        flowItemIndex: 4,
         scene: {
           location: "交付审判庭 · Diff 证据席",
           image: deliveryReviewCourtScene,
@@ -1431,6 +1448,13 @@ const labConfigs: Record<string, LabConfig> = {
           mood: "漂亮总结不算证据，审判庭只听测试、Diff、回归风险和边界条件。",
           objective: "识别交付说明里哪些证据有效、哪些还不能证明修复成立。",
           reward: "获得交付审查眼",
+        },
+        questBrief: {
+          why: "交付审查不是看 Agent 写得自不自信，而是看它有没有证明从页面到数据库的链路真的闭合。",
+          evidence:
+            "对照交付说明、测试报告、Diff 范围、数据库查询和未覆盖路径，判断哪些证据能证明落库。",
+          output:
+            "一条审查决定：接收、退回或要求补证据，并说明缺少哪一棒的证明。",
         },
         response: {
           title: "阶段 06 · 交付审查",
@@ -1454,6 +1478,7 @@ const labConfigs: Record<string, LabConfig> = {
         label: "解释故障因果",
         icon: Lightbulb,
         kind: "response",
+        flowItemIndex: 4,
         scene: {
           location: "回声画廊 · 因果镜前",
           image: memoryEchoGalleryScene,
@@ -1462,6 +1487,13 @@ const labConfigs: Record<string, LabConfig> = {
           mood: "镜子会把绿色提示和数据库事实分开，让你看见真正的断层。",
           objective: "讲清成功提示从哪里来、刷新数据从哪里来、为什么修复有效。",
           reward: "获得故障因果复述",
+        },
+        questBrief: {
+          why: "新手最容易把“成功提示”当成“保存成功”。因果解释要把页面状态、接口响应和数据库事实拆开。",
+          evidence:
+            "串起 response.ok、onSaved、POST 201、repository 写入位置、SELECT 0 rows 和修复后查询结果。",
+          output:
+            "一段人话因果链：为什么原来绿灯会骗人，为什么修复后刷新还能读回，仍然缺哪些复测。",
         },
         response: {
           title: "阶段 07 · 因果解释",
@@ -1489,6 +1521,7 @@ const labConfigs: Record<string, LabConfig> = {
         label: "面试迁移题",
         icon: FlaskConical,
         kind: "response",
+        flowItemIndex: 4,
         scene: {
           location: "面试议事厅 · 迁移试炼门",
           image: interviewDefenseHallScene,
@@ -1498,6 +1531,13 @@ const labConfigs: Record<string, LabConfig> = {
           objective:
             "把本关证据链迁移到头像上传场景，组织成面试可讲的定位思路。",
           reward: "生成项目复盘素材",
+        },
+        questBrief: {
+          why: "面试不会只问保存画布。你要证明自己掌握的是证据链方法，而不是记住这一题答案。",
+          evidence:
+            "把头像上传也拆成前端成功提示、上传接口、文件/数据库持久化、重新登录读取和人工复测。",
+          output:
+            "一段迁移回答：先查什么、每份证据证明什么、怎样确认真实副作用、哪些边界还没验证。",
         },
         response: {
           title: "阶段 08 · 面试迁移题",
