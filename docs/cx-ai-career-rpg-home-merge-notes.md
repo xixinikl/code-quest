@@ -8,11 +8,39 @@
 
 ### 当前事实快照（2026-07-16）
 
-AI 路线已扩展为 15 章，Java 后端和前端工程路线各 5 章，均有独立章节契约、剧情场景、教学桥、沙盒和成长结算入口。当前分支已推送到 `origin/cx/ai-career-rpg-home`，本轮功能基线从 `a0774d3 fix(rpg): clarify lab closeout flow` 继续追加第 2 章红灯报告分类校准；远端最新 hash 以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 为准。分支尚未合并到 `main`。当前远端默认 HEAD 指向旧 `feat/guided-learning-bridge`，接手和合并前必须显式选择本分支。
+AI 路线已扩展为 15 章，Java 后端和前端工程路线各 5 章，均有独立章节契约、剧情场景、教学桥、沙盒和成长结算入口。当前分支已推送到 `origin/cx/ai-career-rpg-home`，最新已核对提交为 `3fe3db159283b2dfadd8a9cf8fa8fa67f6470afb feat(rpg): guide case two output contracts`；远端最新 hash 仍以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 为准。分支尚未合并到 `main`。当前远端默认 HEAD 指向旧 `feat/guided-learning-bridge`，接手和合并前必须显式选择本分支。
 
 最新一轮收口集中在用户反馈最强的“看不懂代码为什么要这么读、谁把东西交给谁、下一步去哪找证据”：第 2 章产品链路不再串到 AI API 安全章；教学桥关键控件已补暗色 RPG 覆盖；第 1 章代码导读新增“当前行证据锚点”，读到 `response.ok` 时明确说明它只能解释前端绿色提示，不能证明数据库已经写入；第 1 章失败测试报告会优先指向数据层写库断点；第 2 章失败测试报告现在能把方向筛选、会话保存、空目标输入分成三类红灯，并先给出「红灯总指挥」排查顺序；第 2 章 Agent、审查、面试三步新增「本步交付口令」，避免后半段掉回普通表单。
 
-这不是最终完成版。当前分支已经形成 15 章路线、暗色 RPG 体验、章节剧情、实战 Lab、成长档案、伙伴收集、面试复盘和本地备份的第一轮完整骨架；后续还需要真人试玩、逐章教学语言精修、移动端视觉抽检和合并审查。按产品完整度估计约 65%，可以继续开发，不建议直接合并。
+这不是最终完成版。当前分支已经形成 15 章路线、暗色 RPG 体验、章节剧情、实战 Lab、成长档案、伙伴收集、面试复盘和本地备份的第一轮完整骨架；后续还需要第 3 章实战后半段体验细修、真人试玩、逐章教学语言精修、移动端视觉抽检和合并审查。按产品完整度估计约 65%，可以继续开发，不建议直接合并。
+
+## 另一台电脑拉取
+
+新电脑首次拉取：
+
+```bash
+git clone https://github.com/xixinikl/code-quest.git
+cd code-quest
+git fetch origin cx/ai-career-rpg-home
+git switch -c cx/ai-career-rpg-home --track origin/cx/ai-career-rpg-home
+git log --oneline -1
+npm install
+npm run verify:quick
+```
+
+已 clone 过的电脑继续：
+
+```bash
+cd code-quest
+git fetch origin
+git switch cx/ai-career-rpg-home
+git pull --ff-only
+git log --oneline -1
+npm install
+npm run verify:quick
+```
+
+`git log --oneline -1` 应显示 `3fe3db1 feat(rpg): guide case two output contracts` 或更新提交；如果显示默认分支 `feat/guided-learning-bridge` 的提交，说明拉错分支。
 
 ## 当前主要改动
 
@@ -71,6 +99,13 @@ npm run verify
 3. 合并前至少再做一次桌面和 390px 移动端浏览器抽检，重点看：序章、当前委托、章节卷宗、第一章教学桥、第一章实战 Lab、成长档案、面试复盘册、本地备份库。
 4. 如果后续继续开发，优先补真人学习效果验收和逐章语言精修，而不是继续堆新功能。
 5. 自动化测试只能证明应用路径可用，不能证明用户已经学会；所有对外文案都要保留这个边界。
+
+## 下一步开发顺序
+
+1. 第 3 章实战后半段先补齐剧情向导、流程接力和交付口令：身份路线、凭证存储、401 反证、Agent 委托、交付审查、面试复盘都要讲清“谁把凭证交给谁，刷新后谁来认人”。
+2. 第 1 章实战后半段继续细修：沙盒验收、Agent 委托、交付审查和面试迁移要更像真实工作排障，不要退回普通题目。
+3. 继续做桌面和 390px 手机抽检，重点看每一屏是否能一眼知道当前位置、任务目标、证据材料和下一步按钮。
+4. 合并前开 PR，并把验证证据、风险和回滚写在 PR 描述里；不要直接 merge 到 `main`。
 
 ## 当前未完成
 

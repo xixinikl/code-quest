@@ -52,6 +52,15 @@
 
 ## 当前已完成切片
 
+### R299：跨电脑交接与合并边界复核
+
+- [x] 核对本地分支 `cx/ai-career-rpg-home` 与远端 `origin/cx/ai-career-rpg-home` 对齐；最新已推送提交为 `3fe3db159283b2dfadd8a9cf8fa8fa67f6470afb feat(rpg): guide case two output contracts`。
+- [x] 明确远端默认 HEAD 仍指向旧 `feat/guided-learning-bridge`，另一台电脑必须显式切换到 `cx/ai-career-rpg-home`，否则会拉到旧工作线。
+- [x] 刷新 `HANDOFF.md` 与 `docs/cx-ai-career-rpg-home-merge-notes.md`：补充拉取命令、当前完成度、不能直接合并的原因、下一步开发顺序和验收边界。
+- [x] 当前可以跨电脑继续开发；不建议直接合并到 `main`。合并前仍需 PR 审查、完整 `npm run verify`、桌面与 390px 浏览器抽检。
+
+验收：新电脑按文档命令能拉到 `cx/ai-career-rpg-home`，看到 `3fe3db1` 或更新提交；接手者能先读交接再继续第 3 章实战体验细修，而不是误从旧默认分支开发。
+
 ### R174：第五章 RAG 索引并发延迟迁移复测
 
 - 新增 `rag-index-concurrency-retest` 独立沙盒：单次知识文档上传后，两个 Worker 因非原子领取同时处理 job 417，并写出重复 chunks。

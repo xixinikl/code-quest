@@ -7,20 +7,46 @@
 ### 当前事实快照（2026-07-16）
 
 - 当前远端：`https://github.com/xixinikl/code-quest.git`
-- 当前分支：`cx/ai-career-rpg-home`
-- 当前功能基线：`a0774d3 fix(rpg): clarify lab closeout flow`，本轮将追加第 2 章红灯分类修复提交；最终以远端 `cx/ai-career-rpg-home` 最新提交为准。
-- 当前交接刷新：本次应包含 `fix(rpg): classify case two verification clues`，推送后以远端最新提交为准。
-- 当前远端 hash：本次提交前检查为 `a0774d3c07a575210b89bbfd62f0c217e35eaa2a`；文档和修复提交会产生新 hash，最终接手时运行 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 核对。
-- 远端默认 HEAD：当前 `git ls-remote --symref origin HEAD` 指向 `feat/guided-learning-bridge`，所以另一台电脑必须显式切到 `cx/ai-career-rpg-home`，不要只用 clone 后默认分支继续。
-- 本地核对结果：`git status --short --branch` 显示 `cx/ai-career-rpg-home...origin/cx/ai-career-rpg-home`，没有未提交文件时说明本地和远端一致。
+- 当前工作分支：`cx/ai-career-rpg-home`
+- 当前已推送功能基线：`3fe3db159283b2dfadd8a9cf8fa8fa67f6470afb feat(rpg): guide case two output contracts`。
+- 本地核对结果：`git status --short --branch` 显示 `cx/ai-career-rpg-home...origin/cx/ai-career-rpg-home` 且没有未提交文件，说明本地已上传内容与远端分支一致。
+- 当前远端核对：`git ls-remote origin refs/heads/cx/ai-career-rpg-home` 返回 `3fe3db159283b2dfadd8a9cf8fa8fa67f6470afb`。
+- 远端默认 HEAD：`git ls-remote --symref origin HEAD` 指向 `feat/guided-learning-bridge`，不是本分支；另一台电脑必须显式切到 `cx/ai-career-rpg-home`，不要只用 clone 后默认分支继续。
+- 另一台电脑拉取命令：
+  ```bash
+  git clone https://github.com/xixinikl/code-quest.git
+  cd code-quest
+  git fetch origin cx/ai-career-rpg-home
+  git switch -c cx/ai-career-rpg-home --track origin/cx/ai-career-rpg-home
+  git log --oneline -1
+  npm install
+  npm run verify:quick
+  ```
+- 如果另一台电脑已经 clone 过：
+  ```bash
+  cd code-quest
+  git fetch origin
+  git switch cx/ai-career-rpg-home
+  git pull --ff-only
+  git log --oneline -1
+  npm install
+  npm run verify:quick
+  ```
 - AI 应用开发路线：15 章；Java 后端路线：5 章；前端工程路线：5 章。三条路线均已进入岗位档案，Java/前端不再是空白占位。
 - 已实现：暗色神秘 RPG 舞台、章节专属背景、剧情角色立绘、可爱宠物/伙伴、地点航线、流程交接、名词解释、关键代码逐行导读、证据任务、Agent 委托、验收和面试复盘。
 - 最新体验收口：第 2 章产品链路不再串到 AI API 章；教学桥关键控件已暗色 RPG 化；代码导读新增“为什么看这一行 / 检查点 / 下一份证据”，第 1 章 `response.ok` 明确提示不能证明数据库写入。
-- 最新实战收口：第 1 章测试报告页新增「验收证据桥」；第 1 章保存失败报告会优先指向“数据层写库没接上 / repository `INSERT` 缺证据”，不会误串到第 2 章会话保存话术。第 2 章 CanvasStorm 失败报告现在会把方向筛选、会话保存、空目标输入分别解释为三个断点，并用「红灯总指挥」先给出排查顺序和 Agent 口令；第 2 章后半段 Agent 委托、交付审查、面试复盘新增「本步交付口令」。
+- 最新实战收口：第 1 章测试报告页新增「验收证据桥」；第 1 章保存失败报告会优先指向“数据层写库没接上 / repository `INSERT` 缺证据”，不会误串到第 2 章会话保存话术。第 2 章 CanvasStorm 失败报告现在会把方向筛选、会话保存、空目标输入分别解释为三个断点，并用「红灯总指挥」先给出排查顺序和 Agent 口令；第 2 章后半段 Agent 委托、交付审查、面试复盘新增「本步交付口令」，避免用户进入后半段又变成普通表单。
 - 最新自动化验证：Node `v24.13.1` 下 `npm run test -- src/App.test.tsx --run` 通过 47 个测试；`npm run verify:quick` 通过 lint、typecheck、10 个测试文件 / 172 个测试。
 - 最新浏览器验收：隔离 API `4364`、临时 SQLite `/tmp/code-quest-r298.sqlite`、Vite `5214`；第 2 章实战后半段「给 Agent 写任务」「审查交付说明」「面试复盘」桌面与 390px 移动端无横向溢出，控制台 error 为 0，三步均显示对应「本步交付口令」。
 - 尚未声称完成：真人学习效果、所有章节达到第一章同等细致程度、真实沙盒修复与报告回读、全站最终视觉终审、分支合并审查，以及第 1 章实战后半段“沙盒验收 → Agent 委托 → 交付审查 → 因果解释 → 面试迁移”的对白进一步打磨。
-- 版本状态：当前分支可以被另一台电脑拉取继续开发，但尚未合并到 `main`；合并前必须开 PR 审查，并重新跑完整 `npm run verify`。
+- 版本状态：当前分支可以被另一台电脑完整拉取继续开发，但尚未合并到 `main`。不建议现在直接合并；合并前必须开 PR 审查，重新跑完整 `npm run verify`，并做桌面与 390px 浏览器抽检。
+
+### 继续开发优先级
+
+1. 先补第 3 章“登录态为什么丢”的实战后半段：身份路线、凭证存储、401 反证、Agent 委托、交付审查和面试复盘都要有同一套剧情向导、流程接力和交付口令，避免第 2 章之后风格断层。
+2. 再做第 1 章实战后半段细修：沙盒验收、Agent 委托、交付审查、因果解释和面试迁移需要更像真实工作交接，而不是题目表单。
+3. 然后做全站视觉与单屏节奏抽检：桌面和 390px 手机都要看首屏是否知道“我在哪、要看什么、下一步点哪里”，避免用户为了理解两个信息点反复上下滑。
+4. 最后才进入 PR 合并审查：先写清楚这是阶段成果，不是学习效果已被真人证明的最终产品。
 
 ### 2026-07-15 R272：AI 15 章教学入口桌面/移动批量回归
 
