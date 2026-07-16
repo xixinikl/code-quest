@@ -1631,3 +1631,13 @@ Goal 模式的完成口径必须比“能点进去”更严格：只接剧情教
 - [x] 浏览器布局验收：桌面 `1200px` 与 390×844 均为 `clientWidth = scrollWidth`，控制台 error 为 0。
 
 验收目标：用户在第 1 章测试失败时，报告解释必须贴合“前端成功提示 vs 数据库没写入”的真实故障，不把不同章节的产品会话概念混进来。
+
+## R294：继续开发前交接完整性刷新
+
+- [x] 重新运行 `xixi-dev-system profile sync`、`doctor --project .` 和 `updates --project .`；doctor 通过。
+- [x] 重新执行 `git fetch origin`、`git status --short --branch`、`git rev-parse HEAD origin/cx/ai-career-rpg-home` 和 `git ls-remote origin refs/heads/cx/ai-career-rpg-home`，确认本地当前功能代码与远端 `cx/ai-career-rpg-home` 一致，检查时 hash 为 `dca300e34539f47b76aa540edc7084c5b6e39659`。
+- [x] 记录远端默认 HEAD 当前指向 `feat/guided-learning-bridge`，另一台电脑必须显式 checkout `cx/ai-career-rpg-home`，否则会拉到旧线。
+- [x] 更新 `HANDOFF.md`、`docs/cross-computer-handoff.md` 和 `docs/cx-ai-career-rpg-home-merge-notes.md`，把最新功能基线、测试证据、浏览器验收、合并建议和下一步补齐。
+- [x] 明确当前结论：本分支可以被另一台电脑完整拉取继续开发；还不建议直接合并，除非先开 PR、重新跑完整 `npm run verify` 并完成关键路径浏览器验收。
+
+验收目标：用户睡觉或换电脑后，不会因为默认分支、过期 hash、文档滞后或分支太多而重新做一遍；接手者能直接知道拉哪个分支、当前完成什么、下一步做什么、为什么暂时不建议直接合并。

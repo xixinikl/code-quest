@@ -8,17 +8,18 @@
 
 - 当前远端：`https://github.com/xixinikl/code-quest.git`
 - 当前分支：`cx/ai-career-rpg-home`
-- 当前功能基线：`d77761a feat(rpg): anchor code tour lines to evidence`
-- 当前交接刷新：`docs(rpg): refresh cross-computer handoff`
-- 当前远端 hash：以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 输出为准；交接文档更新本身会产生新提交，最终接手时先核对远端。
+- 当前功能基线：`dca300e fix(rpg): target persistence verification clues`
+- 当前交接刷新：待本次 `docs(rpg): refresh handoff before continuation` 推送后，以远端最新提交为准。
+- 当前远端 hash：本次检查为 `dca300e34539f47b76aa540edc7084c5b6e39659`；交接文档更新本身会产生新提交，最终接手时先核对远端。
+- 远端默认 HEAD：当前 `git ls-remote --symref origin HEAD` 指向 `feat/guided-learning-bridge`，所以另一台电脑必须显式切到 `cx/ai-career-rpg-home`，不要只用 clone 后默认分支继续。
 - 本地核对结果：`git status --short --branch` 显示 `cx/ai-career-rpg-home...origin/cx/ai-career-rpg-home`，没有未提交文件时说明本地和远端一致。
 - AI 应用开发路线：15 章；Java 后端路线：5 章；前端工程路线：5 章。三条路线均已进入岗位档案，Java/前端不再是空白占位。
 - 已实现：暗色神秘 RPG 舞台、章节专属背景、剧情角色立绘、可爱宠物/伙伴、地点航线、流程交接、名词解释、关键代码逐行导读、证据任务、Agent 委托、验收和面试复盘。
 - 最新体验收口：第 2 章产品链路不再串到 AI API 章；教学桥关键控件已暗色 RPG 化；代码导读新增“为什么看这一行 / 检查点 / 下一份证据”，第 1 章 `response.ok` 明确提示不能证明数据库写入。
-- 最新实战收口：第 1 章测试报告页新增「验收证据桥」，失败报告会解释证明了什么、不能证明什么，以及如何转成 Agent 任务和面试复盘素材。
-- 最新自动化验证：Node `v24.13.1` 下 `npm run test -- src/App.test.tsx --run` 通过 46 个测试；`npm run verify:quick` 通过 lint、typecheck、10 个测试文件 / 171 个测试。
-- 最新浏览器验收：隔离 API `4354`、临时 SQLite `/tmp/code-quest-r292.sqlite`、Vite `5204`；第 1 章实战验收页桌面与 390px 移动端无横向溢出，控制台 error 为 0。
-- 尚未声称完成：真人学习效果、所有章节达到第一章同等细致程度、真实沙盒修复与报告回读、全站最终视觉终审、分支合并审查。
+- 最新实战收口：第 1 章测试报告页新增「验收证据桥」；第 1 章保存失败报告会优先指向“数据层写库没接上 / repository `INSERT` 缺证据”，不会误串到第 2 章会话保存话术。
+- 最新自动化验证：Node `v24.13.1` 下 `npm run test -- src/App.test.tsx --run` 通过 47 个测试；`npm run verify:quick` 通过 lint、typecheck、10 个测试文件 / 172 个测试。
+- 最新浏览器验收：隔离 API `4356`、临时 SQLite `/tmp/code-quest-r293.sqlite`、Vite `5206`；第 1 章实战验收页桌面与 390px 移动端无横向溢出，控制台 error 为 0，红灯文案显示“数据层写库这一棒没接上”和“执行数据库 INSERT”。
+- 尚未声称完成：真人学习效果、所有章节达到第一章同等细致程度、真实沙盒修复与报告回读、全站最终视觉终审、分支合并审查，以及第 1 章实战后半段“沙盒验收 → Agent 委托 → 交付审查 → 因果解释 → 面试迁移”的对白进一步打磨。
 - 版本状态：当前分支可以被另一台电脑拉取继续开发，但尚未合并到 `main`；合并前必须开 PR 审查，并重新跑完整 `npm run verify`。
 
 ### 2026-07-15 R272：AI 15 章教学入口桌面/移动批量回归
