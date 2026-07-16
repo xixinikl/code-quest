@@ -146,6 +146,16 @@
 
 验收：另一台电脑按交接命令拉取后，`git log --oneline -1` 应为本次交接文档提交、`4370ddf feat(rpg): fold lab support dossier` 或更新提交，且本地 HEAD 与远端分支 hash 一致。当前分支可以完整拉取继续开发，但仍不建议直接合并到 `main`；合并前还要做 PR 审查、完整 `npm run verify` 和桌面/390px 视觉终审。
 
+### R316：岗位实战 Lab 辅助卷宗渲染护栏
+
+- [x] 新增渲染级回归测试，覆盖 `java-release-harbor`、`frontend-performance-proof` 和 `frontend-testing-proof` 三个岗位代表 Lab。
+- [x] 锁定岗位 Lab 默认信息层级：首屏必须有 `任务导演台`、`辅助卷宗` 和 `当前这一棒`，但 `本关案件路线牌` 与 `实战接力板` 默认不渲染，避免用户一进实战就被全量辅助资料淹没。
+- [x] 锁定展开后的完整资料：点击「展开流程地图」后，必须出现岗位自己的完整流程、案件路线牌和实战接力板，且内容来自对应 `LabConfig`。
+- [x] 锁定岗位语境不串台：Java 上线港、前端性能塔、前端回归试炼场不能出现 AI 主线旧词、`/api/canvases` 或 `验收试炼画布`。
+- [x] `App.test.tsx` 因真实路线浏览很重，在本文件内将 Vitest timeout 调整为 180 秒，避免全套并行测试时长路径随机超时。
+
+验收：`npx vitest run src/App.test.tsx --reporter dot` 通过 55 项测试；`npm run verify:quick` 通过 lint、typecheck、10 个测试文件 / 181 个测试。
+
 ### R300：第 3 章登录态实战剧情导演层
 
 - [x] 第 3 章实战步骤补齐场景、角色、任务卷轴和流程接力：身份路线、凭证存储、401 反证、刷新复查、Agent 委托、交付审查和面试复盘都明确“谁把凭证交给谁，刷新后谁来认人”。

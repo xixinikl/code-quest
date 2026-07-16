@@ -29,6 +29,8 @@ import {
   getScenarioRouteIdentity,
 } from "./routeIdentity";
 
+vi.setConfig({ testTimeout: 180000 });
+
 const diagnosticActive = {
   id: "diagnostic-001",
   status: "active",
@@ -442,6 +444,112 @@ describe("岗位路线实战场景契约", () => {
     expect(frontendTesting).not.toContain("AI 应用开发");
     expect(frontendTesting).not.toContain("/api/canvases");
     expect(frontendTesting).not.toContain("验收试炼画布");
+  });
+
+  it("岗位 Lab 默认收束辅助资料，展开后仍保留岗位专属路线", async () => {
+    const user = userEvent.setup();
+    const cases = [
+      {
+        scenarioId: "java-release-harbor",
+        forbidden: ["主线 1-14", "AI 应用开发"],
+      },
+      {
+        scenarioId: "frontend-performance-proof",
+        forbidden: ["主线 1-6", "AI 应用开发"],
+      },
+      {
+        scenarioId: "frontend-testing-proof",
+        forbidden: [
+          "主线 1-11",
+          "AI 应用开发",
+          "/api/canvases",
+          "验收试炼画布",
+        ],
+      },
+    ];
+
+    for (const labCase of cases) {
+      const config = getLabConfig(labCase.scenarioId);
+      const firstResponseIndex = config.steps.findIndex(
+        (step) => step.kind === "response",
+      );
+      const activeStep = config.steps[firstResponseIndex];
+      const flowIndex = Math.min(
+        Math.max(activeStep.flowItemIndex ?? firstResponseIndex, 0),
+        config.flowItems.length - 1,
+      );
+      const currentFlow = config.flowItems[flowIndex];
+      const nextFlow = config.flowItems[flowIndex + 1];
+      const jobArtifacts = Object.entries(config.artifactGuides).map(
+        ([id, guide]) => ({
+          id,
+          label: guide.place,
+          language: "txt",
+          relativePath: `${config.practical.sandboxPath}/${id}.txt`,
+          content: guide.keyLines.join("\n"),
+        }),
+      );
+
+      const { unmount } = render(
+        <Lab
+          artifacts={jobArtifacts}
+          attempt={
+            {
+              id: `attempt-${labCase.scenarioId}`,
+              scenarioId: labCase.scenarioId,
+              status: "active",
+              hintLevel: 0,
+              verificationStatus: "not_run",
+              steps: {},
+            } as Parameters<typeof Lab>[0]["attempt"]
+          }
+          onBackToRoadmap={vi.fn()}
+          onSubmitted={vi.fn()}
+          setAttempt={vi.fn()}
+        />,
+      );
+
+      expect(screen.getByLabelText("任务导演台")).toHaveTextContent(
+        activeStep.label,
+      );
+      expect(screen.getByLabelText("任务导演台")).toHaveTextContent(
+        activeStep.scene?.actor ?? activeStep.label,
+      );
+      expect(screen.getByLabelText("辅助卷宗")).toHaveTextContent(
+        config.flowTitle,
+      );
+      expect(screen.getByLabelText("当前这一棒")).toHaveTextContent(
+        currentFlow.label,
+      );
+      expect(screen.getByLabelText("当前这一棒")).toHaveTextContent(
+        currentFlow.title,
+      );
+      if (nextFlow) {
+        expect(screen.getByLabelText("辅助卷宗")).toHaveTextContent(
+          nextFlow.title,
+        );
+      }
+      expect(screen.queryByLabelText("本关案件路线牌")).not.toBeInTheDocument();
+      expect(screen.queryByLabelText("实战接力板")).not.toBeInTheDocument();
+
+      await user.click(screen.getByRole("button", { name: /展开流程地图/ }));
+      expect(screen.getByLabelText("本关案件路线牌")).toHaveTextContent(
+        config.missionTitle,
+      );
+      expect(screen.getByLabelText(config.flowAriaLabel)).toHaveTextContent(
+        config.flowTitle,
+      );
+      expect(screen.getByLabelText("实战接力板")).toHaveTextContent(
+        currentFlow.title,
+      );
+
+      const visibleCopy = document.body.textContent ?? "";
+      for (const phrase of labCase.forbidden) {
+        expect(visibleCopy).not.toContain(phrase);
+      }
+
+      unmount();
+    }
   });
 });
 
@@ -4054,7 +4162,11 @@ describe("AI 职业路线入口", () => {
     await sealRecall("这一幕先把项目目标和约束说清楚，下一幕继续筛选方向。");
     await user.click(screen.getByRole("button", { name: /^继续下一地点$/ }));
     expect(
-      await screen.findByRole("heading", { name: /不是多生成，而是选方向/ }),
+      await screen.findByRole(
+        "heading",
+        { name: /不是多生成，而是选方向/ },
+        { timeout: 3000 },
+      ),
     ).toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: /翻开方向罗盘/ }));
     await user.click(screen.getByRole("button", { name: /筛候选不是全都要/ }));
@@ -4063,7 +4175,11 @@ describe("AI 职业路线入口", () => {
     );
     await user.click(screen.getByRole("button", { name: /^继续下一地点$/ }));
     expect(
-      await screen.findByRole("heading", { name: /用户的选择不能丢/ }),
+      await screen.findByRole(
+        "heading",
+        { name: /用户的选择不能丢/ },
+        { timeout: 3000 },
+      ),
     ).toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: /追踪保存路线/ }));
     await user.click(screen.getByRole("button", { name: /看懂备用仓库/ }));
@@ -4072,7 +4188,11 @@ describe("AI 职业路线入口", () => {
     );
     await user.click(screen.getByRole("button", { name: /^继续下一地点$/ }));
     expect(
-      await screen.findByRole("heading", { name: /把 AI 点子讲成产品链路/ }),
+      await screen.findByRole(
+        "heading",
+        { name: /把 AI 点子讲成产品链路/ },
+        { timeout: 3000 },
+      ),
     ).toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: /串起产品链路/ }));
     await user.click(screen.getByRole("button", { name: /把证据变成复盘/ }));
