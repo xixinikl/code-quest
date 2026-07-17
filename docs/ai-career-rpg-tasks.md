@@ -1967,3 +1967,15 @@ Goal 模式的完成口径必须比“能点进去”更严格：只接剧情教
 - [x] 本轮工程化检查：`xixi-dev-system profile sync`、`doctor --project .`、`updates --project .` 已执行；doctor 结果为 pass。
 
 验收目标：另一台电脑不用猜“拉哪个分支、是不是完整、能不能直接合并”。按 `HANDOFF.md` 执行后，应显式切到 `cx/ai-career-rpg-home`，看到 `65e3603` 和本次文档提交或更新提交，本地 HEAD 与远端分支 hash 一致，并在 Node `24.13.1` 下完成验证。
+
+## R329：前端第 3 关性能剧情与 Lab 旧保存语境清理
+
+- [x] 浏览器从 `#chapter-frontend-3` 发现第一幕线索仍写“保存后刷新慢”，会把用户带回第一章保存链路；已改为首屏白屏久、点击筛选慢、列表出现慢、滚动卡顿等前端性能现象。
+- [x] 剧情证据补强：接口时钟塔线索加入 `Server-Timing: db;dur=1450`，性能回归试炼场线索加入 `X-Cache: MISS/HIT`，让用户知道性能排查具体看哪份证据。
+- [x] `ResponseForm` 新增 `frontend-performance-proof` 专属新手先读卡和证据表达示范卡，不再掉回第一章 `response.ok / 数据库写入 / 保存链路` 默认模板；示范改为 Network 瀑布图、TTFB、Server-Timing、X-Cache、后端日志和 render profile。
+- [x] 加严 `src/App.test.tsx`：前端第 3 关剧情必须包含 TTFB、Server-Timing、X-Cache，并禁止保存后刷新、`response.ok 后显示 saved`、数据库写入和保存链路旧词；岗位 Lab 默认渲染也禁止这些旧词。
+- [x] 定向验证通过：`npm run test -- src/App.test.tsx --run -t "前端第 3|岗位 Lab 默认"`，2 个测试通过。
+- [x] 快速门禁通过：Node `v24.13.1` 下 `npm run verify:quick`，11 个测试文件 / 189 个测试通过。
+- [x] 浏览器验收：隔离 API `4405`、临时 SQLite `/tmp/code-quest-r329.sqlite`、Vite `5255`；`#chapter-frontend-3` 从封面进入剧情，完成首屏计时港与浏览器瀑布观测台两幕，桌面 `scrollWidth = clientWidth = 1200`，暗色背景 `rgb(7, 12, 20)`，控制台 error 为 0。当前 DOM 中 `保存后刷新慢`、`response.ok 后显示 saved`、`数据库真的写入`、`保存后刷新数据消失`、`保存链路` 均为 false。
+
+验收目标：前端第 3 关不再用第一章保存/数据库例子解释性能问题；用户看到的是完整的性能排查语言：体感现象 → Network 瀑布图 → TTFB/Server-Timing → 渲染画像 → X-Cache 与复测。

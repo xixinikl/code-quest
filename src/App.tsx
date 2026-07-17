@@ -9419,6 +9419,7 @@ function ResponseForm({
   const [error, setError] = useState("");
   const isAgentBrief = stepId === "agent-brief";
   const isFrontendTesting = scenarioId === FRONTEND_TESTING_SCENARIO_ID;
+  const isFrontendPerformance = scenarioId === FRONTEND_PERFORMANCE_SCENARIO_ID;
   const isJavaRelease = scenarioId === JAVA_RELEASE_SCENARIO_ID;
   const answerFrame = isAgentBrief
     ? "背景：\n目标：\n范围/约束：\n验收标准：\n风险和回滚："
@@ -9496,65 +9497,95 @@ function ResponseForm({
             body: "不要只写“测试过了”。要写清证据、证据边界和下一步验收。",
           },
         ]
-    : isJavaRelease
+    : isFrontendPerformance
       ? isAgentBrief
         ? [
             {
               label: "这题到底在问什么",
-              body: "把上线门禁缺证据写成 Agent 能补齐、能停下、能交付报告的任务。",
+              body: "把“页面慢”写成 Agent 能复现、能测量、能复测的性能排查任务。",
             },
             {
               label: "先看哪里",
-              body: "先看 release-plan、environment-check、backup、smoke、monitoring 和 rollback 缺哪一门。",
+              body: "先看 Network 瀑布图、TTFB、Server-Timing、X-Cache 和 React 渲染画像。",
             },
             {
               label: "不要怎么写",
-              body: "不要只写“完善上线”。必须写清生产配置、备份恢复、监控、回滚和验收路径。",
+              body: "不要只写“优化性能”。必须写清慢在哪里、证据缺什么、优化后怎么复测。",
             },
           ]
         : [
             {
               label: "这题到底在问什么",
-              body: "不是问你背上线清单，而是问你能不能判断这次 Java 服务为什么还不能放行。",
+              body: "不是问你背性能名词，而是问你能不能用证据判断慢在资源、接口、后端还是渲染。",
             },
             {
               label: "先看哪里",
-              body: "先看 owner/observer、JWT_SECRET、备份恢复、390px 冒烟、监控信号或回滚条件。",
+              body: "先看 Network 里最长的时间条，再对照 Server-Timing、后端日志和 render profile。",
             },
             {
               label: "不要怎么写",
-              body: "不要只写“构建通过”。要写清哪份证据缺失、缺失会造成什么风险、下一步怎么补证。",
+              body: "不要只写“页面很慢”。要写清哪段耗时、它能证明什么、下一步要补哪份证据。",
             },
           ]
-      : isAgentBrief
-        ? [
-            {
-              label: "这题到底在问什么",
-              body: "把一段模糊愿望改写成 Agent 能执行、能停下、能交证据的任务。",
-            },
-            {
-              label: "先看哪里",
-              body: "先看现场材料和失败证据，再写目标；不要让 Agent 自己猜范围。",
-            },
-            {
-              label: "不要怎么写",
-              body: "不要写“你看着办”。必须写背景、边界、验收、风险和交付格式。",
-            },
-          ]
-        : [
-            {
-              label: "这题到底在问什么",
-              body: "不是问你背概念，而是问你能不能用一份证据解释当前流程卡在哪里。",
-            },
-            {
-              label: "先看哪里",
-              body: "先看下面材料导览里的 Network、日志、数据库、代码或测试结果，挑一条最能说明问题的证据。",
-            },
-            {
-              label: "不要怎么写",
-              body: "不要只写“有问题 / 修好了”。要写清证据、证据含义和下一步验证。",
-            },
-          ];
+      : isJavaRelease
+        ? isAgentBrief
+          ? [
+              {
+                label: "这题到底在问什么",
+                body: "把上线门禁缺证据写成 Agent 能补齐、能停下、能交付报告的任务。",
+              },
+              {
+                label: "先看哪里",
+                body: "先看 release-plan、environment-check、backup、smoke、monitoring 和 rollback 缺哪一门。",
+              },
+              {
+                label: "不要怎么写",
+                body: "不要只写“完善上线”。必须写清生产配置、备份恢复、监控、回滚和验收路径。",
+              },
+            ]
+          : [
+              {
+                label: "这题到底在问什么",
+                body: "不是问你背上线清单，而是问你能不能判断这次 Java 服务为什么还不能放行。",
+              },
+              {
+                label: "先看哪里",
+                body: "先看 owner/observer、JWT_SECRET、备份恢复、390px 冒烟、监控信号或回滚条件。",
+              },
+              {
+                label: "不要怎么写",
+                body: "不要只写“构建通过”。要写清哪份证据缺失、缺失会造成什么风险、下一步怎么补证。",
+              },
+            ]
+        : isAgentBrief
+          ? [
+              {
+                label: "这题到底在问什么",
+                body: "把一段模糊愿望改写成 Agent 能执行、能停下、能交证据的任务。",
+              },
+              {
+                label: "先看哪里",
+                body: "先看现场材料和失败证据，再写目标；不要让 Agent 自己猜范围。",
+              },
+              {
+                label: "不要怎么写",
+                body: "不要写“你看着办”。必须写背景、边界、验收、风险和交付格式。",
+              },
+            ]
+          : [
+              {
+                label: "这题到底在问什么",
+                body: "不是问你背概念，而是问你能不能用一份证据解释当前流程卡在哪里。",
+              },
+              {
+                label: "先看哪里",
+                body: "先看下面材料导览里的 Network、日志、数据库、代码或测试结果，挑一条最能说明问题的证据。",
+              },
+              {
+                label: "不要怎么写",
+                body: "不要只写“有问题 / 修好了”。要写清证据、证据含义和下一步验证。",
+              },
+            ];
   const expressionExample = isAgentBrief
     ? isFrontendTesting
       ? {
@@ -9565,21 +9596,30 @@ function ResponseForm({
             "目标：请只检查前端筛选、报告校验器和验收证据，不要改无关页面。",
           next: "验收：给出失败复现、单测、集成测试、手动报告、sourceHash 和回归风险。",
         }
-      : isJavaRelease
+      : isFrontendPerformance
         ? {
             lead: "可照着这个顺序写委托",
             evidence:
-              "背景：订单服务构建通过，但 release-plan 缺 owner/observer，JWT_SECRET 缺失，390px 冒烟和回滚验证也不完整。",
+              "背景：项目列表首屏空白久，Network 显示 /api/projects TTFB 很长，第二次访问仍是 X-Cache: MISS。",
             meaning:
-              "目标：请只补上线门禁证据，不要绕过生产配置、备份恢复、监控和回滚条件。",
-            next: "验收：给出 release-plan、environment-check、backup、smoke、monitoring、rollback 和 Agent 交付说明。",
+              "目标：请只检查首屏性能证据，不要顺手重构无关组件或改业务结果。",
+            next: "验收：给出瀑布图、Server-Timing、后端日志、render profile、缓存复测和旧数据风险说明。",
           }
-        : {
-            lead: "可照着这个顺序写委托",
-            evidence: "背景：保存后刷新数据消失，Network 曾返回成功。",
-            meaning: "目标：请只检查保存链路，不要改无关页面或执行危险命令。",
-            next: "验收：给出测试报告、手动路径、仍有风险和回滚方式。",
-          }
+        : isJavaRelease
+          ? {
+              lead: "可照着这个顺序写委托",
+              evidence:
+                "背景：订单服务构建通过，但 release-plan 缺 owner/observer，JWT_SECRET 缺失，390px 冒烟和回滚验证也不完整。",
+              meaning:
+                "目标：请只补上线门禁证据，不要绕过生产配置、备份恢复、监控和回滚条件。",
+              next: "验收：给出 release-plan、environment-check、backup、smoke、monitoring、rollback 和 Agent 交付说明。",
+            }
+          : {
+              lead: "可照着这个顺序写委托",
+              evidence: "背景：保存后刷新数据消失，Network 曾返回成功。",
+              meaning: "目标：请只检查保存链路，不要改无关页面或执行危险命令。",
+              next: "验收：给出测试报告、手动路径、仍有风险和回滚方式。",
+            }
     : isFrontendTesting
       ? {
           lead: "可照着这个顺序写判断",
@@ -9589,22 +9629,31 @@ function ResponseForm({
             "它说明：这条筛选路径在浏览器里跑通了，但还不能替代失败复现、sourceHash 和回归风险。",
           next: "下一步：继续核对报告是否绑定当前代码，并补手动复测和未覆盖风险。",
         }
-      : isJavaRelease
+      : isFrontendPerformance
         ? {
             lead: "可照着这个顺序写判断",
             evidence:
-              "我看到：release-plan 有发布窗口和影响范围，但 owner/observer 为空。",
+              "我看到：Network 里 /api/projects 的 TTFB 是 1800ms，JS 资源下载只有 120ms。",
             meaning:
-              "它说明：这次 Java 服务知道何时上线和影响哪些路径，但还不能证明出事时有人判断回滚。",
-            next: "下一步：继续查 JWT_SECRET、备份恢复、390px 冒烟、监控信号和回滚后验证。",
+              "它说明：首屏慢的第一嫌疑不是资源体积，而是接口等待或后端查询；还不能证明 React 渲染没有问题。",
+            next: "下一步：继续查 Server-Timing、backend.log、X-Cache 和 render profile，把后端等待和前端渲染分开复测。",
           }
-        : {
-            lead: "可照着这个顺序写判断",
-            evidence:
-              "我看到：前端发出了 POST，并且 response.ok 后显示 saved。",
-            meaning: "它说明：页面收到成功信号，但还不能证明数据库真的写入。",
-            next: "下一步：继续查后端日志和 SELECT 结果，确认记录能否被刷新读回。",
-          };
+        : isJavaRelease
+          ? {
+              lead: "可照着这个顺序写判断",
+              evidence:
+                "我看到：release-plan 有发布窗口和影响范围，但 owner/observer 为空。",
+              meaning:
+                "它说明：这次 Java 服务知道何时上线和影响哪些路径，但还不能证明出事时有人判断回滚。",
+              next: "下一步：继续查 JWT_SECRET、备份恢复、390px 冒烟、监控信号和回滚后验证。",
+            }
+          : {
+              lead: "可照着这个顺序写判断",
+              evidence:
+                "我看到：前端发出了 POST，并且 response.ok 后显示 saved。",
+              meaning: "它说明：页面收到成功信号，但还不能证明数据库真的写入。",
+              next: "下一步：继续查后端日志和 SELECT 结果，确认记录能否被刷新读回。",
+            };
 
   const save = async () => {
     setSaving(true);

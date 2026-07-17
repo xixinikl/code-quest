@@ -3189,7 +3189,7 @@ const performanceScenes: QuestScene[] = [
         label: "记录用户体感",
         action: "先写清楚用户到底觉得哪里慢",
         result:
-          "用户说“页面慢”还不够。要写成可排查现象：首次打开慢、点击筛选慢、列表出现慢，还是保存后刷新慢。",
+          "用户说“页面慢”还不够。要写成可排查现象：首次打开白屏久、点击筛选慢、列表出现慢，还是滚动时明显卡顿。",
         snippet:
           "模糊：页面很慢\n可排查：首次打开项目列表，空白持续 2 秒后才出现 loading，再过 3 秒列表才出现",
         question:
@@ -3303,9 +3303,9 @@ const performanceScenes: QuestScene[] = [
         label: "翻后端计时日志",
         action: "查 projects query 花了多久",
         result:
-          "后端日志显示 projects query 用了 1450ms，就能把浏览器 TTFB 和数据库查询慢连成同一条证据链。",
+          "后端日志或 Server-Timing 显示 projects query 用了 1450ms，就能把浏览器 TTFB 和数据库查询慢连成同一条证据链。",
         snippet:
-          "Network TTFB: 1600ms\nLog: projects query ms=1450\n=> 主要慢在数据库查询",
+          "Network TTFB: 1600ms\nServer-Timing: db;dur=1450\nLog: projects query ms=1450\n=> 主要慢在数据库查询",
         question: "Network 和日志要对上，才是可信排障。",
         journeyIndex: 2,
         skill: "能把前端等待和后端日志连起来。",
@@ -3390,9 +3390,9 @@ const performanceScenes: QuestScene[] = [
         label: "封存前后对比",
         action: "记录优化前后耗时",
         result:
-          "可信的性能结论要有数字：优化前列表接口 1800ms，缓存命中后 120ms；保存新项目后缓存失效，列表仍正确。",
+          "可信的性能结论要有数字：优化前列表接口 1800ms，缓存命中后 120ms；X-Cache 从 MISS 变成 HIT；新增项目后缓存失效，列表仍正确。",
         snippet:
-          "优化前：GET /api/projects 1800ms\n优化后：缓存命中 120ms\n回归：新增项目后列表刷新可见",
+          "优化前：GET /api/projects 1800ms, X-Cache: MISS\n优化后：120ms, X-Cache: HIT\n回归：新增项目后列表刷新可见",
         question: "不要只说“快多了”。要拿出能复测的数字和功能证明。",
         journeyIndex: 4,
         skill: "能写出性能优化验收证据。",

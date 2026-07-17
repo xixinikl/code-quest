@@ -473,6 +473,23 @@ describe("岗位路线实战场景契约", () => {
     expect(frontendTestingStory).not.toContain("和DOM");
   });
 
+  it("前端第 3 关剧情线索不再复用保存链路", () => {
+    const frontendPerformanceStory = JSON.stringify(
+      getTeachingStoryScenes("frontend-performance-proof"),
+    );
+
+    expect(frontendPerformanceStory).toContain("首屏计时港");
+    expect(frontendPerformanceStory).toContain("浏览器瀑布观测台");
+    expect(frontendPerformanceStory).toContain("TTFB");
+    expect(frontendPerformanceStory).toContain("Server-Timing");
+    expect(frontendPerformanceStory).toContain("X-Cache");
+    expect(frontendPerformanceStory).not.toContain("保存后刷新慢");
+    expect(frontendPerformanceStory).not.toContain("保存刷新");
+    expect(frontendPerformanceStory).not.toContain("response.ok 后显示 saved");
+    expect(frontendPerformanceStory).not.toContain("数据库真的写入");
+    expect(frontendPerformanceStory).not.toContain("保存链路");
+  });
+
   it("Java 第 4 关剧情线索不再复用 AI 第 14 章上线材料", () => {
     const javaReleaseStory = JSON.stringify(
       getTeachingStoryScenes("java-release-harbor"),
@@ -508,7 +525,14 @@ describe("岗位路线实战场景契约", () => {
       },
       {
         scenarioId: "frontend-performance-proof",
-        forbidden: ["主线 1-6", "AI 应用开发"],
+        forbidden: [
+          "主线 1-6",
+          "AI 应用开发",
+          "response.ok 后显示 saved",
+          "数据库真的写入",
+          "保存后刷新数据消失",
+          "保存链路",
+        ],
       },
       {
         scenarioId: "frontend-testing-proof",
