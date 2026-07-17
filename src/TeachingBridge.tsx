@@ -8083,6 +8083,31 @@ function EvidenceStoryQuest({
                 {activeClue.question && (
                   <div className="quest-question">{activeClue.question}</div>
                 )}
+                <section className="quest-clue-acquired" aria-label="线索获得">
+                  <span>线索获得</span>
+                  <strong>证据 +1 · {activeClue.label}</strong>
+                  <div>
+                    <article>
+                      <b>收进卷宗</b>
+                      <p>{activeClue.skill}</p>
+                    </article>
+                    <article>
+                      <b>伙伴默契</b>
+                      <p>
+                        {companion?.name ?? "本章同行"} {sceneDiscovered.length}/
+                        {scene.clues.length}
+                      </p>
+                    </article>
+                    <article>
+                      <b>下一步追证据</b>
+                      <p>
+                        {nextJourney
+                          ? `${nextJourney.from} → ${nextJourney.to}`
+                          : "进入实战修复与验收"}
+                      </p>
+                    </article>
+                  </div>
+                </section>
                 {companion && (
                   <div
                     className="quest-companion-whisper"

@@ -10,7 +10,7 @@
 
 最新判断：这条分支可以给另一台电脑拉下来继续开发，但还不建议直接合并到 `main`。如果时间紧，先把 `cx/ai-career-rpg-home` 当作完整备份和继续开发基线；另一台电脑拉完后从它切自己的 `cx/...` 分支继续做 UI/剧情/关卡，不要在默认分支上改。
 
-进度口径说明：之前口头提到的 `60%` 或文档历史里的 `70%` 是旧范围下的体感数字；后来需求扩展为完整 RPG 化、15 章 AI 主线、多岗位入口、统一视觉、交接和跨电脑继续开发后，进度必须按“已验证并已推送的可交付切片”计算。按当前严格口径，本分支已经有可继续开发的基线，但整体产品还没有到可合并 `main` 的完成态；后续不要再用旧百分比判断是否倒退。
+进度口径说明：之前口头提到的 `60%` 或文档历史里的 `70%` 是旧范围下的体感数字；后来需求扩展为完整 RPG 化、15 章 AI 主线、多岗位入口、统一视觉、交接和跨电脑继续开发后，进度必须按“已验证并已推送的可交付切片”计算。按当前严格口径，本分支约 `57%`：已经有可继续开发的 RPG 教学基线，但整体产品还没有到可合并 `main` 的完成态；后续不要再用旧百分比判断是否倒退。
 
 给对方直接复制这一段：
 
@@ -19,7 +19,7 @@
 要拉的分支：cx/ai-career-rpg-home
 不要用 clone 后默认分支继续开发。先切到 cx/ai-career-rpg-home，再核对本地 HEAD、origin/cx/ai-career-rpg-home 和远端 ls-remote 三个 hash。
 完整基线：至少能看到 ffbbf8b feat(rpg): show lab companion squad，或者看到晚于它的场景运镜更新提交。
-最新体验基线：如果能看到 feat(rpg): show collection contract 或更晚提交，说明已包含第 1 章剧情探索页“本章收集契约”；如果能看到 feat(rpg): add scene spotlight 或更晚提交，说明已包含第 1 章剧情探索页“剧情舞台镜头”；如果能看到 feat(rpg): show chapter navigation needle 或更晚提交，说明已包含第 1 章剧情/教学页“本章导航针”；如果能看到 feat(rpg): show nearby route map 或更晚提交，说明已包含简报页“当前附近星图”减负；如果能看到 feat(rpg): show lab interview replay 或更晚提交，说明已包含 Lab 首屏面试复盘稿，用户能把本关证据整理成面试表达。
+最新体验基线：如果能看到 feat(rpg): show clue reward feedback 或更晚提交，说明已包含第 1 章线索点击“线索获得”反馈；如果能看到 feat(rpg): show collection contract 或更晚提交，说明已包含第 1 章剧情探索页“本章收集契约”；如果能看到 feat(rpg): add scene spotlight 或更晚提交，说明已包含第 1 章剧情探索页“剧情舞台镜头”；如果能看到 feat(rpg): show chapter navigation needle 或更晚提交，说明已包含第 1 章剧情/教学页“本章导航针”；如果能看到 feat(rpg): show nearby route map 或更晚提交，说明已包含简报页“当前附近星图”减负；如果能看到 feat(rpg): show lab interview replay 或更晚提交，说明已包含 Lab 首屏面试复盘稿，用户能把本关证据整理成面试表达。
 拉完先跑：nvm use && npm install && npm run verify:quick
 准备合并或交付前再跑：npm run verify
 ```
@@ -113,6 +113,10 @@ git pull --ff-only origin cx/ai-career-rpg-home
 
 ### 最新进度补充（2026-07-18 凌晨）
 
+- 已在第 1 章线索点击后加入 `线索获得` 回执。现在点 `检查绿色灯牌` 后，会显示 `证据 +1`、收进卷宗的能力说明、`档案馆记录员 1/2` 默契进度，以及下一步要追的证据方向。
+- 目的：让探索有即时获得感，同时把“这条线索证明什么、下一棒看哪里”讲清楚，避免用户点完只看到一段文字。
+- 验证：`npm run test -- src/App.test.tsx --run -t "进入主线后进入教学地图"` 通过；`npm run verify:quick` 通过 11 个测试文件 / 203 个测试。
+- 浏览器验收：隔离 API `4424`、Vite `5296`，从新用户序章进入第 1 章，点击 `检查绿色灯牌` 后真实页面显示 `线索获得`、`证据 +1 · 检查绿色灯牌`、`档案馆记录员 1/2` 和 `后端接口 → 数据层函数`；桌面和 390px 手机宽度均无横向溢出；截图保存在 `output/playwright/r371-clue-reward-feedback-desktop.png` 和 `output/playwright/r371-clue-reward-feedback-mobile.png`。
 - 已在第 1 章剧情探索页加入 `本章收集契约`。现在剧情舞台镜头后会显示通关收藏、线索印记和能力印记，让用户知道这一章不是只拿 XP，而是在收集伙伴、证据和可面试复盘的能力。
 - 第 1 章显示 `伙伴 · 档案馆记录员`，线索总进度 `0/8`，当前地点进度，以及当前证据出口作为能力印记；后续章节复用 `teachingCompanions`，可自动显示各自伙伴/宠物/装备。
 - 验证：`npm run test -- src/App.test.tsx --run -t "进入主线后进入教学地图"` 通过；`npm run verify:quick` 通过 11 个测试文件 / 203 个测试。

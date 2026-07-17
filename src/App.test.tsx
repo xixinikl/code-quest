@@ -6591,6 +6591,14 @@ describe("AI 职业路线入口", () => {
     expect(
       screen.getAllByText(/response.ok 不是“继续传东西”/).length,
     ).toBeGreaterThan(0);
+    const clueAcquired = screen.getByLabelText("线索获得");
+    expect(clueAcquired).toHaveTextContent("证据 +1");
+    expect(clueAcquired).toHaveTextContent("检查绿色灯牌");
+    expect(clueAcquired).toHaveTextContent("收进卷宗");
+    expect(clueAcquired).toHaveTextContent("伙伴默契");
+    expect(clueAcquired).toHaveTextContent("档案馆记录员 1/2");
+    expect(clueAcquired).toHaveTextContent("下一步追证据");
+    expect(clueAcquired).toHaveTextContent("后端接口 → 数据层函数");
     expect(screen.getByLabelText("伙伴线索回应")).toHaveTextContent(
       "档案馆记录员 · 线索回应",
     );

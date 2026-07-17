@@ -15835,6 +15835,64 @@ textarea:focus {
   line-height: 1.75;
 }
 
+.quest-clue-acquired {
+  display: grid;
+  padding: 12px;
+  gap: 9px;
+  border: 1px solid rgba(147, 239, 208, 0.28);
+  border-radius: 6px;
+  background:
+    linear-gradient(135deg, rgba(147, 239, 208, 0.12), transparent 58%),
+    rgba(4, 13, 18, 0.64);
+  animation: quest-preview-in 0.28s ease both;
+}
+
+.quest-clue-acquired > span {
+  width: fit-content;
+  padding: 4px 8px;
+  border: 1px solid rgba(147, 239, 208, 0.26);
+  border-radius: 999px;
+  color: #93efd0;
+  background: rgba(3, 10, 15, 0.62);
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.quest-clue-acquired > strong {
+  color: #fff4ce;
+  font-family: "Songti SC", "Noto Serif SC", Georgia, serif;
+  font-size: 17px;
+  line-height: 1.4;
+}
+
+.quest-clue-acquired > div {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 7px;
+}
+
+.quest-clue-acquired article {
+  min-width: 0;
+  padding: 9px;
+  border: 1px solid rgba(208, 224, 238, 0.12);
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.035);
+}
+
+.quest-clue-acquired b {
+  color: #e3c174;
+  font-size: 11px;
+}
+
+.quest-clue-acquired p {
+  margin: 5px 0 0;
+  overflow-wrap: anywhere;
+  color: #dffaf3;
+  font-family: inherit;
+  font-size: 12px;
+  line-height: 1.55;
+}
+
 .quest-scene-reward {
   display: grid;
   padding: 12px 14px;
@@ -17383,6 +17441,10 @@ textarea:focus {
 
   .quest-collection-grid article {
     min-height: 0;
+  }
+
+  .quest-clue-acquired > div {
+    grid-template-columns: 1fr;
   }
 
   .quest-current-contract {
