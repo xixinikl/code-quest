@@ -14238,7 +14238,97 @@ textarea:focus {
   white-space: nowrap;
 }
 
-.quest-scene-rail ol {
+.quest-scene-rail-current {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 9px;
+  align-items: center;
+  padding: 9px 10px;
+  border: 1px solid rgba(227, 193, 116, 0.42);
+  border-radius: 5px;
+  background:
+    linear-gradient(90deg, rgba(227, 193, 116, 0.13), transparent 76%),
+    rgba(255, 255, 255, 0.035);
+}
+
+.quest-scene-rail-current div {
+  display: grid;
+  min-width: 0;
+  gap: 2px;
+}
+
+.quest-scene-rail-current b {
+  color: #93efd0;
+  font-size: 10px;
+  font-weight: 900;
+}
+
+.quest-scene-rail-current strong {
+  overflow: hidden;
+  color: #fff0c2;
+  font-family: "Songti SC", "Noto Serif SC", Georgia, serif;
+  font-size: 14px;
+  line-height: 1.35;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.quest-scene-rail-current small {
+  color: #b8c7d2;
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+.quest-scene-rail-details {
+  display: grid;
+  gap: 8px;
+}
+
+.quest-scene-rail-details > summary {
+  position: relative;
+  display: flex;
+  min-height: 34px;
+  padding: 0 30px 0 10px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  border: 1px solid rgba(208, 224, 238, 0.12);
+  border-radius: 5px;
+  color: #cdd9e5;
+  background: rgba(255, 255, 255, 0.035);
+  cursor: pointer;
+  list-style: none;
+}
+
+.quest-scene-rail-details > summary::-webkit-details-marker {
+  display: none;
+}
+
+.quest-scene-rail-details > summary::after {
+  position: absolute;
+  right: 10px;
+  color: var(--quest-gold);
+  content: "+";
+  font-size: 18px;
+  line-height: 1;
+}
+
+.quest-scene-rail-details[open] > summary::after {
+  content: "×";
+}
+
+.quest-scene-rail-details > summary span {
+  color: #f3ead6;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.quest-scene-rail-details > summary small {
+  color: #9eafba;
+  font-size: 11px;
+}
+
+.quest-scene-rail-details ol {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
   margin: 0;
@@ -14247,7 +14337,7 @@ textarea:focus {
   list-style: none;
 }
 
-.quest-scene-rail li {
+.quest-scene-rail-details li {
   position: relative;
   display: flex;
   min-width: 0;
@@ -14259,7 +14349,7 @@ textarea:focus {
   background: rgba(255, 255, 255, 0.035);
 }
 
-.quest-scene-rail li:not(:last-child)::after {
+.quest-scene-rail-details li:not(:last-child)::after {
   position: absolute;
   top: 50%;
   right: -8px;
@@ -14269,11 +14359,11 @@ textarea:focus {
   content: "";
 }
 
-.quest-scene-rail li.done {
+.quest-scene-rail-details li.done {
   border-color: rgba(147, 239, 208, 0.3);
 }
 
-.quest-scene-rail li.active {
+.quest-scene-rail-details li.active {
   border-color: rgba(227, 193, 116, 0.74);
   background: rgba(227, 193, 116, 0.11);
   box-shadow: 0 0 18px rgba(227, 193, 116, 0.12);
@@ -14292,43 +14382,44 @@ textarea:focus {
   font-weight: 900;
 }
 
-.quest-scene-rail li.done .quest-scene-rail-marker {
+.quest-scene-rail-details li.done .quest-scene-rail-marker {
   border-color: rgba(147, 239, 208, 0.64);
   color: #93efd0;
 }
 
-.quest-scene-rail li.active .quest-scene-rail-marker {
+.quest-scene-rail-current .quest-scene-rail-marker,
+.quest-scene-rail-details li.active .quest-scene-rail-marker {
   border-color: var(--quest-gold);
   color: #fff0c2;
   box-shadow: 0 0 12px rgba(227, 193, 116, 0.4);
 }
 
-.quest-scene-rail li div {
+.quest-scene-rail-details li div {
   display: grid;
   min-width: 0;
   gap: 2px;
 }
 
-.quest-scene-rail li strong,
-.quest-scene-rail li small {
+.quest-scene-rail-details li strong,
+.quest-scene-rail-details li small {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.quest-scene-rail li strong {
+.quest-scene-rail-details li strong {
   color: #edf3f4;
   font-family: "Songti SC", "Noto Serif SC", Georgia, serif;
   font-size: 12px;
 }
 
-.quest-scene-rail li small {
+.quest-scene-rail-details li small {
   color: #9eafba;
   font-size: 10px;
   line-height: 1.3;
 }
 
-.quest-scene-rail li.active small {
+.quest-scene-rail-details li.active small {
   color: #f0d999;
 }
 
@@ -19514,18 +19605,28 @@ textarea:focus {
     gap: 3px;
   }
 
-  .quest-scene-rail ol {
+  .quest-scene-rail-current strong {
+    white-space: normal;
+  }
+
+  .quest-scene-rail-details > summary {
+    align-items: flex-start;
+    flex-direction: column;
+    padding: 8px 30px 8px 10px;
+  }
+
+  .quest-scene-rail-details ol {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 6px;
   }
 
-  .quest-scene-rail li {
+  .quest-scene-rail-details li {
     width: auto;
     min-height: 48px;
   }
 
-  .quest-scene-rail li:not(:last-child)::after {
+  .quest-scene-rail-details li:not(:last-child)::after {
     display: none;
   }
 

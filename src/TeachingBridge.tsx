@@ -7539,32 +7539,52 @@ function EvidenceStoryQuest({
             已到达 {sceneIndex + 1} / {scenes.length} · 当前在「{scene.place}」
           </strong>
         </div>
-        <ol>
-          {scenes.map((item, index) => {
-            const status =
-              index < sceneIndex
-                ? "done"
-                : index === sceneIndex
-                  ? "active"
-                  : "next";
-            const railPlace = item.place.replace(/大厅|深处/g, "");
-            return (
-              <li className={status} key={item.id} title={item.place}>
-                <span className="quest-scene-rail-marker">{index + 1}</span>
-                <div>
-                  <strong>{railPlace}</strong>
-                  <small>
-                    {index < sceneIndex
-                      ? `已收录 · ${item.speaker}`
-                      : index === sceneIndex
-                        ? `正在调查 · ${item.speaker}`
-                        : `下一站 · ${item.speaker}`}
-                  </small>
-                </div>
-              </li>
-            );
-          })}
-        </ol>
+        <div className="quest-scene-rail-current" aria-label="当前地点定位">
+          <span className="quest-scene-rail-marker">{sceneIndex + 1}</span>
+          <div>
+            <b>现在只看这一站</b>
+            <strong>
+              {scene.place} · {scene.speaker}
+            </strong>
+            <small>
+              {nextScene
+                ? `收完本地点线索后，再去「${nextScene.place}」。`
+                : "这是本章最后一站，收完线索后进入实战会合。"}
+            </small>
+          </div>
+        </div>
+        <details className="quest-scene-rail-details" aria-label="完整地点路线">
+          <summary>
+            <span>查看完整地点路线</span>
+            <small>需要复盘地图时再展开</small>
+          </summary>
+          <ol>
+            {scenes.map((item, index) => {
+              const status =
+                index < sceneIndex
+                  ? "done"
+                  : index === sceneIndex
+                    ? "active"
+                    : "next";
+              const railPlace = item.place.replace(/大厅|深处/g, "");
+              return (
+                <li className={status} key={item.id} title={item.place}>
+                  <span className="quest-scene-rail-marker">{index + 1}</span>
+                  <div>
+                    <strong>{railPlace}</strong>
+                    <small>
+                      {index < sceneIndex
+                        ? `已收录 · ${item.speaker}`
+                        : index === sceneIndex
+                          ? `正在调查 · ${item.speaker}`
+                          : `下一站 · ${item.speaker}`}
+                    </small>
+                  </div>
+                </li>
+              );
+            })}
+          </ol>
+        </details>
       </nav>
 
       <section className="quest-stage">

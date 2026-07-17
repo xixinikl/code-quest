@@ -8,12 +8,12 @@
 
 - 当前远端：`https://github.com/xixinikl/code-quest.git`
 - 当前工作分支：`cx/ai-career-rpg-home`
-- 当前已推送功能基线：远端 `origin/cx/ai-career-rpg-home` 至少已到 `8901006 docs(rpg): pin cross-computer pull handoff`；本次体验修复提交后会晚于它。最终远端 hash 仍以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 输出为准。
-- 当前已推送交接基线：本文件提交后应晚于 `8901006`，包含另一台电脑拉取、核对、继续开发、不能直接合并，以及最新教学剧情流程卷轴收起说明。最终远端 hash 仍以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 为准。
+- 当前已推送功能基线：远端 `origin/cx/ai-career-rpg-home` 至少已到 `5625481 fix(rpg): collapse teaching flow overview`；本次第 1 章体验修复提交后会晚于它。最终远端 hash 仍以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 输出为准。
+- 当前已推送交接基线：本文件提交后应晚于 `5625481`，包含另一台电脑拉取、核对、继续开发、不能直接合并，以及最新教学剧情流程/地点路线默认收起说明。最终远端 hash 仍以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 为准。
 - 当前本地核对：推送完成后，`git status --short --branch` 应显示 `cx/ai-career-rpg-home...origin/cx/ai-career-rpg-home` 且没有未提交文件，说明本地与远端一致。
-- 当前远端核对：另一台电脑拉取后 `git log --oneline -5` 应看到本次体验修复提交，以及 `8901006 docs(rpg): pin cross-computer pull handoff`、`b0294cc fix(rpg): restore completed route lab deep links`、`ff25ee9 test(rpg): lock frontend testing dossier stay` 这些最近提交，或更晚提交；如果只看到 `772f66e`、`65e3603`、`5651c18`、`0fb18e7`、`0f7c433`、`c587a23`、`547ed6f`、`4370ddf`、`1b3cf5d`、`9171ac8`、`1a40fe4`、`e10069f`、`fa12dbc`、`2dd44d3`、`ca2c7aa`、`3fe3db1` 或默认分支提交，说明还没拉到最新交接/体验细修。
+- 当前远端核对：另一台电脑拉取后 `git log --oneline -5` 应看到本次第 1 章体验修复提交，以及 `5625481 fix(rpg): collapse teaching flow overview`、`8901006 docs(rpg): pin cross-computer pull handoff`、`b0294cc fix(rpg): restore completed route lab deep links` 这些最近提交，或更晚提交；如果只看到 `772f66e`、`65e3603`、`5651c18`、`0fb18e7`、`0f7c433`、`c587a23`、`547ed6f`、`4370ddf`、`1b3cf5d`、`9171ac8`、`1a40fe4`、`e10069f`、`fa12dbc`、`2dd44d3`、`ca2c7aa`、`3fe3db1` 或默认分支提交，说明还没拉到最新交接/体验细修。
 - 远端默认 HEAD：`git ls-remote --symref origin HEAD` 指向 `feat/guided-learning-bridge`，不是本分支；另一台电脑必须显式切到 `cx/ai-career-rpg-home`，不要只用 clone 后默认分支继续。
-- 给协作者的最短说明：不要直接用默认分支；拉仓库后必须切到 `cx/ai-career-rpg-home`。当前至少应看到 `8901006 docs(rpg): pin cross-computer pull handoff`、`b0294cc fix(rpg): restore completed route lab deep links` 和本次体验修复提交，或更晚提交；进入项目后必须 `nvm use` 到 Node `24.13.1`。
+- 给协作者的最短说明：不要直接用默认分支；拉仓库后必须切到 `cx/ai-career-rpg-home`。当前至少应看到 `5625481 fix(rpg): collapse teaching flow overview`、`8901006 docs(rpg): pin cross-computer pull handoff` 和本次第 1 章体验修复提交，或更晚提交；进入项目后必须 `nvm use` 到 Node `24.13.1`。
 - 他具体怎么拉：如果另一台电脑没有本项目，按“首次 clone”执行；如果已经 clone 过，按“已有仓库更新”执行；如果他本地有未提交改动，先新建自己的分支或 stash，不要直接覆盖。不要在默认分支上继续开发。
 
 ### 另一台电脑怎么拉，给他照抄

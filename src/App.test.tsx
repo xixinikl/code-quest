@@ -2657,6 +2657,46 @@ describe("AI 职业路线入口", () => {
     expect(fullFlow).toHaveTextContent("需要全局复盘时再展开");
   });
 
+  it("教学剧情默认只显示当前地点定位，完整地点路线需要用户主动展开", async () => {
+    const user = userEvent.setup();
+    vi.stubGlobal(
+      "fetch",
+      vi.fn((input: RequestInfo | URL) => {
+        const url = String(input);
+        if (url.includes("/teaching")) return response([]);
+        return response({ error: "NOT_FOUND", message: "unexpected" }, 404);
+      }),
+    );
+
+    render(
+      <TeachingBridge
+        attemptId="attempt-collapsed-places"
+        scenario={teachingScenario}
+        developer={{
+          name: "见习开发者",
+          rank: "见习开发者",
+          xp: 0,
+          missionsCleared: 0,
+          clearedChapterIds: [],
+          unlockedCompanionNames: [],
+          joinedAt: "2026-07-05T00:00:00.000Z",
+        }}
+        onComplete={vi.fn()}
+      />,
+    );
+
+    await user.click(await screen.findByRole("button", { name: /开始闯关/ }));
+
+    expect(screen.getByLabelText("当前地点定位")).toHaveTextContent(
+      "现在只看这一站",
+    );
+    expect(screen.getByLabelText("当前地点定位")).toHaveTextContent("前端舞台");
+
+    const placeRoute = screen.getByLabelText("完整地点路线");
+    expect(placeRoute).not.toHaveAttribute("open");
+    expect(placeRoute).toHaveTextContent("需要复盘地图时再展开");
+  });
+
   it("章节结案页会把结论整理成工作、证据和面试三格复盘", async () => {
     vi.stubGlobal(
       "fetch",
@@ -5947,7 +5987,7 @@ describe("AI 职业路线入口", () => {
     expect(screen.getByText(/面试一句话/)).toBeInTheDocument();
     expect(screen.getByText(/我会这样讲：在「前端舞台」/)).toBeInTheDocument();
     expect(screen.getByText(/下一地点预告/)).toBeInTheDocument();
-    expect(screen.getByText(/传送门大厅/)).toBeInTheDocument();
+    expect(screen.getAllByText(/传送门大厅/).length).toBeGreaterThan(0);
     await user.click(screen.getByRole("button", { name: /沿证据继续追到/ }));
     await user.type(
       screen.getByLabelText("本幕复述原话"),
