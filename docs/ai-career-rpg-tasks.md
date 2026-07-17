@@ -52,6 +52,14 @@
 
 ## 当前已完成切片
 
+### R337：前端第 5 关提交后结案停留回归锁
+
+- [x] 补强 Lab 提交回归：不只断言 `onSubmitted({ showReward: false })` 被调用，还让测试组件用真实 `useState` 接住服务端返回的 `submitted` attempt。
+- [x] 断言提交后页面真的停在 `成长档案结案`，并继续显示工作复盘、Agent 委托和面试讲法，避免用户通关后被奖励页或首页路径抢走上下文。
+- [x] 这项回归专门保护“用户不迷路”：通关不是把用户送走，而是先让他看到这一关能沉淀成什么工作证据和面试素材。
+
+验收：`npm run test -- src/App.test.tsx --run -t "提交成功后停留"` 通过；后续仍建议补一次从浏览器点击提交到结案页的截图式复核。
+
 ### R336：前端第 5 关源头配置去保存链路
 
 - [x] 清理 `frontend-testing-proof` 运行时 Lab 基础步骤里的旧保存链路占位：集成流程不再写 `POST /api/canvases` / `GET /api/canvases`，改成 `GET /api/tasks?status=blocked`、DOM 可见行和 `POST /api/reports/verification`。

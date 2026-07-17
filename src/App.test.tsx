@@ -6,6 +6,7 @@ import {
   within,
 } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { useState } from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import App, {
   CareerDossier,
@@ -3142,6 +3143,86 @@ describe("AI 职业路线入口", () => {
     expect(onSubmitted).not.toHaveBeenCalled();
     await user.click(screen.getByRole("button", { name: /生成成长档案/ }));
     expect(onSubmitted).toHaveBeenCalledTimes(1);
+    expect(onSubmitted).toHaveBeenCalledWith({ showReward: false });
+  });
+
+  it("提交成功后停留在成长档案结案页，不把用户送回首页奖励页", async () => {
+    const user = userEvent.setup();
+    const onSubmitted = vi.fn();
+    const config = getLabConfig("frontend-testing-proof");
+    const testingArtifacts = Object.entries(config.artifactGuides).map(
+      ([id, guide]) => ({
+        id,
+        label: guide.place,
+        language: "txt",
+        relativePath: `${config.practical.sandboxPath}/${id}.txt`,
+        content: guide.keyLines.join("\n"),
+      }),
+    );
+    const completedResponses = Object.fromEntries(
+      config.steps
+        .filter((step) => step.kind === "response")
+        .map((step) => [
+          step.id,
+          {
+            response: {
+              text: `${step.label} 已记录旧故障、DOM、Network、sourceHash 与回归风险证据。`,
+            },
+            savedAt: "2026-07-17T00:00:00.000Z",
+          },
+        ]),
+    );
+    const completeAttempt = {
+      id: "attempt-frontend-testing-proof",
+      scenarioId: "frontend-testing-proof",
+      status: "active" as const,
+      hintLevel: 0,
+      verificationStatus: "passed" as const,
+      steps: completedResponses,
+    } as Parameters<typeof Lab>[0]["attempt"];
+
+    vi.stubGlobal(
+      "fetch",
+      vi.fn((input: RequestInfo | URL, init?: RequestInit) => {
+        if (
+          String(input) ===
+            "/api/attempts/attempt-frontend-testing-proof/submit" &&
+          init?.method === "POST"
+        ) {
+          return response({ ...completeAttempt, status: "submitted" });
+        }
+        return response({ error: "NOT_FOUND", message: "unexpected" }, 404);
+      }),
+    );
+
+    function StatefulLab() {
+      const [labAttempt, setLabAttempt] = useState<
+        Parameters<typeof Lab>[0]["attempt"] | null
+      >(completeAttempt);
+
+      if (!labAttempt) return null;
+
+      return (
+        <Lab
+          artifacts={testingArtifacts}
+          attempt={labAttempt}
+          onBackToRoadmap={vi.fn()}
+          onSubmitted={onSubmitted}
+          setAttempt={setLabAttempt}
+        />
+      );
+    }
+
+    render(<StatefulLab />);
+
+    await user.click(screen.getByRole("button", { name: /生成成长档案/ }));
+
+    expect(await screen.findByLabelText("成长档案结案")).toHaveTextContent(
+      "前端工程 · 第 5 关",
+    );
+    expect(screen.getByText("工作复盘")).toBeInTheDocument();
+    expect(screen.getByText("Agent 委托")).toBeInTheDocument();
+    expect(screen.getByText("面试讲法")).toBeInTheDocument();
     expect(onSubmitted).toHaveBeenCalledWith({ showReward: false });
   });
 
