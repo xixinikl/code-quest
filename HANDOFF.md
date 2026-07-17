@@ -10,6 +10,17 @@
 
 最新判断：这条分支可以给另一台电脑拉下来继续开发，但还不建议直接合并到 `main`。如果时间紧，先把 `cx/ai-career-rpg-home` 当作完整备份和继续开发基线；另一台电脑拉完后从它切自己的 `cx/...` 分支继续做 UI/剧情/关卡，不要在默认分支上改。
 
+给对方直接复制这一段：
+
+```text
+仓库：https://github.com/xixinikl/code-quest.git
+要拉的分支：cx/ai-career-rpg-home
+不要用 clone 后默认分支继续开发。先切到 cx/ai-career-rpg-home，再核对本地 HEAD、origin/cx/ai-career-rpg-home 和远端 ls-remote 三个 hash。
+完整基线：至少能看到 865e721 feat(rpg): anchor player role on intro，或者看到晚于它的交接更新提交。
+拉完先跑：nvm use && npm install && npm run verify:quick
+准备合并或交付前再跑：npm run verify
+```
+
 ### 他电脑上还没有这个仓库
 
 ```bash
@@ -75,11 +86,11 @@ git pull --ff-only origin cx/ai-career-rpg-home
 
 - `git status --short --branch` 显示在 `cx/ai-career-rpg-home`，并且没有未提交文件。
 - `git rev-parse HEAD`、`git rev-parse origin/cx/ai-career-rpg-home`、`git ls-remote origin refs/heads/cx/ai-career-rpg-home` 的 hash 一致。
-- `git log --oneline -8` 能看到 `b42a904 feat(rpg): show collectible unlock rewards`、本次结案后冒险菜单/交接更新提交，或更晚提交。
+- `git log --oneline -8` 能看到 `865e721 feat(rpg): anchor player role on intro`、本次“另一台电脑怎么拉”交接更新提交，或更晚提交。
 - `nvm use` 后 Node 是 `.nvmrc` 指定的 `v24.13.1`。
 - `npm run verify:quick` 通过后再继续开发；准备合并或交付前跑完整 `npm run verify`。
 
-如果 hash 不一致、还停在默认分支、或者只看到很旧的提交，不要继续改；先重新 `git fetch origin`，再切回 `cx/ai-career-rpg-home`。
+如果 hash 不一致、还停在默认分支、或者只看到早于 `865e721` 的提交，不要继续改；先重新 `git fetch origin`，再切回 `cx/ai-career-rpg-home`。
 
 ## 当前状态
 
@@ -89,12 +100,12 @@ git pull --ff-only origin cx/ai-career-rpg-home
 
 - 当前远端：`https://github.com/xixinikl/code-quest.git`
 - 当前工作分支：`cx/ai-career-rpg-home`
-- 当前已推送功能基线：远端 `origin/cx/ai-career-rpg-home` 至少已到 `b42a904 feat(rpg): show collectible unlock rewards`；本次结案后冒险菜单和交接文档提交后会晚于它。最终远端 hash 仍以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 输出为准。
-- 当前已推送交接基线：本文件提交后应晚于 `b42a904`，包含另一台电脑拉取、核对、继续开发、不能直接合并，以及最新第 1 章地点路线/当前流程交接单/主动复述证据边界/复盘关键线索/下一地点证据交接/Lab 刷新恢复/Lab 实战接力/收藏解锁/结案后冒险菜单说明。最终远端 hash 仍以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 为准。
+- 当前已推送功能基线：远端 `origin/cx/ai-career-rpg-home` 已到 `865e721 feat(rpg): anchor player role on intro`；本次“另一台电脑怎么拉”交接文档提交后会晚于它。最终远端 hash 仍以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 输出为准。
+- 当前已推送交接基线：本文件提交后应晚于 `865e721`，包含另一台电脑拉取、核对、继续开发、不能直接合并，以及最新第 1 章地点路线/当前流程交接单/主动复述证据边界/复盘关键线索/下一地点证据交接/Lab 刷新恢复/Lab 实战接力/收藏解锁/结案后冒险菜单/下一幕预告/玩家身份契约说明。最终远端 hash 仍以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 为准。
 - 当前本地核对：推送完成后，`git status --short --branch` 应显示 `cx/ai-career-rpg-home...origin/cx/ai-career-rpg-home` 且没有未提交文件，说明本地与远端一致。
-- 当前远端核对：另一台电脑拉取后 `git log --oneline -8` 应看到 `b42a904 feat(rpg): show collectible unlock rewards`、本次结案后冒险菜单和交接更新提交，或更晚提交；如果只看到 `2387686`、`772f66e`、`65e3603`、`5651c18`、`0fb18e7`、`0f7c433`、`c587a23`、`547ed6f`、`4370ddf`、`1b3cf5d`、`9171ac8`、`1a40fe4`、`e10069f`、`fa12dbc`、`2dd44d3`、`ca2c7aa`、`3fe3db1` 或默认分支提交，说明还没拉到最新交接/体验细修。
+- 当前远端核对：另一台电脑拉取后 `git log --oneline -8` 应看到 `865e721 feat(rpg): anchor player role on intro`、本次“另一台电脑怎么拉”交接更新提交，或更晚提交；如果只看到 `678d428`、`6dc63ea`、`b42a904`、`2387686`、`772f66e`、`65e3603`、`5651c18`、`0fb18e7`、`0f7c433`、`c587a23`、`547ed6f`、`4370ddf`、`1b3cf5d`、`9171ac8`、`1a40fe4`、`e10069f`、`fa12dbc`、`2dd44d3`、`ca2c7aa`、`3fe3db1` 或默认分支提交，说明还没拉到最新交接/体验细修。
 - 远端默认 HEAD：`git ls-remote --symref origin HEAD` 指向 `feat/guided-learning-bridge`，不是本分支；另一台电脑必须显式切到 `cx/ai-career-rpg-home`，不要只用 clone 后默认分支继续。
-- 给协作者的最短说明：不要直接用默认分支；拉仓库后必须切到 `cx/ai-career-rpg-home`。当前至少应看到 `b42a904 feat(rpg): show collectible unlock rewards`、本次结案后冒险菜单和本次交接更新提交，或更晚提交；进入项目后必须 `nvm use` 到 Node `24.13.1`。
+- 给协作者的最短说明：不要直接用默认分支；拉仓库后必须切到 `cx/ai-career-rpg-home`。当前至少应看到 `865e721 feat(rpg): anchor player role on intro`、本次“另一台电脑怎么拉”交接更新提交，或更晚提交；进入项目后必须 `nvm use` 到 Node `24.13.1`。
 - 他具体怎么拉：如果另一台电脑没有本项目，按“首次 clone”执行；如果已经 clone 过，按“已有仓库更新”执行；如果他本地有未提交改动，先新建自己的分支或 stash，不要直接覆盖。不要在默认分支上继续开发，也不要在没有核对 hash 的情况下合并。
 
 ### 最新进度补充（2026-07-17 夜）
@@ -153,7 +164,7 @@ npm run verify:quick
 npm run dev
 ```
 
-拉完后 `git log --oneline -5` 应至少能看到 `b42a904 feat(rpg): show collectible unlock rewards`、本次结案后冒险菜单/交接更新提交，或更晚提交：
+拉完后 `git log --oneline -5` 应至少能看到 `865e721 feat(rpg): anchor player role on intro`、本次“另一台电脑怎么拉”交接更新提交，或更晚提交：
 
 ```bash
 git log --oneline -8
@@ -161,7 +172,7 @@ git rev-parse HEAD
 git ls-remote origin refs/heads/cx/ai-career-rpg-home
 ```
 
-如果显示的是 `feat/guided-learning-bridge`、`main` 上的提交，或只停在早于 `b42a904` 的提交，说明没有拉到今天上传的内容。此时不要继续改，先重新 `git fetch origin` 并切到 `cx/ai-career-rpg-home`。
+如果显示的是 `feat/guided-learning-bridge`、`main` 上的提交，或只停在早于 `865e721` 的提交，说明没有拉到今天上传的内容。此时不要继续改，先重新 `git fetch origin` 并切到 `cx/ai-career-rpg-home`。
 
 ### 已有仓库更新照抄
 
@@ -255,7 +266,7 @@ npm run verify:quick
 
 - `git status --short --branch` 显示在 `cx/ai-career-rpg-home`，没有未提交文件。
 - `HEAD`、`origin/cx/ai-career-rpg-home`、`git ls-remote` 三个 hash 一致，或 `HEAD` 是刚创建的本地分支并跟踪同一个远端提交。
-- `git log --oneline -8` 能看到 `b42a904`、本次结案后冒险菜单和本交接更新提交，或更晚提交。
+- `git log --oneline -8` 能看到 `865e721`、本次“另一台电脑怎么拉”交接更新提交，或更晚提交。
 - `nvm use` 后 Node 是 `.nvmrc` 指定的 `v24.13.1`。
 - `npm run verify:quick` 通过后再继续开发；如果失败，先不要改业务，先记录错误并修环境或依赖。
 
