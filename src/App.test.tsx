@@ -2404,6 +2404,82 @@ describe("AI 职业路线入口", () => {
     expect(screen.getByText(/不能证明数据库已保存/)).toBeInTheDocument();
   });
 
+  it("第一章代码导读完成后会交接能证明和不能证明的证据边界", async () => {
+    const user = userEvent.setup();
+    const codeTransitionFetch = vi.fn(
+      (input: RequestInfo | URL, init?: RequestInit) => {
+        const url = String(input);
+        if (url === "/api/attempts/attempt-code-transition/teaching") {
+          return response([
+            {
+              stepId: "project-map",
+              completed: true,
+              teachingResponse: {},
+              remediationEvents: [],
+              updatedAt: "2026-07-05T00:00:00.000Z",
+            },
+            {
+              stepId: "micro-lessons",
+              completed: true,
+              teachingResponse: {},
+              remediationEvents: [],
+              updatedAt: "2026-07-05T00:00:00.000Z",
+            },
+          ]);
+        }
+        if (
+          url.includes("/api/attempts/attempt-code-transition/teaching/") &&
+          init?.method === "PATCH"
+        ) {
+          return response([]);
+        }
+        return response({ error: "NOT_FOUND", message: "unexpected" }, 404);
+      },
+    );
+    vi.stubGlobal("fetch", codeTransitionFetch);
+
+    render(
+      <TeachingBridge
+        attemptId="attempt-code-transition"
+        scenario={teachingScenario}
+        developer={{
+          name: "见习开发者",
+          rank: "见习开发者",
+          xp: 0,
+          missionsCleared: 0,
+          clearedChapterIds: [],
+          unlockedCompanionNames: [],
+          joinedAt: "2026-07-05T00:00:00.000Z",
+        }}
+        onComplete={vi.fn()}
+      />,
+    );
+
+    expect(
+      await screen.findByRole("heading", {
+        name: "前端：只看 fetch 与 response.ok",
+      }),
+    ).toBeInTheDocument();
+    await user.click(
+      screen.getByRole("button", { name: /我看懂了，继续下一步/ }),
+    );
+
+    const transition = await screen.findByRole("dialog", {
+      name: "伙伴证据收录",
+    });
+    expect(transition).toHaveTextContent("代码证据交接复盘");
+    expect(transition).toHaveTextContent("刚才看懂");
+    expect(transition).toHaveTextContent("画布名称字符串");
+    expect(transition).toHaveTextContent("界面显示成功提示");
+    expect(transition).toHaveTextContent("能证明");
+    expect(transition).toHaveTextContent("还不能证明");
+    expect(transition).toHaveTextContent("下一站带着它查");
+    expect(transition).toHaveTextContent(
+      "路由：只看 saveCanvas 调用与 return 201",
+    );
+    expect(transition).toHaveTextContent("Network、后端日志、数据库记录");
+  });
+
   it("教学进度只统计当前章节步骤并封顶 100%", async () => {
     const progressScenario = {
       ...case02Scenario,

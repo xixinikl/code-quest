@@ -564,6 +564,16 @@ function StepEvidenceTransition({
     ? "不用背标准答案：用一句自己的话说，这一关要看什么证据，才能证明真的完成？"
     : "不用抄流程图：用一句自己的话说，起点把什么交给谁，最后又要交出什么？";
   const recallReady = activeRecall.trim().length >= 12;
+  const codeFocus = completedStep.codeFocus;
+  const codeTransitionSummary = codeFocus
+    ? {
+        canProve: codeFocus.observationGoal,
+        cannotProve: `还不能证明「${codeFocus.output}」已经在真实环境稳定发生。下一站还要看 Network、后端日志、数据库记录或测试结果。`,
+        nextEvidence: nextStep
+          ? `${nextStep.title}：${nextStep.goal}`
+          : "伙伴会合：把代码、证据和实战任务串成一条完整证据链。",
+      }
+    : null;
 
   return (
     <div className="step-evidence-transition" role="presentation">
@@ -596,6 +606,36 @@ function StepEvidenceTransition({
             </article>
           </div>
           <blockquote>“{getCompanionAction(completedStep)}”</blockquote>
+          {codeTransitionSummary && (
+            <section
+              className="step-transition-code-recap"
+              aria-label="代码证据交接复盘"
+            >
+              <span>代码证据交接复盘</span>
+              <dl>
+                <div>
+                  <dt>刚才看懂</dt>
+                  <dd>
+                    「{codeFocus?.input}」经过「{completedStep.title}
+                    」，准备交出「
+                    {codeFocus?.output}」。
+                  </dd>
+                </div>
+                <div>
+                  <dt>能证明</dt>
+                  <dd>{codeTransitionSummary.canProve}</dd>
+                </div>
+                <div>
+                  <dt>还不能证明</dt>
+                  <dd>{codeTransitionSummary.cannotProve}</dd>
+                </div>
+                <div>
+                  <dt>下一站带着它查</dt>
+                  <dd>{codeTransitionSummary.nextEvidence}</dd>
+                </div>
+              </dl>
+            </section>
+          )}
           {requiresRecall && (
             <label className="step-transition-recall">
               <span>主动复述 · 不评分</span>
