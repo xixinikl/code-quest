@@ -194,6 +194,15 @@
 
 验收：`npm run test -- src/teachingRemediation.test.ts --run -t "前端第 4 关教学剧情|前端第 5 关教学剧情"` 通过；`npm run test -- src/App.test.tsx --run -t "前端无障碍|Java 事务和前端性能|岗位路线"` 通过 11 项目标测试；完整 `npm run verify` 通过 10 个测试文件 / 185 个测试、生产构建和 TeachingBridge 懒加载检查。浏览器隔离 API `4395`、临时 SQLite `/tmp/code-quest-r322.sqlite`、Vite `5245` 下，`#chapter-frontend-4` 桌面 1280 与 390px 均无横向溢出，暗色背景 `rgb(7, 12, 20)`，控制台 error 为 0；页面正文不再出现上线门禁、上线计划、生产变量、生产环境、备份恢复或 AI_API_KEY。
 
+### R323：Java 第 5 关教学层事故时间线所有权修复
+
+- [x] 接着 R309 的 Lab 修复，继续把 `java-production-incident` 的 teaching scenario 从第 14 章上线门禁结构里拆出来；项目地图节点改为事故窗口、日志与运行环境、影响范围、报警哨塔、止血决策门和事故结论。
+- [x] 代码导读从 `release-checklist.md` / 生产配置 / AI_API_KEY / 备份恢复 / 上线决定，改为 `docs/incident-response-timeline.md` 和 `server/IncidentTimeline.java`，强调 errorRate、P95、successRate、requestId、异常栈、影响范围、止血和恢复复测。
+- [x] 新增教学层回归测试，直接读取 `javaProductionIncidentScenario`，防止 `case-014-release-readiness`、上线门禁、上线计划、生产变量、生产环境、AI_API_KEY、备份恢复和数据备份回流。
+- [x] 浏览器深链抽检 `#chapter-java-5`：入口和闯关后的剧情页均保持 Java 后端/线上事故语境，用户能看到报警、requestId、异常栈、影响范围、止血、回滚和恢复复测路线。
+
+验收：`npm run test -- src/teachingRemediation.test.ts --run -t "Java 第 5 关教学剧情|前端第 4 关教学剧情|前端第 5 关教学剧情"` 通过；`npm run test -- src/App.test.tsx --run -t "Java 事故 Lab|岗位路线"` 通过 11 项目标测试；完整 `npm run verify` 通过 10 个测试文件 / 186 个测试、生产构建和 TeachingBridge 懒加载检查。浏览器隔离 API `4396`、临时 SQLite `/tmp/code-quest-r323.sqlite`、Vite `5246` 下，`#chapter-java-5` 桌面 1280 与 390px 均无横向溢出，暗色背景 `rgb(7, 12, 20)`，控制台 error 为 0；页面正文不再出现上线门禁、上线计划、生产变量、生产环境、备份恢复或 AI_API_KEY。
+
 ### R300：第 3 章登录态实战剧情导演层
 
 - [x] 第 3 章实战步骤补齐场景、角色、任务卷轴和流程接力：身份路线、凭证存储、401 反证、刷新复查、Agent 委托、交付审查和面试复盘都明确“谁把凭证交给谁，刷新后谁来认人”。

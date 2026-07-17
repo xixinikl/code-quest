@@ -16,6 +16,7 @@ import {
   case15Scenario,
   frontendAccessibilityProofScenario,
   frontendTestingProofScenario,
+  javaProductionIncidentScenario,
   type TeachingScenario,
 } from "./teaching";
 import { withChapterRemediation } from "./remediation";
@@ -197,6 +198,26 @@ describe("第 2-15 章专属补课契约", () => {
     expect(teachingText).toContain("语义结构");
     expect(teachingText).toContain("键盘路径");
     expect(teachingText).toContain("390px 复测");
+    expect(teachingText).not.toContain("case-014-release-readiness");
+    expect(teachingText).not.toContain("上线门禁");
+    expect(teachingText).not.toContain("上线计划");
+    expect(teachingText).not.toContain("生产变量");
+    expect(teachingText).not.toContain("生产环境");
+    expect(teachingText).not.toContain("AI_API_KEY");
+    expect(teachingText).not.toContain("备份恢复");
+    expect(teachingText).not.toContain("数据备份");
+  });
+
+  it("Java 第 5 关教学剧情不再复用上线门禁素材", () => {
+    const teachingText = JSON.stringify(javaProductionIncidentScenario);
+
+    expect(teachingText).toContain("java-production-incident");
+    expect(teachingText).toContain("线上故障时间线地图");
+    expect(teachingText).toContain("事故窗口");
+    expect(teachingText).toContain("requestId");
+    expect(teachingText).toContain("异常栈");
+    expect(teachingText).toContain("止血");
+    expect(teachingText).toContain("恢复复测");
     expect(teachingText).not.toContain("case-014-release-readiness");
     expect(teachingText).not.toContain("上线门禁");
     expect(teachingText).not.toContain("上线计划");

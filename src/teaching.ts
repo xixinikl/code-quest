@@ -4084,46 +4084,277 @@ export const javaReleaseHarborScenario: TeachingScenario = {
   }),
 };
 
+const javaProductionIncidentTeachingReplacements: Array<[string, string]> = [
+  ["case-014-release-readiness", "java-production-incident"],
+  ["c14-", "incident-"],
+  ["上线前夜巡查", "线上事故时间线巡查"],
+  ["上线检查小抄", "报警、日志与止血小抄"],
+  ["上线前夜结案报告", "线上事故复盘报告"],
+  ["上线计划", "事故窗口"],
+  ["发布窗口", "事故开始时间"],
+  ["影响范围", "受影响用户和接口"],
+  ["负责人", "值班负责人"],
+  ["验证路径", "恢复复测路径"],
+  ["已通过审查的交付", "线上报警信号"],
+  ["发布行动表", "事故时间线"],
+  ["没有负责人", "无人响应报警"],
+  ["没有验证路径", "没有恢复复测路径"],
+  ["发布窗口不清", "事故开始时间不清"],
+  ["release checklist", "incident timeline"],
+  ["任务单", "值班记录"],
+  ["交付说明", "事故说明"],
+  ["配置与环境变量", "日志与运行环境"],
+  ["生产环境", "线上运行环境"],
+  ["生产环境配置", "运行时信号"],
+  ["生产配置", "运行环境"],
+  ["环境变量", "运行配置"],
+  ["生产 API URL", "服务版本号"],
+  ["AI_API_KEY", "事故特征开关"],
+  ["APP_ORIGIN", "requestId"],
+  ["密钥", "异常信号"],
+  ["线上缺 key", "日志缺 requestId"],
+  ["前端暴露异常信号", "日志没有脱敏"],
+  ["前端暴露密钥", "日志没有脱敏"],
+  ["测试 URL 指向生产", "版本号和请求不匹配"],
+  ["env checklist", "runtime signals"],
+  ["构建日志", "异常栈"],
+  ["运行日志", "backend.log"],
+  ["数据备份", "影响范围"],
+  ["数据变更计划", "受影响业务"],
+  ["备份和恢复说明", "影响范围和止血说明"],
+  ["无备份", "影响范围不明"],
+  ["备份不可恢复", "回滚后没有复测"],
+  ["迁移不可逆", "数据风险未评估"],
+  ["备份记录", "影响范围记录"],
+  ["迁移计划", "修复计划"],
+  ["恢复演练说明", "恢复复测报告"],
+  ["监控哨塔", "报警哨塔"],
+  [
+    "上线后观察错误率、耗时、日志和关键业务指标。",
+    "事故发生后观察错误率、P95、业务成功率、日志和关键接口。",
+  ],
+  ["线上流量", "线上请求"],
+  ["健康/异常信号", "事故信号"],
+  ["没人值守", "无人响应"],
+  ["没有指标", "缺少错误率或 P95"],
+  ["只看首页能打开", "只看服务进程还活着"],
+  ["错误日志", "错误率"],
+  ["接口耗时", "P95 延迟"],
+  ["业务成功率", "成功率"],
+  ["回滚机关", "止血决策门"],
+  [
+    "预先写清触发条件、回滚步骤和回滚后验证。",
+    "写清降级、暂停或回滚的触发条件，以及止血后的复测路径。",
+  ],
+  ["异常信号", "事故证据"],
+  ["恢复到稳定版本", "恢复核心路径"],
+  ["触发条件不清", "止血条件不清"],
+  ["回滚影响数据", "回滚影响数据或状态"],
+  ["回滚后未复测", "止血后未复测"],
+  ["回滚方案", "止血/回滚决定"],
+  ["上一版本", "稳定版本"],
+  ["复测报告", "恢复复测报告"],
+  ["上线决定", "事故结论"],
+  ["上线证据", "事故证据"],
+  ["放行/暂缓/回滚结论", "观察/降级/回滚/恢复结论"],
+  ["凭感觉上线", "凭感觉重启"],
+  ["异常不处理", "报警不响应"],
+  ["风险未告知", "影响未同步"],
+  ["上线记录", "事故记录"],
+  ["监控结果", "恢复指标"],
+  ["复盘", "事故复盘"],
+  ["核对运行条件", "串起报警"],
+  ["保护数据", "确认影响范围"],
+  ["上线后观察", "观察指标"],
+  ["异常则回退", "决定止血"],
+  ["形成上线结论", "形成事故结论"],
+  ["上线", "事故处理"],
+  ["发布", "事故处理"],
+  ["部署", "止血"],
+  ["门禁", "事故判断"],
+  ["灰度", "降级"],
+  ["暂缓", "继续观察"],
+  ["上线清单：不是点部署，是逐项过门", "事故清单：不是重启服务，是逐项取证"],
+  [
+    "只看发布前必须确认的步骤、证据和责任人",
+    "只看报警、requestId、异常栈、影响范围和恢复复测",
+  ],
+  [
+    "交付通过 → 上线清单 → 发布窗口",
+    "报警信号 → 请求时间线 → 止血决定 → 恢复复测",
+  ],
+  ["docs/release-checklist.md", "docs/incident-response-timeline.md"],
+  ["releaseGateChecklist", "incidentResponseChecklist"],
+  ["可以事故处理 / 继续观察事故处理", "继续观察 / 降级 / 回滚 / 恢复服务"],
+  ["可以上线 / 暂缓上线", "继续观察 / 降级 / 回滚 / 恢复服务"],
+  ["口头承诺", "没有证据的猜测"],
+  ["没有证据的已检查", "没有 requestId 或指标的判断"],
+  ["临时补的模糊项", "只写重启试试的处理"],
+  [
+    "计划：发布窗口、影响范围、负责人、验证路径。",
+    "报警：错误率、P95、业务成功率和事故窗口。",
+  ],
+  [
+    "配置：生产 API URL、AI_API_KEY、功能开关均已确认。",
+    "日志：requestId、路径、版本号和异常栈可对齐。",
+  ],
+  [
+    "数据：迁移前备份完成，恢复步骤已演练或记录。",
+    "范围：受影响用户、接口、租户和数据风险已说明。",
+  ],
+  [
+    "监控：错误率、接口耗时、关键业务指标已有人值守。",
+    "止血：降级、暂停或回滚的条件和负责人已写清。",
+  ],
+  [
+    "回滚：触发条件、回滚命令、回滚后验证路径已写清。",
+    "复测：恢复后冒烟、指标、日志和关键路径已复核。",
+  ],
+  [
+    "上线清单要能决定是否放行。每一项都要有可观察证据，而不是写“已确认”。",
+    "事故清单要能决定观察、降级、回滚还是恢复服务。每一项都要有指标、日志或复测证据，而不是写“应该好了”。",
+  ],
+  ["配置与回滚：线上不是你的本地电脑", "日志与止血：红灯不是根因"],
+  [
+    "只看环境变量、功能开关和回滚条件如何保护上线",
+    "只看 requestId、异常栈、版本号和止血条件如何保护核心路径",
+  ],
+  [
+    "生产环境 → 配置校验 → 监控异常 → 回滚",
+    "报警指标 → 请求日志 → 影响范围 → 止血复测",
+  ],
+  ["release/production-readiness.md", "server/IncidentTimeline.java"],
+  ["productionReadiness", "incidentDecision"],
+  ["已审查通过的交付", "线上报警信号"],
+  [
+    "事故处理清单：不是点止血，是逐项过门",
+    "事故清单：不是重启服务，是逐项取证",
+  ],
+  [
+    "只看事故处理前必须确认的步骤、证据和责任人",
+    "只看报警、requestId、异常栈、影响范围和恢复复测",
+  ],
+  [
+    "计划：事故开始时间、受影响用户和接口、值班负责人、恢复复测路径。",
+    "报警：错误率、P95、成功率和事故开始时间。",
+  ],
+  [
+    "配置：服务版本号、事故特征开关、功能开关均已确认。",
+    "日志：requestId、路径、版本号和异常栈可对齐。",
+  ],
+  [
+    "监控：错误率、P95 延迟、关键业务指标已有人值守。",
+    "止血：降级、暂停或回滚的条件和负责人已写清。",
+  ],
+  [
+    "回滚：触发条件、回滚命令、回滚后恢复复测路径已写清。",
+    "复测：恢复后冒烟、指标、日志和关键路径已复核。",
+  ],
+  [
+    "事故处理清单要能决定是否放行。每一项都要有可观察证据，而不是写“已确认”。",
+    "事故清单要能决定观察、降级、回滚还是恢复服务。每一项都要有指标、日志或复测证据，而不是写“应该好了”。",
+  ],
+  [
+    "只看运行配置、功能开关和回滚条件如何保护事故处理",
+    "只看 requestId、异常栈、版本号和止血条件如何保护核心路径",
+  ],
+  ["运行环境和事故处理版本", "报警指标和请求日志"],
+  [
+    "requiredEnv: ['DATABASE_URL', '事故特征开关', 'requestId']",
+    "signals: errorRate, p95, successRate, requestId",
+  ],
+  [
+    "事故处理前要知道线上依赖什么配置、如何降级、何时回滚，以及回滚后怎么证明系统恢复。",
+    "事故处理中要知道信号何时开始、哪条请求出错、影响范围多大、止血后如何证明恢复。",
+  ],
+  ["线上事故事故复盘报告", "线上事故复盘报告"],
+  [
+    "能说出事故处理检查清单，并解释失败后怎么发现、怎么回滚",
+    "能说出事故排查时间线，并解释报警、日志、止血和复测分别证明什么",
+  ],
+  ["放行、降级、继续观察或回滚", "继续观察、降级、暂停或回滚"],
+  ["恢复恢复复测报告", "恢复复测报告"],
+  ["生产配置和发布版本", "报警指标和请求日志"],
+  ["稳定运行或安全回退", "观察、降级、回滚或恢复服务"],
+  ["真实密钥值", "用户隐私和真实 token"],
+  ["无关部署平台细节", "无关机器信息"],
+  ["未授权线上操作", "真实线上写操作"],
+  [
+    "requiredEnv: ['DATABASE_URL', 'AI_API_KEY', 'APP_ORIGIN']",
+    "signals: errorRate, p95, successRate, requestId",
+  ],
+  [
+    "featureFlag: aiCareerRpgRoute = 'gradual-rollout'",
+    "trace: requestId -> route -> version -> stack",
+  ],
+  [
+    "rollbackWhen: errorRate > 2% 或保存成功率明显下降",
+    "rollbackWhen: errorRate > 5% or p95 > 800ms",
+  ],
+  [
+    "rollbackVerify: 旧版本恢复后，登录、保存、AI 调用主路径通过",
+    "recoveryVerify: health check + smoke test + metrics back to normal",
+  ],
+  [
+    "上线前要知道线上依赖什么配置、如何灰度、何时回滚，以及回滚后怎么证明系统恢复。",
+    "事故处理中要知道信号何时开始、哪条请求出错、影响范围多大、止血后如何证明恢复。",
+  ],
+  [
+    "上线计划、环境变量、数据备份、监控和回滚分别保护什么",
+    "报警、requestId、异常栈、影响范围和恢复复测分别证明什么",
+  ],
+  [
+    "能说出上线检查清单，并解释失败后怎么发现、怎么回滚",
+    "能说出事故排查时间线，并解释报警、日志、止血和复测分别证明什么",
+  ],
+];
+
 export const javaProductionIncidentScenario: TeachingScenario = {
   scenarioId: "java-production-incident",
-  projectMap: case14Map,
-  steps: case14Scenario.steps.map((step) => {
-    const titles: Record<string, string> = {
-      "c14-map": "线上故障地图",
-      "c14-concepts": "日志、指标与回滚小抄",
-      "c14-code-tour": "关键代码：谁先发现故障",
-      "c14-evidence": "证据时间线：从报警到止血",
-      "c14-close": "线上事故结案报告",
-    };
-    return {
-      ...step,
-      title: titles[step.id] ?? step.title,
-      goal:
-        step.id === "c14-map"
-          ? "先画出报警、请求、日志、指标、回滚和复测怎样接力。"
-          : step.id === "c14-concepts"
-            ? "理解日志告诉你发生了什么、指标告诉你影响多大、回滚保护什么。"
-            : step.goal,
-      ...(step.id === "c14-code-tour"
-        ? {
-            codeFocus: {
-              ...step.codeFocus!,
-              filePath: "server/IncidentTimeline.java",
-              functionName: "decide",
-              lines: [
-                "public IncidentDecision decide(Signals signals, Release previous) {",
-                '  if (signals.errorRate() > 0.05) return rollback("error rate");',
-                '  if (signals.latencyP95() > 800) return hold("latency");',
-                "  return observe(previous);",
-                "}",
-              ],
-              observationGoal:
-                "事故处理不是看到红灯就重启，而是把错误率、延迟和稳定版本交给明确的决定函数。",
-            },
-          }
-        : {}),
-    };
-  }),
+  projectMap: rewriteTeachingCopy(
+    case14Map,
+    javaProductionIncidentTeachingReplacements,
+  ),
+  steps: rewriteTeachingCopy(
+    case14Scenario.steps.map((step) => {
+      const titles: Record<string, string> = {
+        "c14-map": "线上故障时间线地图",
+        "c14-concepts": "报警、日志与止血小抄",
+        "c14-code-tour": "关键代码：谁先发现故障",
+        "c14-evidence": "证据时间线：从报警到止血",
+        "c14-close": "线上事故复盘报告",
+      };
+      return {
+        ...step,
+        title: titles[step.id] ?? step.title,
+        goal:
+          step.id === "c14-map"
+            ? "先画出报警、请求、日志、指标、止血和复测怎样接力。"
+            : step.id === "c14-concepts"
+              ? "理解日志告诉你发生了什么、指标告诉你影响多大、回滚保护什么。"
+              : step.goal,
+        ...(step.id === "c14-code-tour"
+          ? {
+              codeFocus: {
+                ...step.codeFocus!,
+                filePath: "server/IncidentTimeline.java",
+                functionName: "decide",
+                lines: [
+                  "public IncidentDecision decide(Signals signals, Release previous) {",
+                  '  if (signals.errorRate() > 0.05) return rollback("error rate");',
+                  '  if (signals.latencyP95() > 800) return hold("latency");',
+                  "  return observe(previous);",
+                  "}",
+                ],
+                observationGoal:
+                  "事故处理不是看到红灯就重启，而是把错误率、延迟和稳定版本交给明确的决定函数。",
+              },
+            }
+          : {}),
+      };
+    }),
+    javaProductionIncidentTeachingReplacements,
+  ),
 };
 
 const frontendAccessibilityTeachingReplacements: Array<[string, string]> = [
