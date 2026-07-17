@@ -838,6 +838,16 @@ describe("岗位路线实战场景契约", () => {
     expect(screen.getByLabelText("本关流程路线")).toHaveTextContent(
       "服务端会话",
     );
+    expect(screen.getByLabelText("流程分镜")).toHaveTextContent("收到");
+    expect(screen.getByLabelText("流程分镜")).toHaveTextContent("处理");
+    expect(screen.getByLabelText("流程分镜")).toHaveTextContent("交给");
+    expect(screen.getByLabelText("流程分镜")).toHaveTextContent("返回 200");
+    expect(screen.getByLabelText("流程分镜")).toHaveTextContent(
+      "Cookie 或 Token 要能刷新恢复",
+    );
+    expect(screen.getByLabelText("流程分镜")).toHaveTextContent(
+      "受保护接口：应该保存",
+    );
     expect(screen.getByLabelText("本关职业产出")).toHaveTextContent(
       "用户刷新后掉登录",
     );
@@ -939,6 +949,16 @@ describe("岗位路线实战场景契约", () => {
 
     expect(screen.getByLabelText("本关流程路线")).toHaveTextContent(
       "数据库约束",
+    );
+    expect(screen.getByLabelText("流程分镜")).toHaveTextContent("连点保存");
+    expect(screen.getByLabelText("流程分镜")).toHaveTextContent(
+      "前端：连点保存",
+    );
+    expect(screen.getByLabelText("流程分镜")).toHaveTextContent(
+      "Idempotency-Key 和 clientMutationId 是同一枚锤印",
+    );
+    expect(screen.getByLabelText("流程分镜")).toHaveTextContent(
+      "数据库约束：查旧结果",
     );
     expect(screen.getByLabelText("本关名词小抄")).toHaveTextContent("幂等");
     expect(screen.getByLabelText("本关名词小抄")).toHaveTextContent(

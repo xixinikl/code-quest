@@ -9231,6 +9231,67 @@ function LabRouteCompass({
   );
 }
 
+function LabFlowStoryboard({
+  activeIndex,
+  activeStep,
+  config,
+}: {
+  activeIndex: number;
+  activeStep: LabStep;
+  config: LabConfig;
+}) {
+  const activeFlowIndex = getLabStepFlowIndex(activeStep.id, activeIndex, config);
+  const firstGuide = Object.values(config.artifactGuides)[0];
+
+  return (
+    <section className="lab-flow-storyboard" aria-label="流程分镜">
+      <header>
+        <span>流程分镜</span>
+        <strong>把这一关当成一场接力：每一棒都要收到、处理、交出</strong>
+      </header>
+      <ol>
+        {config.flowItems.map((item, index) => {
+          const previous = config.flowItems[index - 1];
+          const next = config.flowItems[index + 1];
+          const received =
+            previous?.title ??
+            firstGuide?.focus ??
+            config.baseline.title;
+          const giveTo = next?.label ?? "成长档案";
+
+          return (
+            <li
+              className={`${index === activeFlowIndex ? "active" : ""} ${
+                index < activeFlowIndex ? "done" : ""
+              }`}
+              key={`${item.label}-${item.title}-story`}
+            >
+              <div>
+                <small>{String(index + 1).padStart(2, "0")}</small>
+                <strong>{item.label}</strong>
+              </div>
+              <p>
+                <b>收到</b>
+                <span>{received}</span>
+              </p>
+              <p>
+                <b>处理</b>
+                <span>{item.detail}</span>
+              </p>
+              <p>
+                <b>交给</b>
+                <span>
+                  {giveTo}：{item.title}
+                </span>
+              </p>
+            </li>
+          );
+        })}
+      </ol>
+    </section>
+  );
+}
+
 const glossaryExplanations: Record<string, string> = {
   前端: "用户看到和点击的页面，它负责收集输入、发请求和显示结果。",
   接口: "前端和后端约定好的入口，比如 POST /api/briefs。",
@@ -12531,6 +12592,11 @@ export function Lab({
             handoff={questLogHandoff}
           />
           <LabRouteCompass
+            activeIndex={activeIndex}
+            activeStep={activeStep}
+            config={config}
+          />
+          <LabFlowStoryboard
             activeIndex={activeIndex}
             activeStep={activeStep}
             config={config}

@@ -52,6 +52,18 @@
 
 ## 当前已完成切片
 
+### R363：Lab 首屏加入流程分镜
+
+- [x] 修复用户看完流程路线后仍可能不知道“谁收到什么、做什么、交给谁”的问题：在 `本关流程路线` 后新增 `流程分镜`。
+- [x] 流程分镜直接读取当前 `LabConfig.flowItems`，自动生成每一棒的 `收到 / 处理 / 交给`，不写死第 3 或第 5 章。
+- [x] 第 5 章真实 Lab 会显示：用户连点保存交给前端；前端携带 `Idempotency-Key / clientMutationId` 交给后端数据层；后端数据层查旧结果后交给数据库约束。
+- [x] 第 3 章测试锁定：登录接口返回 200 后，浏览器凭证要保存 Cookie 或 Token，并交给受保护接口继续验证。
+- [x] 样式保持暗色 RPG，桌面自适应网格，手机单列；390px 浏览器验证无横向溢出。
+- [x] 补充回归测试：第 3 章和第 5 章 Lab 必须显示 `收到 / 处理 / 交给` 的流程分镜内容。
+- [x] 真实浏览器复核：默认 Vite `5284`，打开 `#chapter-5` 后可见 `流程分镜`；390px 手机宽度 `scrollWidth = 390`；控制台 0 error / 0 warning；截图：`output/playwright/r363-chapter5-flow-storyboard.png`、`output/playwright/r363-chapter5-flow-storyboard-mobile.png`。
+
+验收：`npm run test -- src/App.test.tsx --run -t "第 3 章 Lab 首屏会讲清登录态|第 4 章 Lab 首屏会解释接口错误名词|第 5 章 Lab 首屏会给出数据一致性|岗位 Lab 默认收束辅助资料"` 通过；`npm run verify:quick` 通过 11 个测试文件 / 203 个测试。
+
 ### R362：Lab 首屏加入本关证据任务
 
 - [x] 修复用户知道流程和名词后，仍可能不知道“到底用什么证明过关”的问题：在 `本关名词小抄` 后新增 `本关证据任务`。
