@@ -6104,6 +6104,18 @@ describe("AI 职业路线入口", () => {
       await screen.findByRole("button", { name: /照亮空档案格/ }),
     );
     await user.click(screen.getByRole("button", { name: /比对读写路径/ }));
+    expect(screen.getByLabelText("下一地点预告")).toHaveTextContent(
+      "带着这份证据",
+    );
+    expect(screen.getByLabelText("下一地点预告")).toHaveTextContent(
+      "SELECT 查询却是 0 行",
+    );
+    expect(screen.getByLabelText("下一地点预告")).toHaveTextContent(
+      "下一幕要交出",
+    );
+    expect(screen.getByLabelText("下一地点预告")).toHaveTextContent(
+      "保存后刷新，再查数据库",
+    );
     await user.click(screen.getByRole("button", { name: /沿证据继续追到/ }));
     await user.type(
       screen.getByLabelText("本幕复述原话"),

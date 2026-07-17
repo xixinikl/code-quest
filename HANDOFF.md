@@ -1,5 +1,84 @@
 # 码上冒险：后续 Agent 交接入口
 
+## 给协作者/另一台电脑照抄的拉取方式
+
+仓库：`https://github.com/xixinikl/code-quest.git`
+
+当前继续开发分支：`cx/ai-career-rpg-home`
+
+重要提醒：GitHub 默认分支不是当前工作分支。不要 clone 后直接在默认分支改，也不要直接合并到 `main`；先显式切到 `cx/ai-career-rpg-home`，核对 hash，再安装依赖和验证。
+
+### 他电脑上还没有这个仓库
+
+```bash
+git clone https://github.com/xixinikl/code-quest.git
+cd code-quest
+git fetch origin
+git switch -c cx/ai-career-rpg-home --track origin/cx/ai-career-rpg-home
+git status --short --branch
+git log --oneline -8
+git rev-parse HEAD
+git rev-parse origin/cx/ai-career-rpg-home
+git ls-remote origin refs/heads/cx/ai-career-rpg-home
+nvm install
+nvm use
+npm install
+npm run verify:quick
+npm run dev
+```
+
+### 他电脑上已经有旧仓库
+
+```bash
+cd code-quest
+git status --short --branch
+git fetch origin
+git switch cx/ai-career-rpg-home
+git pull --ff-only origin cx/ai-career-rpg-home
+git status --short --branch
+git log --oneline -8
+git rev-parse HEAD
+git rev-parse origin/cx/ai-career-rpg-home
+git ls-remote origin refs/heads/cx/ai-career-rpg-home
+nvm use
+npm install
+npm run verify:quick
+npm run dev
+```
+
+如果 `git switch cx/ai-career-rpg-home` 提示本地没有这个分支：
+
+```bash
+git fetch origin
+git switch -c cx/ai-career-rpg-home --track origin/cx/ai-career-rpg-home
+```
+
+### 如果他本地有未提交改动
+
+不要直接 pull 覆盖。先把他的现场保存到自己的分支：
+
+```bash
+git status --short
+git switch -c cx/my-local-work
+git add .
+git commit -m "wip: save local work"
+git fetch origin
+git switch cx/ai-career-rpg-home
+git pull --ff-only origin cx/ai-career-rpg-home
+```
+
+### 拉完怎样确认是完整的
+
+必须同时确认这几件事：
+
+- `git status --short --branch` 显示在 `cx/ai-career-rpg-home`，并且没有未提交文件。
+- `git rev-parse HEAD`、`git rev-parse origin/cx/ai-career-rpg-home`、`git ls-remote origin refs/heads/cx/ai-career-rpg-home` 的 hash 一致。
+- `git log --oneline -8` 能看到 `ea4f0bd fix(rpg): recap active evidence clue`，以及本交接更新提交，或更晚提交。
+- `nvm use` 后 Node 是 `.nvmrc` 指定的 `v24.13.1`。
+- `npm run verify:quick` 通过后再继续开发；准备合并或交付前跑完整 `npm run verify`。
+
+如果 hash 不一致、还停在默认分支、或者只看到很旧的提交，不要继续改；先重新 `git fetch origin`，再切回 `cx/ai-career-rpg-home`。
+
 ## 当前状态
 
 `cx/ai-career-rpg-home` 分支，基于冻结 `main` 开发；当前阶段成果已经推送到 GitHub。
@@ -8,8 +87,8 @@
 
 - 当前远端：`https://github.com/xixinikl/code-quest.git`
 - 当前工作分支：`cx/ai-career-rpg-home`
-- 当前已推送功能基线：远端 `origin/cx/ai-career-rpg-home` 至少已到 `0277771 fix(rpg): ground recall in missing evidence`；本次场景复盘关键线索提交后会晚于它。最终远端 hash 仍以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 输出为准。
-- 当前已推送交接基线：本文件提交后应晚于 `0277771`，包含另一台电脑拉取、核对、继续开发、不能直接合并，以及最新第 1 章地点路线/当前流程交接单/主动复述证据边界/复盘关键线索说明。最终远端 hash 仍以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 为准。
+- 当前已推送功能基线：远端 `origin/cx/ai-career-rpg-home` 至少已到 `ea4f0bd fix(rpg): recap active evidence clue`；本次“下一地点预告证据交接”和交接文档提交后会晚于它。最终远端 hash 仍以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 输出为准。
+- 当前已推送交接基线：本文件提交后应晚于 `ea4f0bd`，包含另一台电脑拉取、核对、继续开发、不能直接合并，以及最新第 1 章地点路线/当前流程交接单/主动复述证据边界/复盘关键线索/下一地点证据交接说明。最终远端 hash 仍以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 为准。
 - 当前本地核对：推送完成后，`git status --short --branch` 应显示 `cx/ai-career-rpg-home...origin/cx/ai-career-rpg-home` 且没有未提交文件，说明本地与远端一致。
 - 当前远端核对：另一台电脑拉取后 `git log --oneline -5` 应看到本次第 1 章主动复述提示提交，以及 `a2050e4 fix(rpg): focus chapter one location rail`、`5625481 fix(rpg): collapse teaching flow overview`、`8901006 docs(rpg): pin cross-computer pull handoff` 这些最近提交，或更晚提交；如果只看到 `772f66e`、`65e3603`、`5651c18`、`0fb18e7`、`0f7c433`、`c587a23`、`547ed6f`、`4370ddf`、`1b3cf5d`、`9171ac8`、`1a40fe4`、`e10069f`、`fa12dbc`、`2dd44d3`、`ca2c7aa`、`3fe3db1` 或默认分支提交，说明还没拉到最新交接/体验细修。
 - 远端默认 HEAD：`git ls-remote --symref origin HEAD` 指向 `feat/guided-learning-bridge`，不是本分支；另一台电脑必须显式切到 `cx/ai-career-rpg-home`，不要只用 clone 后默认分支继续。

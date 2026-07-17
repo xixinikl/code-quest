@@ -7945,6 +7945,20 @@ function EvidenceStoryQuest({
                         ? `下一幕要去「${nextScene.title}」：${nextScene.goal}`
                         : "你已经把本关线索串起来了。下一步进入实战，把判断变成可验收的修复。"}
                     </p>
+                    <dl className="quest-next-evidence">
+                      <div>
+                        <dt>带着这份证据</dt>
+                        <dd>{activeJourney.proof}</dd>
+                      </div>
+                      <div>
+                        <dt>{nextJourney ? "下一幕要交出" : "实战要证明"}</dt>
+                        <dd>
+                          {nextJourney
+                            ? nextJourney.payload
+                            : "保存、刷新、查库和测试都能对上"}
+                        </dd>
+                      </div>
+                    </dl>
                   </div>
                 </div>
               </>
