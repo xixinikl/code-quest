@@ -9347,6 +9347,56 @@ function LabSceneTravel({
   );
 }
 
+function LabCareerOutcome({ config }: { config: LabConfig }) {
+  const { route, chapter } = getRouteChapterForScenarioId(config.scenarioId);
+  if (!chapter) return null;
+
+  const outcomes = [
+    {
+      label: "工作里怎么用",
+      title: "把关卡变成真实岗位动作",
+      body: chapter.workBackground,
+      icon: Code2,
+    },
+    {
+      label: "怎么交给 Agent",
+      title: "别只说帮我做，要给边界和验收",
+      body: chapter.agentCollaboration,
+      icon: Lightbulb,
+    },
+    {
+      label: "面试怎么讲",
+      title: "把证据讲成项目复盘",
+      body: chapter.interviewReview,
+      icon: Trophy,
+    },
+  ];
+
+  return (
+    <section className="lab-career-outcome" aria-label="本关职业产出">
+      <header>
+        <span>
+          {route?.label ?? "AI 应用开发"} · 第 {displayChapterNumber(chapter)} 章
+        </span>
+        <strong>这一关不是做题，是以后工作和面试能拿出来讲的证据</strong>
+      </header>
+      <div>
+        {outcomes.map((outcome) => {
+          const Icon = outcome.icon;
+          return (
+            <article key={outcome.label}>
+              <Icon aria-hidden="true" />
+              <span>{outcome.label}</span>
+              <strong>{outcome.title}</strong>
+              <p>{outcome.body}</p>
+            </article>
+          );
+        })}
+      </div>
+    </section>
+  );
+}
+
 function LabStepReceipt({
   config,
   nextStep,
@@ -12317,6 +12367,7 @@ export function Lab({
               </div>
             </div>
           </section>
+          <LabCareerOutcome config={config} />
           <LabAbilityMark activeStep={activeStep} config={config} />
           {lastSavedStep && lastSavedStep.id !== activeStep.id && (
             <LabStepReceipt

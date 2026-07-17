@@ -728,6 +728,64 @@ describe("岗位路线实战场景契约", () => {
     }
   });
 
+  it("第 2 章 Lab 会说明工作、Agent 和面试产出，避免只剩任务表", () => {
+    const config = getLabConfig("canvasstorm-product-brief");
+    const jobArtifacts = Object.entries(config.artifactGuides).map(
+      ([id, guide]) => ({
+        id,
+        label: guide.place,
+        language: "txt",
+        relativePath: `${config.practical.sandboxPath}/${id}.txt`,
+        content: guide.keyLines.join("\n"),
+      }),
+    );
+
+    render(
+      <Lab
+        artifacts={jobArtifacts}
+        attempt={
+          {
+            id: "attempt-case-02-career-outcome",
+            scenarioId: "canvasstorm-product-brief",
+            status: "active",
+            hintLevel: 0,
+            verificationStatus: "not_run",
+            steps: {},
+          } as Parameters<typeof Lab>[0]["attempt"]
+        }
+        onBackToRoadmap={vi.fn()}
+        onSubmitted={vi.fn()}
+        setAttempt={vi.fn()}
+      />,
+    );
+
+    expect(screen.getByLabelText("实战入场证据包")).toHaveTextContent(
+      "Project Brief 表单",
+    );
+    expect(screen.getByLabelText("本关同行小队")).toHaveTextContent(
+      "宠物 · 灵感萤火",
+    );
+    expect(screen.getByLabelText("场景运镜")).toHaveTextContent("Brief 星图桌");
+    expect(screen.getByLabelText("本关职业产出")).toHaveTextContent(
+      "工作里怎么用",
+    );
+    expect(screen.getByLabelText("本关职业产出")).toHaveTextContent(
+      "真实工作里不会只说“做个 AI 功能”",
+    );
+    expect(screen.getByLabelText("本关职业产出")).toHaveTextContent(
+      "怎么交给 Agent",
+    );
+    expect(screen.getByLabelText("本关职业产出")).toHaveTextContent(
+      "让 Agent 先输出 Brief 和验收口径",
+    );
+    expect(screen.getByLabelText("本关职业产出")).toHaveTextContent(
+      "面试怎么讲",
+    );
+    expect(screen.getByLabelText("本关职业产出")).toHaveTextContent(
+      "我把模糊 AI 想法拆成可开发链路",
+    );
+  });
+
   it("实战保存后会显示具体接力回执，避免自动跳步后迷路", async () => {
     const user = userEvent.setup();
     const config = getLabConfig("frontend-performance-proof");
