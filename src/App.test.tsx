@@ -5989,6 +5989,15 @@ describe("AI 职业路线入口", () => {
     expect(screen.getByText(/下一地点预告/)).toBeInTheDocument();
     expect(screen.getAllByText(/传送门大厅/).length).toBeGreaterThan(0);
     await user.click(screen.getByRole("button", { name: /沿证据继续追到/ }));
+    expect(screen.getByLabelText("本幕主动复述")).toHaveTextContent(
+      "照着这三句写",
+    );
+    expect(screen.getByLabelText("本幕主动复述")).toHaveTextContent(
+      "这条证据证明",
+    );
+    expect(screen.getByLabelText("本幕主动复述")).toHaveTextContent(
+      "下一幕我要查：传送门大厅的证据",
+    );
     await user.type(
       screen.getByLabelText("本幕复述原话"),
       "页面收到成功回信，但还不能证明数据库真的写入。",

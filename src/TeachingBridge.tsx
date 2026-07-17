@@ -7842,6 +7842,19 @@ function EvidenceStoryQuest({
                     <strong>
                       用你自己的话说：这一幕的证据证明了什么，下一幕要继续查什么？
                     </strong>
+                    <div
+                      className="quest-recall-guide"
+                      aria-label="主动复述提示"
+                    >
+                      <span>照着这三句写</span>
+                      <ol>
+                        <li>这条证据证明：{sceneRecap[2].value}</li>
+                        <li>它还不能证明：下一层已经真的完成。</li>
+                        <li>
+                          下一幕我要查：{nextScene?.place ?? "实战修复"}的证据。
+                        </li>
+                      </ol>
+                    </div>
                     <textarea
                       aria-label="本幕复述原话"
                       value={recallDraft}
