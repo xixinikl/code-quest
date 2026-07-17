@@ -1300,6 +1300,63 @@ function getScenePortrait(scene: QuestScene) {
   );
 }
 
+function QuestSceneSpotlight({
+  scene,
+  sceneIndex,
+  totalScenes,
+  previousScene,
+  nextScene,
+  activeJourney,
+}: {
+  scene: QuestScene;
+  sceneIndex: number;
+  totalScenes: number;
+  previousScene: QuestScene | undefined;
+  nextScene: QuestScene | undefined;
+  activeJourney: QuestJourneyItem | undefined;
+}) {
+  const portrait = getScenePortrait(scene) ?? archiveKeeperPortrait;
+  return (
+    <section
+      className="quest-scene-spotlight"
+      aria-label="剧情舞台镜头"
+      style={{ "--spotlight-bg": `url(${scene.image})` } as CSSProperties}
+    >
+      <div className="quest-scene-spotlight-copy">
+        <span>
+          第 {sceneIndex + 1}/{totalScenes} 幕 · {scene.place}
+        </span>
+        <strong className="quest-scene-spotlight-title">{scene.title}</strong>
+        <p>{scene.dialogue}</p>
+        <dl aria-label="这一幕学习锚点">
+          <div>
+            <dt>我现在在哪</dt>
+            <dd>{scene.place}</dd>
+          </div>
+          <div>
+            <dt>先懂这一句</dt>
+            <dd>{activeJourney?.plain ?? scene.goal}</dd>
+          </div>
+          <div>
+            <dt>下一幕交接</dt>
+            <dd>
+              {nextScene
+                ? `${scene.speaker} 会把证据交给 ${nextScene.place}`
+                : "收束证据，进入实战修复"}
+            </dd>
+          </div>
+        </dl>
+      </div>
+      <aside className="quest-scene-spotlight-cast" aria-label="当前登场角色">
+        <img src={portrait} alt={scene.speaker} />
+        <span>{previousScene ? "接过上一幕证据" : "本章首位向导"}</span>
+        <strong>{scene.speaker}</strong>
+        <p>{scene.mentor}</p>
+      </aside>
+    </section>
+  );
+}
+
 type SceneDecisionOption = {
   id: string;
   label: string;
@@ -7756,6 +7813,15 @@ function EvidenceStoryQuest({
           </ol>
         </details>
       </nav>
+
+      <QuestSceneSpotlight
+        scene={scene}
+        sceneIndex={sceneIndex}
+        totalScenes={scenes.length}
+        previousScene={previousScene}
+        nextScene={nextScene}
+        activeJourney={activeJourney}
+      />
 
       <section className="quest-stage">
         <section className="quest-memory-echo" aria-label="上一幕回声">

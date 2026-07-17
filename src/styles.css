@@ -15013,6 +15013,152 @@ textarea:focus {
   color: #f0d999;
 }
 
+.quest-scene-spotlight {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: minmax(0, 1.45fr) minmax(190px, 0.58fr);
+  width: min(1180px, calc(100% - 40px));
+  min-height: 290px;
+  margin: 14px auto 0;
+  overflow: hidden;
+  border: 1px solid rgba(227, 193, 116, 0.34);
+  border-radius: 8px;
+  background:
+    linear-gradient(90deg, rgba(2, 7, 13, 0.94), rgba(2, 7, 13, 0.48) 64%),
+    linear-gradient(180deg, transparent 38%, rgba(2, 7, 13, 0.84)),
+    var(--spotlight-bg) center / cover no-repeat;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 244, 214, 0.04),
+    0 28px 64px rgba(0, 0, 0, 0.34);
+}
+
+.quest-scene-spotlight::before {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  content: "";
+  background:
+    radial-gradient(
+      circle at 78% 18%,
+      rgba(147, 239, 208, 0.2),
+      transparent 28%
+    ),
+    linear-gradient(115deg, rgba(227, 193, 116, 0.11), transparent 42%);
+  mix-blend-mode: screen;
+}
+
+.quest-scene-spotlight-copy,
+.quest-scene-spotlight-cast {
+  position: relative;
+  z-index: 1;
+}
+
+.quest-scene-spotlight-copy {
+  display: grid;
+  align-content: center;
+  padding: clamp(18px, 3.4vw, 32px);
+  gap: 13px;
+}
+
+.quest-scene-spotlight-copy > span,
+.quest-scene-spotlight-cast > span {
+  width: fit-content;
+  padding: 5px 9px;
+  border: 1px solid rgba(147, 239, 208, 0.22);
+  border-radius: 999px;
+  color: #93efd0;
+  background: rgba(3, 10, 15, 0.64);
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.quest-scene-spotlight-title {
+  display: block;
+  max-width: 680px;
+  margin: 0;
+  color: #fff4ce;
+  font-family: "Songti SC", "Noto Serif SC", Georgia, serif;
+  font-size: clamp(30px, 5vw, 54px);
+  line-height: 1.08;
+  text-shadow: 0 18px 38px rgba(0, 0, 0, 0.46);
+}
+
+.quest-scene-spotlight-copy p {
+  max-width: 720px;
+  margin: 0;
+  color: #dbe5e7;
+  font-size: 15px;
+  line-height: 1.78;
+}
+
+.quest-scene-spotlight-copy dl {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin: 2px 0 0;
+  gap: 8px;
+}
+
+.quest-scene-spotlight-copy dl > div {
+  min-width: 0;
+  padding: 11px 12px;
+  border: 1px solid rgba(255, 244, 214, 0.14);
+  border-radius: 6px;
+  background: rgba(3, 10, 15, 0.62);
+  backdrop-filter: blur(10px);
+}
+
+.quest-scene-spotlight-copy dt {
+  color: #e3c174;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.quest-scene-spotlight-copy dd {
+  margin: 6px 0 0;
+  overflow-wrap: anywhere;
+  color: #f2f7f5;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.5;
+}
+
+.quest-scene-spotlight-cast {
+  display: grid;
+  align-content: end;
+  justify-items: center;
+  padding: 18px 18px 20px;
+  gap: 8px;
+  background:
+    linear-gradient(180deg, transparent, rgba(3, 9, 14, 0.78)),
+    rgba(255, 255, 255, 0.035);
+  text-align: center;
+}
+
+.quest-scene-spotlight-cast img {
+  width: min(170px, 76%);
+  max-height: 210px;
+  object-fit: contain;
+  object-position: center bottom;
+  filter: drop-shadow(0 26px 34px rgba(0, 0, 0, 0.48));
+  animation: quest-character-breathe 4.8s ease-in-out infinite;
+}
+
+.quest-scene-spotlight-cast strong {
+  color: #fff4ce;
+  font-family: "Songti SC", "Noto Serif SC", Georgia, serif;
+  font-size: 19px;
+  line-height: 1.28;
+}
+
+.quest-scene-spotlight-cast p {
+  max-width: 230px;
+  margin: 0;
+  color: #c9d4de;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
 .quest-stage {
   position: relative;
   z-index: 1;
@@ -16925,6 +17071,17 @@ textarea:focus {
   }
 }
 
+@keyframes quest-character-breathe {
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+  }
+
+  50% {
+    transform: translateY(-4px) scale(1.015);
+  }
+}
+
 @keyframes mentor-scene-in {
   from {
     opacity: 0;
@@ -17045,6 +17202,10 @@ textarea:focus {
     transition: none;
     transform: none;
   }
+
+  .quest-scene-spotlight-cast img {
+    animation: none;
+  }
 }
 
 @media (max-width: 720px) {
@@ -17061,6 +17222,43 @@ textarea:focus {
     min-height: auto;
     padding: 24px 0 28px;
     align-content: start;
+  }
+
+  .quest-scene-spotlight {
+    grid-template-columns: 1fr;
+    width: calc(100% - 28px);
+    min-height: 0;
+    margin-top: 10px;
+  }
+
+  .quest-scene-spotlight-copy {
+    padding: 15px;
+  }
+
+  .quest-scene-spotlight-title {
+    font-size: clamp(28px, 10vw, 38px);
+  }
+
+  .quest-scene-spotlight-copy dl {
+    grid-template-columns: 1fr;
+  }
+
+  .quest-scene-spotlight-cast {
+    grid-template-columns: 64px minmax(0, 1fr);
+    justify-items: start;
+    align-items: center;
+    padding: 12px 15px 15px;
+    text-align: left;
+  }
+
+  .quest-scene-spotlight-cast img {
+    grid-row: span 3;
+    width: 64px;
+    max-height: 86px;
+  }
+
+  .quest-scene-spotlight-cast p {
+    max-width: none;
   }
 
   .quest-current-contract {

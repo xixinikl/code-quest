@@ -6527,6 +6527,15 @@ describe("AI 职业路线入口", () => {
       }),
     ).toBeInTheDocument();
     expect(screen.getAllByText(/前端舞台/).length).toBeGreaterThanOrEqual(1);
+    const sceneSpotlight = screen.getByLabelText("剧情舞台镜头");
+    expect(sceneSpotlight).toHaveTextContent("第 1/4 幕");
+    expect(sceneSpotlight).toHaveTextContent("舞台记录员");
+    expect(sceneSpotlight).toHaveTextContent("先懂这一句");
+    expect(sceneSpotlight).toHaveTextContent("下一幕交接");
+    expect(sceneSpotlight).toHaveTextContent("传送门大厅");
+    expect(screen.getByLabelText("当前登场角色")).toHaveTextContent(
+      "舞台记录员",
+    );
     expect(
       screen.getAllByText(/保存数据的完整旅行路线/).length,
     ).toBeGreaterThan(0);
