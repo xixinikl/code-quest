@@ -109,6 +109,7 @@ npm run verify
 - 最新前端 Lab 语境收口：前端第 3 关性能 Lab 的可见流程已改为首屏瀑布图、接口 TTFB、Server-Timing、X-Cache、React 渲染画像和第二次访问复测；前端第 5 关测试 Lab 的可见流程已改为旧故障红灯、报告校验器、浏览器手动复测、sourceHash、回归风险和 Agent 交付审查，不再露出 `/api/canvases` 或 `验收试炼画布` 这类 AI 主线保存链路词。浏览器深链验收待补录。
 - 最新前端第 3 关性能语境收口：`#chapter-frontend-3` 第一幕线索不再写“保存后刷新慢”，改为首屏白屏、筛选慢、列表出现慢和滚动卡顿；剧情证据补入 `Server-Timing` 与 `X-Cache: MISS/HIT`；Lab 新手先读卡和证据示范卡不再掉回第一章 `response.ok / 数据库写入 / 保存链路` 默认模板。隔离 API `4406`、临时 SQLite `/tmp/code-quest-r330.sqlite`、Vite `5256` 下，完整收集 10/10 剧情线索 → 伙伴会合 → 进入实战 Lab；Lab 首屏显示 TTFB、Server-Timing、X-Cache、backend.log 和 render profile，桌面 1200 与 390px 均无横向溢出，暗色背景，控制台 error 为 0，旧保存/数据库词检查全为 false。
 - 最新前端第 5 关 Lab 接力修复：从 `#chapter-frontend-5` 走完 8/8 剧情线索、伙伴会合并进入前端测试 Lab，发现首题 `流程接力小剧场` 写成「旧故障 把线索交给 旧故障」。已修成第一棒从 `剧情现场 / 事故线索` 交给当前棒，最后一棒再交给 `结案卷宗 / 最终验收`，避免新手困惑“谁把什么交给谁”。隔离 API `4408`、临时 SQLite `/tmp/code-quest-r332.sqlite`、Vite `5258` 下，前端第 5 关深链桌面 1280 与 390px 均无横向溢出，暗色背景，控制台 error 为 0，旧保存链路词检查全为 false。`npm run verify:quick` 通过 11 个测试文件 / 189 个测试。
+- 最新前端第 5 关 Lab 证物名修复：Lab 导师和任务卷轴不再把 `failing-before`、`passing-after-stale`、`network-test-run` 这类内部 ID 当作「通关收获 / 沉淀为」展示，而是读取 `artifactGuides[id].place` 显示「第 1 棒证据：旧问题红灯」「验收门禁：报告校验器」等人话证物名。隔离 API `4409`、临时 SQLite `/tmp/code-quest-r333.sqlite`、Vite `5259` 下确认前端第 5 关封面进入正常，第一幕主动复述门槛有效；`npm run verify:quick` 通过 11 个测试文件 / 189 个测试。后续仍需继续做完整作答提交到结案页的浏览器录入式验收。
 - 最新前端第 5 关沙盒证物收口：`sandbox/frontend-testing-proof` 的 README、Network、手动报告、失败复现、过期报告、后端日志和 Agent 交付说明已全部改为任务列表筛选回归语境，固定 `GET /api/tasks?status=blocked`、DOM 可见列表、`POST /api/reports/verification` 和 `sourceHash` 证据链；新增 `src/sandboxEvidence.test.ts` 防止 `/api/canvases`、保存画布、验收试炼画布等旧词回流。Node `24.13.1` 下 `npm run verify:quick` 通过 11 个测试文件 / 187 个测试；沙盒自身 `npm test` 仍按练习设计失败 5 项，用于训练用户修报告校验器。
 - 最新前端第 5 关浏览器文案收口：隔离 API `4401`、临时 SQLite `/tmp/code-quest-r325.sqlite`、Vite `5251` 下，从 `#chapter-frontend-5` 真实浏览器发现主动复述、边界用例、Agent 示例和 Lab 证据表达卡仍有第一章保存/数据库例子；已改为筛选状态、DOM 可见行、Network、`sourceHash` 和回归风险。桌面 1280 与 390px 手机 DOM 旧词检查为空，暗色背景，控制台 error 为 0。
 - 最新 Java 第 4 关上线港归属收口：从 `#chapter-java-4` 真实浏览器发现剧情线索和 Lab 示范卡仍露出 AI 第 14 章 / 第一章保存链路旧词。已把 Java 上线港五幕剧情、沙盒证物、Lab 先读卡和证据表达示范改为订单服务上线语境：`order-service`、`POST /api/orders`、`JWT_SECRET`、`PAYMENT_API_URL`、订单表迁移、`/actuator/health`、下单成功率、支付回调失败率和回滚后验证。隔离 API `4403`、临时 SQLite `/tmp/code-quest-r327.sqlite`、Vite `5253` 下，完整收集 10/10 剧情线索并进入实战 Lab，控制台 error 为 0。
@@ -144,7 +145,7 @@ npm run verify
 
 1. 回看第 1 章和第 5 章真人视角文案密度，确认新手不会被术语压住。
 2. 做全站视觉与单屏节奏终审：桌面和 390px 手机都要看首屏是否知道“我在哪、要看什么、下一步点哪里”，避免用户为了理解两个信息点反复上下滑；实战页已经先把三张导读卡收进 `任务导演台`，并把流程图、路线牌、接力板折进 `辅助卷宗`，后续还要做完整 Lab 桌面/手机截图验收。
-3. 继续抽检 Java/前端剩余关卡进入实战 Lab 后的材料、作答和验收页，确认不只教学入口正确；Java 第 4 关、前端第 3 关已有完整 Lab 深链证据，前端第 5 关已补 Lab 首屏接力修复和桌面/390px 检查，后续仍可继续做完整作答提交到结案页的录入式验收。
+3. 继续抽检 Java/前端剩余关卡进入实战 Lab 后的材料、作答和验收页，确认不只教学入口正确；Java 第 4 关、前端第 3 关已有完整 Lab 深链证据，前端第 5 关已补 Lab 首屏接力修复和证物名人话化，后续仍要继续做完整作答提交到结案页的录入式验收。
 4. Java 第 5 关和前端第 4 关的 teaching map/code tour 已分别在 R323/R322 改成岗位所有权；后续更深一轮应继续清理两者的沙盒证物文件名和材料结构。前端第 5 关的部分沙盒证物仍保留保存链路类样例，可后续继续岗位专属化。
 5. 最后才进入 PR 合并审查：先写清楚这是阶段成果，不是学习效果已被真人证明的最终产品。
 

@@ -732,6 +732,20 @@ function pickArtifactGuide(
   return matched?.[1] ?? entries[0]?.[1];
 }
 
+function summarizeArtifactPlaces(config: LabConfig, artifactIds?: string[]) {
+  const ids = artifactIds?.length
+    ? artifactIds
+    : Object.keys(config.artifactGuides);
+  const places = ids
+    .map((id) => config.artifactGuides[id]?.place)
+    .filter((place): place is string => Boolean(place));
+  const uniquePlaces = [...new Set(places)];
+  if (uniquePlaces.length === 0) return config.result.recorded;
+
+  const visiblePlaces = uniquePlaces.slice(0, 4).join("、");
+  return uniquePlaces.length > 4 ? `${visiblePlaces}等证物` : visiblePlaces;
+}
+
 function rewriteLabCopy<T>(
   value: T,
   replacements: Array<[from: string, to: string]>,
@@ -775,7 +789,7 @@ function getLabStepScene(config: LabConfig, step: LabStep) {
           : step.kind === "baseline"
             ? config.baseline.body
             : (step.response?.prompt ?? step.label),
-      reward: config.result.recorded,
+      reward: summarizeArtifactPlaces(config, step.response?.artifactIds),
     }
   );
 }
@@ -9133,7 +9147,10 @@ function LabStepQuestBrief({
       ? config.baseline.action
       : activeStep.kind === "verification"
         ? "一份能说明修复有效和仍有边界的验收报告。"
-        : `一段包含证据、含义和下一步的作答，沉淀为${config.result.recorded}。`);
+        : `一段包含证据、含义和下一步的作答，沉淀为 ${summarizeArtifactPlaces(
+            config,
+            activeStep.response?.artifactIds,
+          )}。`);
 
   return (
     <section className="lab-step-quest-brief" aria-label="本步任务卷轴">

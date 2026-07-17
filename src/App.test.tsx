@@ -627,6 +627,15 @@ describe("岗位路线实战场景契约", () => {
         expect(screen.getByLabelText("当前这一棒")).toHaveTextContent(
           labCase.expectedFirstFlowLabel,
         );
+        expect(screen.getByLabelText("本步任务卷轴")).toHaveTextContent(
+          "第 1 棒证据：旧问题红灯",
+        );
+        expect(screen.getByLabelText("本步任务卷轴")).toHaveTextContent(
+          "验收门禁：报告校验器",
+        );
+        expect(screen.getByLabelText("本步任务卷轴")).not.toHaveTextContent(
+          "passing-after-stale",
+        );
       }
       expect(screen.getByLabelText("当前这一棒")).toHaveTextContent(
         currentFlow.title,

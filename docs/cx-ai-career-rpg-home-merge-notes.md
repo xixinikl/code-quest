@@ -149,6 +149,7 @@ npm run verify
 - 前端第 3 关性能语境追加修复：浏览器从 `#chapter-frontend-3` 发现第一幕线索仍写“保存后刷新慢”，且 Lab 证据表达默认会掉回第一章 `response.ok / 数据库写入` 模板。已改为首屏白屏、筛选慢、列表慢、滚动卡顿，剧情补入 `Server-Timing` 和 `X-Cache: MISS/HIT`，Lab 新手先读卡与示范卡改为 Network、TTFB、Server-Timing、X-Cache、后端日志和 render profile。隔离 API `4406`、SQLite `/tmp/code-quest-r330.sqlite`、Vite `5256` 下，完整收集 10/10 剧情线索进入实战 Lab；桌面 1200 与 390px 均无横向溢出，暗色背景，控制台 error 为 0，旧保存/数据库词检查全为 false。
 - 前端第 5 关阅读顺序微修：`真实工作现场` 标签统一加冒号，前端回归试炼场背景句从“真实工作现场真实交付里”改为“真实工作现场：交付审查时……”，避免新手读第一幕时被重复词和断句卡住。本轮同时刷新跨电脑交接说明，明确另一台电脑必须拉 `cx/ai-career-rpg-home`，并用 `HEAD / origin/cx/ai-career-rpg-home / git ls-remote` 三方 hash 核对完整性。
 - 前端第 5 关 Lab 接力追加修复：浏览器从 `#chapter-frontend-5` 走完 8/8 剧情线索、伙伴会合并进入 Lab，发现首题 `流程接力小剧场` 显示「旧故障 把线索交给 旧故障」。已修成第一棒由 `剧情现场 / 事故线索` 交给当前棒，末尾交给 `结案卷宗 / 最终验收`，并用渲染测试防止同一 flow label 自我交接。隔离 API `4408`、SQLite `/tmp/code-quest-r332.sqlite`、Vite `5258` 下，前端第 5 关深链桌面 1280 与 390px 无横向溢出，暗色背景，控制台 error 为 0，旧保存链路词检查全为 false。
+- 前端第 5 关 Lab 证物名追加修复：Lab 导师和任务卷轴不再直接展示 `failing-before`、`passing-after-stale`、`network-test-run` 这类内部 ID，而是读取材料导览中的人话 `place`，显示「第 1 棒证据：旧问题红灯」「验收门禁：报告校验器」等证物名。隔离 API `4409`、SQLite `/tmp/code-quest-r333.sqlite`、Vite `5259` 下确认前端第 5 关封面进入正常，第一幕主动复述门槛有效；完整作答提交到结案页仍需后续浏览器录入式验收。
 - 前端第 4 关教学层追加修复：`frontend-accessibility-proof` 的 teaching map/code tour 不再复用 AI 第 14 章上线门禁素材；教学项目地图改为用户任务、语义与状态反馈、移动端复测、可访问性哨塔、回归守门和无障碍交付决定，代码导读改为 `docs/accessibility-checklist.md` 与 `frontend/accessibility-audit.md`。完整 `npm run verify` 通过 10 个测试文件 / 185 个测试；隔离 API `4395`、SQLite `/tmp/code-quest-r322.sqlite`、Vite `5245` 下，`#chapter-frontend-4` 桌面 1280 与 390px 无横向溢出，暗色背景，控制台 error 为 0，正文不再出现上线门禁、上线计划、生产变量、生产环境、备份恢复或 `AI_API_KEY`。
 - Java 第 5 关教学层追加修复：`java-production-incident` 的 teaching map/code tour 不再复用 AI 第 14 章上线门禁素材；教学项目地图改为事故窗口、日志与运行环境、影响范围、报警哨塔、止血决策门和事故结论，代码导读改为 `docs/incident-response-timeline.md` 与 `server/IncidentTimeline.java`。完整 `npm run verify` 通过 10 个测试文件 / 186 个测试；隔离 API `4396`、SQLite `/tmp/code-quest-r323.sqlite`、Vite `5246` 下，`#chapter-java-5` 桌面 1280 与 390px 无横向溢出，暗色背景，控制台 error 为 0，正文不再出现上线门禁、上线计划、生产变量、生产环境、备份恢复或 `AI_API_KEY`。
 - 上线港 Lab 语境追加修复：Java 第 4 关可见 Lab 配置已聚焦发布窗口、影响范围、发布负责人、生产配置、密钥边界、备份恢复、390px 冒烟、监控信号和回滚后验证，固定“构建通过不等于可以上线”；R327 已补浏览器深链验收和沙盒证物归属修复。
@@ -178,7 +179,7 @@ npm run verify
 
 1. 回看第 1 章和第 5 章实战真人阅读负担，必要时继续压缩术语密度和补比喻。
 2. 做全站视觉节奏终审，重点看每一屏是否能一眼知道当前位置、任务目标、证据材料和下一步按钮；实战页导读已先收进 `任务导演台`，流程图、路线牌和接力板已折叠进 `辅助卷宗`，后续仍需完整 Lab 桌面/手机截图验收。
-3. 继续补 Java/前端剩余关卡的实战 Lab 逐章浏览器抽检，确认岗位路线不只教学入口可用，实战材料、作答和验收页也不回退到 AI 章节或旧白底界面；Java 第 4 关、前端第 3 关已有完整深链证据，前端第 5 关已补剧情到 Lab 首屏接力修复，仍建议继续补完整作答提交到结案页的录入式验收。
+3. 继续补 Java/前端剩余关卡的实战 Lab 逐章浏览器抽检，确认岗位路线不只教学入口可用，实战材料、作答和验收页也不回退到 AI 章节或旧白底界面；Java 第 4 关、前端第 3 关已有完整深链证据，前端第 5 关已补剧情到 Lab 首屏接力修复和证物名人话化，仍建议继续补完整作答提交到结案页的录入式验收。
 4. 合并前开 PR，并把验证证据、风险和回滚写在 PR 描述里；不要直接 merge 到 `main`。
 
 ## 当前未完成

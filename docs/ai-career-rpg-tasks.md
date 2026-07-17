@@ -52,6 +52,15 @@
 
 ## 当前已完成切片
 
+### R333：前端第 5 关 Lab 证物名人话化
+
+- [x] 浏览器从 `#chapter-frontend-5` 进入前端第 5 关封面并推进到第一幕复述门槛，确认主动复述字数门槛会阻止空泛通过。
+- [x] 修复 Lab 默认导师和任务卷轴：不再把 `failing-before`、`passing-after-stale`、`network-test-run` 这类内部证物 ID 直接当作「通关收获 / 沉淀为」展示给新手。
+- [x] 新增 `summarizeArtifactPlaces`，优先使用 `artifactGuides[id].place` 生成人话证物名，例如「第 1 棒证据：旧问题红灯」「验收门禁：报告校验器」。
+- [x] 增加渲染回归测试：前端第 5 关岗位 Lab 的任务卷轴必须显示人话证物名，且不得出现 `passing-after-stale`。
+
+验收：`npm run test -- src/App.test.tsx --run -t "岗位 Lab 默认"` 通过；`npm run verify:quick` 通过 lint、typecheck、11 个测试文件 / 189 个测试。浏览器隔离 API `4409`、临时 SQLite `/tmp/code-quest-r333.sqlite`、Vite `5259` 下，确认前端第 5 关封面进入正常，第一幕主动复述门槛有效。完整作答提交到结案页仍需后续继续补浏览器录入式验收。
+
 ### R332：前端第 5 关 Lab 首屏接力自循环修复
 
 - [x] 浏览器从 `#chapter-frontend-5` 走完 8/8 剧情线索、伙伴会合并进入前端测试 Lab，发现 `流程接力小剧场` 第一题写成「旧故障 把线索交给 旧故障」，会让新手无法理解上一棒、当前棒和下一棒。
