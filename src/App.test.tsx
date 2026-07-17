@@ -3279,6 +3279,7 @@ describe("AI 职业路线入口", () => {
 
   it("实战通关后的成长档案会给出工作、Agent 和面试迁移口令", async () => {
     const careerDossierConfig = {
+      scenarioId: "case-002",
       missionLabel: "主线 1-2 · AI 应用开发",
       missionTitle: "产品链路密室",
       backgroundImage: "/quest-workbench.webp",
@@ -3311,6 +3312,11 @@ describe("AI 职业路线入口", () => {
 
     expect(screen.getByLabelText("迁移口令")).toBeInTheDocument();
     expect(screen.getByLabelText("结案后下一步")).toBeInTheDocument();
+    const nextScene = screen.getByRole("region", { name: "下一幕预告" });
+    expect(nextScene).toHaveTextContent("登录状态为什么丢");
+    expect(nextScene).toHaveTextContent("下一位登场");
+    expect(nextScene).toHaveTextContent("回廊守卫");
+    expect(nextScene).toHaveTextContent("下一关要看懂的交接");
     expect(screen.getByText("工作复盘")).toBeInTheDocument();
     expect(screen.getByText("Agent 委托")).toBeInTheDocument();
     expect(screen.getByText("面试讲法")).toBeInTheDocument();

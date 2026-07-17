@@ -104,6 +104,7 @@ import {
   transferRetestSourceIds,
   type TransferRetestSourceId,
 } from "./transferRetests";
+import { normalizeScenarioId } from "./scenarioIds";
 import {
   AlertTriangle,
   ArrowRight,
@@ -8111,8 +8112,14 @@ function findRouteChapterTarget(
 function findRouteChapterTargetForScenarioId(
   scenarioId: string,
 ): RouteChapterTarget | null {
+  const normalizedScenarioId = normalizeScenarioId(scenarioId);
+  const matchesScenarioId = (candidateScenarioId: string) =>
+    candidateScenarioId === scenarioId ||
+    normalizeScenarioId(candidateScenarioId) === normalizedScenarioId;
   const aiChapterEntry = Object.entries(chapterScenarioIds).find(
-    ([, candidateScenarioId]) => candidateScenarioId === scenarioId,
+    ([, candidateScenarioId]) =>
+      typeof candidateScenarioId === "string" &&
+      matchesScenarioId(candidateScenarioId),
   );
   if (aiChapterEntry) {
     const chapterNumber = Number(aiChapterEntry[0]);
@@ -8120,12 +8127,12 @@ function findRouteChapterTargetForScenarioId(
       routeId: "ai-development",
       chapterId: String(chapterNumber),
       chapterNumber,
-      scenarioId,
+      scenarioId: chapterScenarioIds[chapterNumber] ?? scenarioId,
     };
   }
 
   const routeEntry = Object.entries(routeChapterScenarioIds).find(
-    ([, candidateScenarioId]) => candidateScenarioId === scenarioId,
+    ([, candidateScenarioId]) => matchesScenarioId(candidateScenarioId),
   );
   if (!routeEntry) return null;
   const [routeId, chapterId] = routeEntry[0].split(":") as [
@@ -10246,6 +10253,9 @@ export function CareerDossier({
         ? nextUnlockGuide?.image
         : companionPortraits[nextUnlock.name]
       : undefined;
+  const nextChapterBackground = nextChapter
+    ? getChapterDossierBackground(nextChapter)
+    : undefined;
   const transferCards = [
     {
       label: "工作复盘",
@@ -10394,6 +10404,51 @@ export function CareerDossier({
             </article>
           </div>
         </section>
+        {nextChapter && (
+          <section
+            className="dossier-next-scene"
+            aria-label="下一幕预告"
+            style={
+              {
+                "--next-scene-bg": `url(${nextChapterBackground})`,
+              } as CSSProperties
+            }
+          >
+            <div className="dossier-next-scene-bg" aria-hidden="true" />
+            <div className="dossier-next-scene-copy">
+              <span>下一幕预告 · {route?.label ?? "AI 开发主线"}</span>
+              <h2>
+                第 {displayChapterNumber(nextChapter)} 关 · {nextChapter.theme}
+              </h2>
+              <p>{nextChapter.storyScene}</p>
+              <dl>
+                <div>
+                  <dt>工作里为什么会遇到</dt>
+                  <dd>{nextChapter.workBackground}</dd>
+                </div>
+                <div>
+                  <dt>下一关要看懂的交接</dt>
+                  <dd>{nextChapter.flow}</dd>
+                </div>
+              </dl>
+            </div>
+            <div className="dossier-next-scene-cast">
+              {nextUnlockPortrait && (
+                <img src={nextUnlockPortrait} alt="" aria-hidden="true" />
+              )}
+              <span>下一位登场</span>
+              <strong>
+                {nextUnlock
+                  ? `${nextUnlock.type} · ${nextUnlock.name}`
+                  : nextUnlockGuide?.name}
+              </strong>
+              <p>
+                {nextUnlock?.description ??
+                  "下一幕会继续把本关能力迁移到新的真实工作场景。"}
+              </p>
+            </div>
+          </section>
+        )}
         <div className="rubric-box">
           <h2>{config.result.nextTitle}</h2>
           <ul>
