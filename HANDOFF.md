@@ -8,15 +8,23 @@
 
 - 当前远端：`https://github.com/xixinikl/code-quest.git`
 - 当前工作分支：`cx/ai-career-rpg-home`
-- 当前已推送功能基线：远端 `origin/cx/ai-career-rpg-home` 至少已到 `a2050e4 fix(rpg): focus chapter one location rail`；本次第 1 章主动复述提示修复提交后会晚于它。最终远端 hash 仍以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 输出为准。
-- 当前已推送交接基线：本文件提交后应晚于 `a2050e4`，包含另一台电脑拉取、核对、继续开发、不能直接合并，以及最新第 1 章地点路线/主动复述提示说明。最终远端 hash 仍以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 为准。
+- 当前已推送功能基线：远端 `origin/cx/ai-career-rpg-home` 至少已到 `6564b4d fix(rpg): guide chapter one recall`；本交接更新提交后会晚于它。最终远端 hash 仍以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 输出为准。
+- 当前已推送交接基线：本文件提交后应晚于 `6564b4d`，包含另一台电脑拉取、核对、继续开发、不能直接合并，以及最新第 1 章地点路线/主动复述提示说明。最终远端 hash 仍以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 为准。
 - 当前本地核对：推送完成后，`git status --short --branch` 应显示 `cx/ai-career-rpg-home...origin/cx/ai-career-rpg-home` 且没有未提交文件，说明本地与远端一致。
 - 当前远端核对：另一台电脑拉取后 `git log --oneline -5` 应看到本次第 1 章主动复述提示提交，以及 `a2050e4 fix(rpg): focus chapter one location rail`、`5625481 fix(rpg): collapse teaching flow overview`、`8901006 docs(rpg): pin cross-computer pull handoff` 这些最近提交，或更晚提交；如果只看到 `772f66e`、`65e3603`、`5651c18`、`0fb18e7`、`0f7c433`、`c587a23`、`547ed6f`、`4370ddf`、`1b3cf5d`、`9171ac8`、`1a40fe4`、`e10069f`、`fa12dbc`、`2dd44d3`、`ca2c7aa`、`3fe3db1` 或默认分支提交，说明还没拉到最新交接/体验细修。
 - 远端默认 HEAD：`git ls-remote --symref origin HEAD` 指向 `feat/guided-learning-bridge`，不是本分支；另一台电脑必须显式切到 `cx/ai-career-rpg-home`，不要只用 clone 后默认分支继续。
-- 给协作者的最短说明：不要直接用默认分支；拉仓库后必须切到 `cx/ai-career-rpg-home`。当前至少应看到 `a2050e4 fix(rpg): focus chapter one location rail`、`5625481 fix(rpg): collapse teaching flow overview` 和本次第 1 章主动复述提示提交，或更晚提交；进入项目后必须 `nvm use` 到 Node `24.13.1`。
-- 他具体怎么拉：如果另一台电脑没有本项目，按“首次 clone”执行；如果已经 clone 过，按“已有仓库更新”执行；如果他本地有未提交改动，先新建自己的分支或 stash，不要直接覆盖。不要在默认分支上继续开发。
+- 给协作者的最短说明：不要直接用默认分支；拉仓库后必须切到 `cx/ai-career-rpg-home`。当前至少应看到 `6564b4d fix(rpg): guide chapter one recall`、`a2050e4 fix(rpg): focus chapter one location rail`、`5625481 fix(rpg): collapse teaching flow overview`，以及本交接更新提交，或更晚提交；进入项目后必须 `nvm use` 到 Node `24.13.1`。
+- 他具体怎么拉：如果另一台电脑没有本项目，按“首次 clone”执行；如果已经 clone 过，按“已有仓库更新”执行；如果他本地有未提交改动，先新建自己的分支或 stash，不要直接覆盖。不要在默认分支上继续开发，也不要在没有核对 hash 的情况下合并。
 
 ### 另一台电脑怎么拉，给他照抄
+
+先把这几句话发给对方：
+
+```text
+仓库：https://github.com/xixinikl/code-quest.git
+要拉的分支：cx/ai-career-rpg-home
+不要用 GitHub 默认分支继续开发。clone 或 pull 后先核对 hash，一致后再 npm install / npm run verify。
+```
 
 先判断电脑上有没有旧仓库：
 
@@ -33,22 +41,27 @@ git clone https://github.com/xixinikl/code-quest.git
 cd code-quest
 git fetch origin
 git switch -c cx/ai-career-rpg-home --track origin/cx/ai-career-rpg-home
+git status --short --branch
 git log --oneline -5
+git rev-parse HEAD
+git rev-parse origin/cx/ai-career-rpg-home
+git ls-remote origin refs/heads/cx/ai-career-rpg-home
 nvm install
 nvm use
 npm install
-npm run verify
+npm run verify:quick
 npm run dev
 ```
 
-拉完后 `git log --oneline -5` 应至少能看到 `b0294cc` 和本交接更新提交，或更晚提交：
+拉完后 `git log --oneline -5` 应至少能看到 `6564b4d` 和本交接更新提交，或更晚提交：
 
 ```bash
-b0294cc fix(rpg): restore completed route lab deep links
-ff25ee9 test(rpg): lock frontend testing dossier stay
+6564b4d fix(rpg): guide chapter one recall
+a2050e4 fix(rpg): focus chapter one location rail
+5625481 fix(rpg): collapse teaching flow overview
 ```
 
-如果显示的是 `feat/guided-learning-bridge`、`main` 上的提交，或早于 `b0294cc`，说明没有拉到今天上传的内容。
+如果显示的是 `feat/guided-learning-bridge`、`main` 上的提交，或早于 `6564b4d`，说明没有拉到今天上传的内容。此时不要继续改，先重新 `git fetch origin` 并切到 `cx/ai-career-rpg-home`。
 
 ### 已有仓库更新照抄
 
@@ -57,10 +70,14 @@ cd code-quest
 git fetch origin
 git switch cx/ai-career-rpg-home
 git pull --ff-only origin cx/ai-career-rpg-home
+git status --short --branch
 git log --oneline -5
+git rev-parse HEAD
+git rev-parse origin/cx/ai-career-rpg-home
+git ls-remote origin refs/heads/cx/ai-career-rpg-home
 nvm use
 npm install
-npm run verify
+npm run verify:quick
 npm run dev
 ```
 
@@ -70,6 +87,7 @@ npm run dev
 cd code-quest
 git fetch origin
 git switch -c cx/ai-career-rpg-home --track origin/cx/ai-career-rpg-home
+git status --short --branch
 git log --oneline -5
 ```
 
@@ -99,6 +117,8 @@ npm run verify
 ```
 
 本地 `HEAD`、`origin/cx/ai-career-rpg-home` 和 `git ls-remote` 的 hash 应一致；`node -v` 应是 `.nvmrc` 指定的 `v24.13.1`，`npm run verify` 应通过。如果不一致，不要继续开发，先重新 `git fetch origin` 并切回 `origin/cx/ai-career-rpg-home`。
+
+如果另一台电脑只是想快速确认能跑起来，可以先用 `npm run verify:quick`；准备合并或交付前再跑完整 `npm run verify`。
 
 ### 拉完后怎么继续开发
 
@@ -135,7 +155,7 @@ npm run verify:quick
 
 - `git status --short --branch` 显示在 `cx/ai-career-rpg-home`，没有未提交文件。
 - `HEAD`、`origin/cx/ai-career-rpg-home`、`git ls-remote` 三个 hash 一致，或 `HEAD` 是刚创建的本地分支并跟踪同一个远端提交。
-- `git log --oneline -8` 能看到 `b0294cc`、`ff25ee9` 和本交接更新提交，或更晚提交。
+- `git log --oneline -8` 能看到 `6564b4d`、`a2050e4`、`5625481` 和本交接更新提交，或更晚提交。
 - `nvm use` 后 Node 是 `.nvmrc` 指定的 `v24.13.1`。
 - `npm run verify:quick` 通过后再继续开发；如果失败，先不要改业务，先记录错误并修环境或依赖。
 
