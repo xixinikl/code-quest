@@ -1957,3 +1957,13 @@ Goal 模式的完成口径必须比“能点进去”更严格：只接剧情教
 - [x] 完整门禁通过：Node `v24.13.1` 下 `npm run verify` 通过，包含格式、Lint、TypeScript、11 个测试文件 / 187 个测试、生产构建和 TeachingBridge 懒加载检查；Vite 主包体积 warning 仍是已知债务，不是失败。
 
 验收目标：用户从前端第 5 关剧情、教学桥或 Lab 进入时，看到的例子都围绕前端回归验收，不再被第一章保存/数据库示例带偏。
+
+## R328：跨电脑拉取说明更新到最新远端基线
+
+- [x] 核对当前远端：`origin` 为 `https://github.com/xixinikl/code-quest.git`，工作分支为 `cx/ai-career-rpg-home`，远端默认 HEAD 仍指向 `feat/guided-learning-bridge`，因此另一台电脑不能只用 clone 后默认分支继续。
+- [x] 核对当前已推送功能基线：`65e3603 fix(rpg): own java release harbor teaching flow` 已在 `origin/cx/ai-career-rpg-home`。
+- [x] 更新 `HANDOFF.md`：补清“首次 clone 怎么拉、已有仓库怎么更新、本地有改动怎么保护、拉完怎么比对 hash、怎么继续开发、为什么现在还不建议合并”。
+- [x] 明确另一台电脑拉完后必须执行：`git rev-parse HEAD`、`git rev-parse origin/cx/ai-career-rpg-home`、`git ls-remote origin refs/heads/cx/ai-career-rpg-home`、`node -v`、`npm run verify`。
+- [x] 本轮工程化检查：`xixi-dev-system profile sync`、`doctor --project .`、`updates --project .` 已执行；doctor 结果为 pass。
+
+验收目标：另一台电脑不用猜“拉哪个分支、是不是完整、能不能直接合并”。按 `HANDOFF.md` 执行后，应显式切到 `cx/ai-career-rpg-home`，看到 `65e3603` 和本次文档提交或更新提交，本地 HEAD 与远端分支 hash 一致，并在 Node `24.13.1` 下完成验证。
