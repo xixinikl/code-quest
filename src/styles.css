@@ -14762,6 +14762,46 @@ textarea:focus {
   line-height: 1.5;
 }
 
+.quest-flow-handoff-sheet {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin: 5px 0 0;
+  gap: 7px;
+}
+
+.quest-flow-handoff-sheet div {
+  display: grid;
+  min-width: 0;
+  min-height: 64px;
+  padding: 9px 10px;
+  align-content: start;
+  gap: 4px;
+  border: 1px solid rgba(227, 193, 116, 0.18);
+  border-radius: 5px;
+  background:
+    radial-gradient(
+      circle at top left,
+      rgba(147, 239, 208, 0.1),
+      transparent 46%
+    ),
+    rgba(3, 9, 15, 0.48);
+}
+
+.quest-flow-handoff-sheet dt {
+  color: #93efd0;
+  font-size: 10px;
+  font-weight: 900;
+}
+
+.quest-flow-handoff-sheet dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+  color: #f1ead6;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.45;
+}
+
 .quest-place-card {
   width: min(620px, 100%);
   margin-left: auto;
@@ -16314,6 +16354,10 @@ textarea:focus {
 
   .quest-flow-board {
     padding: 14px;
+  }
+
+  .quest-flow-handoff-sheet {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .quest-flow-track {

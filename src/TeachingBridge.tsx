@@ -7332,6 +7332,7 @@ function EvidenceStoryQuest({
       0,
     );
   const activeJourney = journey[activeJourneyIndex] ?? journey[0];
+  const nextJourney = journey[activeJourneyIndex + 1] ?? null;
   const decision = getSceneDecision(scene, activeJourney);
   const selectedDecisionId = sceneDecisions[scene.id];
   const previousDecisionEcho = getDecisionEcho(
@@ -7649,6 +7650,31 @@ function EvidenceStoryQuest({
                 {activeJourney.to}
               </strong>
               <p>{activeJourney.plain}</p>
+              <dl
+                className="quest-flow-handoff-sheet"
+                aria-label="当前流程交接单"
+              >
+                <div>
+                  <dt>收到什么</dt>
+                  <dd>{activeJourney.payload}</dd>
+                </div>
+                <div>
+                  <dt>谁来处理</dt>
+                  <dd>{activeJourney.to}</dd>
+                </div>
+                <div>
+                  <dt>交出什么证据</dt>
+                  <dd>{activeJourney.proof}</dd>
+                </div>
+                <div>
+                  <dt>下一步看哪里</dt>
+                  <dd>
+                    {nextJourney
+                      ? `${nextJourney.from} → ${nextJourney.to}`
+                      : "实战修复与验收"}
+                  </dd>
+                </div>
+              </dl>
             </div>
             <details className="quest-flow-board" aria-label="完整流程">
               <summary>

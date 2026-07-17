@@ -2651,6 +2651,15 @@ describe("AI 职业路线入口", () => {
     expect(screen.getByLabelText("当前流程定位")).toHaveTextContent(
       "旧问题步骤",
     );
+    expect(screen.getByLabelText("当前流程交接单")).toHaveTextContent(
+      "收到什么",
+    );
+    expect(screen.getByLabelText("当前流程交接单")).toHaveTextContent(
+      "交出什么证据",
+    );
+    expect(screen.getByLabelText("当前流程交接单")).toHaveTextContent(
+      "下一步看哪里",
+    );
 
     const fullFlow = screen.getByLabelText("完整流程");
     expect(fullFlow).not.toHaveAttribute("open");
@@ -4762,7 +4771,9 @@ describe("AI 职业路线入口", () => {
     expect(
       screen.getByText(/登录态从页面到后端验证的路线/),
     ).toBeInTheDocument();
-    expect(screen.getByText(/登录表单 → 后端登录路由/)).toBeInTheDocument();
+    expect(
+      screen.getAllByText(/登录表单 → 后端登录路由/).length,
+    ).toBeGreaterThan(0);
 
     await user.click(screen.getByRole("button", { name: /查看登录委托/ }));
     expect(
@@ -4845,7 +4856,9 @@ describe("AI 职业路线入口", () => {
       }),
     ).toBeInTheDocument();
     expect(screen.getByText(/接口失败从页面到日志的路线/)).toBeInTheDocument();
-    expect(screen.getByText(/前端表单 → 接口路由/)).toBeInTheDocument();
+    expect(screen.getAllByText(/前端表单 → 接口路由/).length).toBeGreaterThan(
+      0,
+    );
 
     await user.click(screen.getByRole("button", { name: /查看申请表复印件/ }));
     expect(
@@ -4937,7 +4950,9 @@ describe("AI 职业路线入口", () => {
     expect(
       screen.getByText(/重复提交从页面到数据库的路线/),
     ).toBeInTheDocument();
-    expect(screen.getByText(/前端按钮 → 后端接口/)).toBeInTheDocument();
+    expect(screen.getAllByText(/前端按钮 → 后端接口/).length).toBeGreaterThan(
+      0,
+    );
 
     await user.click(screen.getByRole("button", { name: /查看连点现场/ }));
     expect(screen.getByText(/同一动作被重复送到了后端/)).toBeInTheDocument();
@@ -5023,7 +5038,9 @@ describe("AI 职业路线入口", () => {
       }),
     ).toBeInTheDocument();
     expect(screen.getByText(/页面变慢从用户到复测的路线/)).toBeInTheDocument();
-    expect(screen.getByText(/浏览器 → Network 瀑布图/)).toBeInTheDocument();
+    expect(
+      screen.getAllByText(/浏览器 → Network 瀑布图/).length,
+    ).toBeGreaterThan(0);
 
     await user.click(screen.getByRole("button", { name: /记录用户体感/ }));
     expect(screen.getByText(/把抱怨翻译成可观察现象/)).toBeInTheDocument();
@@ -5111,7 +5128,9 @@ describe("AI 职业路线入口", () => {
     expect(
       screen.getByText(/AI 请求从用户到模型再回到页面的路线/),
     ).toBeInTheDocument();
-    expect(screen.getByText(/前端页面 → 本地后端接口/)).toBeInTheDocument();
+    expect(
+      screen.getAllByText(/前端页面 → 本地后端接口/).length,
+    ).toBeGreaterThan(0);
 
     await user.click(screen.getByRole("button", { name: /查看用户委托/ }));
     expect(screen.getByText(/前端只请求自己的后端接口/)).toBeInTheDocument();
@@ -5928,6 +5947,12 @@ describe("AI 职业路线入口", () => {
     expect(screen.getAllByText(/前端舞台/).length).toBeGreaterThanOrEqual(1);
     expect(screen.getByText(/保存数据的完整旅行路线/)).toBeInTheDocument();
     expect(screen.getByText(/用户 → 前端页面/)).toBeInTheDocument();
+    expect(screen.getByLabelText("当前流程交接单")).toHaveTextContent(
+      "点击保存，把画布名字交给页面",
+    );
+    expect(screen.getByLabelText("当前流程交接单")).toHaveTextContent(
+      "你能看到按钮变成“保存成功”",
+    );
     expect(screen.getByLabelText("本章地点航线")).toHaveTextContent("前端舞台");
     expect(screen.getByLabelText("本章地点航线")).toHaveTextContent("传送门");
     expect(screen.getByLabelText("本幕任务契约")).toHaveTextContent(
@@ -5947,6 +5972,15 @@ describe("AI 职业路线入口", () => {
     await user.click(firstClueButton);
     expect(screen.getAllByText(/界面反馈/).length).toBeGreaterThan(0);
     expect(screen.getByText(/前端页面 → 后端接口/)).toBeInTheDocument();
+    expect(screen.getByLabelText("当前流程交接单")).toHaveTextContent(
+      "POST /api/canvases 请求",
+    );
+    expect(screen.getByLabelText("当前流程交接单")).toHaveTextContent(
+      "Network 里看到 201 Created",
+    );
+    expect(screen.getByLabelText("当前流程交接单")).toHaveTextContent(
+      "后端接口 → 数据层函数",
+    );
     expect(
       screen.getAllByText(/response.ok 不是“继续传东西”/).length,
     ).toBeGreaterThan(0);
