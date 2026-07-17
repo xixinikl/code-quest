@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "scenarioId": "verification-trial-arena",
+  "scenarioId": "frontend-testing-proof",
   "phase": "before-fix",
   "sourceHash": "before_fix_source_hash",
   "summary": {
@@ -9,10 +9,10 @@
   },
   "tests": [
     {
-      "name": "刷新后仍能看到刚保存的画布",
+      "name": "筛选 blocked 后列表只显示阻塞任务",
       "phase": "reproduction",
       "status": "failed",
-      "message": "刷新页面后，GET /api/canvases 返回空数组。"
+      "message": "选择 status=blocked 后，DOM 里仍然出现 done 任务，报告 sourceHash 也来自旧代码。"
     }
   ]
 }

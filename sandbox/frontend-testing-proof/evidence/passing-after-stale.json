@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "scenarioId": "verification-trial-arena",
+  "scenarioId": "frontend-testing-proof",
   "phase": "after-fix",
   "sourceHash": "old_source_hash_from_before_latest_change",
   "summary": {
@@ -8,18 +8,23 @@
     "failed": 0
   },
   "manual": {
-    "steps": ["打开画布页面", "新增一张画布", "刷新页面", "确认画布仍在列表中"],
-    "expected": "刷新后仍能看到刚才保存的画布",
-    "actual": "刷新后画布仍在"
+    "steps": [
+      "打开任务列表页面",
+      "选择 status=blocked 筛选",
+      "确认 DOM 只显示 blocked 任务",
+      "打开验收报告并核对 sourceHash"
+    ],
+    "expected": "页面只显示阻塞任务，验收报告绑定当前源码指纹",
+    "actual": "页面只显示阻塞任务，但验收报告仍绑定旧源码指纹"
   },
   "tests": [
     {
-      "name": "保存逻辑会写入仓库",
+      "name": "筛选状态归一化保持用户选择",
       "phase": "unit",
       "status": "passed"
     },
     {
-      "name": "POST 后再 GET 能读到同一条画布",
+      "name": "筛选请求和可见列表保持一致",
       "phase": "integration",
       "status": "passed"
     },

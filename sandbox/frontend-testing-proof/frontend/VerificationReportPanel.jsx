@@ -11,7 +11,7 @@ export function VerificationReportPanel({ report, manualReport }) {
 
   return (
     <section className="verification-panel">
-      <p className="eyebrow">验收试炼场</p>
+      <p className="eyebrow">前端回归证据庭</p>
       <h2>Agent 说修好了，证据真的够吗？</h2>
       <div className="verification-score">
         <strong>{verdict}</strong>

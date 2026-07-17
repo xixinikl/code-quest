@@ -2,24 +2,31 @@
   "requestId": "req_verify_011",
   "steps": [
     {
-      "method": "POST",
-      "url": "/api/canvases",
-      "status": 201,
+      "method": "GET",
+      "url": "/api/tasks?status=blocked",
+      "status": 200,
       "body": {
-        "title": "验收试炼画布"
+        "filters": {
+          "status": "blocked"
+        },
+        "rows": [
+          {
+            "id": "task_204",
+            "title": "登录后头像不更新",
+            "status": "blocked"
+          }
+        ]
       }
     },
     {
-      "method": "GET",
-      "url": "/api/canvases",
-      "status": 200,
-      "body": [
-        {
-          "id": "canvas_011",
-          "title": "验收试炼画布"
-        }
-      ]
+      "method": "POST",
+      "url": "/api/reports/verification",
+      "status": 201,
+      "body": {
+        "visibleRows": ["task_204"],
+        "sourceHash": "old_source_hash_from_before_latest_change"
+      }
     }
   ],
-  "explain": "这份 Network 只能证明本次请求链路正常，不能单独证明测试报告对应当前代码。"
+  "explain": "这份 Network 只能证明筛选请求和报告提交发生过，不能单独证明旧故障已复现、自动化覆盖完整，也不能证明报告对应当前代码。"
 }

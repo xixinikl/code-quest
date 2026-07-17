@@ -1912,3 +1912,17 @@ Goal 模式的完成口径必须比“能点进去”更严格：只接剧情教
 - [ ] 待补完整浏览器验收：从实战页真实保存一道回答，确认桌面和 390px 均显示接力回执、无横向溢出、控制台 error 为 0。
 
 验收目标：用户保存答案后，不只是看到“记录已保存”，而是马上知道上一处证据已经交给谁、现在应该只看哪份材料、下一步为什么出现。
+
+## R324：前端第 5 关沙盒证物归属修复
+
+- [x] `sandbox/frontend-testing-proof` 的 README、Network、手动报告、失败复现、过期通过报告、后端日志和 Agent 交付说明，已从旧“保存画布 / `/api/canvases` / 验收试炼画布”语境改为前端任务列表筛选回归语境。
+- [x] 新故事线固定为：用户选择 `status=blocked`，页面可见列表、DOM、Network、报告提交和 `sourceHash` 必须一起证明修复可信。
+- [x] 沙盒测试脚本同步改为校验 `GET /api/tasks?status=blocked` 与 `POST /api/reports/verification`，不再要求旧保存请求。
+- [x] 沙盒前端面板标题改为「前端回归证据庭」，包名改为 `frontend-regression-proof-sandbox`，避免用户打开材料后又回到 AI 主线验收竞技场。
+- [x] 新增 `src/sandboxEvidence.test.ts`，直接扫描 `sandbox/frontend-testing-proof`，防止 `/api/canvases`、`canvas-save-persistence`、保存画布、验收试炼画布、保存后刷新等旧词回流。
+- [x] 旧词复扫通过：`rg "/api/canvases|canvas-save-persistence|保存画布|验收试炼画布|保存后刷新|刚保存的画布|画布页面|画布仍|POST 后再 GET|保存逻辑" sandbox/frontend-testing-proof -S` 无结果。
+- [x] 定向测试通过：Node `v24.13.1` 下 `npm run test -- src/sandboxEvidence.test.ts --run`，1 个测试通过。
+- [x] 快速门禁通过：Node `v24.13.1` 下 `npm run verify:quick`，lint、typecheck、11 个测试文件 / 187 个测试通过。
+- [x] 沙盒自身 `npm test` 仍按练习设计失败：5 个失败均来自当前坏实现没有拒绝不可信验收证据；这是本关练习入口，不是主应用门禁失败。
+
+验收目标：用户进入前端第 5 关材料时，剧情、UI 和证物都围绕“前端回归怎么证明修好了”，不会突然看到第一章或 AI 主线的保存画布链路。

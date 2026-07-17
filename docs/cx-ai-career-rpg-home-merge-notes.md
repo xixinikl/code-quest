@@ -8,7 +8,7 @@
 
 ### 当前事实快照（2026-07-17）
 
-AI 路线已扩展为 15 章，Java 后端和前端工程路线各 5 章，均有独立章节契约、剧情场景、教学桥、沙盒和成长结算入口。当前分支已推送到 `origin/cx/ai-career-rpg-home`；当前已知远端至少到 `3fe983d fix(rpg): own java incident teaching flow`，远端最新提交以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 为准。分支尚未合并到 `main`。当前远端默认 HEAD 指向旧 `feat/guided-learning-bridge`，接手和合并前必须显式选择本分支。
+AI 路线已扩展为 15 章，Java 后端和前端工程路线各 5 章，均有独立章节契约、剧情场景、教学桥、沙盒和成长结算入口。当前分支已推送到 `origin/cx/ai-career-rpg-home`；当前已知远端至少到 `c587a23 docs(rpg): spell out collaborator pull steps`，远端最新提交以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 为准。分支尚未合并到 `main`。当前远端默认 HEAD 指向旧 `feat/guided-learning-bridge`，接手和合并前必须显式选择本分支。
 
 最新一轮收口集中在用户反馈最强的“看不懂代码为什么要这么读、谁把东西交给谁、下一步去哪找证据”：第 2 章产品链路不再串到 AI API 安全章；教学桥关键控件已补暗色 RPG 覆盖；第 1 章代码导读新增“当前行证据锚点”，读到 `response.ok` 时明确说明它只能解释前端绿色提示，不能证明数据库已经写入；第 1 章失败测试报告会优先指向数据层写库断点；第 1 章实战后半段已补齐沙盒验收、Agent 委托、交付审查、因果解释和面试迁移的任务卷轴与流程棒；第 2 章失败测试报告能把方向筛选、会话保存、空目标输入分成三类红灯，并先给出「红灯总指挥」排查顺序；第 3 章登录态实战已补齐身份路线、凭证存储、401 反证、刷新复查、Agent 委托、交付审查和面试复盘的剧情向导、任务卷轴、流程接力和交付口令；第 4 章接口审判庭实战已补齐请求体证词、状态码判词、错误体修复、日志串证、Agent 委托、交付审查和面试复盘导演层；第 5 章一致性熔炉实战已补齐 Network 双轨、幂等锤印、唯一约束、事务边界、Agent 委托、交付审查和面试复盘导演层；实战导演台新增 `本幕流程翻译`，保存回答后新增「刚刚到下一步的接力」，把上一棒、当前棒和下一棒用更直接的人话连接起来。
 
@@ -143,6 +143,7 @@ npm run verify
 - 事故 Lab 语境追加抽检：隔离 API `4376`、临时 SQLite `/tmp/code-quest-r309.sqlite`、Vite `5226`；`#chapter-java-5` 完成教学后，伙伴会合页显示 Java 后端岗位路线，进入 Lab 后保持报警、requestId、异常栈和回滚语境，不再显示上线门禁、生产变量或备份恢复，桌面 1200 与 390px 无横向溢出，控制台 error 为 0。
 - 前端 Lab 语境追加修复：前端第 3 关可见 Lab 配置已聚焦首屏瀑布图、接口 TTFB、Server-Timing、X-Cache、React 渲染画像和第二次访问复测；前端第 5 关可见 Lab 配置已聚焦旧故障红灯、报告校验器、浏览器手动复测、sourceHash、回归风险和 Agent 交付审查，不再露出 `/api/canvases` 或 `验收试炼画布`。
 - 前端第 5 关剧情层追加修复：`TeachingBridge` 不再让 `frontend-testing-proof` 复用 AI 第 11 章保存链路线索，剧情/journey 已改为筛选交互、可见列表、DOM、Network 和报告指纹；新增运行时回归测试，防止 `/api/canvases`、`canvas-save-persistence`、保存画布或验收试炼画布从剧情线索层回流。隔离 API `4394`、SQLite `/tmp/code-quest-r321.sqlite`、Vite `5244` 下，`#chapter-frontend-5` 桌面 1200 与 390px 无横向溢出，暗色背景 `rgb(7, 12, 20)`，控制台 error 为 0。
+- 前端第 5 关沙盒证物追加修复：`sandbox/frontend-testing-proof` 的材料本体已从旧保存画布链路改为任务列表筛选回归链路，包含 `GET /api/tasks?status=blocked`、DOM 可见列表、`POST /api/reports/verification`、`sourceHash`、回归风险和 Agent 交付审查。新增 `src/sandboxEvidence.test.ts` 防止旧词回流；Node `v24.13.1` 下 `npm run test -- src/sandboxEvidence.test.ts --run` 通过，`npm run verify:quick` 通过 11 个测试文件 / 187 个测试。沙盒自身 `npm test` 仍按练习设计失败 5 项，代表用户还要修报告校验器，不能误写成完整沙盒通过。
 - 前端第 4 关教学层追加修复：`frontend-accessibility-proof` 的 teaching map/code tour 不再复用 AI 第 14 章上线门禁素材；教学项目地图改为用户任务、语义与状态反馈、移动端复测、可访问性哨塔、回归守门和无障碍交付决定，代码导读改为 `docs/accessibility-checklist.md` 与 `frontend/accessibility-audit.md`。完整 `npm run verify` 通过 10 个测试文件 / 185 个测试；隔离 API `4395`、SQLite `/tmp/code-quest-r322.sqlite`、Vite `5245` 下，`#chapter-frontend-4` 桌面 1280 与 390px 无横向溢出，暗色背景，控制台 error 为 0，正文不再出现上线门禁、上线计划、生产变量、生产环境、备份恢复或 `AI_API_KEY`。
 - Java 第 5 关教学层追加修复：`java-production-incident` 的 teaching map/code tour 不再复用 AI 第 14 章上线门禁素材；教学项目地图改为事故窗口、日志与运行环境、影响范围、报警哨塔、止血决策门和事故结论，代码导读改为 `docs/incident-response-timeline.md` 与 `server/IncidentTimeline.java`。完整 `npm run verify` 通过 10 个测试文件 / 186 个测试；隔离 API `4396`、SQLite `/tmp/code-quest-r323.sqlite`、Vite `5246` 下，`#chapter-java-5` 桌面 1280 与 390px 无横向溢出，暗色背景，控制台 error 为 0，正文不再出现上线门禁、上线计划、生产变量、生产环境、备份恢复或 `AI_API_KEY`。
 - 上线港 Lab 语境追加修复：Java 第 4 关可见 Lab 配置已聚焦发布窗口、影响范围、发布负责人、生产配置、密钥边界、备份恢复、390px 冒烟、监控信号和回滚后验证，固定“构建通过不等于可以上线”。浏览器深链验收待补录。

@@ -74,7 +74,11 @@ await run("验收报告必须同时包含单测、集成测试和手动复测", 
     sourceHash: currentSourceHash,
     tests: [
       ...failingBefore.tests,
-      { name: "保存逻辑会写入仓库", phase: "unit", status: "passed" },
+      {
+        name: "筛选状态归一化保持用户选择",
+        phase: "unit",
+        status: "passed",
+      },
     ],
     manual: undefined,
   };
@@ -103,9 +107,17 @@ await run("通过报告必须绑定当前源码 hash，过期报告要被拒绝"
 await run("Network 和日志只能作为证据，不能替代测试报告", () => {
   assert(
     networkRun.steps.some(
-      (step) => step.method === "POST" && step.url === "/api/canvases",
+      (step) =>
+        step.method === "GET" && step.url === "/api/tasks?status=blocked",
     ),
-    "Network 证据需要包含保存请求",
+    "Network 证据需要包含筛选请求",
+  );
+  assert(
+    networkRun.steps.some(
+      (step) =>
+        step.method === "POST" && step.url === "/api/reports/verification",
+    ),
+    "Network 证据需要包含报告提交请求",
   );
   assert(
     backendLog.includes("sourceHash=old_source_hash_from_before_latest_change"),
@@ -119,9 +131,9 @@ await run("Network 和日志只能作为证据，不能替代测试报告", () =
     summary: { passed: 1, failed: 0 },
     tests: [],
     manual: {
-      steps: ["看 Network 里 POST 和 GET 都是 200/201"],
-      expected: "请求成功",
-      actual: "请求成功",
+      steps: ["看 Network 里筛选请求和报告提交都是 200/201"],
+      expected: "筛选请求成功",
+      actual: "筛选请求成功",
     },
   };
   const verdict = validateVerificationReport(
@@ -140,12 +152,12 @@ await run("交付卷宗必须写清回归风险和面试表达", () => {
       tests: [...failingBefore.tests, ...passingAfterStale.tests],
     },
     manualReport,
-    risks: ["空标题保存", "多人同时保存"],
+    risks: ["状态切换组合筛选", "390px 移动端筛选结果"],
   });
 
   assert(Array.isArray(dossier.regressionRisks), "卷宗需要列出回归风险");
   assert(
-    dossier.regressionRisks.includes("空标题保存"),
+    dossier.regressionRisks.includes("状态切换组合筛选"),
     "卷宗没有保留具体回归风险",
   );
   assert(
