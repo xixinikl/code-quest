@@ -16,7 +16,7 @@
 仓库：https://github.com/xixinikl/code-quest.git
 要拉的分支：cx/ai-career-rpg-home
 不要用 clone 后默认分支继续开发。先切到 cx/ai-career-rpg-home，再核对本地 HEAD、origin/cx/ai-career-rpg-home 和远端 ls-remote 三个 hash。
-完整基线：至少能看到 5c3a176 feat(rpg): recap code evidence handoff，或者看到晚于它的实战证据包/交接更新提交。
+完整基线：至少能看到 5cabd32 feat(rpg): hand off evidence pack before practice，或者看到晚于它的 Lab 入场证据包更新提交。
 拉完先跑：nvm use && npm install && npm run verify:quick
 准备合并或交付前再跑：npm run verify
 ```
@@ -86,11 +86,11 @@ git pull --ff-only origin cx/ai-career-rpg-home
 
 - `git status --short --branch` 显示在 `cx/ai-career-rpg-home`，并且没有未提交文件。
 - `git rev-parse HEAD`、`git rev-parse origin/cx/ai-career-rpg-home`、`git ls-remote origin refs/heads/cx/ai-career-rpg-home` 的 hash 一致。
-- `git log --oneline -8` 能看到 `5c3a176 feat(rpg): recap code evidence handoff`、本次实战证据包/交接更新提交，或更晚提交。
+- `git log --oneline -8` 能看到 `5cabd32 feat(rpg): hand off evidence pack before practice`、本次 Lab 入场证据包更新提交，或更晚提交。
 - `nvm use` 后 Node 是 `.nvmrc` 指定的 `v24.13.1`。
 - `npm run verify:quick` 通过后再继续开发；准备合并或交付前跑完整 `npm run verify`。
 
-如果 hash 不一致、还停在默认分支、或者只看到早于 `5c3a176` 的提交，不要继续改；先重新 `git fetch origin`，再切回 `cx/ai-career-rpg-home`。
+如果 hash 不一致、还停在默认分支、或者只看到早于 `5cabd32` 的提交，不要继续改；先重新 `git fetch origin`，再切回 `cx/ai-career-rpg-home`。
 
 ## 当前状态
 
@@ -100,16 +100,21 @@ git pull --ff-only origin cx/ai-career-rpg-home
 
 - 当前远端：`https://github.com/xixinikl/code-quest.git`
 - 当前工作分支：`cx/ai-career-rpg-home`
-- 当前已推送功能基线：远端 `origin/cx/ai-career-rpg-home` 已到 `5c3a176 feat(rpg): recap code evidence handoff`；本次实战证据包/交接更新提交后会晚于它。最终远端 hash 仍以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 输出为准。
-- 当前已推送交接基线：本文件提交后应晚于 `5c3a176`，包含另一台电脑拉取、核对、继续开发、不能直接合并，以及最新第 1 章地点路线/当前流程交接单/主动复述证据边界/复盘关键线索/下一地点证据交接/Lab 刷新恢复/Lab 实战接力/收藏解锁/结案后冒险菜单/下一幕预告/玩家身份契约/当前只读这一行/代码证据交接复盘/带入实战的证据包说明。最终远端 hash 仍以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 为准。
+- 当前已推送功能基线：远端 `origin/cx/ai-career-rpg-home` 已到 `5cabd32 feat(rpg): hand off evidence pack before practice`；本次 Lab 入场证据包更新提交后会晚于它。最终远端 hash 仍以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 输出为准。
+- 当前已推送交接基线：本文件提交后应晚于 `5cabd32`，包含另一台电脑拉取、核对、继续开发、不能直接合并，以及最新第 1 章地点路线/当前流程交接单/主动复述证据边界/复盘关键线索/下一地点证据交接/Lab 刷新恢复/Lab 实战接力/收藏解锁/结案后冒险菜单/下一幕预告/玩家身份契约/当前只读这一行/代码证据交接复盘/带入实战的证据包/Lab 实战入场证据包说明。最终远端 hash 仍以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 为准。
 - 当前本地核对：推送完成后，`git status --short --branch` 应显示 `cx/ai-career-rpg-home...origin/cx/ai-career-rpg-home` 且没有未提交文件，说明本地与远端一致。
-- 当前远端核对：另一台电脑拉取后 `git log --oneline -8` 应看到 `5c3a176 feat(rpg): recap code evidence handoff`、本次实战证据包/交接更新提交，或更晚提交；如果只看到 `feeac06`、`5c84acf`、`865e721`、`678d428`、`6dc63ea`、`b42a904`、`2387686`、`772f66e`、`65e3603`、`5651c18`、`0fb18e7`、`0f7c433`、`c587a23`、`547ed6f`、`4370ddf`、`1b3cf5d`、`9171ac8`、`1a40fe4`、`e10069f`、`fa12dbc`、`2dd44d3`、`ca2c7aa`、`3fe3db1` 或默认分支提交，说明还没拉到最新交接/体验细修。
+- 当前远端核对：另一台电脑拉取后 `git log --oneline -8` 应看到 `5cabd32 feat(rpg): hand off evidence pack before practice`、本次 Lab 入场证据包更新提交，或更晚提交；如果只看到 `5c3a176`、`feeac06`、`5c84acf`、`865e721`、`678d428`、`6dc63ea`、`b42a904`、`2387686`、`772f66e`、`65e3603`、`5651c18`、`0fb18e7`、`0f7c433`、`c587a23`、`547ed6f`、`4370ddf`、`1b3cf5d`、`9171ac8`、`1a40fe4`、`e10069f`、`fa12dbc`、`2dd44d3`、`ca2c7aa`、`3fe3db1` 或默认分支提交，说明还没拉到最新交接/体验细修。
 - 远端默认 HEAD：`git ls-remote --symref origin HEAD` 指向 `feat/guided-learning-bridge`，不是本分支；另一台电脑必须显式切到 `cx/ai-career-rpg-home`，不要只用 clone 后默认分支继续。
-- 给协作者的最短说明：不要直接用默认分支；拉仓库后必须切到 `cx/ai-career-rpg-home`。当前至少应看到 `5c3a176 feat(rpg): recap code evidence handoff`、本次实战证据包/交接更新提交，或更晚提交；进入项目后必须 `nvm use` 到 Node `24.13.1`。
+- 给协作者的最短说明：不要直接用默认分支；拉仓库后必须切到 `cx/ai-career-rpg-home`。当前至少应看到 `5cabd32 feat(rpg): hand off evidence pack before practice`、本次 Lab 入场证据包更新提交，或更晚提交；进入项目后必须 `nvm use` 到 Node `24.13.1`。
 - 他具体怎么拉：如果另一台电脑没有本项目，按“首次 clone”执行；如果已经 clone 过，按“已有仓库更新”执行；如果他本地有未提交改动，先新建自己的分支或 stash，不要直接覆盖。不要在默认分支上继续开发，也不要在没有核对 hash 的情况下合并。
 
 ### 最新进度补充（2026-07-18 凌晨）
 
+- 已在真实 Lab 首屏加入 `实战入场证据包`，解决完成页证据包在刷新/深链恢复时可能看不到的问题。现在 `#chapter-1` 直接恢复到 Lab，也会在冒险日志后看到 `从剧情带来 / 当前只看 / 能证明 / 不能证明 / 交给下一棒`。
+- 第 1 章 Lab 证据包会显示 `任务委托 → 前端`、只看 `fetch('/api/canvases'...)`、还不能证明数据库写入，以及下一棒后端接口要继续接待请求并交给数据层；用户不会只看到“读取项目材料”就迷路。
+- 已补回归测试：`第 1 章剧情调查完成后刷新深链会回到 Lab` 现在断言真实 Lab 可见 `实战入场证据包`；岗位 Lab 默认收束测试同步通过。
+- 验证：`npm run test -- src/App.test.tsx --run -t "第 1 章剧情调查完成后刷新深链会回到 Lab|岗位 Lab 默认收束辅助资料"` 通过；`npm run verify:quick` 通过 11 个测试文件 / 199 个测试。
+- 浏览器验收：默认 API `4317`、Vite `5284` 打开 `#chapter-1`，页面显示 `实战入场证据包`，控制台 0 error / 0 warning；截图保存在 `output/playwright/r356-lab-entry-evidence-pack.png`。
 - 已在教学完成页加入 `带入实战的证据包`。用户从教学进入 Lab 前，会先看到 `起点别忘 / 代码只带关键行 / 下一步验证 / 实战边界`，避免刚学完代码导读就直接跳到实战而忘记证据链。
 - 第 1 章证据包会提示：关键代码是 `frontend/SaveCanvasButton.jsx`，它只能帮助证明当前代码观察目标；后续仍要用 Network、日志、数据库或测试结果闭环。实战边界明确 `只改沙盒，不碰真实项目`。
 - 已补回归测试：`第 1 章教学完成页会显示带入实战的证据包`，并与作战简报测试一起跑过；`npm run typecheck`、`npm run verify:quick` 已通过，当前测试总数为 199。
@@ -178,7 +183,7 @@ npm run verify:quick
 npm run dev
 ```
 
-拉完后 `git log --oneline -5` 应至少能看到 `5c3a176 feat(rpg): recap code evidence handoff`、本次实战证据包/交接更新提交，或更晚提交：
+拉完后 `git log --oneline -5` 应至少能看到 `5cabd32 feat(rpg): hand off evidence pack before practice`、本次 Lab 入场证据包更新提交，或更晚提交：
 
 ```bash
 git log --oneline -8
@@ -186,7 +191,7 @@ git rev-parse HEAD
 git ls-remote origin refs/heads/cx/ai-career-rpg-home
 ```
 
-如果显示的是 `feat/guided-learning-bridge`、`main` 上的提交，或只停在早于 `5c3a176` 的提交，说明没有拉到今天上传的内容。此时不要继续改，先重新 `git fetch origin` 并切到 `cx/ai-career-rpg-home`。
+如果显示的是 `feat/guided-learning-bridge`、`main` 上的提交，或只停在早于 `5cabd32` 的提交，说明没有拉到今天上传的内容。此时不要继续改，先重新 `git fetch origin` 并切到 `cx/ai-career-rpg-home`。
 
 ### 已有仓库更新照抄
 
@@ -280,7 +285,7 @@ npm run verify:quick
 
 - `git status --short --branch` 显示在 `cx/ai-career-rpg-home`，没有未提交文件。
 - `HEAD`、`origin/cx/ai-career-rpg-home`、`git ls-remote` 三个 hash 一致，或 `HEAD` 是刚创建的本地分支并跟踪同一个远端提交。
-- `git log --oneline -8` 能看到 `5c3a176`、本次实战证据包/交接更新提交，或更晚提交。
+- `git log --oneline -8` 能看到 `5cabd32`、本次 Lab 入场证据包更新提交，或更晚提交。
 - `nvm use` 后 Node 是 `.nvmrc` 指定的 `v24.13.1`。
 - `npm run verify:quick` 通过后再继续开发；如果失败，先不要改业务，先记录错误并修环境或依赖。
 

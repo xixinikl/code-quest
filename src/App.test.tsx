@@ -2130,6 +2130,14 @@ describe("AI 职业路线入口", () => {
     expect(
       screen.getByLabelText(/主线 1-1 · AI 应用开发 实战追踪/),
     ).toHaveTextContent("剧情教学已经把「任务委托」整理成委托草案");
+    const labEvidencePack = screen.getByLabelText("实战入场证据包");
+    expect(labEvidencePack).toHaveTextContent("从剧情带来");
+    expect(labEvidencePack).toHaveTextContent("当前只看");
+    expect(labEvidencePack).toHaveTextContent("能证明 / 不能证明");
+    expect(labEvidencePack).toHaveTextContent("交给下一棒");
+    expect(labEvidencePack).toHaveTextContent("任务委托 → 前端");
+    expect(labEvidencePack).toHaveTextContent("fetch('/api/canvases'");
+    expect(labEvidencePack).toHaveTextContent("还不能证明");
     expect(screen.queryByLabelText("数据断层项目地图")).not.toBeInTheDocument();
   });
 
@@ -6507,7 +6515,7 @@ describe("AI 职业路线入口", () => {
     expect(screen.getByLabelText("实战接力板")).toBeInTheDocument();
     expect(screen.getByText("上一棒交来")).toBeInTheDocument();
     expect(screen.getByText("当前要证明")).toBeInTheDocument();
-    expect(screen.getByText("交给下一棒")).toBeInTheDocument();
+    expect(screen.getAllByText("交给下一棒").length).toBeGreaterThan(0);
     expect(screen.getByLabelText("这一题的证据路线")).toBeInTheDocument();
     expect(screen.getByLabelText("新手先读卡")).toBeInTheDocument();
     expect(screen.getByText("这题到底在问什么")).toBeInTheDocument();

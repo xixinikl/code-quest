@@ -9101,6 +9101,87 @@ function LabAbilityMark({
   );
 }
 
+function LabPracticeEvidencePack({
+  activeIndex,
+  activeStep,
+  config,
+}: {
+  activeIndex: number;
+  activeStep: LabStep;
+  config: LabConfig;
+}) {
+  if (activeIndex > 1) return null;
+
+  const flowIndex = getLabStepFlowIndex(activeStep.id, activeIndex, config);
+  const currentFlow = config.flowItems[flowIndex] ?? config.flowItems[0];
+  const nextFlow = config.flowItems[flowIndex + 1];
+  const guide = activeStep.response
+    ? pickArtifactGuide(
+        config,
+        activeStep.response.artifactIds ?? [
+          activeStep.response.prompt,
+          activeStep.label,
+        ],
+      )
+    : Object.values(config.artifactGuides)[0];
+  const keyLineText = guide?.keyLines.slice(0, 2).join(" / ");
+  const trimSentenceEnd = (text: string) => text.replace(/[。.!！?？]+$/, "");
+  const cards = [
+    {
+      label: "从剧情带来",
+      title: `${config.steps[0]?.label ?? "任务委托"} → ${
+        currentFlow?.label ?? activeStep.label
+      }`,
+      body: `不是从零开始。上一段剧情已经说明事故背景；现在把它放进 ${config.practical.sandboxPath} 的真实材料里验证。`,
+    },
+    {
+      label: "当前只看",
+      title: guide?.place ?? activeStep.label,
+      body: guide
+        ? `先盯住：${trimSentenceEnd(guide.focus)}${keyLineText ? `。关键行：${keyLineText}` : ""}`
+        : "先看当前任务要求，不要一次展开整个项目。",
+    },
+    {
+      label: "能证明 / 不能证明",
+      title: guide?.proves ?? currentFlow?.title ?? activeStep.label,
+      body: `还不能证明：${
+        guide?.cannotProve
+          ? trimSentenceEnd(guide.cannotProve)
+          : (nextFlow?.title ?? "最终修复是否已经通过验收")
+      }。下一步继续找交叉证据。`,
+    },
+    {
+      label: "交给下一棒",
+      title: nextFlow
+        ? `${currentFlow?.label ?? activeStep.label} → ${nextFlow.label}`
+        : config.result.nextTitle,
+      body:
+        nextFlow && nextFlow.detail
+          ? `${nextFlow.title}：${nextFlow.detail}`
+          : (nextFlow?.title ??
+            "最后把现象、证据、结论和边界整理成成长档案与面试素材。"),
+    },
+  ];
+
+  return (
+    <section className="lab-practice-evidence-pack" aria-label="实战入场证据包">
+      <header>
+        <span>实战入场证据包</span>
+        <strong>把刚才学懂的流程，带进真实材料</strong>
+      </header>
+      <div>
+        {cards.map((card) => (
+          <article key={card.label}>
+            <small>{card.label}</small>
+            <strong>{card.title}</strong>
+            <p>{card.body}</p>
+          </article>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 function LabStepReceipt({
   config,
   nextStep,
@@ -12029,6 +12110,11 @@ export function Lab({
                     : "最后生成成长档案，把本关产出整理成工作、Agent 和面试三种表达。",
             }}
             handoff={questLogHandoff}
+          />
+          <LabPracticeEvidencePack
+            activeIndex={activeIndex}
+            activeStep={activeStep}
+            config={config}
           />
           <section className="lab-director-stage" aria-label="任务导演台">
             <header>
