@@ -24,11 +24,13 @@ cd code-quest
 git fetch origin
 git checkout -B cx/ai-career-rpg-home origin/cx/ai-career-rpg-home
 git log --oneline -1
+nvm install
+nvm use
 npm install
-npm run verify:quick
+npm run verify
 ```
 
-`git log --oneline -1` 应显示 `0080bd7 feat(rpg): clarify lab save relay` 或更新提交。不要只 clone 后停在默认分支；当前 GitHub 默认 HEAD 不是这条 RPG 分支。
+`git log --oneline -1` 应显示 `ecf2fda docs(rpg): clarify collaborator pull steps`、`0080bd7 feat(rpg): clarify lab save relay` 或更新提交。不要只 clone 后停在默认分支；当前 GitHub 默认 HEAD 不是这条 RPG 分支。必须先 `nvm use` 到 `.nvmrc` 指定的 Node `24.13.1`，否则 `node:sqlite` 测试会失败。
 
 新电脑首次拉取：
 
@@ -38,8 +40,10 @@ cd code-quest
 git fetch origin cx/ai-career-rpg-home
 git switch -c cx/ai-career-rpg-home --track origin/cx/ai-career-rpg-home
 git log --oneline -1
+nvm install
+nvm use
 npm install
-npm run verify:quick
+npm run verify
 ```
 
 已 clone 过的电脑继续：
@@ -50,8 +54,9 @@ git fetch origin
 git switch cx/ai-career-rpg-home
 git pull --ff-only
 git log --oneline -1
+nvm use
 npm install
-npm run verify:quick
+npm run verify
 ```
 
 `git log --oneline -1` 应显示本次交接文档提交、`0080bd7 feat(rpg): clarify lab save relay` 或更新提交。再运行 `git rev-parse HEAD`、`git rev-parse origin/cx/ai-career-rpg-home` 和 `git ls-remote origin refs/heads/cx/ai-career-rpg-home`，三处 hash 应一致；最新远端 HEAD 以命令输出为准。如果显示 `547ed6f`、`4370ddf`、`1b3cf5d`、`9171ac8`、`1a40fe4`、`e10069f`、`fa12dbc`、`2dd44d3`、`ca2c7aa`、`3fe3db1` 或默认分支 `feat/guided-learning-bridge` 的提交，说明拉错分支或没有拉到最新远端。
@@ -102,9 +107,9 @@ npm run verify
 
 最近验证记录：
 
-- 最新完整门禁：Node `v24.13.1` 下 `npm run verify` 通过，包含格式、Lint、TypeScript、10 个测试文件 / 176 个测试、生产构建和 TeachingBridge 懒加载检查；Vite 主包体积 warning 是已知债务，不是失败。
+- 最新完整门禁：Node `v24.13.1` 下 `npm run verify` 通过，包含格式、Lint、TypeScript、10 个测试文件 / 182 个测试、生产构建和 TeachingBridge 懒加载检查；Vite 主包体积 warning 是已知债务，不是失败。
 - 最新定向测试：`npm run test -- src/App.test.tsx --run` 通过 51 个测试。
-- 最新快速门禁：`npm run verify:quick` 通过，包含 lint、typecheck、10 个测试文件 / 176 个测试。
+- 环境反例：Node `18.20.8` 会因 `node:sqlite` 缺失和 jsdom ESM 依赖失败；合并前必须先 `nvm use`。
 - 最新浏览器验收：隔离 API `4369`、临时 SQLite `/tmp/code-quest-r303.sqlite`、Vite `5219`；第 1 章从剧情探索完整收集 8/8 线索进入实战，后半段 Agent、审查、因果和面试迁移步骤桌面与 390px 移动端无横向溢出，控制台 error 为 0。
 - 合并前追加抽检：隔离 API `4370`、临时 SQLite `/tmp/code-quest-r304.sqlite`、Vite `5220`；桌面 1280 与 390px 下序章、证据选择、领取委托、三路线大厅均无横向溢出，控制台 error 为 0。
 - 岗位路线追加抽检：隔离 API `4371`、临时 SQLite `/tmp/code-quest-r305.sqlite`、Vite `5221`；`#chapter-java-2..5` 与 `#chapter-frontend-2..5` 进入剧情探索后均显示当前路线身份、流程卷轴和名词小抄，桌面 1280 与 390px 无横向溢出，控制台 error 为 0。
@@ -119,12 +124,12 @@ npm run verify
 - 岗位 Lab 渲染护栏追加：`src/App.test.tsx` 新增 Java 上线港、前端性能塔、前端回归试炼场的真实渲染测试，锁定默认收束辅助资料、展开后显示完整路线，并防止 AI 主线旧词、`/api/canvases` 和 `验收试炼画布` 回流。`App.test.tsx` 单文件 55 项通过，`npm run verify:quick` 通过 10 个测试文件 / 181 个测试。
 - 前端测试 Lab 流程错位修复：浏览器从 `#chapter-frontend-5` 走到实战时发现第一题「复现旧故障」的导演台/辅助卷宗误显示当前棒为「单测」。已给 `frontend-testing-proof` 补岗位专属 `flowItemIndex`，现在第一题对应「旧故障」，单测、集成、浏览器、接收各自对应后续步骤；完整 `npm run verify` 通过 10 个测试文件 / 181 个测试、生产构建和懒加载检查。
 - 实战导演台流程翻译追加：`任务导演台` 新增 `本幕流程翻译`，把“上一棒交来什么、当前只盯哪份证据、下一棒接什么”压成一段人话，并给出先看材料、再分证明边界、最后决定下一份证据的三步顺序。完整 `npm run verify` 通过 10 个测试文件 / 181 个测试；隔离 API `4391`、SQLite `/tmp/code-quest-r318.sqlite`、Vite `5241` 下，从 `#chapter-frontend-5` 收集 8/8 线索进入 Lab，桌面和 390px 均能看到 `本幕流程翻译`，390px 无横向溢出，控制台 0 error。
-- 实战保存接力回执追加：保存一道实战回答后，`LabStepReceipt` 新增「刚刚到下一步的接力」，把“刚刚停在 → 现在进入 → 只盯住哪份证据”显式展示出来。定向测试通过，`npm run build` 通过；默认 `npm run verify` 本轮因 Vitest worker 启动超时未完整通过，低并发补跑 9 个非 App 测试文件通过，完整浏览器保存流仍待补。
+- 实战保存接力回执追加：保存一道实战回答后，`LabStepReceipt` 新增接力回执，把“刚刚停在 → 现在进入 → 只盯住哪份证据”显式展示出来。Node `24.13.1` 下完整 `npm run verify` 通过：10 个测试文件 / 182 个测试、生产构建和 TeachingBridge 懒加载检查；隔离 API `4393`、SQLite `/tmp/code-quest-r320.sqlite`、Vite `5243` 下，从 `#chapter-frontend-3` 收集 10/10 线索进入前端性能 Lab，保存第一题后可见「刚刚停在 Network」「现在进入 接口」「只盯住『拆后端等待』」，桌面 1200 与 390px 无横向溢出，控制台 0 error。
 
 ## 当前拉取/合并判断
 
 - 可以拉取：是。`cx/ai-career-rpg-home` 当前本地和远端一致，另一台电脑按上面的命令能完整拿到当前阶段成果。
-- 不建议直接合并：当前还是阶段性 RPG 化分支，不是最终完成版。本轮默认 `npm run verify` 没有完整通过，且全站视觉终审、PR 审查和真人试玩仍要做。
+- 不建议直接合并：当前还是阶段性 RPG 化分支，不是最终完成版。最新完整 `npm run verify` 已在 Node `24.13.1` 下通过，但全站视觉终审、PR 审查和真人试玩仍要做。
 - 时间紧的处理：可以先继续在本分支开发，或开 Draft PR 让 GitHub 保留审查入口；等上述收尾完成后再转 ready PR。
 
 ## 合并前建议
