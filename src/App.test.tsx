@@ -982,6 +982,22 @@ describe("岗位路线实战场景契约", () => {
     expect(screen.getByLabelText("本关证据任务")).toHaveTextContent(
       "重复请求、数据库前后记录、后端日志和交付审查证据",
     );
+    expect(screen.getByLabelText("本关面试复盘稿")).toHaveTextContent("情境");
+    expect(screen.getByLabelText("本关面试复盘稿")).toHaveTextContent("行动");
+    expect(screen.getByLabelText("本关面试复盘稿")).toHaveTextContent("结果");
+    expect(screen.getByLabelText("本关面试复盘稿")).toHaveTextContent("表达");
+    expect(screen.getByLabelText("本关面试复盘稿")).toHaveTextContent(
+      "用户连点按钮、网络重试、多人同时编辑",
+    );
+    expect(screen.getByLabelText("本关面试复盘稿")).toHaveTextContent(
+      "用重复请求、数据库记录数量和测试结果证明没有重复写入",
+    );
+    expect(screen.getByLabelText("本关面试复盘稿")).toHaveTextContent(
+      "只靠前端禁用不够",
+    );
+    expect(screen.getByLabelText("本关面试复盘稿")).toHaveTextContent(
+      "如果面试官继续问",
+    );
   });
 
   it("实战保存后会显示具体接力回执，避免自动跳步后迷路", async () => {

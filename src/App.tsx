@@ -9447,6 +9447,56 @@ function LabEvidenceQuest({ config }: { config: LabConfig }) {
   );
 }
 
+function LabInterviewReplay({ config }: { config: LabConfig }) {
+  const { chapter } = getRouteChapterForScenarioId(config.scenarioId);
+  if (!chapter) return null;
+
+  const replayCards = [
+    {
+      label: "情境",
+      title: "这不是练习题，是工作里的什么问题",
+      body: chapter.workBackground,
+    },
+    {
+      label: "行动",
+      title: "我怎么判断和推进",
+      body: chapter.evidenceTask,
+    },
+    {
+      label: "结果",
+      title: "我怎么证明它成立",
+      body: chapter.acceptanceAction,
+    },
+    {
+      label: "表达",
+      title: "面试时可以这样收束",
+      body: chapter.interviewReview,
+    },
+  ];
+
+  return (
+    <section className="lab-interview-replay" aria-label="本关面试复盘稿">
+      <header>
+        <span>面试复盘稿</span>
+        <strong>把本关证据整理成面试官听得懂的项目故事</strong>
+      </header>
+      <div>
+        {replayCards.map((card) => (
+          <article key={card.label}>
+            <span>{card.label}</span>
+            <strong>{card.title}</strong>
+            <p>{card.body}</p>
+          </article>
+        ))}
+      </div>
+      <p>
+        追问准备：如果面试官继续问“你怎么证明不是猜的”，就拿出{" "}
+        {config.result.recorded}。
+      </p>
+    </section>
+  );
+}
+
 function getRouteChapterForScenarioId(scenarioId: string) {
   const target = findRouteChapterTargetForScenarioId(scenarioId);
   const route =
@@ -12603,6 +12653,7 @@ export function Lab({
           />
           <LabGlossaryStrip config={config} />
           <LabEvidenceQuest config={config} />
+          <LabInterviewReplay config={config} />
           <LabPracticeEvidencePack
             activeIndex={activeIndex}
             activeStep={activeStep}
