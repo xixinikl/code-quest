@@ -3,15 +3,15 @@
   "paths": [
     {
       "viewport": "1280px",
-      "path": "首页 -> 任务简报 -> 第 14 章 -> 教学关卡",
+      "path": "health -> 创建订单 -> 查询订单",
       "result": "passed"
     },
     {
       "viewport": "desktop-refresh",
-      "path": "刷新后恢复教学页",
+      "path": "模拟支付回调 -> 订单状态更新",
       "result": "passed"
     }
   ],
-  "missing": ["390px 移动端路径", "登录后保存主路径"],
+  "missing": ["390px 移动端订单页", "支付回调失败路径"],
   "explain": "桌面冒烟通过还不能说明移动端和关键业务路径稳定。"
 }

@@ -1,9 +1,14 @@
-const REQUIRED_ENV = ["DATABASE_URL", "AI_API_KEY", "APP_ORIGIN"];
+const REQUIRED_ENV = [
+  "DATABASE_URL",
+  "JWT_SECRET",
+  "PAYMENT_API_URL",
+  "APP_ORIGIN",
+];
 const REQUIRED_MONITORING = [
   "errorRate",
   "p95LatencyMs",
-  "saveSuccessRate",
-  "aiFailureRate",
+  "orderSuccessRate",
+  "paymentCallbackFailureRate",
 ];
 
 export function reviewReleaseReadiness(release) {
@@ -63,7 +68,7 @@ export function buildReleaseDecision(release, verdict) {
     requestedEvidence.push("补 390px 移动端冒烟测试路径。");
   }
   if (verdict.code === "MISSING_MONITORING_SIGNAL") {
-    requestedEvidence.push("补错误率、耗时、保存成功率和 AI 失败率监控。");
+    requestedEvidence.push("补错误率、耗时、下单成功率和支付回调失败率监控。");
   }
   if (verdict.code === "MISSING_ROLLBACK_PLAN") {
     requestedEvidence.push("补回滚触发条件、步骤和回滚后验证。");
@@ -74,6 +79,6 @@ export function buildReleaseDecision(release, verdict) {
     title: release.name,
     requestedEvidence,
     interviewLine:
-      "我不会把构建成功当成可上线；我会核环境变量、备份、冒烟测试、监控和回滚证据，再决定放行或暂缓。",
+      "我不会把构建成功当成可上线；我会核生产配置、备份、冒烟测试、监控和回滚证据，再决定放行或暂缓。",
   };
 }

@@ -1,6 +1,6 @@
 {
   "errorRate": 0,
   "p95LatencyMs": 420,
-  "saveSuccessRate": 0.99,
-  "explain": "缺少 AI 调用失败率，无法判断第 14 章上线是否影响 AI 功能路径。"
+  "orderSuccessRate": 0.99,
+  "explain": "缺少支付回调失败率，无法判断订单服务上线是否影响真实交易路径。"
 }

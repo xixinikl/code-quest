@@ -7350,7 +7350,8 @@ labConfigs[JAVA_RELEASE_SCENARIO_ID] = {
     {
       label: "配置",
       title: "核生产变量",
-      detail: "DATABASE_URL、AI_API_KEY、APP_ORIGIN 和前端密钥泄露都要查",
+      detail:
+        "DATABASE_URL、JWT_SECRET、PAYMENT_API_URL、APP_ORIGIN 和密钥泄露都要查",
     },
     {
       label: "数据",
@@ -7360,12 +7361,12 @@ labConfigs[JAVA_RELEASE_SCENARIO_ID] = {
     {
       label: "冒烟",
       title: "覆盖关键路径和 390px",
-      detail: "桌面通过不代表移动端和登录后保存路径稳定",
+      detail: "桌面通过不代表移动端、创建订单和支付回调路径稳定",
     },
     {
       label: "退路",
       title: "监控和回滚条件",
-      detail: "错误率、P95、成功率、AI 失败率和回滚后验证一起决定放行",
+      detail: "错误率、P95、下单成功率、支付回调失败率和回滚后验证一起决定放行",
     },
   ],
   baseline: {
@@ -7400,8 +7401,8 @@ labConfigs[JAVA_RELEASE_SCENARIO_ID] = {
   },
   hints: [
     "先看 release-plan：发布窗口有了，但 owner 和 observer 为空，出事时没人做回滚判断。",
-    "再看 environment-check、backup-record 和 smoke-test：AI_API_KEY 缺失，备份没有恢复验证，390px 冒烟缺失。",
-    "最后看 monitoring-snapshot、rollback-plan 和 backend.log：监控缺 AI 失败率，回滚条件和回滚后验证都没写清。",
+    "再看 environment-check、backup-record 和 smoke-test：JWT_SECRET 缺失，备份没有恢复验证，390px 冒烟缺失。",
+    "最后看 monitoring-snapshot、rollback-plan 和 backend.log：监控缺支付回调失败率，回滚条件和回滚后验证都没写清。",
   ],
   steps: labConfigs[CASE14_SCENARIO_ID].steps.map((step) =>
     rewriteLabCopy(step, [
@@ -7412,17 +7413,28 @@ labConfigs[JAVA_RELEASE_SCENARIO_ID] = {
       ["可以上线", "可以放行"],
       ["生产变量", "生产配置"],
       ["环境变量", "生产配置"],
-      ["AI_API_KEY", "AI_API_KEY / APP_ORIGIN"],
+      ["AI_API_KEY", "JWT_SECRET / PAYMENT_API_URL"],
+      ["AI 调用失败率", "支付回调失败率"],
+      ["AI 功能", "订单服务"],
+      ["saveSuccessRate", "orderSuccessRate"],
+      ["保存成功率", "下单成功率"],
+      ["登录/保存", "创建订单/查询订单"],
+      ["登录后保存", "创建订单和支付回调"],
+      ["保存", "订单写入"],
       ["备份恢复", "备份恢复验证"],
-      ["备份", "备份恢复"],
       ["冒烟测试", "桌面与 390px 冒烟"],
-      ["监控信号", "错误率、P95、保存成功率和 AI 失败率"],
+      ["监控信号", "错误率、P95、下单成功率和支付回调失败率"],
       ["监控", "上线监控"],
       ["回滚方案", "回滚条件、步骤和回滚后验证"],
-      ["回滚", "回滚和恢复验证"],
       ["负责人", "发布负责人"],
       ["值守人", "上线观察人"],
       ["部署", "上线放行"],
+      ["备份恢复恢复验证", "备份恢复验证"],
+      ["回滚和恢复验证和恢复验证", "回滚和恢复验证"],
+      ["回滚和恢复验证后验证", "回滚后验证"],
+      ["回滚和恢复验证条件", "回滚条件"],
+      ["回滚和恢复验证步骤", "回滚步骤"],
+      ["回滚和恢复验证退路", "回滚退路"],
     ]),
   ),
   artifactGuides: rewriteLabCopy(
@@ -7435,17 +7447,28 @@ labConfigs[JAVA_RELEASE_SCENARIO_ID] = {
       ["可以上线", "可以放行"],
       ["生产变量", "生产配置"],
       ["环境变量", "生产配置"],
-      ["AI_API_KEY", "AI_API_KEY / APP_ORIGIN"],
+      ["AI_API_KEY", "JWT_SECRET / PAYMENT_API_URL"],
+      ["AI 调用失败率", "支付回调失败率"],
+      ["AI 功能", "订单服务"],
+      ["saveSuccessRate", "orderSuccessRate"],
+      ["保存成功率", "下单成功率"],
+      ["登录/保存", "创建订单/查询订单"],
+      ["登录后保存", "创建订单和支付回调"],
+      ["保存", "订单写入"],
       ["备份恢复", "备份恢复验证"],
-      ["备份", "备份恢复"],
       ["冒烟测试", "桌面与 390px 冒烟"],
-      ["监控信号", "错误率、P95、保存成功率和 AI 失败率"],
+      ["监控信号", "错误率、P95、下单成功率和支付回调失败率"],
       ["监控", "上线监控"],
       ["回滚方案", "回滚条件、步骤和回滚后验证"],
-      ["回滚", "回滚和恢复验证"],
       ["负责人", "发布负责人"],
       ["值守人", "上线观察人"],
       ["部署", "上线放行"],
+      ["备份恢复恢复验证", "备份恢复验证"],
+      ["回滚和恢复验证和恢复验证", "回滚和恢复验证"],
+      ["回滚和恢复验证后验证", "回滚后验证"],
+      ["回滚和恢复验证条件", "回滚条件"],
+      ["回滚和恢复验证步骤", "回滚步骤"],
+      ["回滚和恢复验证退路", "回滚退路"],
     ],
   ),
 };
@@ -9396,11 +9419,12 @@ function ResponseForm({
   const [error, setError] = useState("");
   const isAgentBrief = stepId === "agent-brief";
   const isFrontendTesting = scenarioId === FRONTEND_TESTING_SCENARIO_ID;
+  const isJavaRelease = scenarioId === JAVA_RELEASE_SCENARIO_ID;
   const answerFrame = isAgentBrief
     ? "背景：\n目标：\n范围/约束：\n验收标准：\n风险和回滚："
     : "我看到：\n它说明：\n下一步：";
   const evidencePattern =
-    /Network|DOM|sourceHash|manual|日志|数据库|代码|测试|SELECT|POST|GET|201|错误|状态码|Diff|回归|验收|证据/;
+    /Network|DOM|sourceHash|manual|日志|数据库|代码|测试|SELECT|POST|GET|201|错误|状态码|Diff|回归|验收|证据|owner|observer|JWT_SECRET|PAYMENT_API_URL|health|rollback|回滚|备份|监控|冒烟|支付回调|下单/;
   const hasSectionValue = (labels: string[], minimumLength = 8) =>
     labels.some((label) => {
       const escaped = label.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -9472,35 +9496,65 @@ function ResponseForm({
             body: "不要只写“测试过了”。要写清证据、证据边界和下一步验收。",
           },
         ]
-    : isAgentBrief
-      ? [
-          {
-            label: "这题到底在问什么",
-            body: "把一段模糊愿望改写成 Agent 能执行、能停下、能交证据的任务。",
-          },
-          {
-            label: "先看哪里",
-            body: "先看现场材料和失败证据，再写目标；不要让 Agent 自己猜范围。",
-          },
-          {
-            label: "不要怎么写",
-            body: "不要写“你看着办”。必须写背景、边界、验收、风险和交付格式。",
-          },
-        ]
-      : [
-          {
-            label: "这题到底在问什么",
-            body: "不是问你背概念，而是问你能不能用一份证据解释当前流程卡在哪里。",
-          },
-          {
-            label: "先看哪里",
-            body: "先看下面材料导览里的 Network、日志、数据库、代码或测试结果，挑一条最能说明问题的证据。",
-          },
-          {
-            label: "不要怎么写",
-            body: "不要只写“有问题 / 修好了”。要写清证据、证据含义和下一步验证。",
-          },
-        ];
+    : isJavaRelease
+      ? isAgentBrief
+        ? [
+            {
+              label: "这题到底在问什么",
+              body: "把上线门禁缺证据写成 Agent 能补齐、能停下、能交付报告的任务。",
+            },
+            {
+              label: "先看哪里",
+              body: "先看 release-plan、environment-check、backup、smoke、monitoring 和 rollback 缺哪一门。",
+            },
+            {
+              label: "不要怎么写",
+              body: "不要只写“完善上线”。必须写清生产配置、备份恢复、监控、回滚和验收路径。",
+            },
+          ]
+        : [
+            {
+              label: "这题到底在问什么",
+              body: "不是问你背上线清单，而是问你能不能判断这次 Java 服务为什么还不能放行。",
+            },
+            {
+              label: "先看哪里",
+              body: "先看 owner/observer、JWT_SECRET、备份恢复、390px 冒烟、监控信号或回滚条件。",
+            },
+            {
+              label: "不要怎么写",
+              body: "不要只写“构建通过”。要写清哪份证据缺失、缺失会造成什么风险、下一步怎么补证。",
+            },
+          ]
+      : isAgentBrief
+        ? [
+            {
+              label: "这题到底在问什么",
+              body: "把一段模糊愿望改写成 Agent 能执行、能停下、能交证据的任务。",
+            },
+            {
+              label: "先看哪里",
+              body: "先看现场材料和失败证据，再写目标；不要让 Agent 自己猜范围。",
+            },
+            {
+              label: "不要怎么写",
+              body: "不要写“你看着办”。必须写背景、边界、验收、风险和交付格式。",
+            },
+          ]
+        : [
+            {
+              label: "这题到底在问什么",
+              body: "不是问你背概念，而是问你能不能用一份证据解释当前流程卡在哪里。",
+            },
+            {
+              label: "先看哪里",
+              body: "先看下面材料导览里的 Network、日志、数据库、代码或测试结果，挑一条最能说明问题的证据。",
+            },
+            {
+              label: "不要怎么写",
+              body: "不要只写“有问题 / 修好了”。要写清证据、证据含义和下一步验证。",
+            },
+          ];
   const expressionExample = isAgentBrief
     ? isFrontendTesting
       ? {
@@ -9511,12 +9565,21 @@ function ResponseForm({
             "目标：请只检查前端筛选、报告校验器和验收证据，不要改无关页面。",
           next: "验收：给出失败复现、单测、集成测试、手动报告、sourceHash 和回归风险。",
         }
-      : {
-          lead: "可照着这个顺序写委托",
-          evidence: "背景：保存后刷新数据消失，Network 曾返回成功。",
-          meaning: "目标：请只检查保存链路，不要改无关页面或执行危险命令。",
-          next: "验收：给出测试报告、手动路径、仍有风险和回滚方式。",
-        }
+      : isJavaRelease
+        ? {
+            lead: "可照着这个顺序写委托",
+            evidence:
+              "背景：订单服务构建通过，但 release-plan 缺 owner/observer，JWT_SECRET 缺失，390px 冒烟和回滚验证也不完整。",
+            meaning:
+              "目标：请只补上线门禁证据，不要绕过生产配置、备份恢复、监控和回滚条件。",
+            next: "验收：给出 release-plan、environment-check、backup、smoke、monitoring、rollback 和 Agent 交付说明。",
+          }
+        : {
+            lead: "可照着这个顺序写委托",
+            evidence: "背景：保存后刷新数据消失，Network 曾返回成功。",
+            meaning: "目标：请只检查保存链路，不要改无关页面或执行危险命令。",
+            next: "验收：给出测试报告、手动路径、仍有风险和回滚方式。",
+          }
     : isFrontendTesting
       ? {
           lead: "可照着这个顺序写判断",
@@ -9526,12 +9589,22 @@ function ResponseForm({
             "它说明：这条筛选路径在浏览器里跑通了，但还不能替代失败复现、sourceHash 和回归风险。",
           next: "下一步：继续核对报告是否绑定当前代码，并补手动复测和未覆盖风险。",
         }
-      : {
-          lead: "可照着这个顺序写判断",
-          evidence: "我看到：前端发出了 POST，并且 response.ok 后显示 saved。",
-          meaning: "它说明：页面收到成功信号，但还不能证明数据库真的写入。",
-          next: "下一步：继续查后端日志和 SELECT 结果，确认记录能否被刷新读回。",
-        };
+      : isJavaRelease
+        ? {
+            lead: "可照着这个顺序写判断",
+            evidence:
+              "我看到：release-plan 有发布窗口和影响范围，但 owner/observer 为空。",
+            meaning:
+              "它说明：这次 Java 服务知道何时上线和影响哪些路径，但还不能证明出事时有人判断回滚。",
+            next: "下一步：继续查 JWT_SECRET、备份恢复、390px 冒烟、监控信号和回滚后验证。",
+          }
+        : {
+            lead: "可照着这个顺序写判断",
+            evidence:
+              "我看到：前端发出了 POST，并且 response.ok 后显示 saved。",
+            meaning: "它说明：页面收到成功信号，但还不能证明数据库真的写入。",
+            next: "下一步：继续查后端日志和 SELECT 结果，确认记录能否被刷新读回。",
+          };
 
   const save = async () => {
     setSaving(true);

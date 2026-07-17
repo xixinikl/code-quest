@@ -52,7 +52,7 @@ const backendLog = await readFile(resolve(evidenceRoot, "backend.log"), "utf8");
 
 function createRelease(overrides = {}) {
   return {
-    name: "第 14 章上线前夜",
+    name: "订单服务上线港",
     build: { status: "passed", sourceHash: currentSourceHash },
     plan,
     environment,
@@ -86,7 +86,7 @@ await run("生产环境变量缺失时不能上线", () => {
     }),
   );
 
-  assert(verdict.ready === false, "缺少 AI_API_KEY 不应该放行");
+  assert(verdict.ready === false, "缺少 JWT_SECRET 不应该放行");
   assert(verdict.code === "MISSING_ENV_VAR", "缺配置应返回 MISSING_ENV_VAR");
 });
 
@@ -96,7 +96,7 @@ await run("涉及数据变更时，备份必须证明可恢复", () => {
       plan: { ...plan, owner: "发布人", observer: "观察人" },
       environment: {
         ...environment,
-        AI_API_KEY: { status: "present", safeToShow: false },
+        JWT_SECRET: { status: "present", safeToShow: false },
       },
     }),
   );
@@ -114,7 +114,7 @@ await run("冒烟测试必须覆盖 390px 移动端关键路径", () => {
       plan: { ...plan, owner: "发布人", observer: "观察人" },
       environment: {
         ...environment,
-        AI_API_KEY: { status: "present", safeToShow: false },
+        JWT_SECRET: { status: "present", safeToShow: false },
       },
       backup: { ...backup, restoreTested: true, recoveryTimeMinutes: 8 },
     }),
@@ -127,13 +127,13 @@ await run("冒烟测试必须覆盖 390px 移动端关键路径", () => {
   );
 });
 
-await run("上线后监控必须覆盖 AI 调用失败率", () => {
+await run("上线后监控必须覆盖支付回调失败率", () => {
   const verdict = reviewReleaseReadiness(
     createRelease({
       plan: { ...plan, owner: "发布人", observer: "观察人" },
       environment: {
         ...environment,
-        AI_API_KEY: { status: "present", safeToShow: false },
+        JWT_SECRET: { status: "present", safeToShow: false },
       },
       backup: { ...backup, restoreTested: true, recoveryTimeMinutes: 8 },
       smokeTest: {
@@ -142,7 +142,7 @@ await run("上线后监控必须覆盖 AI 调用失败率", () => {
           ...smokeTest.paths,
           {
             viewport: "390px",
-            path: "首页 -> 第 14 章 -> 教学关卡",
+            path: "390px 订单页 -> 创建订单 -> 查询订单",
             result: "passed",
           },
         ],
@@ -150,7 +150,7 @@ await run("上线后监控必须覆盖 AI 调用失败率", () => {
     }),
   );
 
-  assert(verdict.ready === false, "缺少 AI 失败率监控不应该放行");
+  assert(verdict.ready === false, "缺少支付回调失败率监控不应该放行");
   assert(
     verdict.code === "MISSING_MONITORING_SIGNAL",
     "缺监控信号应返回 MISSING_MONITORING_SIGNAL",

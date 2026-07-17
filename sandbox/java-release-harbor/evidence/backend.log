@@ -1,6 +1,6 @@
 [2026-07-05T11:14:00.000Z] WARN release gate requestId=req_release_014 code=MISSING_RELEASE_OWNER plan=release-plan.json
-[2026-07-05T11:14:01.000Z] WARN release gate requestId=req_release_014 code=MISSING_ENV_VAR name=AI_API_KEY
+[2026-07-05T11:14:01.000Z] WARN release gate requestId=req_release_014 code=MISSING_ENV_VAR name=JWT_SECRET
 [2026-07-05T11:14:02.000Z] WARN release gate requestId=req_release_014 code=UNVERIFIED_BACKUP_RESTORE backupId=backup_release_014_20260705
 [2026-07-05T11:14:03.000Z] WARN release gate requestId=req_release_014 code=MISSING_MOBILE_SMOKE viewport=390px
-[2026-07-05T11:14:04.000Z] WARN release gate requestId=req_release_014 code=MISSING_MONITORING_SIGNAL signal=aiFailureRate
+[2026-07-05T11:14:04.000Z] WARN release gate requestId=req_release_014 code=MISSING_MONITORING_SIGNAL signal=paymentCallbackFailureRate
 [2026-07-05T11:14:05.000Z] WARN release gate requestId=req_release_014 code=MISSING_ROLLBACK_PLAN

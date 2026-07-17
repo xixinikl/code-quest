@@ -3,17 +3,21 @@
     "status": "present",
     "safeToShow": false
   },
-  "AI_API_KEY": {
+  "JWT_SECRET": {
     "status": "missing",
     "safeToShow": false
+  },
+  "PAYMENT_API_URL": {
+    "status": "present",
+    "safeToShow": true
   },
   "APP_ORIGIN": {
     "status": "present",
     "safeToShow": true
   },
   "featureFlag": {
-    "aiCareerRpgRoute": "gradual-rollout"
+    "orderReleaseGate": "gradual-rollout"
   },
   "frontendBundleContainsSecret": false,
-  "explain": "本地有 key 不代表生产有 key；前端包也不能出现真实密钥。"
+  "explain": "本地有 JWT 密钥不代表生产有；前端包和日志也不能出现真实密钥。"
 }

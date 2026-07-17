@@ -6950,53 +6950,224 @@ const interviewReviewScenes: QuestScene[] = [
   },
 ];
 
-const javaReleaseScenes: QuestScene[] = releaseReadinessScenes.map(
-  (scene, index) => {
-    const details = [
+const javaReleaseScenes: QuestScene[] = [
+  {
+    ...releaseReadinessScenes[0],
+    image: releaseReadinessGateScene,
+    portrait: releaseGatekeeperPortrait,
+    portraitOverride: releaseGatekeeperPortrait,
+    place: "Java 发布港",
+    speaker: "发布守门人",
+    dialogue:
+      "守门人把 Java 服务的发布单摊开：配置、健康检查和回滚不是上线后的补救，而是出港前必须逐项确认的护栏。",
+    clues: [
       {
-        image: releaseReadinessGateScene,
-        portraitOverride: releaseGatekeeperPortrait,
-        place: "Java 发布港",
-        speaker: "发布守门人",
-        dialogue:
-          "守门人把 Java 服务的发布单摊开：配置、健康检查和回滚不是上线后的补救，而是出港前必须逐项确认的护栏。",
+        id: "release-plan",
+        label: "打开上线卷轴",
+        action: "检查计划是否能指导真实上线",
+        result:
+          "合格计划不只写“今晚发布”。它要写发布窗口、影响范围、发布负责人、上线观察人、上线后验证路径、监控指标和回滚条件。",
+        snippet:
+          "服务：order-service\n发布窗口：22:00-23:00\n影响范围：下单、支付回调、订单查询\n负责人：后端发布人 + 值守观察人\n验证：health、下单冒烟、订单查询、错误率",
+        question: "这一步让你从“我会打包”升级成“我能组织一次可控上线”。",
+        journeyIndex: 0,
+        skill: "能判断 Java 服务上线计划是否可执行。",
       },
       {
-        image: signalStormDispatchTowerScene,
-        portraitOverride: stormDispatcherPortrait,
-        place: "环境变量风暴塔",
-        speaker: "配置调度官",
-        dialogue:
-          "调度官让你核对开发、预发和生产的变量边界。值存在不等于服务拿到了正确配置，日志和启动检查必须能证明它。",
+        id: "blast-radius",
+        label: "标出影响范围",
+        action: "说明这次上线会碰到哪些用户路径",
+        result:
+          "这次 Java 服务发布会碰到下单接口、订单查询、支付回调和后台任务。影响范围写清后，浏览器和接口验收才不会只看一个健康检查。",
+        snippet:
+          "影响范围：POST /api/orders、GET /api/orders/{id}、payment callback、order status worker。",
+        question: "上线前先知道影响范围，出事时才知道该查哪几扇门。",
+        journeyIndex: 0,
+        skill: "能说清 Java 服务上线影响范围。",
       },
-      {
-        image: deliveryReviewCourtScene,
-        portraitOverride: deliveryJudgePortrait,
-        place: "备份恢复审查庭",
-        speaker: "恢复审查官",
-        dialogue:
-          "审查官拒绝只看备份文件：真正的上线证据是恢复演练能把数据带回来，并且业务路径可以继续工作。",
-      },
-      {
-        image: performanceObservatoryScene,
-        portraitOverride: timingNavigatorPortrait,
-        place: "健康检查观测台",
-        speaker: "健康检查官",
-        dialogue:
-          "观测官把启动探针、关键接口和错误率放到同一张图上：上线后的第一分钟，要知道服务是活着，还是只是进程没退出。",
-      },
-      {
-        image: interviewDefenseHallScene,
-        portraitOverride: interviewCouncilorPortrait,
-        place: "发布复盘台",
-        speaker: "发布答辩官",
-        dialogue:
-          "答辩官要求你讲清这次上线如何发现风险、如何回滚、如何确认恢复，并把清单沉淀成下一次能复用的工程证据。",
-      },
-    ][index];
-    return details ? { ...scene, ...details } : scene;
+    ],
   },
-);
+  {
+    ...releaseReadinessScenes[1],
+    image: signalStormDispatchTowerScene,
+    portraitOverride: stormDispatcherPortrait,
+    place: "环境变量风暴塔",
+    speaker: "配置调度官",
+    dialogue:
+      "调度官让你核对开发、预发和生产的变量边界。值存在不等于服务拿到了正确配置，日志和启动检查必须能证明它。",
+    terms: [
+      {
+        term: "生产配置",
+        meaning:
+          "Java 服务在线上运行时读取的配置，例如数据库地址、Profile、外部服务地址、日志级别和功能开关。",
+      },
+      {
+        term: "密钥边界",
+        meaning:
+          "敏感配置只应留在服务端运行环境，不能写进前端代码、日志、截图或交付说明。",
+      },
+    ],
+    clues: [
+      {
+        id: "env-check",
+        label: "核对生产钥匙",
+        action: "列出生产环境必须存在的配置",
+        result:
+          "Java 服务上线常见必查项：SPRING_PROFILES_ACTIVE、DATABASE_URL、PAYMENT_API_URL、JWT_SECRET、APP_ORIGIN、LOG_LEVEL。不能把真实密钥写进代码或交付说明。",
+        snippet:
+          "requiredEnv:\n- SPRING_PROFILES_ACTIVE=prod\n- DATABASE_URL\n- PAYMENT_API_URL\n- JWT_SECRET\n- APP_ORIGIN\n- LOG_LEVEL",
+        question:
+          "面试里可以这样讲：我不会只说本地跑通，还会检查生产依赖是否具备。",
+        journeyIndex: 1,
+        skill: "能列出 Java 服务上线前配置检查项。",
+      },
+      {
+        id: "secret-boundary",
+        label: "查密钥边界",
+        action: "确认密钥只在服务端使用",
+        result:
+          "前端可以知道订单功能是否可用，但不能拿到 JWT_SECRET 或支付服务 token。上线前要确认构建产物、日志和页面都没有泄露密钥。",
+        snippet:
+          '前端：/api/orders/health -> { ready: true }\n后端：System.getenv("JWT_SECRET")\n禁止：把 secret 写进 VITE_* 或日志',
+        question: "这一步把密钥安全迁移到真实 Java 服务上线场景。",
+        journeyIndex: 1,
+        skill: "能解释生产密钥的安全边界。",
+      },
+    ],
+  },
+  {
+    ...releaseReadinessScenes[2],
+    image: deliveryReviewCourtScene,
+    portraitOverride: deliveryJudgePortrait,
+    place: "备份恢复审查庭",
+    speaker: "恢复审查官",
+    dialogue:
+      "审查官拒绝只看备份文件：真正的上线证据是恢复演练能把数据带回来，并且业务路径可以继续工作。",
+    clues: [
+      {
+        id: "backup-proof",
+        label: "确认备份证据",
+        action: "检查备份是否真的可用",
+        result:
+          "备份不是一句“已备份”。要有备份时间、覆盖范围、保存位置、恢复步骤、恢复演练结果和负责人。涉及订单表迁移时还要写清回滚是否只退代码就够。",
+        snippet:
+          "备份时间：2026-07-05 22:00\n覆盖：orders、payments、order_events\n恢复演练：restore-staging-20260705 passed\n负责人：值守后端",
+        question: "这一步让用户明白：数据保护是上线能力，不是后端神秘仪式。",
+        journeyIndex: 2,
+        skill: "能判断数据备份是否可信。",
+      },
+      {
+        id: "migration-risk",
+        label: "识别迁移风险",
+        action: "判断数据库变化能否安全回退",
+        result:
+          "只改 Java 校验逻辑通常不用迁移；如果改订单表 schema、删除字段、重建索引或批量修数据，就必须写迁移前备份和回滚策略。",
+        snippet:
+          "低风险：只新增订单状态校验。\n高风险：删除 order_status 字段、重建支付索引、批量改订单状态。",
+        question: "你不是要害怕上线，而是要知道哪类上线必须保护数据。",
+        journeyIndex: 2,
+        skill: "能区分代码风险和数据风险。",
+      },
+    ],
+  },
+  {
+    ...releaseReadinessScenes[3],
+    image: performanceObservatoryScene,
+    portraitOverride: timingNavigatorPortrait,
+    place: "健康检查观测台",
+    speaker: "健康检查官",
+    dialogue:
+      "观测官把启动探针、关键接口和错误率放到同一张图上：上线后的第一分钟，要知道服务是活着，还是只是进程没退出。",
+    terms: [
+      {
+        term: "健康检查",
+        meaning:
+          "用固定接口或探针确认服务、数据库和关键依赖是否能正常工作，不等同于只看进程还在。",
+      },
+      {
+        term: "业务成功率",
+        meaning:
+          "用户关键动作成功的比例，例如下单成功率、订单查询成功率和支付回调处理成功率。",
+      },
+    ],
+    clues: [
+      {
+        id: "monitoring-signals",
+        label: "点亮监控灯",
+        action: "列出上线后要看的指标",
+        result:
+          "Java 服务上线后要看：/actuator/health、订单接口 5xx、p95 耗时、下单成功率、支付回调失败率和后端错误日志。真实业务还要看队列堆积和数据库连接池。",
+        snippet:
+          "watch 30min:\n- /actuator/health\n- order 5xx error rate\n- p95 latency\n- order success rate\n- payment callback failure rate",
+        question:
+          "这一步让用户明白：上线后的证据来自系统表现，不是来自发布者的自信。",
+        journeyIndex: 3,
+        skill: "能列出 Java 服务上线后观察指标。",
+      },
+      {
+        id: "smoke-test",
+        label: "走一遍冒烟路径",
+        action: "从真实入口验证关键用户路径",
+        result:
+          "冒烟测试要覆盖健康检查、创建订单、查询订单、模拟支付回调和 390px 关键页面。桌面和手机都要走，因为后端放行最终会影响真实用户路径。",
+        snippet:
+          "health -> create order -> query order -> payment callback -> mobile order page",
+        question: "这和你不想反复当测试员是同一件事：Agent 要自己走真实路径。",
+        journeyIndex: 3,
+        skill: "能设计 Java 服务上线冒烟测试路径。",
+      },
+    ],
+  },
+  {
+    ...releaseReadinessScenes[4],
+    image: interviewDefenseHallScene,
+    portraitOverride: interviewCouncilorPortrait,
+    place: "发布复盘台",
+    speaker: "发布答辩官",
+    dialogue:
+      "答辩官要求你讲清这次上线如何发现风险、如何回滚、如何确认恢复，并把清单沉淀成下一次能复用的工程证据。",
+    terms: [
+      {
+        term: "回滚条件",
+        meaning:
+          "触发回滚的明确标准，例如订单接口 500 错误率超过阈值、下单成功率下降、支付回调失败率持续升高。",
+      },
+      {
+        term: "回滚后验证",
+        meaning:
+          "回滚完成后重新走健康检查、创建订单、查询订单和支付回调路径，证明系统回到稳定状态。",
+      },
+    ],
+    clues: [
+      {
+        id: "rollback-trigger",
+        label: "刻下回滚条件",
+        action: "把异常阈值写成可判断标准",
+        result:
+          "坏回滚条件：出事再说。好回滚条件：订单接口 500、下单成功率下降、支付回调失败率持续升高、数据库连接池耗尽或 390px 订单页不可用。",
+        snippet:
+          "rollbackWhen:\n- orderErrorRate > 2%\n- order success rate drops\n- payment callback fails\n- db pool exhausted\n- mobile order page smoke test fails",
+        question:
+          "这一步会让你在面试里显得像能负责上线的人，而不是只会写功能。",
+        journeyIndex: 4,
+        skill: "能写出明确回滚条件。",
+      },
+      {
+        id: "post-rollback-proof",
+        label: "写回滚后验收",
+        action: "说明退回稳定版本后怎么证明恢复",
+        result:
+          "回滚后不能只说版本退了。还要复测 health、创建订单、订单查询、支付回调、关键日志和监控指标，确认用户路径恢复。",
+        snippet:
+          "rollbackVerify:\n- health ok\n- create order ok\n- query order ok\n- payment callback ok\n- no new 5xx logs",
+        question:
+          "上线面试复盘可以这样讲：我提前定义回滚条件，并用冒烟测试证明恢复。",
+        journeyIndex: 5,
+        skill: "能说明回滚后如何验收。",
+      },
+    ],
+  },
+];
 
 const frontendTestingScenes: QuestScene[] = rewriteQuestContent(
   testingProofScenes,

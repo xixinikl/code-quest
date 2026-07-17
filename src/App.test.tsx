@@ -357,9 +357,13 @@ describe("岗位路线实战场景契约", () => {
     expect(release).toContain("生产配置");
     expect(release).toContain("备份恢复");
     expect(release).toContain("390px");
+    expect(release).toContain("JWT_SECRET");
+    expect(release).toContain("支付回调失败率");
     expect(release).toContain("回滚后验证");
     expect(release).not.toContain("主线 1-14");
     expect(release).not.toContain("AI 应用开发");
+    expect(release).not.toContain("AI_API_KEY");
+    expect(release).not.toContain("AI 失败率");
 
     const incident = JSON.stringify({
       label: getLabConfig("java-production-incident").missionLabel,
@@ -469,12 +473,38 @@ describe("岗位路线实战场景契约", () => {
     expect(frontendTestingStory).not.toContain("和DOM");
   });
 
+  it("Java 第 4 关剧情线索不再复用 AI 第 14 章上线材料", () => {
+    const javaReleaseStory = JSON.stringify(
+      getTeachingStoryScenes("java-release-harbor"),
+    );
+
+    expect(javaReleaseStory).toContain("Java 发布港");
+    expect(javaReleaseStory).toContain("order-service");
+    expect(javaReleaseStory).toContain("POST /api/orders");
+    expect(javaReleaseStory).toContain("JWT_SECRET");
+    expect(javaReleaseStory).toContain("支付回调失败率");
+    expect(javaReleaseStory).not.toContain("AI 开发路线第 14 章入口");
+    expect(javaReleaseStory).not.toContain("第 14 章入口会改首页路线");
+    expect(javaReleaseStory).not.toContain("第 14 章教学路径");
+    expect(javaReleaseStory).not.toContain("AI_API_KEY");
+    expect(javaReleaseStory).not.toContain("AI 调用失败率");
+    expect(javaReleaseStory).not.toContain("chapter14");
+  });
+
   it("岗位 Lab 默认收束辅助资料，展开后仍保留岗位专属路线", async () => {
     const user = userEvent.setup();
     const cases = [
       {
         scenarioId: "java-release-harbor",
-        forbidden: ["主线 1-14", "AI 应用开发"],
+        forbidden: [
+          "主线 1-14",
+          "AI 应用开发",
+          "AI_API_KEY",
+          "AI 失败率",
+          "response.ok 后显示 saved",
+          "数据库真的写入",
+          "保存后刷新数据消失",
+        ],
       },
       {
         scenarioId: "frontend-performance-proof",

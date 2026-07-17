@@ -52,6 +52,16 @@
 
 ## 当前已完成切片
 
+### R327：Java 第 4 关上线港剧情与证物归属修复
+
+- [x] 浏览器从 `#chapter-java-4` 进入 Java 第 4 关，发现剧情线索仍露出 AI 第 14 章旧语境：`第 14 章入口`、AI 路线入口、`AI_API_KEY`、AI 调用失败率、第一章 `response.ok`/数据库写入示范卡。
+- [x] `java-release-harbor` 剧情不再通过浅层 map 复用 AI 第 14 章线索；五个地点改为 Java 服务上线港独立证据：`order-service`、`POST /api/orders`、`JWT_SECRET`、`PAYMENT_API_URL`、订单表迁移、`/actuator/health`、下单成功率、支付回调失败率和回滚后验证。
+- [x] `sandbox/java-release-harbor` 证物改成订单服务上线语境：发布计划、生产配置、冒烟、监控、后端日志、Agent 交付说明和固定修复示例都不再使用 AI 第 14 章路径或 `AI_API_KEY`。
+- [x] Java 上线港 Lab 的先读卡、证据表达示范卡和表达检查改为上线门禁语境，禁止第一章保存链路示范卡回流。
+- [x] 加严 `src/App.test.tsx`：Java 第 4 关剧情和 Lab 渲染都禁止出现 `AI_API_KEY`、AI 失败率、`response.ok 后显示 saved`、数据库写入、保存刷新等旧词。
+
+验收：`npm run test -- src/App.test.tsx --run -t "Java 第 4 关剧情|Java 事故 Lab|岗位 Lab 默认"` 通过 3 项目标测试；`npm run verify:quick` 通过 lint、typecheck、11 个测试文件 / 188 个测试。浏览器隔离 API `4403`、临时 SQLite `/tmp/code-quest-r327.sqlite`、Vite `5253` 下，`#chapter-java-4` 完整收集 10/10 剧情线索，进入伙伴会合和实战 Lab；剧情和 Lab 首屏保持 Java 上线港语境，控制台 error 为 0。沙盒自身 `npm test` 仍按练习设计失败 6 项，代表用户需要修 `server/releaseGate.js`，不是本轮应用门禁失败。
+
 ### R326：跨电脑拉取说明更新
 
 - [x] 核对本机 `HEAD`、`origin/cx/ai-career-rpg-home` 和 GitHub 远端分支一致；当前功能基线为 `5651c18 fix(rpg): clean frontend testing story examples`，交接基线为 `0fb18e7 docs(rpg): clarify collaborator pull steps` 或更晚提交。

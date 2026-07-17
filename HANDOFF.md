@@ -18,18 +18,18 @@
 
 ### 另一台电脑首次 clone 照抄
 
-  ```bash
-  git clone https://github.com/xixinikl/code-quest.git
-  cd code-quest
-  git fetch origin
-  git switch -c cx/ai-career-rpg-home --track origin/cx/ai-career-rpg-home
-  git log --oneline -5
-  nvm install
-  nvm use
-  npm install
-  npm run verify
-  npm run dev
-  ```
+```bash
+git clone https://github.com/xixinikl/code-quest.git
+cd code-quest
+git fetch origin
+git switch -c cx/ai-career-rpg-home --track origin/cx/ai-career-rpg-home
+git log --oneline -5
+nvm install
+nvm use
+npm install
+npm run verify
+npm run dev
+```
 
 拉完后 `git log --oneline -1` 应显示：
 
@@ -41,51 +41,53 @@
 
 ### 已有仓库更新照抄
 
-  ```bash
-  cd code-quest
-  git fetch origin
-  git switch cx/ai-career-rpg-home
-  git pull --ff-only
-  git log --oneline -5
-  nvm use
-  npm install
-  npm run verify
-  npm run dev
-  ```
+```bash
+cd code-quest
+git fetch origin
+git switch cx/ai-career-rpg-home
+git pull --ff-only
+git log --oneline -5
+nvm use
+npm install
+npm run verify
+npm run dev
+```
 
 如果 `git switch cx/ai-career-rpg-home` 提示本地没有这个分支：
 
-  ```bash
-  cd code-quest
-  git fetch origin
-  git switch -c cx/ai-career-rpg-home --track origin/cx/ai-career-rpg-home
-  git log --oneline -5
-  ```
+```bash
+cd code-quest
+git fetch origin
+git switch -c cx/ai-career-rpg-home --track origin/cx/ai-career-rpg-home
+git log --oneline -5
+```
 
 ### 如果他本地有改动，先保护改动再拉
 
-  ```bash
-  git status --short
-  git switch -c cx/my-local-work
-  git add .
-  git commit -m "wip: save local work"
-  git fetch origin
-  git switch cx/ai-career-rpg-home
-  git pull --ff-only
-  ```
+```bash
+git status --short
+git switch -c cx/my-local-work
+git add .
+git commit -m "wip: save local work"
+git fetch origin
+git switch cx/ai-career-rpg-home
+git pull --ff-only
+```
 
 如果他不确定本地改动有没有用，不要 `checkout -B` 强制覆盖；先把改动提交在 `cx/my-local-work`，后面再比较或 cherry-pick。
 
 ### 拉完必须确认
 
-  ```bash
-  git status --short --branch
-  git rev-parse HEAD
-  git rev-parse origin/cx/ai-career-rpg-home
-  git ls-remote origin refs/heads/cx/ai-career-rpg-home
-  node -v
-  ```
-  本地 `HEAD`、`origin/cx/ai-career-rpg-home` 和 `git ls-remote` 的 hash 应一致；`node -v` 应是 `.nvmrc` 指定的 `v24.13.1`。如果不一致，不要继续开发，先重新 `git fetch origin` 并切回 `origin/cx/ai-career-rpg-home`。
+```bash
+git status --short --branch
+git rev-parse HEAD
+git rev-parse origin/cx/ai-career-rpg-home
+git ls-remote origin refs/heads/cx/ai-career-rpg-home
+node -v
+```
+
+本地 `HEAD`、`origin/cx/ai-career-rpg-home` 和 `git ls-remote` 的 hash 应一致；`node -v` 应是 `.nvmrc` 指定的 `v24.13.1`。如果不一致，不要继续开发，先重新 `git fetch origin` 并切回 `origin/cx/ai-career-rpg-home`。
+
 - AI 应用开发路线：15 章；Java 后端路线：5 章；前端工程路线：5 章。三条路线均已进入岗位档案，Java/前端不再是空白占位。
 - 已实现：暗色神秘 RPG 舞台、章节专属背景、剧情角色立绘、可爱宠物/伙伴、地点航线、流程交接、名词解释、关键代码逐行导读、证据任务、Agent 委托、验收和面试复盘。
 - 最新体验收口：第 2 章产品链路不再串到 AI API 章；教学桥关键控件已暗色 RPG 化；代码导读新增“为什么看这一行 / 检查点 / 下一份证据”，第 1 章 `response.ok` 明确提示不能证明数据库写入。
@@ -99,7 +101,7 @@
 - 最新前端 Lab 语境收口：前端第 3 关性能 Lab 的可见流程已改为首屏瀑布图、接口 TTFB、Server-Timing、X-Cache、React 渲染画像和第二次访问复测；前端第 5 关测试 Lab 的可见流程已改为旧故障红灯、报告校验器、浏览器手动复测、sourceHash、回归风险和 Agent 交付审查，不再露出 `/api/canvases` 或 `验收试炼画布` 这类 AI 主线保存链路词。浏览器深链验收待补录。
 - 最新前端第 5 关沙盒证物收口：`sandbox/frontend-testing-proof` 的 README、Network、手动报告、失败复现、过期报告、后端日志和 Agent 交付说明已全部改为任务列表筛选回归语境，固定 `GET /api/tasks?status=blocked`、DOM 可见列表、`POST /api/reports/verification` 和 `sourceHash` 证据链；新增 `src/sandboxEvidence.test.ts` 防止 `/api/canvases`、保存画布、验收试炼画布等旧词回流。Node `24.13.1` 下 `npm run verify:quick` 通过 11 个测试文件 / 187 个测试；沙盒自身 `npm test` 仍按练习设计失败 5 项，用于训练用户修报告校验器。
 - 最新前端第 5 关浏览器文案收口：隔离 API `4401`、临时 SQLite `/tmp/code-quest-r325.sqlite`、Vite `5251` 下，从 `#chapter-frontend-5` 真实浏览器发现主动复述、边界用例、Agent 示例和 Lab 证据表达卡仍有第一章保存/数据库例子；已改为筛选状态、DOM 可见行、Network、`sourceHash` 和回归风险。桌面 1280 与 390px 手机 DOM 旧词检查为空，暗色背景，控制台 error 为 0。
-- 最新上线港 Lab 语境收口：Java 第 4 关上线 Lab 的可见流程已改为发布窗口、影响范围、发布负责人、生产配置、密钥边界、备份恢复、390px 冒烟、监控信号和回滚后验证，固定“构建通过不等于可以上线”的教学口径。浏览器深链验收待补录。
+- 最新 Java 第 4 关上线港归属收口：从 `#chapter-java-4` 真实浏览器发现剧情线索和 Lab 示范卡仍露出 AI 第 14 章 / 第一章保存链路旧词。已把 Java 上线港五幕剧情、沙盒证物、Lab 先读卡和证据表达示范改为订单服务上线语境：`order-service`、`POST /api/orders`、`JWT_SECRET`、`PAYMENT_API_URL`、订单表迁移、`/actuator/health`、下单成功率、支付回调失败率和回滚后验证。隔离 API `4403`、临时 SQLite `/tmp/code-quest-r327.sqlite`、Vite `5253` 下，完整收集 10/10 剧情线索并进入实战 Lab，控制台 error 为 0。
 - 最新教学桥地图收口：Java 第 2-5 关、前端第 2-5 关已补齐独立 `chapterCinematics` 地图镜头契约，不再因为缺少配置回退到第一章 `数据接力路线 / 断流档案河 / 失忆数据库`。隔离 API `4379`、临时 SQLite `/tmp/code-quest-r312.sqlite`、Vite `5229` 下，`#chapter-java-4` 与 `#chapter-frontend-5` 点击开始闯关后保持岗位路线语境，桌面 1200 无横向溢出，控制台 0 error。
 - 最新实战导演台收口：实战页把「实战剧情向导」「本步任务卷轴」「流程接力小剧场」合并到同一个 `任务导演台` 视觉容器中，桌面并排显示角色地点、学习目的、证据入口和上一棒/当前棒/下一棒，手机改为单列，降低用户在多张卡之间来回滚动拼流程的成本。完整 `npm run verify` 通过：10 个测试文件 / 180 个测试、生产构建和 TeachingBridge 懒加载检查均通过；隔离 API `4380`、临时 SQLite `/tmp/code-quest-r313.sqlite`、Vite `5230` 下，390×844 剧情路径无横向溢出，暗色背景，控制台 0 error。
 - 最新辅助卷宗收口：实战页的完整流程图、案件路线牌和实战接力板已移入默认折叠的 `辅助卷宗`，主屏只保留完整流程标题、当前这一棒和展开按钮；点击「展开流程地图」后仍能看到完整辅助资料。完整 `npm run verify` 通过：10 个测试文件 / 180 个测试、生产构建和 TeachingBridge 懒加载检查均通过；隔离 API `4381`、临时 SQLite `/tmp/code-quest-r314.sqlite`、Vite `5231` 下，第一章剧情入口 390×844 无横向溢出，暗色背景，控制台 0 error。
