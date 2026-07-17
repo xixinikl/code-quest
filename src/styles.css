@@ -4631,6 +4631,91 @@ textarea:focus {
   color: #f1ddaa !important;
 }
 
+.teaching-bridge .tour-goal {
+  color: #e9c878 !important;
+}
+
+.teaching-bridge .tour-section,
+.teaching-bridge .concept-section,
+.teaching-bridge .tour-focus-grid > div,
+.teaching-bridge .micro-progress,
+.teaching-bridge .concept-revealed,
+.teaching-bridge .demo-step,
+.teaching-bridge .demo-practice,
+.teaching-bridge .celebration-stats > div {
+  border-color: rgba(147, 239, 208, 0.16);
+  background:
+    linear-gradient(180deg, rgba(10, 22, 33, 0.82), rgba(3, 9, 15, 0.76)),
+    rgba(255, 255, 255, 0.035);
+}
+
+.teaching-bridge .tour-section h3,
+.teaching-bridge .concept-section h3,
+.teaching-bridge .demo-practice h3,
+.teaching-bridge .demo-step > div,
+.teaching-bridge .demo-done h3,
+.teaching-bridge .celebration-screen h2,
+.teaching-bridge .celebration-stats strong {
+  color: #f5ead0;
+}
+
+.teaching-bridge .tour-section h3 svg,
+.teaching-bridge .concept-section h3 svg {
+  color: #93efd0;
+}
+
+.teaching-bridge .tour-focus-grid b,
+.teaching-bridge .tour-ignore ul,
+.teaching-bridge .concept-text,
+.teaching-bridge .demo-intro,
+.teaching-bridge .demo-done p,
+.teaching-bridge .celebration-screen > p,
+.teaching-bridge .celebration-stats small,
+.teaching-bridge .micro-progress {
+  color: #aebfc9;
+}
+
+.teaching-bridge .tour-focus-grid code,
+.teaching-bridge .tour-focus-grid span,
+.teaching-bridge .concept-prompt,
+.teaching-bridge .demo-practice > p,
+.teaching-bridge .demo-step strong {
+  color: #dfe8ee;
+}
+
+.teaching-bridge .tour-position,
+.teaching-bridge .demo-step code {
+  color: #06120f;
+  background: #93efd0;
+}
+
+.teaching-bridge .reveal-btn,
+.teaching-bridge .tour-section h3 .v2-button.ghost,
+.teaching-bridge .demo-textarea {
+  border-color: rgba(147, 239, 208, 0.18);
+  color: #dfe8ee;
+  background: rgba(3, 10, 16, 0.72);
+}
+
+.teaching-bridge .reveal-btn:hover,
+.teaching-bridge .tour-section h3 .v2-button.ghost:hover {
+  border-color: rgba(217, 184, 110, 0.5);
+  color: #fff1bd;
+  background: rgba(217, 184, 110, 0.08);
+}
+
+.teaching-bridge .explanation-box.correct {
+  border-color: rgba(147, 239, 208, 0.36);
+  color: #93efd0;
+  background: rgba(147, 239, 208, 0.08);
+}
+
+.teaching-bridge .explanation-box.incorrect {
+  border-color: rgba(255, 134, 154, 0.34);
+  color: #ff9aaa;
+  background: rgba(255, 134, 154, 0.08);
+}
+
 .flowchart-node {
   border-color: rgba(206, 224, 238, 0.14);
   background: rgba(255, 255, 255, 0.045);
@@ -5585,9 +5670,16 @@ textarea:focus {
 .remediation-panel {
   width: min(620px, 100%);
   padding: 20px;
-  border: 2px solid var(--purple);
-  border-radius: 14px;
-  background: #f7f4ff;
+  border: 1px solid rgba(147, 239, 208, 0.28);
+  border-radius: 8px;
+  background:
+    radial-gradient(
+      circle at 0% 0%,
+      rgba(147, 239, 208, 0.12),
+      transparent 34%
+    ),
+    rgba(3, 13, 17, 0.94);
+  color: #dfe8ee;
   box-shadow: 0 24px 70px rgba(0, 0, 0, 0.42);
 }
 
@@ -5645,18 +5737,18 @@ textarea:focus {
   display: block;
   width: 100%;
   padding: 10px;
-  border: 1.5px solid var(--line);
+  border: 1px solid rgba(206, 224, 238, 0.22);
   border-radius: 8px;
-  background: white;
-  color: var(--muted);
+  background: rgba(255, 255, 255, 0.045);
+  color: #dfe8ee;
   font-size: 13px;
   text-align: center;
 }
 
 .remediation-panel .v2-button.ghost:hover {
-  border-color: var(--purple);
-  color: var(--purple);
-  background: #f7f4ff;
+  border-color: rgba(217, 184, 110, 0.5);
+  color: #fff5d8;
+  background: rgba(217, 184, 110, 0.1);
 }
 
 .remediation-options {
@@ -5673,17 +5765,19 @@ textarea:focus {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  border: 2px solid var(--purple);
-  border-radius: 10px;
-  background: white;
-  color: var(--purple);
+  border: 1px solid rgba(147, 239, 208, 0.28);
+  border-radius: 8px;
+  background: rgba(147, 239, 208, 0.08);
+  color: #dff8ef;
   font-weight: 600;
   font-size: 13px;
   transition: 0.18s ease;
 }
 
 .remediation-option-btn:hover {
-  background: #f0ecfe;
+  border-color: rgba(217, 184, 110, 0.5);
+  color: #fff5d8;
+  background: rgba(217, 184, 110, 0.1);
 }
 
 .remediation-micro-lesson {

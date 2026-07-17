@@ -52,6 +52,16 @@
 
 ## 当前已完成切片
 
+### R365：教学桥代码导读暗色统一
+
+- [x] 修复代码导读和教学桥里残留浅紫、白色工具卡的问题：为 `tour-section`、`tour-focus-grid`、观察目标、概念卡、补课弹层和 ghost 按钮补暗色 RPG 覆盖。
+- [x] 代码导读页的项目位置、焦点卡、观察目标、按钮和证据导师卡统一到暗色底、金色/青绿色证据信号，不再跳回白色后台。
+- [x] 补课弹层 `remediation-panel`、补课选项按钮和稍后再看按钮改为暗色背景，避免打开补课时风格断层。
+- [x] 保持手机端单列和不横向溢出；390px 浏览器验证 `scrollWidth = 390`。
+- [x] 真实浏览器复核：在 Vite 浏览器内挂载 `GuidedCodeTour`，`.tour-section` 与 `.tour-focus-grid` 背景为 `rgba(255,255,255,0.035)`，按钮背景为 `rgba(3,10,16,0.72)`；控制台 0 error / 0 warning；截图：`output/playwright/r365-teaching-dark-unification.png`、`output/playwright/r365-teaching-dark-unification-mobile.png`。
+
+验收：`npm run verify:quick` 通过 11 个测试文件 / 203 个测试。
+
 ### R364：代码导读加入代码证据导师卡
 
 - [x] 修复新手读懂某一行代码后，仍可能误以为“代码看起来对 = 问题已经修好”的问题：在 `当前只读这一行` 后新增 `代码证据导师卡`。
