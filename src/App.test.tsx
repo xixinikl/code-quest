@@ -6030,7 +6030,19 @@ describe("AI 职业路线入口", () => {
       "这条证据证明",
     );
     expect(screen.getByLabelText("本幕主动复述")).toHaveTextContent(
+      "Network 里看到 201 Created",
+    );
+    expect(screen.getByLabelText("本幕主动复述")).toHaveTextContent(
+      "数据库真的完成",
+    );
+    expect(screen.getByLabelText("本幕主动复述")).toHaveTextContent(
+      "SELECT 查询却是 0 行",
+    );
+    expect(screen.getByLabelText("本幕主动复述")).toHaveTextContent(
       "下一幕我要查：传送门大厅的证据",
+    );
+    expect(screen.getByLabelText("本幕主动复述")).toHaveTextContent(
+      "后端接口 → 数据层函数",
     );
     await user.type(
       screen.getByLabelText("本幕复述原话"),

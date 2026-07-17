@@ -7333,6 +7333,17 @@ function EvidenceStoryQuest({
     );
   const activeJourney = journey[activeJourneyIndex] ?? journey[0];
   const nextJourney = journey[activeJourneyIndex + 1] ?? null;
+  const missingProofJourney =
+    journey
+      .slice(activeJourneyIndex + 1)
+      .find((item) => item.to.includes("数据库") || item.proof.includes("SELECT")) ??
+    nextJourney;
+  const recallCannotProve = missingProofJourney
+    ? `${missingProofJourney.to}真的完成；还没看到「${missingProofJourney.proof}」`
+    : "修复已经在真实路径里稳定通过";
+  const recallNextEvidence = nextJourney
+    ? `${nextJourney.from} → ${nextJourney.to}`
+    : "实战修复与验收";
   const decision = getSceneDecision(scene, activeJourney);
   const selectedDecisionId = sceneDecisions[scene.id];
   const previousDecisionEcho = getDecisionEcho(
@@ -7874,10 +7885,11 @@ function EvidenceStoryQuest({
                     >
                       <span>照着这三句写</span>
                       <ol>
-                        <li>这条证据证明：{sceneRecap[2].value}</li>
-                        <li>它还不能证明：下一层已经真的完成。</li>
+                        <li>这条证据证明：{activeJourney.proof}</li>
+                        <li>它还不能证明：{recallCannotProve}。</li>
                         <li>
-                          下一幕我要查：{nextScene?.place ?? "实战修复"}的证据。
+                          下一幕我要查：{nextScene?.place ?? "实战修复"}的证据，也就是
+                          {recallNextEvidence}。
                         </li>
                       </ol>
                     </div>
