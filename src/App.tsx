@@ -9182,6 +9182,98 @@ function LabPracticeEvidencePack({
   );
 }
 
+function getRouteChapterForScenarioId(scenarioId: string) {
+  const target = findRouteChapterTargetForScenarioId(scenarioId);
+  const route =
+    target && careerRoutes.find((candidate) => candidate.id === target.routeId);
+  const chapter =
+    route?.chapters.find((entry) => entry.id === target?.chapterId) ??
+    aiCareerRoadmap.find((entry) => entry.id === String(target?.chapterId));
+  const chapterIndex = chapter
+    ? (route?.chapters ?? aiCareerRoadmap).findIndex(
+        (entry) => entry.id === chapter.id,
+      )
+    : -1;
+  const nextChapter =
+    chapterIndex >= 0
+      ? (route?.chapters ?? aiCareerRoadmap)[chapterIndex + 1]
+      : undefined;
+  return { route, chapter, nextChapter };
+}
+
+function LabCompanionSquad({ config }: { config: LabConfig }) {
+  const { route, chapter, nextChapter } = getRouteChapterForScenarioId(
+    config.scenarioId,
+  );
+  if (!chapter) return null;
+
+  const guide = getChapterGuide(chapter);
+  const unlock = chapter.companionUnlock;
+  const unlockGuide = getChapterGuide(chapter);
+  const unlockPortrait =
+    unlock.type === "装备"
+      ? unlockGuide.image
+      : (companionPortraits[unlock.name] ?? guide.image);
+  const nextUnlock = nextChapter?.companionUnlock;
+  const nextUnlockGuide = nextChapter
+    ? getChapterGuide(nextChapter)
+    : undefined;
+  const nextUnlockPortrait =
+    nextUnlock && nextChapter
+      ? nextUnlock.type === "装备"
+        ? nextUnlockGuide?.image
+        : companionPortraits[nextUnlock.name]
+      : undefined;
+
+  const squadCards = [
+    {
+      label: "本幕同行",
+      title: guide.name,
+      body: `${route?.label ?? "AI 应用开发"} · 第 ${displayChapterNumber(chapter)} 章现场导师。先陪你看懂这一关为什么发生。`,
+      image: guide.image,
+    },
+    {
+      label: "通关收藏",
+      title: `${unlock.type} · ${unlock.name}`,
+      body: unlock.description,
+      image: unlockPortrait,
+    },
+    {
+      label: nextUnlock ? "下一位会遇见" : "主线收束",
+      title: nextUnlock
+        ? `${nextUnlock.type} · ${nextUnlock.name}`
+        : "作品集与面试复盘",
+      body: nextUnlock
+        ? nextUnlock.description
+        : "回到路线图整理证据，把关卡产出转成求职表达。",
+      image: nextUnlockPortrait,
+    },
+  ];
+
+  return (
+    <section className="lab-companion-squad" aria-label="本关同行小队">
+      <header>
+        <span>同行小队</span>
+        <strong>通关不是只拿 XP，也会解锁角色、宠物和能力图鉴</strong>
+      </header>
+      <div>
+        {squadCards.map((card) => (
+          <article key={card.label}>
+            {card.image ? (
+              <img src={card.image} alt="" aria-hidden="true" />
+            ) : (
+              <i aria-hidden="true">{card.title.slice(0, 1)}</i>
+            )}
+            <span>{card.label}</span>
+            <strong>{card.title}</strong>
+            <p>{card.body}</p>
+          </article>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 function LabStepReceipt({
   config,
   nextStep,
@@ -12116,6 +12208,7 @@ export function Lab({
             activeStep={activeStep}
             config={config}
           />
+          <LabCompanionSquad config={config} />
           <section className="lab-director-stage" aria-label="任务导演台">
             <header>
               <span>任务导演台</span>

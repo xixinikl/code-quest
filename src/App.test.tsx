@@ -2138,6 +2138,14 @@ describe("AI 职业路线入口", () => {
     expect(labEvidencePack).toHaveTextContent("任务委托 → 前端");
     expect(labEvidencePack).toHaveTextContent("fetch('/api/canvases'");
     expect(labEvidencePack).toHaveTextContent("还不能证明");
+    const companionSquad = screen.getByLabelText("本关同行小队");
+    expect(companionSquad).toHaveTextContent("同行小队");
+    expect(companionSquad).toHaveTextContent("本幕同行");
+    expect(companionSquad).toHaveTextContent("档案馆记录员");
+    expect(companionSquad).toHaveTextContent("通关收藏");
+    expect(companionSquad).toHaveTextContent("伙伴 · 档案馆记录员");
+    expect(companionSquad).toHaveTextContent("下一位会遇见");
+    expect(companionSquad).toHaveTextContent("宠物 · 灵感萤火");
     expect(screen.queryByLabelText("数据断层项目地图")).not.toBeInTheDocument();
   });
 
