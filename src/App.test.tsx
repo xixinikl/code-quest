@@ -10,10 +10,12 @@ import { useState } from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import App, {
   CareerDossier,
+  ChapterRewardGate,
   getLabConfig,
   Lab,
   VerificationPanel,
 } from "./App";
+import { aiCareerRoadmap } from "./careerRoadmap";
 import {
   getTeachingStorySceneImages,
   getTeachingStoryScenes,
@@ -196,6 +198,48 @@ describe("岗位路线实战场景契约", () => {
       "src",
       expect.stringContaining("portrait-timing-navigator"),
     );
+  });
+
+  it("章节结算会把 XP 变成可收藏的角色与下一位预告", () => {
+    const chapter = aiCareerRoadmap[0];
+    const nextChapter = aiCareerRoadmap[1];
+
+    render(
+      <ChapterRewardGate
+        developer={{
+          name: "见习开发者",
+          rank: "AI 应用学徒",
+          xp: 150,
+          missionsCleared: 1,
+          clearedChapterIds: [chapter.id],
+          unlockedCompanionNames: [chapter.companionUnlock.name],
+          joinedAt: "2026-07-05T00:00:00.000Z",
+        }}
+        nextChapter={nextChapter}
+        onBackToRoadmap={vi.fn()}
+        onContinueToLab={vi.fn()}
+        reward={{
+          phase: "earned",
+          chapter,
+          xpGained: 150,
+          wasAlreadyCleared: false,
+          beforeRank: "见习开发者",
+          afterRank: "AI 应用学徒",
+          beforeLevel: 1,
+          afterLevel: 2,
+        }}
+      />,
+    );
+
+    const ceremony = screen.getByRole("region", { name: "收藏解锁仪式" });
+    expect(ceremony).toHaveTextContent("新伙伴归队，能力进入图鉴");
+    expect(ceremony).toHaveTextContent("当前路线已收集 1/15");
+    expect(ceremony).toHaveTextContent(
+      `${chapter.companionUnlock.type} · ${chapter.companionUnlock.name}`,
+    );
+    expect(ceremony).toHaveTextContent(chapter.learn);
+    expect(ceremony).toHaveTextContent("下一位会遇见");
+    expect(ceremony).toHaveTextContent(nextChapter.companionUnlock.name);
   });
 
   it("每个剧情关卡的地点都使用不同背景，避免换地点却停在原地", () => {
@@ -2077,8 +2121,9 @@ describe("AI 职业路线入口", () => {
         timeout: 3000,
       }),
     ).toBeInTheDocument();
-    expect(screen.getByLabelText(/主线 1-1 · AI 应用开发 实战追踪/))
-      .toHaveTextContent("剧情教学已经把「任务委托」整理成委托草案");
+    expect(
+      screen.getByLabelText(/主线 1-1 · AI 应用开发 实战追踪/),
+    ).toHaveTextContent("剧情教学已经把「任务委托」整理成委托草案");
     expect(screen.queryByLabelText("数据断层项目地图")).not.toBeInTheDocument();
   });
 
@@ -3419,6 +3464,12 @@ describe("AI 职业路线入口", () => {
     expect(screen.getByText("工作复盘")).toBeInTheDocument();
     expect(screen.getByText("Agent 委托")).toBeInTheDocument();
     expect(screen.getByText("面试讲法")).toBeInTheDocument();
+    expect(
+      screen.getByRole("region", { name: "收藏解锁仪式" }),
+    ).toHaveTextContent("本关可写入图鉴");
+    expect(
+      screen.getByRole("region", { name: "收藏解锁仪式" }),
+    ).toHaveTextContent("主线收束");
     expect(onSubmitted).toHaveBeenCalledWith({ showReward: false });
   });
 
@@ -6206,9 +6257,7 @@ describe("AI 职业路线入口", () => {
     expect(screen.getByLabelText(/实战追踪/)).toHaveTextContent(
       "剧情教学已经把「任务委托」整理成委托草案",
     );
-    expect(screen.getByLabelText(/实战追踪/)).toHaveTextContent(
-      "你没有漏步骤",
-    );
+    expect(screen.getByLabelText(/实战追踪/)).toHaveTextContent("你没有漏步骤");
     expect(screen.getByLabelText("任务导演台")).toHaveTextContent(
       "先看角色、目标和接力，再开始读代码",
     );

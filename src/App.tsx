@@ -7962,10 +7962,7 @@ function getScenarioIdForChapter(chapter: number) {
   return chapterScenarioIds[chapter] ?? SCENARIO_ID;
 }
 
-function getTeachingScenarioForScenarioId(
-  scenarioId: string,
-  mission: number,
-) {
+function getTeachingScenarioForScenarioId(scenarioId: string, mission: number) {
   if (scenarioId === JAVA_SCENARIO_ID) return javaLayeredScenario;
   if (scenarioId === JAVA_TRANSACTION_SCENARIO_ID) {
     return javaTransactionConsistencyScenario;
@@ -7989,7 +7986,8 @@ function getTeachingScenarioForScenarioId(
   if (scenarioId === FRONTEND_REQUEST_STATES_SCENARIO_ID) {
     return frontendRequestStatesScenario;
   }
-  if (scenarioId === FRONTEND_SCENARIO_ID) return frontendComponentStateScenario;
+  if (scenarioId === FRONTEND_SCENARIO_ID)
+    return frontendComponentStateScenario;
   if (mission === 1) return teachingScenario;
   if (mission === 3) return case03Scenario;
   if (mission === 4) return case04Scenario;
@@ -10216,6 +10214,38 @@ export function CareerDossier({
   config: LabConfig;
   onBackToRoadmap?: () => void;
 }) {
+  const target = findRouteChapterTargetForScenarioId(config.scenarioId);
+  const route = target
+    ? careerRoutes.find((candidate) => candidate.id === target.routeId)
+    : undefined;
+  const routeChapters = route?.chapters ?? aiCareerRoadmap;
+  const chapter =
+    target && route
+      ? route.chapters.find((entry) => entry.id === target.chapterId)
+      : aiCareerRoadmap.find((entry) => entry.id === String(target?.chapterId));
+  const chapterIndex = chapter
+    ? routeChapters.findIndex((entry) => entry.id === chapter.id)
+    : -1;
+  const nextChapter =
+    chapterIndex >= 0 ? routeChapters[chapterIndex + 1] : null;
+  const unlock = chapter?.companionUnlock;
+  const unlockGuide = chapter ? getChapterGuide(chapter) : undefined;
+  const unlockPortrait =
+    unlock && chapter
+      ? unlock.type === "装备"
+        ? unlockGuide?.image
+        : companionPortraits[unlock.name]
+      : undefined;
+  const nextUnlock = nextChapter?.companionUnlock;
+  const nextUnlockGuide = nextChapter
+    ? getChapterGuide(nextChapter)
+    : undefined;
+  const nextUnlockPortrait =
+    nextUnlock && nextChapter
+      ? nextUnlock.type === "装备"
+        ? nextUnlockGuide?.image
+        : companionPortraits[nextUnlock.name]
+      : undefined;
   const transferCards = [
     {
       label: "工作复盘",
@@ -10297,6 +10327,50 @@ export function CareerDossier({
             ))}
           </div>
         </section>
+        {chapter && unlock && (
+          <section className="reward-unlock-ceremony" aria-label="收藏解锁仪式">
+            <header>
+              <span>通关收藏</span>
+              <strong>角色、能力和下一位目标已经串起来</strong>
+              <p>
+                这张卡只记录本关证据已经提交；真正熟练还要靠后续复测和真实项目迁移。
+              </p>
+            </header>
+            <div className="reward-unlock-grid">
+              <article>
+                {unlockPortrait && (
+                  <img src={unlockPortrait} alt="" aria-hidden="true" />
+                )}
+                <span>本关可写入图鉴</span>
+                <strong>
+                  {unlock.type} · {unlock.name}
+                </strong>
+                <p>{unlock.description}</p>
+              </article>
+              <article>
+                <span>能力印记</span>
+                <strong>{chapter.learn}</strong>
+                <p>{chapter.validation}</p>
+              </article>
+              <article>
+                {nextUnlockPortrait && (
+                  <img src={nextUnlockPortrait} alt="" aria-hidden="true" />
+                )}
+                <span>{nextUnlock ? "下一位会遇见" : "主线收束"}</span>
+                <strong>
+                  {nextUnlock
+                    ? `${nextUnlock.type} · ${nextUnlock.name}`
+                    : "作品集与面试复盘"}
+                </strong>
+                <p>
+                  {nextUnlock
+                    ? nextUnlock.description
+                    : "回到路线图整理证据，把学习结果转成作品集和面试回答。"}
+                </p>
+              </article>
+            </div>
+          </section>
+        )}
         <div className="rubric-box">
           <h2>{config.result.nextTitle}</h2>
           <ul>
@@ -10325,7 +10399,7 @@ export function CareerDossier({
   );
 }
 
-function ChapterRewardGate({
+export function ChapterRewardGate({
   developer,
   reward,
   nextChapter,
@@ -10351,6 +10425,24 @@ function ChapterRewardGate({
   const stageBackground = getChapterDossierBackground(reward.chapter);
   const adventureProgress = getAdventureProgress(developer.xp);
   const routeIdentity = getChapterRouteIdentity(reward.chapter.id);
+  const rewardRoute =
+    careerRoutes.find((route) =>
+      route.chapters.some((chapter) => chapter.id === reward.chapter.id),
+    ) ?? careerRoutes.find((route) => route.id === "ai-development");
+  const routeChapters = rewardRoute?.chapters ?? aiCareerRoadmap;
+  const routeCollectedCount = routeChapters.filter((chapter) =>
+    developer.unlockedCompanionNames.includes(chapter.companionUnlock.name),
+  ).length;
+  const nextUnlock = nextChapter?.companionUnlock;
+  const nextUnlockGuide = nextChapter
+    ? getChapterGuide(nextChapter)
+    : undefined;
+  const nextUnlockPortrait =
+    nextUnlock && nextChapter
+      ? nextUnlock.type === "装备"
+        ? nextUnlockGuide?.image
+        : companionPortraits[nextUnlock.name]
+      : undefined;
 
   return (
     <main
@@ -10479,6 +10571,54 @@ function ChapterRewardGate({
                   <span>{reward.chapter.validation}</span>
                 </div>
               </div>
+              <section
+                className="reward-unlock-ceremony"
+                aria-label="收藏解锁仪式"
+              >
+                <header>
+                  <span>收藏解锁</span>
+                  <strong>新伙伴归队，能力进入图鉴</strong>
+                  <p>
+                    当前路线已收集 {routeCollectedCount}/{routeChapters.length}
+                    。每个收藏物都对应一项工作能力和一段面试素材。
+                  </p>
+                </header>
+                <div className="reward-unlock-grid">
+                  <article>
+                    {stagePortrait && (
+                      <img src={stagePortrait} alt="" aria-hidden="true" />
+                    )}
+                    <span>
+                      {reward.wasAlreadyCleared ? "已在图鉴" : "新归队"}
+                    </span>
+                    <strong>
+                      {unlock.type} · {unlock.name}
+                    </strong>
+                    <p>{unlock.description}</p>
+                  </article>
+                  <article>
+                    <span>能力印记</span>
+                    <strong>{reward.chapter.learn}</strong>
+                    <p>{reward.chapter.validation}</p>
+                  </article>
+                  <article>
+                    {nextUnlockPortrait && (
+                      <img src={nextUnlockPortrait} alt="" aria-hidden="true" />
+                    )}
+                    <span>{nextUnlock ? "下一位会遇见" : "主线收束"}</span>
+                    <strong>
+                      {nextUnlock
+                        ? `${nextUnlock.type} · ${nextUnlock.name}`
+                        : "作品集与面试复盘"}
+                    </strong>
+                    <p>
+                      {nextUnlock
+                        ? nextUnlock.description
+                        : "回到路线图整理十五章证据，把学习结果转成作品集和面试回答。"}
+                    </p>
+                  </article>
+                </div>
+              </section>
             </>
           )}
 
