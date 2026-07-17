@@ -2316,6 +2316,15 @@ describe("AI 职业路线入口", () => {
     ).toBeGreaterThan(0);
     expect(screen.getByText(/逐行翻译/)).toBeInTheDocument();
     expect(screen.getByText(/先看人话，再看语法/)).toBeInTheDocument();
+    const currentLineContract = screen.getByRole("region", {
+      name: "当前只读这一行",
+    });
+    expect(currentLineContract).toHaveTextContent("当前只读这一行");
+    expect(currentLineContract).toHaveTextContent("收到");
+    expect(currentLineContract).toHaveTextContent("处理");
+    expect(currentLineContract).toHaveTextContent("交出");
+    expect(currentLineContract).toHaveTextContent("不要现在读全文件");
+    expect(currentLineContract).toHaveTextContent("下一证据");
     expect(screen.getByLabelText("当前行证据锚点")).toHaveTextContent(
       "为什么看这一行",
     );
@@ -2329,11 +2338,12 @@ describe("AI 职业路线入口", () => {
       "生成候选请求",
     );
     expect(screen.getByText(/当前代码处理后/)).toBeInTheDocument();
-    expect(screen.getAllByLabelText("读码交接单")).toHaveLength(1);
-    expect(screen.getByText("收到")).toBeInTheDocument();
-    expect(screen.getByText("动作")).toBeInTheDocument();
-    expect(screen.getByText("交出")).toBeInTheDocument();
-    expect(screen.getByText("证明")).toBeInTheDocument();
+    const handoffSheet = screen.getByLabelText("读码交接单");
+    expect(handoffSheet).toBeInTheDocument();
+    expect(within(handoffSheet).getByText("收到")).toBeInTheDocument();
+    expect(within(handoffSheet).getByText("动作")).toBeInTheDocument();
+    expect(within(handoffSheet).getByText("交出")).toBeInTheDocument();
+    expect(within(handoffSheet).getByText("证明")).toBeInTheDocument();
     expect(screen.getByText(/把分散的信息装进一个对象/)).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "下一行" })).toBeEnabled();
     await user.click(screen.getByRole("button", { name: "下一行" }));
@@ -2373,10 +2383,15 @@ describe("AI 职业路线入口", () => {
     expect(screen.getByAltText("档案馆记录员")).toBeInTheDocument();
     expect(screen.getByText(/代码证据带读官/)).toBeInTheDocument();
     expect(screen.getAllByText(/上一棒交来/).length).toBeGreaterThan(0);
+    expect(
+      screen.getByRole("region", { name: "当前只读这一行" }),
+    ).toHaveTextContent("不要现在读全文件");
     for (let index = 0; index < 6; index += 1) {
       await user.click(screen.getByRole("button", { name: "下一行" }));
     }
-    expect(screen.getByText(/判断这次接口回信是否成功/)).toBeInTheDocument();
+    expect(
+      screen.getAllByText(/判断这次接口回信是否成功/).length,
+    ).toBeGreaterThan(0);
     expect(screen.getByLabelText("当前行证据锚点")).toHaveTextContent(
       "绿色成功提示为什么会亮",
     );

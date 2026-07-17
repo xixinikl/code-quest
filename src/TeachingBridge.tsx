@@ -7346,8 +7346,9 @@ function EvidenceStoryQuest({
   const missingProofJourney =
     journey
       .slice(activeJourneyIndex + 1)
-      .find((item) => item.to.includes("数据库") || item.proof.includes("SELECT")) ??
-    nextJourney;
+      .find(
+        (item) => item.to.includes("数据库") || item.proof.includes("SELECT"),
+      ) ?? nextJourney;
   const recallCannotProve = missingProofJourney
     ? `${missingProofJourney.to}真的完成；还没看到「${missingProofJourney.proof}」`
     : "修复已经在真实路径里稳定通过";
@@ -7899,7 +7900,8 @@ function EvidenceStoryQuest({
                         <li>这条证据证明：{activeJourney.proof}</li>
                         <li>它还不能证明：{recallCannotProve}。</li>
                         <li>
-                          下一幕我要查：{nextScene?.place ?? "实战修复"}的证据，也就是
+                          下一幕我要查：{nextScene?.place ?? "实战修复"}
+                          的证据，也就是
                           {recallNextEvidence}。
                         </li>
                       </ol>
@@ -8806,6 +8808,7 @@ function GuidedCodeTour({
   const cannotProve = `这几行不能单独证明「${focus.output}」已经在真实环境发生。还要继续看 Network、后端日志、数据库记录或测试结果。`;
   const agentBrief = `请只围绕 ${focus.filePath} 的 ${focus.functionName} 检查「${step.projectPosition ?? step.goal}」：输入是「${focus.input}」，输出应该是「${focus.output}」。请说明这几行能证明什么、不能证明什么，并给出下一步验收证据。`;
   const activeLine = focus.lines[activeLineIndex] ?? "";
+  const activeLineNumber = activeLineIndex + 1;
   const activeHandoff = buildCodeHandoff(activeLine, focus);
   const activeEvidenceAnchor = buildLineEvidenceAnchor(activeLine, focus);
 
@@ -8895,6 +8898,46 @@ function GuidedCodeTour({
           <b>{flowParts[0] ?? "上一棒"}</b> 把「{focus.input}
           」交给当前代码；当前代码处理后， 要继续交出「{focus.output}
           」。如果这两次交接没有证据，页面上的成功提示还不能算通关。
+        </p>
+      </section>
+
+      <section
+        className="tour-current-line-contract"
+        aria-label="当前只读这一行"
+      >
+        <header>
+          <span>
+            当前只读这一行 · {activeLineNumber}/{focus.lines.length}
+          </span>
+          <strong>{activeLine.trim() || "空行：这一行只是分隔上下文"}</strong>
+        </header>
+        <div className="current-line-mission">
+          <article>
+            <span>收到</span>
+            <p>{activeHandoff.receives}</p>
+          </article>
+          <article>
+            <span>处理</span>
+            <p>{activeHandoff.action}</p>
+          </article>
+          <article>
+            <span>交出</span>
+            <p>{activeHandoff.outputs}</p>
+          </article>
+        </div>
+        <dl>
+          <div>
+            <dt>为什么看</dt>
+            <dd>{activeEvidenceAnchor.why}</dd>
+          </div>
+          <div>
+            <dt>下一证据</dt>
+            <dd>{activeEvidenceAnchor.nextEvidence}</dd>
+          </div>
+        </dl>
+        <p className="line-reading-rule">
+          <b>不要现在读全文件：</b>
+          先判断这一行把哪份材料交给谁，再点下一行。等每一行都能说出交接关系，再展开完整文件复盘。
         </p>
       </section>
 
