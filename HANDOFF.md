@@ -8,13 +8,23 @@
 
 - 当前远端：`https://github.com/xixinikl/code-quest.git`
 - 当前工作分支：`cx/ai-career-rpg-home`
-- 当前已推送功能基线：本文件随最新提交推送后，以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 输出为准；当前本轮之前远端已到 `ea7b076 fix(rpg): humanize lab artifact rewards`，本次提交会晚于它。
-- 当前已推送交接基线：本文件提交后应晚于 `772f66e`，包含另一台电脑拉取、核对、继续开发和不能直接合并的说明。最终远端 hash 仍以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 为准。
+- 当前已推送功能基线：本文件随最新提交推送后，以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 输出为准；本轮之前远端已到 `3d79134 fix(rpg): remove frontend testing save-route fallback`，本次交接提交会晚于它。
+- 当前已推送交接基线：本文件提交后应晚于 `3d79134`，包含另一台电脑拉取、核对、继续开发和不能直接合并的说明。最终远端 hash 仍以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 为准。
 - 当前本地核对：推送完成后，`git status --short --branch` 应显示 `cx/ai-career-rpg-home...origin/cx/ai-career-rpg-home` 且没有未提交文件，说明本地与远端一致。
-- 当前远端核对：另一台电脑拉取后 `git log --oneline -5` 应看到本次交接文档提交和 `772f66e docs(rpg): record frontend performance lab verification`，或更晚提交；如果只看到 `65e3603`、`5651c18`、`0fb18e7`、`0f7c433`、`c587a23`、`547ed6f`、`4370ddf`、`1b3cf5d`、`9171ac8`、`1a40fe4`、`e10069f`、`fa12dbc`、`2dd44d3`、`ca2c7aa`、`3fe3db1` 或默认分支提交，说明还没拉到最新交接/体验细修。
+- 当前远端核对：另一台电脑拉取后 `git log --oneline -5` 应看到本次交接文档提交，以及 `3d79134 fix(rpg): remove frontend testing save-route fallback`、`f682671 fix(rpg): complete frontend testing proof lab`、`43f94d4 fix(rpg): hide lab artifact ids from learners` 这些最近提交，或更晚提交；如果只看到 `772f66e`、`65e3603`、`5651c18`、`0fb18e7`、`0f7c433`、`c587a23`、`547ed6f`、`4370ddf`、`1b3cf5d`、`9171ac8`、`1a40fe4`、`e10069f`、`fa12dbc`、`2dd44d3`、`ca2c7aa`、`3fe3db1` 或默认分支提交，说明还没拉到最新交接/体验细修。
 - 远端默认 HEAD：`git ls-remote --symref origin HEAD` 指向 `feat/guided-learning-bridge`，不是本分支；另一台电脑必须显式切到 `cx/ai-career-rpg-home`，不要只用 clone 后默认分支继续。
-- 给协作者的最短说明：不要直接用默认分支；拉仓库后必须切到 `cx/ai-career-rpg-home`。当前至少应看到 `ea7b076 fix(rpg): humanize lab artifact rewards` 和本次交接文档提交，或更晚提交；进入项目后必须 `nvm use` 到 Node `24.13.1`。
+- 给协作者的最短说明：不要直接用默认分支；拉仓库后必须切到 `cx/ai-career-rpg-home`。当前至少应看到 `3d79134 fix(rpg): remove frontend testing save-route fallback` 和本次交接文档提交，或更晚提交；进入项目后必须 `nvm use` 到 Node `24.13.1`。
 - 他具体怎么拉：如果另一台电脑没有本项目，按“首次 clone”执行；如果已经 clone 过，按“已有仓库更新”执行；如果他本地有未提交改动，先新建自己的分支或 stash，不要直接覆盖。
+
+### 另一台电脑怎么拉，给他照抄
+
+先判断电脑上有没有旧仓库：
+
+- 没有 `code-quest` 文件夹：走「首次 clone」。
+- 已经有 `code-quest` 文件夹：走「已有仓库更新」。
+- 已有仓库但 `git status --short` 有内容：先走「有本地改动时保护现场」，不要直接 pull 覆盖。
+
+不要只执行 `git clone` 后就开始改，因为 GitHub 默认分支不是当前工作分支。必须显式切到 `cx/ai-career-rpg-home`。
 
 ### 另一台电脑首次 clone 照抄
 
@@ -34,10 +44,10 @@ npm run dev
 拉完后 `git log --oneline -1` 应显示：
 
 ```bash
-本次交接文档提交，或晚于 772f66e 的提交
+本次交接文档提交，或晚于 3d79134 的提交
 ```
 
-如果显示的是 `feat/guided-learning-bridge`、`main` 上的提交，或早于 `772f66e`，说明没有拉到今天上传的内容。
+如果显示的是 `feat/guided-learning-bridge`、`main` 上的提交，或早于 `3d79134`，说明没有拉到今天上传的内容。
 
 ### 已有仓库更新照抄
 
@@ -95,6 +105,38 @@ npm run verify
 2. 不要直接合并 `main`。当前分支是阶段成果，不是 ready 合并态；合并前还缺 PR 审查、桌面和 390px 关键路径视觉终审、真人试玩、以及 Java/前端后续章节更深抽检。
 3. 如果另一台电脑只是要接着我现在的工作，优先做前端第 3 关“首屏观测塔”剧情到 Lab 的完整浏览器验收，清理残留的第一章保存链路词，再补测试和记录。
 4. 如果要开 PR，先开 Draft PR；PR 描述必须写清“自动化通过不等于真人学会”，不要把当前状态包装成最终产品。
+
+### 现在能不能合并
+
+暂时不建议直接合并到 `main`。当前分支已经可以完整拉取和继续开发，也可以开 Draft PR 给人审查，但还不是 ready merge 状态。原因：
+
+- 已完成大量 UI、剧情、岗位路线、前端第 5 关测试 Lab 和交接文档修复，但全站最终视觉终审还没完成。
+- 自动化通过只能说明工程没坏，不能证明新手真的学会；还需要真人试玩反馈。
+- Java/前端后续章节虽然有路线和多轮抽检，但还没有全部达到第一章同等细致程度。
+- 合并前还要做 PR 审查、桌面与 390px 关键路径截图/浏览器验收、以及“不会再串回旧保存链路”的抽检。
+
+如果用户时间很紧：先保留 `cx/ai-career-rpg-home` 作为可拉取备份；另一台电脑继续在这个分支或从这个分支切新 `cx/...` 分支开发。等视觉终审和 PR 审查完成后再考虑合并。
+
+### 另一台电脑拉完后的第一件事
+
+```bash
+cd code-quest
+git status --short --branch
+git log --oneline -8
+git rev-parse HEAD
+git rev-parse origin/cx/ai-career-rpg-home
+git ls-remote origin refs/heads/cx/ai-career-rpg-home
+nvm use
+npm run verify:quick
+```
+
+验收标准：
+
+- `git status --short --branch` 显示在 `cx/ai-career-rpg-home`，没有未提交文件。
+- `HEAD`、`origin/cx/ai-career-rpg-home`、`git ls-remote` 三个 hash 一致，或 `HEAD` 是刚创建的本地分支并跟踪同一个远端提交。
+- `git log --oneline -8` 能看到 `3d79134` 和本次交接文档提交，或更晚提交。
+- `nvm use` 后 Node 是 `.nvmrc` 指定的 `v24.13.1`。
+- `npm run verify:quick` 通过后再继续开发；如果失败，先不要改业务，先记录错误并修环境或依赖。
 
 - AI 应用开发路线：15 章；Java 后端路线：5 章；前端工程路线：5 章。三条路线均已进入岗位档案，Java/前端不再是空白占位。
 - 已实现：暗色神秘 RPG 舞台、章节专属背景、剧情角色立绘、可爱宠物/伙伴、地点航线、流程交接、名词解释、关键代码逐行导读、证据任务、Agent 委托、验收和面试复盘。
