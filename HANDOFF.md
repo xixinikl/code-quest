@@ -8,12 +8,12 @@
 
 - 当前远端：`https://github.com/xixinikl/code-quest.git`
 - 当前工作分支：`cx/ai-career-rpg-home`
-- 当前已推送功能基线：本文件随最新提交推送后，以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 输出为准；本轮之前远端已到 `fbf5e6f docs(rpg): clarify cross-computer handoff`，本次提交会晚于它。
-- 当前已推送交接基线：本文件提交后应晚于 `fbf5e6f`，包含另一台电脑拉取、核对、继续开发和不能直接合并的说明。最终远端 hash 仍以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 为准。
+- 当前已推送功能基线：本文件随最新提交推送后，以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 输出为准；本轮之前远端已到 `ff25ee9 test(rpg): lock frontend testing dossier stay`，本次提交会晚于它。
+- 当前已推送交接基线：本文件提交后应晚于 `ff25ee9`，包含另一台电脑拉取、核对、继续开发和不能直接合并的说明。最终远端 hash 仍以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 为准。
 - 当前本地核对：推送完成后，`git status --short --branch` 应显示 `cx/ai-career-rpg-home...origin/cx/ai-career-rpg-home` 且没有未提交文件，说明本地与远端一致。
-- 当前远端核对：另一台电脑拉取后 `git log --oneline -5` 应看到本次提交，以及 `fbf5e6f docs(rpg): clarify cross-computer handoff`、`3d79134 fix(rpg): remove frontend testing save-route fallback`、`f682671 fix(rpg): complete frontend testing proof lab` 这些最近提交，或更晚提交；如果只看到 `772f66e`、`65e3603`、`5651c18`、`0fb18e7`、`0f7c433`、`c587a23`、`547ed6f`、`4370ddf`、`1b3cf5d`、`9171ac8`、`1a40fe4`、`e10069f`、`fa12dbc`、`2dd44d3`、`ca2c7aa`、`3fe3db1` 或默认分支提交，说明还没拉到最新交接/体验细修。
+- 当前远端核对：另一台电脑拉取后 `git log --oneline -5` 应看到本次提交，以及 `ff25ee9 test(rpg): lock frontend testing dossier stay`、`fbf5e6f docs(rpg): clarify cross-computer handoff`、`3d79134 fix(rpg): remove frontend testing save-route fallback` 这些最近提交，或更晚提交；如果只看到 `772f66e`、`65e3603`、`5651c18`、`0fb18e7`、`0f7c433`、`c587a23`、`547ed6f`、`4370ddf`、`1b3cf5d`、`9171ac8`、`1a40fe4`、`e10069f`、`fa12dbc`、`2dd44d3`、`ca2c7aa`、`3fe3db1` 或默认分支提交，说明还没拉到最新交接/体验细修。
 - 远端默认 HEAD：`git ls-remote --symref origin HEAD` 指向 `feat/guided-learning-bridge`，不是本分支；另一台电脑必须显式切到 `cx/ai-career-rpg-home`，不要只用 clone 后默认分支继续。
-- 给协作者的最短说明：不要直接用默认分支；拉仓库后必须切到 `cx/ai-career-rpg-home`。当前至少应看到 `fbf5e6f docs(rpg): clarify cross-computer handoff` 和本次提交，或更晚提交；进入项目后必须 `nvm use` 到 Node `24.13.1`。
+- 给协作者的最短说明：不要直接用默认分支；拉仓库后必须切到 `cx/ai-career-rpg-home`。当前至少应看到 `ff25ee9 test(rpg): lock frontend testing dossier stay` 和本次提交，或更晚提交；进入项目后必须 `nvm use` 到 Node `24.13.1`。
 - 他具体怎么拉：如果另一台电脑没有本项目，按“首次 clone”执行；如果已经 clone 过，按“已有仓库更新”执行；如果他本地有未提交改动，先新建自己的分支或 stash，不要直接覆盖。
 
 ### 另一台电脑怎么拉，给他照抄
@@ -44,10 +44,10 @@ npm run dev
 拉完后 `git log --oneline -1` 应显示：
 
 ```bash
-本次提交，或晚于 fbf5e6f 的提交
+本次提交，或晚于 ff25ee9 的提交
 ```
 
-如果显示的是 `feat/guided-learning-bridge`、`main` 上的提交，或早于 `fbf5e6f`，说明没有拉到今天上传的内容。
+如果显示的是 `feat/guided-learning-bridge`、`main` 上的提交，或早于 `ff25ee9`，说明没有拉到今天上传的内容。
 
 ### 已有仓库更新照抄
 
@@ -134,7 +134,7 @@ npm run verify:quick
 
 - `git status --short --branch` 显示在 `cx/ai-career-rpg-home`，没有未提交文件。
 - `HEAD`、`origin/cx/ai-career-rpg-home`、`git ls-remote` 三个 hash 一致，或 `HEAD` 是刚创建的本地分支并跟踪同一个远端提交。
-- `git log --oneline -8` 能看到 `fbf5e6f` 和本次提交，或更晚提交。
+- `git log --oneline -8` 能看到 `ff25ee9` 和本次提交，或更晚提交。
 - `nvm use` 后 Node 是 `.nvmrc` 指定的 `v24.13.1`。
 - `npm run verify:quick` 通过后再继续开发；如果失败，先不要改业务，先记录错误并修环境或依赖。
 
@@ -155,6 +155,7 @@ npm run verify:quick
 - 最新前端第 5 关完整 Lab 修复：隔离 API `4412`、临时 SQLite `/tmp/code-quest-r335.sqlite`、Vite `5262` 下，从 `#chapter-frontend-5` 走完 8/8 剧情线索、伙伴会合并进入 Lab；修复 `sandbox/frontend-testing-proof/server/verificationReport.js` 后沙盒 `npm test` 通过 5/5，读取报告显示 5 通过 / 0 失败。报告译文不再露 `failing-before`、`passing-after-stale`、`network-test-run`、`verificationReport.js`；提交后先停在 `成长档案结案`，不会立即跳回首页/AI 序章。仍需后续补一次从提交按钮到结案页的全浏览器截图复核。
 - 最新前端第 5 关源头文案收口：运行时 Lab 的集成流程已改成 `GET /api/tasks?status=blocked`、DOM 可见行和 `POST /api/reports/verification`，不再靠 rewrite 把 `/api/canvases` 临时替掉；新增服务端 API 测试锁定 `/api/scenarios/frontend-testing-proof` 不返回保存画布链路。
 - 最新前端第 5 关结案停留回归锁：新增状态型渲染测试，使用 `frontend-testing-proof` 的真实 Lab 配置和 `useState` 接住服务端返回的 `submitted` attempt，断言提交后页面仍停在 `成长档案结案`，显示 `前端工程 · 第 5 关`、工作复盘、Agent 委托和面试讲法，不会被首页奖励页抢走上下文。Node `24.13.1` 下 `npm run test -- src/App.test.tsx --run -t "提交成功后停留"` 通过；`npm run verify:quick` 通过 11 个测试文件 / 192 个测试。
+- 最新前端第 5 关真实浏览器结案复核：修复深链恢复逻辑，`#chapter-frontend-5` 刷新时如果该 attempt 的教学步骤已全部 completed，会直接回到对应 Lab，不再强制回教学桥；新增回归测试覆盖此路径。隔离 API `4416`、临时 SQLite `/tmp/code-quest-r338.sqlite`、Vite `5266` 下，预置前端第 5 关教学完成、7 个 Lab 作答和重新生成的沙盒报告 5/5 通过；真实浏览器点击「生成成长档案」后停在 `成长档案结案`，URL 保持 `#chapter-frontend-5`，显示工作复盘、Agent 委托和面试讲法。390×844 下无横向溢出，控制台 error 为 0；截图见 `.playwright-cli/page-2026-07-17T13-43-50-585Z.png` 和 `.playwright-cli/page-2026-07-17T13-44-16-915Z.png`。
 - 最新前端第 5 关沙盒证物收口：`sandbox/frontend-testing-proof` 的 README、Network、手动报告、失败复现、过期报告、后端日志和 Agent 交付说明已全部改为任务列表筛选回归语境，固定 `GET /api/tasks?status=blocked`、DOM 可见列表、`POST /api/reports/verification` 和 `sourceHash` 证据链；新增 `src/sandboxEvidence.test.ts` 防止 `/api/canvases`、保存画布、验收试炼画布等旧词回流。Node `24.13.1` 下 `npm run verify:quick` 通过 11 个测试文件 / 187 个测试；沙盒自身 `npm test` 仍按练习设计失败 5 项，用于训练用户修报告校验器。
 - 最新前端第 5 关浏览器文案收口：隔离 API `4401`、临时 SQLite `/tmp/code-quest-r325.sqlite`、Vite `5251` 下，从 `#chapter-frontend-5` 真实浏览器发现主动复述、边界用例、Agent 示例和 Lab 证据表达卡仍有第一章保存/数据库例子；已改为筛选状态、DOM 可见行、Network、`sourceHash` 和回归风险。桌面 1280 与 390px 手机 DOM 旧词检查为空，暗色背景，控制台 error 为 0。
 - 最新 Java 第 4 关上线港归属收口：从 `#chapter-java-4` 真实浏览器发现剧情线索和 Lab 示范卡仍露出 AI 第 14 章 / 第一章保存链路旧词。已把 Java 上线港五幕剧情、沙盒证物、Lab 先读卡和证据表达示范改为订单服务上线语境：`order-service`、`POST /api/orders`、`JWT_SECRET`、`PAYMENT_API_URL`、订单表迁移、`/actuator/health`、下单成功率、支付回调失败率和回滚后验证。隔离 API `4403`、临时 SQLite `/tmp/code-quest-r327.sqlite`、Vite `5253` 下，完整收集 10/10 剧情线索并进入实战 Lab，控制台 error 为 0。
@@ -173,7 +174,7 @@ npm run verify:quick
 
 ### 2026-07-17 最新跨电脑核对
 
-- 当前功能基线至少包含 `fbf5e6f docs(rpg): clarify cross-computer handoff` 和本次结案停留回归锁提交；远端 HEAD 请以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 为准。
+- 当前功能基线至少包含 `ff25ee9 test(rpg): lock frontend testing dossier stay` 和本次深链恢复/浏览器复核提交；远端 HEAD 请以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 为准。
 - 当前沙盒内 `xixi-dev-system profile sync`、`doctor --project .` 和 `updates --project .` 已通过。
 - 另一台电脑拉下来后，用 `git rev-parse HEAD`、`git rev-parse origin/cx/ai-career-rpg-home`、`git ls-remote origin refs/heads/cx/ai-career-rpg-home` 三个值互相对照；三者应一致或本地 HEAD 是刚拉下来的同一提交。
 - 当前仍是“可继续开发的阶段分支”，不是 ready 合并态。最新完整 `npm run verify` 已在 Node `24.13.1` 下通过；合并前仍要做桌面与 390px 关键路径视觉终审、PR 审查和真人试玩。

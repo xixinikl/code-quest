@@ -22,6 +22,7 @@ import {
 } from "./TeachingBridge";
 import {
   case02Scenario,
+  frontendTestingProofScenario,
   frontendPerformanceProofScenario,
   javaTransactionConsistencyScenario,
   teachingScenario,
@@ -1976,6 +1977,60 @@ describe("AI 职业路线入口", () => {
       expect(screen.queryByText(/AI 应用开发主线/)).not.toBeInTheDocument();
     },
   );
+
+  it("岗位章节深链恢复时，如果教学已完成会直接回到对应 Lab", async () => {
+    window.history.replaceState(null, "", "/#chapter-frontend-5");
+    const scenarioId = "frontend-testing-proof";
+    const fetchMock = vi.fn((input: RequestInfo | URL, init?: RequestInit) => {
+      const url = String(input);
+      if (url === "/api/health") return response({ status: "ok" });
+      if (url === "/api/diagnostic-sessions") {
+        return response(diagnosticActive, 201);
+      }
+      if (url === "/api/diagnostic-sessions/diagnostic-001") {
+        return response(diagnosticCompleted);
+      }
+      if (url === "/api/attempts" && init?.method === "POST") {
+        return response(
+          {
+            ...attempt,
+            id: "attempt-frontend-testing-proof",
+            scenarioId,
+          },
+          201,
+        );
+      }
+      if (url === `/api/scenarios/${scenarioId}`) {
+        return response({ scenarioId, artifacts });
+      }
+      if (url === "/api/attempts/attempt-frontend-testing-proof/teaching") {
+        return response(
+          frontendTestingProofScenario.steps.map((step) => ({
+            stepId: step.id,
+            completed: true,
+          })),
+        );
+      }
+      return response({ error: "NOT_FOUND", message: "unexpected" }, 404);
+    });
+    vi.stubGlobal("fetch", fetchMock);
+
+    render(<App />);
+
+    expect(
+      await screen.findByLabelText("任务导演台", undefined, {
+        timeout: 3000,
+      }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByLabelText(/前端工程 · 第 5 关 实战追踪/),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByRole("heading", {
+        name: /回归试炼场：绿色报告真的可信吗/,
+      }),
+    ).not.toBeInTheDocument();
+  });
 
   it("当前委托会根据成长档案推进到下一章主线", async () => {
     const user = userEvent.setup();

@@ -52,6 +52,16 @@
 
 ## 当前已完成切片
 
+### R338：前端第 5 关深链恢复与真实浏览器结案复核
+
+- [x] 修复章节深链恢复：`#chapter-frontend-5` 这类岗位章节刷新时会读取当前 attempt 的教学进度；如果该章教学步骤已全部完成，直接回到对应 Lab，不再强制回教学桥让用户迷路。
+- [x] 抽出 `getTeachingScenarioForScenarioId`，让深链恢复和实际渲染使用同一份 scenario 映射，减少 Java/前端岗位路线以后再漏一处的风险。
+- [x] 新增回归测试：前端第 5 关教学进度全 completed 时，深链恢复直接显示 Lab 的 `任务导演台` 和 `前端工程 · 第 5 关 实战追踪`。
+- [x] 真实浏览器复核前端第 5 关提交：隔离 API `4416`、临时 SQLite `/tmp/code-quest-r338.sqlite`、Vite `5266`，预置前端第 5 关教学完成、7 个 Lab 作答和重新生成的沙盒报告 5/5 通过；点击「生成成长档案」后页面停在 `成长档案结案`，URL 保持 `#chapter-frontend-5`，显示 `前端工程 · 第 5 关`、工作复盘、Agent 委托和面试讲法。
+- [x] 移动端复核：390×844 下 `scrollWidth = clientWidth = 390`，暗色背景 `rgb(7, 12, 20)`，控制台 error 为 0。
+
+验收：`npm test` in `sandbox/frontend-testing-proof` 通过 5/5；API verify 返回 `verificationStatus: passed`、报告 `5 passed / 0 failed`；Playwright CLI 真实点击提交后 snapshot 显示 `成长档案结案`；截图保存在 `.playwright-cli/page-2026-07-17T13-43-50-585Z.png` 和 `.playwright-cli/page-2026-07-17T13-44-16-915Z.png`；`npm run verify:quick` 通过 11 个测试文件 / 193 个测试。
+
 ### R337：前端第 5 关提交后结案停留回归锁
 
 - [x] 补强 Lab 提交回归：不只断言 `onSubmitted({ showReward: false })` 被调用，还让测试组件用真实 `useState` 接住服务端返回的 `submitted` attempt。

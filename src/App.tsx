@@ -7962,6 +7962,51 @@ function getScenarioIdForChapter(chapter: number) {
   return chapterScenarioIds[chapter] ?? SCENARIO_ID;
 }
 
+function getTeachingScenarioForScenarioId(
+  scenarioId: string,
+  mission: number,
+) {
+  if (scenarioId === JAVA_SCENARIO_ID) return javaLayeredScenario;
+  if (scenarioId === JAVA_TRANSACTION_SCENARIO_ID) {
+    return javaTransactionConsistencyScenario;
+  }
+  if (scenarioId === JAVA_CACHE_SCENARIO_ID) {
+    return javaCacheObservabilityScenario;
+  }
+  if (scenarioId === JAVA_RELEASE_SCENARIO_ID) return javaReleaseHarborScenario;
+  if (scenarioId === JAVA_INCIDENT_SCENARIO_ID) {
+    return javaProductionIncidentScenario;
+  }
+  if (scenarioId === FRONTEND_ACCESSIBILITY_SCENARIO_ID) {
+    return frontendAccessibilityProofScenario;
+  }
+  if (scenarioId === FRONTEND_TESTING_SCENARIO_ID) {
+    return frontendTestingProofScenario;
+  }
+  if (scenarioId === FRONTEND_PERFORMANCE_SCENARIO_ID) {
+    return frontendPerformanceProofScenario;
+  }
+  if (scenarioId === FRONTEND_REQUEST_STATES_SCENARIO_ID) {
+    return frontendRequestStatesScenario;
+  }
+  if (scenarioId === FRONTEND_SCENARIO_ID) return frontendComponentStateScenario;
+  if (mission === 1) return teachingScenario;
+  if (mission === 3) return case03Scenario;
+  if (mission === 4) return case04Scenario;
+  if (mission === 5) return case05Scenario;
+  if (mission === 6) return case06Scenario;
+  if (mission === 7) return case07Scenario;
+  if (mission === 8) return case08Scenario;
+  if (mission === 9) return case09Scenario;
+  if (mission === 10) return case10Scenario;
+  if (mission === 11) return case11Scenario;
+  if (mission === 12) return case12Scenario;
+  if (mission === 13) return case13Scenario;
+  if (mission === 14) return case14Scenario;
+  if (mission === 15) return case15Scenario;
+  return case02Scenario;
+}
+
 function getScenarioIdForRouteChapter(
   routeId: CareerRoute["id"],
   chapterId: string,
@@ -11970,7 +12015,29 @@ export default function App() {
           setCurrentMission(restoredChapter.chapterNumber);
           setShowGameIntro(false);
           setShowMissionSelect(false);
-          setTeachingComplete(false);
+          try {
+            const teaching = await api<
+              Array<{
+                stepId: string;
+                completed: boolean;
+              }>
+            >(`/api/attempts/${currentAttempt.id}/teaching`);
+            if (cancelled) return;
+            const chapterTeaching = getTeachingScenarioForScenarioId(
+              scenarioId,
+              restoredChapter.chapterNumber,
+            );
+            const allDone =
+              chapterTeaching.steps.length > 0 &&
+              chapterTeaching.steps.every((step) =>
+                teaching.find(
+                  (item) => item.stepId === step.id && item.completed,
+                ),
+              );
+            setTeachingComplete(allDone);
+          } catch {
+            setTeachingComplete(false);
+          }
           setChapterReward(null);
           return;
         }
@@ -13566,56 +13633,10 @@ export default function App() {
   }
   if (!attempt) return <Loading message="正在恢复真实项目练习…" />;
   if (!teachingComplete) {
-    const scenario =
-      activeScenarioId === JAVA_SCENARIO_ID
-        ? javaLayeredScenario
-        : activeScenarioId === JAVA_TRANSACTION_SCENARIO_ID
-          ? javaTransactionConsistencyScenario
-          : activeScenarioId === JAVA_CACHE_SCENARIO_ID
-            ? javaCacheObservabilityScenario
-            : activeScenarioId === JAVA_RELEASE_SCENARIO_ID
-              ? javaReleaseHarborScenario
-              : activeScenarioId === JAVA_INCIDENT_SCENARIO_ID
-                ? javaProductionIncidentScenario
-                : activeScenarioId === FRONTEND_ACCESSIBILITY_SCENARIO_ID
-                  ? frontendAccessibilityProofScenario
-                  : activeScenarioId === FRONTEND_TESTING_SCENARIO_ID
-                    ? frontendTestingProofScenario
-                    : activeScenarioId === FRONTEND_PERFORMANCE_SCENARIO_ID
-                      ? frontendPerformanceProofScenario
-                      : activeScenarioId === FRONTEND_REQUEST_STATES_SCENARIO_ID
-                        ? frontendRequestStatesScenario
-                        : activeScenarioId === FRONTEND_SCENARIO_ID
-                          ? frontendComponentStateScenario
-                          : currentMission === 1
-                            ? teachingScenario
-                            : currentMission === 3
-                              ? case03Scenario
-                              : currentMission === 4
-                                ? case04Scenario
-                                : currentMission === 5
-                                  ? case05Scenario
-                                  : currentMission === 6
-                                    ? case06Scenario
-                                    : currentMission === 7
-                                      ? case07Scenario
-                                      : currentMission === 8
-                                        ? case08Scenario
-                                        : currentMission === 9
-                                          ? case09Scenario
-                                          : currentMission === 10
-                                            ? case10Scenario
-                                            : currentMission === 11
-                                              ? case11Scenario
-                                              : currentMission === 12
-                                                ? case12Scenario
-                                                : currentMission === 13
-                                                  ? case13Scenario
-                                                  : currentMission === 14
-                                                    ? case14Scenario
-                                                    : currentMission === 15
-                                                      ? case15Scenario
-                                                      : case02Scenario;
+    const scenario = getTeachingScenarioForScenarioId(
+      activeScenarioId,
+      currentMission,
+    );
     const handleTeachingComplete = () => {
       scrollPageToTop();
       const rewardScenarioId = attempt?.scenarioId ?? activeScenarioId;
