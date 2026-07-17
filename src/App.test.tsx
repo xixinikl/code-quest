@@ -2582,7 +2582,7 @@ describe("AI 职业路线入口", () => {
       />,
     );
 
-    expect(screen.getByText(/这一棒/)).toBeInTheDocument();
+    expect(screen.getAllByText(/这一棒/).length).toBeGreaterThan(0);
     expect(screen.getByText(/入口/)).toBeInTheDocument();
     expect(screen.getByText(/出口/)).toBeInTheDocument();
     expect(screen.getByAltText("传送门书记官")).toBeInTheDocument();
@@ -2605,6 +2605,14 @@ describe("AI 职业路线入口", () => {
     expect(currentLineContract).toHaveTextContent("交出");
     expect(currentLineContract).toHaveTextContent("不要现在读全文件");
     expect(currentLineContract).toHaveTextContent("下一证据");
+    const codeEvidenceMentor = screen.getByLabelText("代码证据导师卡");
+    expect(codeEvidenceMentor).toHaveTextContent("代码证据导师卡");
+    expect(codeEvidenceMentor).toHaveTextContent("这行代码能帮你");
+    expect(codeEvidenceMentor).toHaveTextContent("这行代码还不能");
+    expect(codeEvidenceMentor).toHaveTextContent("下一步追证据");
+    expect(codeEvidenceMentor).toHaveTextContent(
+      "代码是线索，不是结案书",
+    );
     expect(screen.getByLabelText("当前行证据锚点")).toHaveTextContent(
       "为什么看这一行",
     );
@@ -2680,6 +2688,15 @@ describe("AI 职业路线入口", () => {
     );
     expect(screen.getByLabelText("当前行证据锚点")).toHaveTextContent(
       "数据库 SELECT 结果",
+    );
+    expect(screen.getByLabelText("代码证据导师卡")).toHaveTextContent(
+      "不能单独当作修复完成",
+    );
+    expect(screen.getByLabelText("代码证据导师卡")).toHaveTextContent(
+      "Network 里的 method、payload、status 和 response body",
+    );
+    expect(screen.getByLabelText("代码证据导师卡")).toHaveTextContent(
+      "代码是线索，不是结案书",
     );
     expect(screen.getByText(/不能证明数据库已保存/)).toBeInTheDocument();
   });

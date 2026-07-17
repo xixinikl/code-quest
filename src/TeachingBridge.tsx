@@ -8760,6 +8760,44 @@ function buildLineEvidenceAnchor(line: string, focus: CodeFocus) {
   };
 }
 
+function buildCodeEvidenceMentorCards(
+  activeLine: string,
+  focus: CodeFocus,
+  anchor: ReturnType<typeof buildLineEvidenceAnchor>,
+) {
+  const compact = activeLine.trim();
+  const runtimeEvidence =
+    compact.includes("response.ok") || compact.includes("fetch(")
+      ? "Network 里的 method、payload、status 和 response body"
+      : compact.includes("INSERT") ||
+          compact.includes("SELECT") ||
+          compact.includes("db.")
+        ? "数据库查询结果和测试报告"
+        : compact.includes("catch") ||
+            compact.includes("throw") ||
+            compact.includes("logger")
+          ? "后端日志、错误响应和失败路径测试"
+          : "Network、日志、数据库或测试结果";
+
+  return [
+    {
+      label: "这行代码能帮你",
+      title: focus.observationGoal,
+      body: `先把它放回「${focus.input} → ${focus.output}」这条交接链里，只判断这一棒发生了什么。`,
+    },
+    {
+      label: "这行代码还不能",
+      title: "不能单独当作修复完成",
+      body: `代码长得对，不等于真实运行已经对。下一步要看 ${runtimeEvidence}。`,
+    },
+    {
+      label: "下一步追证据",
+      title: anchor.nextEvidence,
+      body: anchor.checkpoint,
+    },
+  ];
+}
+
 function splitProjectPosition(position?: string) {
   return (position ?? "")
     .split(/\s*→\s*/)
@@ -8851,6 +8889,11 @@ function GuidedCodeTour({
   const activeLineNumber = activeLineIndex + 1;
   const activeHandoff = buildCodeHandoff(activeLine, focus);
   const activeEvidenceAnchor = buildLineEvidenceAnchor(activeLine, focus);
+  const evidenceMentorCards = buildCodeEvidenceMentorCards(
+    activeLine,
+    focus,
+    activeEvidenceAnchor,
+  );
 
   return (
     <section className="teaching-shell code-tour-shell">
@@ -8978,6 +9021,25 @@ function GuidedCodeTour({
         <p className="line-reading-rule">
           <b>不要现在读全文件：</b>
           先判断这一行把哪份材料交给谁，再点下一行。等每一行都能说出交接关系，再展开完整文件复盘。
+        </p>
+      </section>
+
+      <section className="code-evidence-mentor" aria-label="代码证据导师卡">
+        <header>
+          <span>代码证据导师卡</span>
+          <strong>读懂这一行以后，马上问：它能证明到哪一步？</strong>
+        </header>
+        <div>
+          {evidenceMentorCards.map((card) => (
+            <article key={card.label}>
+              <span>{card.label}</span>
+              <strong>{card.title}</strong>
+              <p>{card.body}</p>
+            </article>
+          ))}
+        </div>
+        <p>
+          规则：代码是线索，不是结案书。只有把代码线索接到运行证据上，才算真正学会排障。
         </p>
       </section>
 

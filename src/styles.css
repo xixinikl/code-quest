@@ -5300,6 +5300,93 @@ textarea:focus {
   color: #fff1bd;
 }
 
+.code-evidence-mentor {
+  display: grid;
+  gap: 11px;
+  margin: 0 0 18px;
+  padding: 15px;
+  border: 1px solid rgba(217, 184, 110, 0.24);
+  border-radius: 8px;
+  background:
+    linear-gradient(90deg, rgba(217, 184, 110, 0.1), transparent 58%),
+    radial-gradient(
+      circle at 92% 0%,
+      rgba(147, 239, 208, 0.13),
+      transparent 34%
+    ),
+    rgba(3, 10, 16, 0.84);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.035),
+    0 16px 38px rgba(0, 0, 0, 0.2);
+}
+
+.code-evidence-mentor > header {
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.code-evidence-mentor > header span {
+  color: #e9c878;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.code-evidence-mentor > header strong {
+  color: #fff1bd;
+  font-size: 13px;
+  line-height: 1.45;
+  text-align: right;
+}
+
+.code-evidence-mentor > div {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.code-evidence-mentor article {
+  min-width: 0;
+  padding: 10px;
+  border: 1px solid rgba(147, 239, 208, 0.13);
+  border-radius: 6px;
+  background:
+    linear-gradient(180deg, rgba(9, 19, 29, 0.78), rgba(3, 8, 14, 0.72)),
+    rgba(255, 255, 255, 0.035);
+}
+
+.code-evidence-mentor article span {
+  display: block;
+  margin-bottom: 6px;
+  color: #93efd0;
+  font-size: 10px;
+  font-weight: 900;
+}
+
+.code-evidence-mentor article strong {
+  display: block;
+  color: #fff1bd;
+  font-size: 12px;
+  line-height: 1.42;
+}
+
+.code-evidence-mentor article p,
+.code-evidence-mentor > p {
+  margin: 7px 0 0;
+  color: #dfe8ee;
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+.code-evidence-mentor > p {
+  margin: 0;
+  padding: 9px 10px;
+  border: 1px solid rgba(217, 184, 110, 0.16);
+  border-radius: 6px;
+  background: rgba(217, 184, 110, 0.07);
+}
+
 .tour-position {
   color: #05120f;
   background: #93efd0;
@@ -11257,6 +11344,7 @@ textarea:focus {
   .tour-reading-compass,
   .current-line-mission,
   .tour-current-line-contract dl,
+  .code-evidence-mentor > div,
   .tour-proof-grid {
     grid-template-columns: 1fr;
   }
@@ -11402,6 +11490,15 @@ textarea:focus {
 
   .tour-current-line-contract header strong {
     font-size: 11px;
+  }
+
+  .code-evidence-mentor > header {
+    display: grid;
+    gap: 4px;
+  }
+
+  .code-evidence-mentor > header strong {
+    text-align: left;
   }
 
   .line-evidence-anchor {
