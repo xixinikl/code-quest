@@ -7621,37 +7621,7 @@ function EvidenceStoryQuest({
         )}
 
         {journey.length > 0 && activeJourney && (
-          <details
-            className="quest-flow-board"
-            aria-label="完整流程"
-            open={sceneIndex === 0}
-          >
-            <summary>
-              <span>完整流程卷轴</span>
-              <strong>{journeyTitle}</strong>
-              <small>点击展开全链路；当前只需要记住高亮的这一棒。</small>
-            </summary>
-            <div className="quest-flow-track">
-              {journey.map((item, index) => {
-                const active = index === activeJourneyIndex;
-                const done = index < activeJourneyIndex;
-                return (
-                  <article
-                    className={`${active ? "active" : ""} ${
-                      done ? "done" : ""
-                    }`}
-                    key={`${item.sceneId}-${item.from}-${item.to}`}
-                  >
-                    <small>第 {index + 1} 棒</small>
-                    <b>
-                      {item.from} → {item.to}
-                    </b>
-                    <strong>{item.payload}</strong>
-                    <span>{item.proof}</span>
-                  </article>
-                );
-              })}
-            </div>
+          <div className="quest-flow-brief" aria-label="当前流程定位">
             <div className="quest-flow-focus">
               <b>现在这一幕在看</b>
               <strong>
@@ -7660,7 +7630,35 @@ function EvidenceStoryQuest({
               </strong>
               <p>{activeJourney.plain}</p>
             </div>
-          </details>
+            <details className="quest-flow-board" aria-label="完整流程">
+              <summary>
+                <span>完整流程卷轴</span>
+                <strong>{journeyTitle}</strong>
+                <small>需要全局复盘时再展开；当前只记住上面的这一棒。</small>
+              </summary>
+              <div className="quest-flow-track">
+                {journey.map((item, index) => {
+                  const active = index === activeJourneyIndex;
+                  const done = index < activeJourneyIndex;
+                  return (
+                    <article
+                      className={`${active ? "active" : ""} ${
+                        done ? "done" : ""
+                      }`}
+                      key={`${item.sceneId}-${item.from}-${item.to}`}
+                    >
+                      <small>第 {index + 1} 棒</small>
+                      <b>
+                        {item.from} → {item.to}
+                      </b>
+                      <strong>{item.payload}</strong>
+                      <span>{item.proof}</span>
+                    </article>
+                  );
+                })}
+              </div>
+            </details>
+          </div>
         )}
 
         <div className="quest-place-card">

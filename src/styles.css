@@ -14360,6 +14360,12 @@ textarea:focus {
     0 24px 54px rgba(0, 0, 0, 0.34);
 }
 
+.quest-flow-brief {
+  display: grid;
+  max-width: 1180px;
+  gap: 8px;
+}
+
 .quest-flow-board > summary {
   display: grid;
   position: relative;
@@ -14650,6 +14656,12 @@ textarea:focus {
   border-left: 3px solid var(--quest-gold);
   border-radius: 0 5px 5px 0;
   background: rgba(227, 193, 116, 0.08);
+}
+
+.quest-flow-brief > .quest-flow-focus {
+  background:
+    linear-gradient(90deg, rgba(227, 193, 116, 0.14), transparent 72%),
+    rgba(5, 12, 18, 0.64);
 }
 
 .quest-flow-focus strong {

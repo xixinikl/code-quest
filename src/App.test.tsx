@@ -2615,6 +2615,48 @@ describe("AI 职业路线入口", () => {
     ).toBeGreaterThan(0);
   });
 
+  it("教学剧情默认只显示当前流程定位，完整流程需要用户主动展开", async () => {
+    const user = userEvent.setup();
+    vi.stubGlobal(
+      "fetch",
+      vi.fn((input: RequestInfo | URL) => {
+        const url = String(input);
+        if (url.includes("/teaching")) return response([]);
+        return response({ error: "NOT_FOUND", message: "unexpected" }, 404);
+      }),
+    );
+
+    render(
+      <TeachingBridge
+        attemptId="attempt-collapsed-flow"
+        scenario={frontendTestingProofScenario}
+        developer={{
+          name: "见习开发者",
+          rank: "见习开发者",
+          xp: 0,
+          missionsCleared: 0,
+          clearedChapterIds: [],
+          unlockedCompanionNames: [],
+          joinedAt: "2026-07-05T00:00:00.000Z",
+        }}
+        onComplete={vi.fn()}
+      />,
+    );
+
+    await user.click(await screen.findByRole("button", { name: /开始闯关/ }));
+
+    expect(screen.getByLabelText("当前流程定位")).toHaveTextContent(
+      "现在这一幕在看",
+    );
+    expect(screen.getByLabelText("当前流程定位")).toHaveTextContent(
+      "旧问题步骤",
+    );
+
+    const fullFlow = screen.getByLabelText("完整流程");
+    expect(fullFlow).not.toHaveAttribute("open");
+    expect(fullFlow).toHaveTextContent("需要全局复盘时再展开");
+  });
+
   it("章节结案页会把结论整理成工作、证据和面试三格复盘", async () => {
     vi.stubGlobal(
       "fetch",
