@@ -52,6 +52,16 @@
 
 ## 当前已完成切片
 
+### R335：前端第 5 关 Lab 真实沙盒与结案停留修复
+
+- [x] 浏览器从 `#chapter-frontend-5` 完整走完 8/8 剧情线索、4 个地点和伙伴会合，进入前端测试 Lab。
+- [x] Lab 录入式推进到「沙盒修复与测试」后，发现初始 `sandbox/frontend-testing-proof` 会失败 5 项；这是本关训练入口：原实现几乎无条件接收报告。
+- [x] 修复 `sandbox/frontend-testing-proof/server/verificationReport.js`：校验顺序改为先拒绝过期 `sourceHash`，再检查旧故障失败复现、单测、集成测试和手动复测；交付卷宗保留回归风险和面试表达。
+- [x] 修复通过报告译文：`怎么带走` 不再显示 `failing-before`、`passing-after-stale`、`network-test-run`、`verificationReport.js` 等内部 ID，而是显示「第 1 棒证据：旧问题红灯」「验收门禁：报告校验器」等人话证物名。
+- [x] 修复提交体验：服务端接受实战提交后，前端先停留在 `成长档案结案`，不再立刻被奖励/首页路径抢走，避免用户刚通关就丢失前端第 5 关上下文。
+
+验收：`sandbox/frontend-testing-proof` 下 `npm test` 通过 5/5；`npm run test -- src/App.test.tsx --run -t "前端第 5 关测试报告译文|服务端接受实战提交|重新打开已提交|岗位 Lab 默认"` 通过 4 项。浏览器证据：隔离 API `4412`、临时 SQLite `/tmp/code-quest-r335.sqlite`、Vite `5262` 下，前端第 5 关从剧情到 Lab 可进入真实沙盒验收，读取修复后的测试报告显示 5 通过 / 0 失败。
+
 ### R334：前端第 5 关 Lab 内部证物 ID 显示层翻译
 
 - [x] 浏览器走到 `#chapter-frontend-5` 实战 Lab 后，继续发现冒险日志、能力印记和作答提示里还残留 `failing-before`、`passing-after-stale`、`network-test-run` 这类内部证物 ID；这些词对新手没有学习意义，会让用户更晕。

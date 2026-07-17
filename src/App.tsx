@@ -766,7 +766,7 @@ function humanizeLabArtifactText(config: LabConfig, text?: string) {
 }
 
 function getRecordedArtifactCopy(config: LabConfig) {
-  return humanizeLabArtifactText(config, config.result.recorded);
+  return humanizeLabArtifactText(config, config.result?.recorded);
 }
 
 function getAbilityArtifactCopy(config: LabConfig, artifactIds?: string[]) {
@@ -1157,7 +1157,8 @@ function buildVerificationEvidenceBridge(
   const proved = result?.proved ?? "修复行为已经被测试报告重新复核";
   const pending =
     result?.pending ?? "仍要说明哪些风险、路径或人工复测还没有覆盖";
-  const recorded = result?.recorded ?? "测试报告、排查路径、风险边界和复盘表达";
+  const recorded =
+    getRecordedArtifactCopy(config) ?? "测试报告、排查路径、风险边界和复盘表达";
 
   if (status === "passed") {
     return [
@@ -7821,7 +7822,7 @@ labConfigs[FRONTEND_TESTING_SCENARIO_ID] = {
     proved:
       "前端验收证据覆盖失败复现、单元边界、集成路径、手动浏览器复测、当前源码指纹和回归风险",
     recorded:
-      "failing-before、passing-after-stale、network-test-run、manual-report、backend.log、verificationReport.js 和 Agent 交付说明",
+      "第 1 棒证据：旧问题红灯、第 5 棒证据：过期绿灯、集成路径证据：用户路径复测、手动复测证据：真实入口走通、后端旁证：报告是否对应当前代码、验收门禁：报告校验器 和 Agent 交付说明",
     pending: "换一个登录表单、上传组件或筛选列表继续训练前端回归验收",
     nextTitle: "这关如何变成前端交付审查能力？",
     nextItems: [
@@ -11573,7 +11574,7 @@ export function Lab({
         body: "{}",
       });
       setAttempt(updated);
-      onSubmitted({ showReward: true });
+      onSubmitted({ showReward: false });
     } catch (cause) {
       setSubmitError(cause instanceof Error ? cause.message : "结算失败");
     }

@@ -3142,6 +3142,7 @@ describe("AI 职业路线入口", () => {
     expect(onSubmitted).not.toHaveBeenCalled();
     await user.click(screen.getByRole("button", { name: /生成成长档案/ }));
     expect(onSubmitted).toHaveBeenCalledTimes(1);
+    expect(onSubmitted).toHaveBeenCalledWith({ showReward: false });
   });
 
   it("重新打开已提交实战时会静默同步成长档案", async () => {
@@ -3422,6 +3423,45 @@ describe("AI 职业路线入口", () => {
     expect(passport).toHaveTextContent("0123456789");
     expect(passport).toHaveTextContent("2 通过 / 0 失败");
     expect(passport).toHaveTextContent("哪些路径没覆盖");
+  });
+
+  it("前端第 5 关测试报告译文不会暴露内部证物 ID", () => {
+    const passedAttempt = {
+      ...attempt,
+      id: "attempt-frontend-testing",
+      scenarioId: "frontend-testing-proof",
+      verificationStatus: "passed",
+      latestVerification: {
+        status: "passed",
+        observedAt: "2026-07-17T13:21:50.000Z",
+        report: {
+          generatedAt: "2026-07-17T13:21:50.000Z",
+          sourceHash:
+            "9913d4036b1234567890abcdef1234567890abcdef1234567890abcdef1234",
+          summary: { passed: 5, failed: 0 },
+          tests: [
+            { name: "验收报告必须保留旧问题的失败复现", status: "passed" },
+            { name: "通过报告必须绑定当前源码 hash", status: "passed" },
+          ],
+        },
+      },
+    } as Parameters<typeof VerificationPanel>[0]["attempt"];
+
+    render(
+      <VerificationPanel
+        attempt={passedAttempt}
+        config={getLabConfig("frontend-testing-proof")}
+        onVerify={vi.fn()}
+      />,
+    );
+
+    const reportCopy = screen.getByLabelText("测试报告译文").textContent ?? "";
+    expect(reportCopy).toContain("第 1 棒证据：旧问题红灯");
+    expect(reportCopy).toContain("验收门禁：报告校验器");
+    expect(reportCopy).not.toContain("failing-before");
+    expect(reportCopy).not.toContain("passing-after-stale");
+    expect(reportCopy).not.toContain("network-test-run");
+    expect(reportCopy).not.toContain("verificationReport.js");
   });
 
   it("第 2 章教学完成后只与伙伴会合，不提前发 XP 或标记通关", async () => {
