@@ -636,6 +636,12 @@ describe("岗位路线实战场景契约", () => {
         expect(screen.getByLabelText("本步任务卷轴")).not.toHaveTextContent(
           "passing-after-stale",
         );
+        expect(screen.getByLabelText("当前能力印记")).toHaveTextContent(
+          "第 1 棒证据：旧问题红灯",
+        );
+        expect(screen.getByLabelText("当前能力印记")).not.toHaveTextContent(
+          "network-test-run",
+        );
       }
       expect(screen.getByLabelText("当前这一棒")).toHaveTextContent(
         currentFlow.title,
@@ -660,6 +666,14 @@ describe("岗位路线实战场景契约", () => {
       );
 
       const visibleCopy = document.body.textContent ?? "";
+      if (
+        "expectedFirstFlowLabel" in labCase &&
+        labCase.expectedFirstFlowLabel
+      ) {
+        expect(visibleCopy).toContain("第 1 棒证据：旧问题红灯");
+        expect(visibleCopy).not.toContain("failing-before");
+        expect(visibleCopy).not.toContain("network-test-run");
+      }
       for (const phrase of labCase.forbidden) {
         expect(visibleCopy).not.toContain(phrase);
       }

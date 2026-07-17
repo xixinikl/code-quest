@@ -8,7 +8,7 @@
 
 - 仓库：`https://github.com/xixinikl/code-quest.git`
 - 分支：`cx/ai-career-rpg-home`
-- 当前已推送功能基线：本轮之前远端已到 `772f66e docs(rpg): record frontend performance lab verification`；本文件随最新提交推送后应晚于该提交。
+- 当前已推送功能基线：本轮之前远端已到 `ea7b076 fix(rpg): humanize lab artifact rewards`；本文件随最新提交推送后应晚于该提交。
 - 当前已推送交接基线：本次交接文档提交，或更晚提交。拉取完整性以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 的实时输出为准。
 - 远端默认 HEAD：当前指向 `feat/guided-learning-bridge`，不是这条 RPG 分支。另一台电脑必须显式 checkout `cx/ai-career-rpg-home`。
 - 本地状态：`git status --short --branch` 应显示 `cx/ai-career-rpg-home...origin/cx/ai-career-rpg-home` 且没有未提交文件，才表示另一台电脑能完整拉到本轮内容。
@@ -31,7 +31,7 @@ npm install
 npm run verify
 ```
 
-`git log --oneline -1` 应显示本次交接文档提交、`772f66e docs(rpg): record frontend performance lab verification` 或更晚提交。如果不是，说明没有拉到今天上传的内容，先不要继续开发。项目必须使用 `.nvmrc` 中的 Node `24.13.1`；如果直接用 Node 18，`node:sqlite` 和 jsdom 测试会失败。
+`git log --oneline -1` 应显示本次交接文档提交、`ea7b076 fix(rpg): humanize lab artifact rewards` 或更晚提交。如果不是，说明没有拉到今天上传的内容，先不要继续开发。项目必须使用 `.nvmrc` 中的 Node `24.13.1`；如果直接用 Node 18，`node:sqlite` 和 jsdom 测试会失败。
 
 ## 他到底怎么拉
 
@@ -104,7 +104,7 @@ node -v
 
 - `git status --short --branch` 显示在 `cx/ai-career-rpg-home`，并且没有未提交文件。
 - `git rev-parse HEAD`、`git rev-parse origin/cx/ai-career-rpg-home`、`git ls-remote origin refs/heads/cx/ai-career-rpg-home` 的 hash 一致。
-- `git log --oneline -5` 能看到本次交接文档提交、`772f66e docs(rpg): record frontend performance lab verification`，以及 `da7d126 fix(rpg): own frontend performance teaching flow` 等近期提交，或这些之后更新的提交。
+- `git log --oneline -5` 能看到本次交接文档提交、`ea7b076 fix(rpg): humanize lab artifact rewards`，以及 `d302c23 fix(rpg): clarify first lab handoff` 等近期提交，或这些之后更新的提交。
 - `node -v` 是 `.nvmrc` 指定的 `v24.13.1`。
 
 如果这些不满足，先不要继续开发，也不要合并。重新执行 `git fetch origin`，确认远端分支名是 `origin/cx/ai-career-rpg-home`。

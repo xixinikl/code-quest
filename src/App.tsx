@@ -735,15 +735,46 @@ function pickArtifactGuide(
 function summarizeArtifactPlaces(config: LabConfig, artifactIds?: string[]) {
   const ids = artifactIds?.length
     ? artifactIds
-    : Object.keys(config.artifactGuides);
+    : Object.keys(config.artifactGuides ?? {});
   const places = ids
-    .map((id) => config.artifactGuides[id]?.place)
+    .map((id) => config.artifactGuides?.[id]?.place)
     .filter((place): place is string => Boolean(place));
   const uniquePlaces = [...new Set(places)];
   if (uniquePlaces.length === 0) return config.result.recorded;
 
   const visiblePlaces = uniquePlaces.slice(0, 4).join("、");
   return uniquePlaces.length > 4 ? `${visiblePlaces}等证物` : visiblePlaces;
+}
+
+function humanizeLabArtifactText(config: LabConfig, text?: string) {
+  if (!text) return text;
+
+  let output = text;
+  for (const [id, guide] of Object.entries(config.artifactGuides ?? {})) {
+    const aliases = [id, `${id}.json`, `${id}.js`, `${id}.md`];
+    if (id === "passing-stale") aliases.push("passing-after-stale");
+    if (id === "network") aliases.push("network-test-run");
+    if (id === "logs") aliases.push("backend.log");
+    if (id === "report-validator") aliases.push("verificationReport.js");
+
+    for (const alias of aliases.sort((a, b) => b.length - a.length)) {
+      output = output.split(alias).join(guide.place);
+    }
+  }
+
+  return output;
+}
+
+function getRecordedArtifactCopy(config: LabConfig) {
+  return humanizeLabArtifactText(config, config.result.recorded);
+}
+
+function getAbilityArtifactCopy(config: LabConfig, artifactIds?: string[]) {
+  if (config.scenarioId === "frontend-testing-proof" && artifactIds?.length) {
+    return summarizeArtifactPlaces(config, artifactIds);
+  }
+
+  return getRecordedArtifactCopy(config);
 }
 
 function rewriteLabCopy<T>(
@@ -788,7 +819,8 @@ function getLabStepScene(config: LabConfig, step: LabStep) {
           ? "确认测试、代码和手动验收能互相证明。"
           : step.kind === "baseline"
             ? config.baseline.body
-            : (step.response?.prompt ?? step.label),
+            : (humanizeLabArtifactText(config, step.response?.prompt) ??
+              step.label),
       reward: summarizeArtifactPlaces(config, step.response?.artifactIds),
     }
   );
@@ -8744,10 +8776,12 @@ function LabRelayBoard({
       ? config.baseline.body
       : activeStep.kind === "verification"
         ? config.practical.statusPassed
-        : activeStep.response?.prompt;
+        : humanizeLabArtifactText(config, activeStep.response?.prompt);
   const handoffTrail =
     activeStep.kind === "response" && activeStep.response?.flowStrip?.length
-      ? activeStep.response.flowStrip
+      ? activeStep.response.flowStrip.map(
+          (label) => humanizeLabArtifactText(config, label) ?? label,
+        )
       : [
           previousFlow?.label ?? "剧情委托",
           activeFlow?.label ?? activeStep.label,
@@ -8849,7 +8883,7 @@ function LabCaseRouteBoard({ config }: { config: LabConfig }) {
         <article>
           <span>最后交出什么</span>
           <strong>{end?.title ?? config.result.nextTitle}</strong>
-          <p>{config.result.recorded}</p>
+          <p>{getRecordedArtifactCopy(config)}</p>
         </article>
       </div>
     </section>
@@ -8943,7 +8977,9 @@ function LabAbilityMark({
       </div>
       <div>
         <b>会沉淀成</b>
-        <p>{config.result.recorded}</p>
+        <p>
+          {getAbilityArtifactCopy(config, activeStep.response?.artifactIds)}
+        </p>
       </div>
     </section>
   );
@@ -8988,7 +9024,8 @@ function LabStepReceipt({
       ? "下一步用测试报告证明修复成立，不只看页面提示。"
       : nextStep.kind === "baseline"
         ? config.baseline.body
-        : (nextStep.response?.prompt ?? nextStep.label);
+        : (humanizeLabArtifactText(config, nextStep.response?.prompt) ??
+          nextStep.label);
 
   return (
     <section className="lab-step-receipt" aria-label="刚刚收录的证据">
@@ -9027,7 +9064,7 @@ function LabStepReceipt({
         </div>
         <div>
           <dt>以后可复盘</dt>
-          <dd>{config.result.recorded}</dd>
+          <dd>{getRecordedArtifactCopy(config)}</dd>
         </div>
       </dl>
     </section>
@@ -9131,7 +9168,8 @@ function LabStepQuestBrief({
       ? config.baseline.title
       : activeStep.kind === "verification"
         ? "把修复从“我觉得好了”变成能复查的证据。"
-        : (activeStep.response?.prompt ?? activeStep.label));
+        : (humanizeLabArtifactText(config, activeStep.response?.prompt) ??
+          activeStep.label));
   const evidence =
     activeStep.questBrief?.evidence ??
     (activeStep.kind === "verification"
@@ -9188,7 +9226,8 @@ function LabFlowTranslator({
       ? "跑测试、读报告、补手动路径"
       : activeStep.kind === "baseline"
         ? "把剧情委托翻译成真实工作问题"
-        : (activeStep.response?.prompt ?? activeStep.label);
+        : (humanizeLabArtifactText(config, activeStep.response?.prompt) ??
+          activeStep.label);
 
   return (
     <section className="lab-flow-translator" aria-label="本幕流程翻译">
@@ -9238,7 +9277,8 @@ function LabFlowDialogue({
       ? "把修复结果交给测试和验收报告复查。"
       : activeStep.kind === "baseline"
         ? config.baseline.body
-        : (activeStep.response?.prompt ?? activeStep.label);
+        : (humanizeLabArtifactText(config, activeStep.response?.prompt) ??
+          activeStep.label);
 
   return (
     <section className="lab-flow-dialogue" aria-label="流程接力小剧场">
@@ -10071,7 +10111,7 @@ export function CareerDossier({
     {
       label: "Agent 委托",
       title: "下一次交给 Agent 时要写什么",
-      body: `背景写清「${config.missionTitle}」，验收要求它交出：${config.result.recorded}。`,
+      body: `背景写清「${config.missionTitle}」，验收要求它交出：${getRecordedArtifactCopy(config)}。`,
     },
     {
       label: "面试讲法",
@@ -10117,7 +10157,7 @@ export function CareerDossier({
             <CheckCircle2 />
             <span>
               <strong>已记录</strong>
-              {config.result.recorded}
+              {getRecordedArtifactCopy(config)}
             </span>
           </div>
           <div className="pending">
@@ -11631,7 +11671,10 @@ export function Lab({
               label: activeStep.label,
               body:
                 activeStep.kind === "response" && activeStep.response
-                  ? activeStep.response.prompt
+                  ? (humanizeLabArtifactText(
+                      config,
+                      activeStep.response.prompt,
+                    ) ?? activeStep.response.prompt)
                   : activeStep.kind === "verification"
                     ? "运行本章验收，确认测试报告、失败原因和修复证据是否对得上。"
                     : config.baseline.body,
@@ -11722,7 +11765,10 @@ export function Lab({
               stepId={activeStep.id}
               scenarioId={config.scenarioId}
               title={activeStep.response.title}
-              prompt={activeStep.response.prompt}
+              prompt={
+                humanizeLabArtifactText(config, activeStep.response.prompt) ??
+                activeStep.response.prompt
+              }
               placeholder={activeStep.response.placeholder}
               initialValue={attempt.steps[activeStep.id]?.response.text}
               minimum={activeStep.response.minimum}

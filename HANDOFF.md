@@ -8,12 +8,12 @@
 
 - 当前远端：`https://github.com/xixinikl/code-quest.git`
 - 当前工作分支：`cx/ai-career-rpg-home`
-- 当前已推送功能基线：本文件随最新提交推送后，以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 输出为准；当前本轮之前远端已到 `772f66e docs(rpg): record frontend performance lab verification`。
+- 当前已推送功能基线：本文件随最新提交推送后，以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 输出为准；当前本轮之前远端已到 `ea7b076 fix(rpg): humanize lab artifact rewards`，本次提交会晚于它。
 - 当前已推送交接基线：本文件提交后应晚于 `772f66e`，包含另一台电脑拉取、核对、继续开发和不能直接合并的说明。最终远端 hash 仍以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 为准。
 - 当前本地核对：推送完成后，`git status --short --branch` 应显示 `cx/ai-career-rpg-home...origin/cx/ai-career-rpg-home` 且没有未提交文件，说明本地与远端一致。
 - 当前远端核对：另一台电脑拉取后 `git log --oneline -5` 应看到本次交接文档提交和 `772f66e docs(rpg): record frontend performance lab verification`，或更晚提交；如果只看到 `65e3603`、`5651c18`、`0fb18e7`、`0f7c433`、`c587a23`、`547ed6f`、`4370ddf`、`1b3cf5d`、`9171ac8`、`1a40fe4`、`e10069f`、`fa12dbc`、`2dd44d3`、`ca2c7aa`、`3fe3db1` 或默认分支提交，说明还没拉到最新交接/体验细修。
 - 远端默认 HEAD：`git ls-remote --symref origin HEAD` 指向 `feat/guided-learning-bridge`，不是本分支；另一台电脑必须显式切到 `cx/ai-career-rpg-home`，不要只用 clone 后默认分支继续。
-- 给协作者的最短说明：不要直接用默认分支；拉仓库后必须切到 `cx/ai-career-rpg-home`。当前至少应看到 `772f66e docs(rpg): record frontend performance lab verification` 和本次交接文档提交；进入项目后必须 `nvm use` 到 Node `24.13.1`。
+- 给协作者的最短说明：不要直接用默认分支；拉仓库后必须切到 `cx/ai-career-rpg-home`。当前至少应看到 `ea7b076 fix(rpg): humanize lab artifact rewards` 和本次交接文档提交，或更晚提交；进入项目后必须 `nvm use` 到 Node `24.13.1`。
 - 他具体怎么拉：如果另一台电脑没有本项目，按“首次 clone”执行；如果已经 clone 过，按“已有仓库更新”执行；如果他本地有未提交改动，先新建自己的分支或 stash，不要直接覆盖。
 
 ### 另一台电脑首次 clone 照抄
@@ -109,7 +109,7 @@ npm run verify
 - 最新前端 Lab 语境收口：前端第 3 关性能 Lab 的可见流程已改为首屏瀑布图、接口 TTFB、Server-Timing、X-Cache、React 渲染画像和第二次访问复测；前端第 5 关测试 Lab 的可见流程已改为旧故障红灯、报告校验器、浏览器手动复测、sourceHash、回归风险和 Agent 交付审查，不再露出 `/api/canvases` 或 `验收试炼画布` 这类 AI 主线保存链路词。浏览器深链验收待补录。
 - 最新前端第 3 关性能语境收口：`#chapter-frontend-3` 第一幕线索不再写“保存后刷新慢”，改为首屏白屏、筛选慢、列表出现慢和滚动卡顿；剧情证据补入 `Server-Timing` 与 `X-Cache: MISS/HIT`；Lab 新手先读卡和证据示范卡不再掉回第一章 `response.ok / 数据库写入 / 保存链路` 默认模板。隔离 API `4406`、临时 SQLite `/tmp/code-quest-r330.sqlite`、Vite `5256` 下，完整收集 10/10 剧情线索 → 伙伴会合 → 进入实战 Lab；Lab 首屏显示 TTFB、Server-Timing、X-Cache、backend.log 和 render profile，桌面 1200 与 390px 均无横向溢出，暗色背景，控制台 error 为 0，旧保存/数据库词检查全为 false。
 - 最新前端第 5 关 Lab 接力修复：从 `#chapter-frontend-5` 走完 8/8 剧情线索、伙伴会合并进入前端测试 Lab，发现首题 `流程接力小剧场` 写成「旧故障 把线索交给 旧故障」。已修成第一棒从 `剧情现场 / 事故线索` 交给当前棒，最后一棒再交给 `结案卷宗 / 最终验收`，避免新手困惑“谁把什么交给谁”。隔离 API `4408`、临时 SQLite `/tmp/code-quest-r332.sqlite`、Vite `5258` 下，前端第 5 关深链桌面 1280 与 390px 均无横向溢出，暗色背景，控制台 error 为 0，旧保存链路词检查全为 false。`npm run verify:quick` 通过 11 个测试文件 / 189 个测试。
-- 最新前端第 5 关 Lab 证物名修复：Lab 导师和任务卷轴不再把 `failing-before`、`passing-after-stale`、`network-test-run` 这类内部 ID 当作「通关收获 / 沉淀为」展示，而是读取 `artifactGuides[id].place` 显示「第 1 棒证据：旧问题红灯」「验收门禁：报告校验器」等人话证物名。隔离 API `4409`、临时 SQLite `/tmp/code-quest-r333.sqlite`、Vite `5259` 下确认前端第 5 关封面进入正常，第一幕主动复述门槛有效；`npm run verify:quick` 通过 11 个测试文件 / 189 个测试。后续仍需继续做完整作答提交到结案页的浏览器录入式验收。
+- 最新前端第 5 关 Lab 证物名修复：Lab 导师、任务卷轴、冒险日志、能力印记、流程翻译、接力小剧场、保存回执、结案卷宗和 Agent 委托都不再把 `failing-before`、`passing-after-stale`、`network-test-run` 这类内部 ID 当作可见学习材料，而是读取 `artifactGuides[id].place` 显示「第 1 棒证据：旧问题红灯」「验收门禁：报告校验器」等人话证物名。隔离 API `4409`、临时 SQLite `/tmp/code-quest-r333.sqlite`、Vite `5259` 下确认前端第 5 关封面进入正常，第一幕主动复述门槛有效；本轮追加渲染测试覆盖可见正文不得出现 `failing-before` / `network-test-run`。后续仍需继续做完整作答提交到结案页的浏览器录入式验收。
 - 最新前端第 5 关沙盒证物收口：`sandbox/frontend-testing-proof` 的 README、Network、手动报告、失败复现、过期报告、后端日志和 Agent 交付说明已全部改为任务列表筛选回归语境，固定 `GET /api/tasks?status=blocked`、DOM 可见列表、`POST /api/reports/verification` 和 `sourceHash` 证据链；新增 `src/sandboxEvidence.test.ts` 防止 `/api/canvases`、保存画布、验收试炼画布等旧词回流。Node `24.13.1` 下 `npm run verify:quick` 通过 11 个测试文件 / 187 个测试；沙盒自身 `npm test` 仍按练习设计失败 5 项，用于训练用户修报告校验器。
 - 最新前端第 5 关浏览器文案收口：隔离 API `4401`、临时 SQLite `/tmp/code-quest-r325.sqlite`、Vite `5251` 下，从 `#chapter-frontend-5` 真实浏览器发现主动复述、边界用例、Agent 示例和 Lab 证据表达卡仍有第一章保存/数据库例子；已改为筛选状态、DOM 可见行、Network、`sourceHash` 和回归风险。桌面 1280 与 390px 手机 DOM 旧词检查为空，暗色背景，控制台 error 为 0。
 - 最新 Java 第 4 关上线港归属收口：从 `#chapter-java-4` 真实浏览器发现剧情线索和 Lab 示范卡仍露出 AI 第 14 章 / 第一章保存链路旧词。已把 Java 上线港五幕剧情、沙盒证物、Lab 先读卡和证据表达示范改为订单服务上线语境：`order-service`、`POST /api/orders`、`JWT_SECRET`、`PAYMENT_API_URL`、订单表迁移、`/actuator/health`、下单成功率、支付回调失败率和回滚后验证。隔离 API `4403`、临时 SQLite `/tmp/code-quest-r327.sqlite`、Vite `5253` 下，完整收集 10/10 剧情线索并进入实战 Lab，控制台 error 为 0。

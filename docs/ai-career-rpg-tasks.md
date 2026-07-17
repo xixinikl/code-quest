@@ -52,6 +52,15 @@
 
 ## 当前已完成切片
 
+### R334：前端第 5 关 Lab 内部证物 ID 显示层翻译
+
+- [x] 浏览器走到 `#chapter-frontend-5` 实战 Lab 后，继续发现冒险日志、能力印记和作答提示里还残留 `failing-before`、`passing-after-stale`、`network-test-run` 这类内部证物 ID；这些词对新手没有学习意义，会让用户更晕。
+- [x] 新增 `humanizeLabArtifactText`，把证物 ID、文件名别名和历史别名统一翻译成 `artifactGuides[id].place` 里的人话证物名，例如「第 1 棒证据：旧问题红灯」「验收门禁：报告校验器」。
+- [x] 翻译覆盖实战导演台、冒险日志、任务卷轴、流程翻译、接力小剧场、保存回执、能力印记、结案卷宗和 Agent 委托，不只修一个标题。
+- [x] 扩展渲染回归测试：前端第 5 关岗位 Lab 可见正文必须显示人话证物名，且不得再出现 `failing-before` 或 `network-test-run`。
+
+验收：`npm run test -- src/App.test.tsx --run -t "岗位 Lab 默认|实战通关后的成长档案|进入主线后进入教学地图"` 通过 3 项；`npm run verify:quick` 通过 lint、typecheck、11 个测试文件 / 189 个测试。浏览器仍可打开 `#chapter-frontend-5` 深链并停在教学地图；完整作答提交到结案页仍需后续继续做浏览器录入式验收。
+
 ### R333：前端第 5 关 Lab 证物名人话化
 
 - [x] 浏览器从 `#chapter-frontend-5` 进入前端第 5 关封面并推进到第一幕复述门槛，确认主动复述字数门槛会阻止空泛通过。
