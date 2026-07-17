@@ -8,13 +8,13 @@
 
 - 当前远端：`https://github.com/xixinikl/code-quest.git`
 - 当前工作分支：`cx/ai-career-rpg-home`
-- 当前已推送功能基线：本文件随最新提交推送后，以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 输出为准；本轮之前远端已到 `ff25ee9 test(rpg): lock frontend testing dossier stay`，本次提交会晚于它。
-- 当前已推送交接基线：本文件提交后应晚于 `ff25ee9`，包含另一台电脑拉取、核对、继续开发和不能直接合并的说明。最终远端 hash 仍以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 为准。
+- 当前已推送功能基线：远端 `origin/cx/ai-career-rpg-home` 已到 `b0294cc fix(rpg): restore completed route lab deep links`；本交接更新提交后会晚于 `b0294cc`。最终远端 hash 仍以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 输出为准。
+- 当前已推送交接基线：本文件提交后应晚于 `b0294cc`，包含另一台电脑拉取、核对、继续开发和不能直接合并的说明。最终远端 hash 仍以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 为准。
 - 当前本地核对：推送完成后，`git status --short --branch` 应显示 `cx/ai-career-rpg-home...origin/cx/ai-career-rpg-home` 且没有未提交文件，说明本地与远端一致。
-- 当前远端核对：另一台电脑拉取后 `git log --oneline -5` 应看到本次提交，以及 `ff25ee9 test(rpg): lock frontend testing dossier stay`、`fbf5e6f docs(rpg): clarify cross-computer handoff`、`3d79134 fix(rpg): remove frontend testing save-route fallback` 这些最近提交，或更晚提交；如果只看到 `772f66e`、`65e3603`、`5651c18`、`0fb18e7`、`0f7c433`、`c587a23`、`547ed6f`、`4370ddf`、`1b3cf5d`、`9171ac8`、`1a40fe4`、`e10069f`、`fa12dbc`、`2dd44d3`、`ca2c7aa`、`3fe3db1` 或默认分支提交，说明还没拉到最新交接/体验细修。
+- 当前远端核对：另一台电脑拉取后 `git log --oneline -5` 应看到本交接更新提交，以及 `b0294cc fix(rpg): restore completed route lab deep links`、`ff25ee9 test(rpg): lock frontend testing dossier stay`、`fbf5e6f docs(rpg): clarify cross-computer handoff` 这些最近提交，或更晚提交；如果只看到 `772f66e`、`65e3603`、`5651c18`、`0fb18e7`、`0f7c433`、`c587a23`、`547ed6f`、`4370ddf`、`1b3cf5d`、`9171ac8`、`1a40fe4`、`e10069f`、`fa12dbc`、`2dd44d3`、`ca2c7aa`、`3fe3db1` 或默认分支提交，说明还没拉到最新交接/体验细修。
 - 远端默认 HEAD：`git ls-remote --symref origin HEAD` 指向 `feat/guided-learning-bridge`，不是本分支；另一台电脑必须显式切到 `cx/ai-career-rpg-home`，不要只用 clone 后默认分支继续。
-- 给协作者的最短说明：不要直接用默认分支；拉仓库后必须切到 `cx/ai-career-rpg-home`。当前至少应看到 `ff25ee9 test(rpg): lock frontend testing dossier stay` 和本次提交，或更晚提交；进入项目后必须 `nvm use` 到 Node `24.13.1`。
-- 他具体怎么拉：如果另一台电脑没有本项目，按“首次 clone”执行；如果已经 clone 过，按“已有仓库更新”执行；如果他本地有未提交改动，先新建自己的分支或 stash，不要直接覆盖。
+- 给协作者的最短说明：不要直接用默认分支；拉仓库后必须切到 `cx/ai-career-rpg-home`。当前至少应看到 `b0294cc fix(rpg): restore completed route lab deep links` 和本交接更新提交，或更晚提交；进入项目后必须 `nvm use` 到 Node `24.13.1`。
+- 他具体怎么拉：如果另一台电脑没有本项目，按“首次 clone”执行；如果已经 clone 过，按“已有仓库更新”执行；如果他本地有未提交改动，先新建自己的分支或 stash，不要直接覆盖。不要在默认分支上继续开发。
 
 ### 另一台电脑怎么拉，给他照抄
 
@@ -41,13 +41,14 @@ npm run verify
 npm run dev
 ```
 
-拉完后 `git log --oneline -1` 应显示：
+拉完后 `git log --oneline -5` 应至少能看到 `b0294cc` 和本交接更新提交，或更晚提交：
 
 ```bash
-本次提交，或晚于 ff25ee9 的提交
+b0294cc fix(rpg): restore completed route lab deep links
+ff25ee9 test(rpg): lock frontend testing dossier stay
 ```
 
-如果显示的是 `feat/guided-learning-bridge`、`main` 上的提交，或早于 `ff25ee9`，说明没有拉到今天上传的内容。
+如果显示的是 `feat/guided-learning-bridge`、`main` 上的提交，或早于 `b0294cc`，说明没有拉到今天上传的内容。
 
 ### 已有仓库更新照抄
 
@@ -101,7 +102,7 @@ npm run verify
 
 ### 拉完后怎么继续开发
 
-1. 新电脑确认完整后，继续在 `cx/ai-career-rpg-home` 上开发，或从它再切个人分支，例如 `git switch -c cx/frontend-performance-polish`。
+1. 新电脑确认完整后，继续在 `cx/ai-career-rpg-home` 上开发，或从它再切个人分支，例如 `git switch -c cx/frontend-performance-polish`。如果只是接手当前工作，建议先从 `cx/ai-career-rpg-home` 切自己的 `cx/...` 分支，做完后再 PR 回这个阶段分支，避免多人直接推同一分支产生混乱。
 2. 不要直接合并 `main`。当前分支是阶段成果，不是 ready 合并态；合并前还缺 PR 审查、桌面和 390px 关键路径视觉终审、真人试玩、以及 Java/前端后续章节更深抽检。
 3. 如果另一台电脑只是要接着我现在的工作，优先做前端第 3 关“首屏观测塔”剧情到 Lab 的完整浏览器验收，清理残留的第一章保存链路词，再补测试和记录。
 4. 如果要开 PR，先开 Draft PR；PR 描述必须写清“自动化通过不等于真人学会”，不要把当前状态包装成最终产品。
@@ -134,7 +135,7 @@ npm run verify:quick
 
 - `git status --short --branch` 显示在 `cx/ai-career-rpg-home`，没有未提交文件。
 - `HEAD`、`origin/cx/ai-career-rpg-home`、`git ls-remote` 三个 hash 一致，或 `HEAD` 是刚创建的本地分支并跟踪同一个远端提交。
-- `git log --oneline -8` 能看到 `ff25ee9` 和本次提交，或更晚提交。
+- `git log --oneline -8` 能看到 `b0294cc`、`ff25ee9` 和本交接更新提交，或更晚提交。
 - `nvm use` 后 Node 是 `.nvmrc` 指定的 `v24.13.1`。
 - `npm run verify:quick` 通过后再继续开发；如果失败，先不要改业务，先记录错误并修环境或依赖。
 
