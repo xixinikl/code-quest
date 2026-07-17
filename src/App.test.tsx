@@ -3470,6 +3470,15 @@ describe("AI 职业路线入口", () => {
     expect(
       screen.getByRole("region", { name: "收藏解锁仪式" }),
     ).toHaveTextContent("主线收束");
+    const nextActions = screen.getByRole("region", {
+      name: "结案后冒险菜单",
+    });
+    expect(nextActions).toHaveTextContent("查看伙伴图鉴和下一章");
+    expect(nextActions).toHaveTextContent("把本关证据整理成回答");
+    expect(nextActions).toHaveTextContent("证明不是只会这一题");
+    expect(
+      screen.getByRole("button", { name: /查看伙伴与下一章/ }),
+    ).toBeInTheDocument();
     expect(onSubmitted).toHaveBeenCalledWith({ showReward: false });
   });
 

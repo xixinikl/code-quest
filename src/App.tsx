@@ -10371,6 +10371,29 @@ export function CareerDossier({
             </div>
           </section>
         )}
+        <section className="dossier-next-actions" aria-label="结案后冒险菜单">
+          <header>
+            <span>结案后冒险菜单</span>
+            <strong>现在可以去哪里，不用自己猜</strong>
+          </header>
+          <div>
+            <article>
+              <span>路线图</span>
+              <strong>查看伙伴图鉴和下一章</strong>
+              <p>回到路线大厅后，先看刚写入的收藏物，再决定是否继续下一章。</p>
+            </article>
+            <article>
+              <span>面试复盘册</span>
+              <strong>把本关证据整理成回答</strong>
+              <p>把现象、证据、行动和结果写成能被追问的一分钟故事。</p>
+            </article>
+            <article>
+              <span>迁移复测</span>
+              <strong>证明不是只会这一题</strong>
+              <p>换一个场景继续验证同一套能力，才更接近真实工作独立性。</p>
+            </article>
+          </div>
+        </section>
         <div className="rubric-box">
           <h2>{config.result.nextTitle}</h2>
           <ul>
@@ -10387,10 +10410,10 @@ export function CareerDossier({
               onClick={onBackToRoadmap}
               type="button"
             >
-              回到路线图，继续冒险 <ArrowRight size={17} />
+              回到路线图，查看伙伴与下一章 <ArrowRight size={17} />
             </button>
             <p>
-              你可以继续下一章，也可以打开面试复盘册，把这次证据整理成回答草稿。
+              路线图会保留你的收藏、下一章入口和面试复盘册；不要把结案页当成终点。
             </p>
           </div>
         )}

@@ -8,6 +8,8 @@
 
 重要提醒：GitHub 默认分支不是当前工作分支。不要 clone 后直接在默认分支改，也不要直接合并到 `main`；先显式切到 `cx/ai-career-rpg-home`，核对 hash，再安装依赖和验证。
 
+最新判断：这条分支可以给另一台电脑拉下来继续开发，但还不建议直接合并到 `main`。如果时间紧，先把 `cx/ai-career-rpg-home` 当作完整备份和继续开发基线；另一台电脑拉完后从它切自己的 `cx/...` 分支继续做 UI/剧情/关卡，不要在默认分支上改。
+
 ### 他电脑上还没有这个仓库
 
 ```bash
@@ -73,7 +75,7 @@ git pull --ff-only origin cx/ai-career-rpg-home
 
 - `git status --short --branch` 显示在 `cx/ai-career-rpg-home`，并且没有未提交文件。
 - `git rev-parse HEAD`、`git rev-parse origin/cx/ai-career-rpg-home`、`git ls-remote origin refs/heads/cx/ai-career-rpg-home` 的 hash 一致。
-- `git log --oneline -8` 能看到 `2387686 fix(rpg): preserve lab chapter handoff`、本次 Lab 实战接力文案提交，以及本交接更新提交，或更晚提交。
+- `git log --oneline -8` 能看到 `b42a904 feat(rpg): show collectible unlock rewards`、本次结案后冒险菜单/交接更新提交，或更晚提交。
 - `nvm use` 后 Node 是 `.nvmrc` 指定的 `v24.13.1`。
 - `npm run verify:quick` 通过后再继续开发；准备合并或交付前跑完整 `npm run verify`。
 
@@ -87,12 +89,12 @@ git pull --ff-only origin cx/ai-career-rpg-home
 
 - 当前远端：`https://github.com/xixinikl/code-quest.git`
 - 当前工作分支：`cx/ai-career-rpg-home`
-- 当前已推送功能基线：远端 `origin/cx/ai-career-rpg-home` 至少已到 `2387686 fix(rpg): preserve lab chapter handoff`；本次 Lab 实战接力文案和交接文档提交后会晚于它。最终远端 hash 仍以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 输出为准。
-- 当前已推送交接基线：本文件提交后应晚于 `2387686`，包含另一台电脑拉取、核对、继续开发、不能直接合并，以及最新第 1 章地点路线/当前流程交接单/主动复述证据边界/复盘关键线索/下一地点证据交接/Lab 刷新恢复/Lab 实战接力说明。最终远端 hash 仍以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 为准。
+- 当前已推送功能基线：远端 `origin/cx/ai-career-rpg-home` 至少已到 `b42a904 feat(rpg): show collectible unlock rewards`；本次结案后冒险菜单和交接文档提交后会晚于它。最终远端 hash 仍以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 输出为准。
+- 当前已推送交接基线：本文件提交后应晚于 `b42a904`，包含另一台电脑拉取、核对、继续开发、不能直接合并，以及最新第 1 章地点路线/当前流程交接单/主动复述证据边界/复盘关键线索/下一地点证据交接/Lab 刷新恢复/Lab 实战接力/收藏解锁/结案后冒险菜单说明。最终远端 hash 仍以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 为准。
 - 当前本地核对：推送完成后，`git status --short --branch` 应显示 `cx/ai-career-rpg-home...origin/cx/ai-career-rpg-home` 且没有未提交文件，说明本地与远端一致。
-- 当前远端核对：另一台电脑拉取后 `git log --oneline -8` 应看到 `2387686 fix(rpg): preserve lab chapter handoff`、本次 `fix(rpg): clarify lab step handoff` 和本次交接更新提交，或更晚提交；如果只看到 `772f66e`、`65e3603`、`5651c18`、`0fb18e7`、`0f7c433`、`c587a23`、`547ed6f`、`4370ddf`、`1b3cf5d`、`9171ac8`、`1a40fe4`、`e10069f`、`fa12dbc`、`2dd44d3`、`ca2c7aa`、`3fe3db1` 或默认分支提交，说明还没拉到最新交接/体验细修。
+- 当前远端核对：另一台电脑拉取后 `git log --oneline -8` 应看到 `b42a904 feat(rpg): show collectible unlock rewards`、本次结案后冒险菜单和交接更新提交，或更晚提交；如果只看到 `2387686`、`772f66e`、`65e3603`、`5651c18`、`0fb18e7`、`0f7c433`、`c587a23`、`547ed6f`、`4370ddf`、`1b3cf5d`、`9171ac8`、`1a40fe4`、`e10069f`、`fa12dbc`、`2dd44d3`、`ca2c7aa`、`3fe3db1` 或默认分支提交，说明还没拉到最新交接/体验细修。
 - 远端默认 HEAD：`git ls-remote --symref origin HEAD` 指向 `feat/guided-learning-bridge`，不是本分支；另一台电脑必须显式切到 `cx/ai-career-rpg-home`，不要只用 clone 后默认分支继续。
-- 给协作者的最短说明：不要直接用默认分支；拉仓库后必须切到 `cx/ai-career-rpg-home`。当前至少应看到 `2387686 fix(rpg): preserve lab chapter handoff`、本次 `fix(rpg): clarify lab step handoff` 和本次交接更新提交，或更晚提交；进入项目后必须 `nvm use` 到 Node `24.13.1`。
+- 给协作者的最短说明：不要直接用默认分支；拉仓库后必须切到 `cx/ai-career-rpg-home`。当前至少应看到 `b42a904 feat(rpg): show collectible unlock rewards`、本次结案后冒险菜单和本次交接更新提交，或更晚提交；进入项目后必须 `nvm use` 到 Node `24.13.1`。
 - 他具体怎么拉：如果另一台电脑没有本项目，按“首次 clone”执行；如果已经 clone 过，按“已有仓库更新”执行；如果他本地有未提交改动，先新建自己的分支或 stash，不要直接覆盖。不要在默认分支上继续开发，也不要在没有核对 hash 的情况下合并。
 
 ### 最新进度补充（2026-07-17 夜）
@@ -100,6 +102,9 @@ git pull --ff-only origin cx/ai-career-rpg-home
 - 已在章节结算页和真实 `成长档案结案` 页加入 `收藏解锁仪式`。通关后会显示本关可写入图鉴的角色/宠物/装备、对应能力印记，以及下一位可遇见收藏目标；第 1 章显示 `伙伴 · 档案馆记录员`，下一位显示 `宠物 · 灵感萤火`。
 - 已补回归测试，锁定 `ChapterRewardGate` 和真实 `CareerDossier` 都显示收藏解锁反馈；`npm run test -- src/App.test.tsx --run -t "章节结算会把 XP|提交成功后停留"`、`npm run typecheck`、`npm run verify:quick` 均通过。
 - 已用真实浏览器在隔离 API `4428`、临时 SQLite `/tmp/code-quest-r349.sqlite`、Vite `5278` 复核：`#chapter-1` 点击 `生成成长档案` 后显示 `收藏解锁仪式 / 伙伴 · 档案馆记录员 / 下一位会遇见 / 宠物 · 灵感萤火`；390×844 无横向溢出、无白块，控制台只有 React DevTools 提示。
+- 已在真实 `成长档案结案` 页加入 `结案后冒险菜单`，通关后明确给出三条下一步：回路线图看伙伴图鉴和下一章、打开面试复盘册整理回答、进入迁移复测证明不是只会这一题。目的：用户完成一关后不会停在“我接下来干嘛”的空白处。
+- 已补回归测试，锁定真实提交后必须显示 `结案后冒险菜单`、三条下一步和 `回到路线图，查看伙伴与下一章` 按钮；`npm run test -- src/App.test.tsx --run -t "提交成功后停留"`、`npm run typecheck`、`npm run verify:quick` 均通过。
+- 已用真实浏览器在隔离 API `4429`、临时 SQLite `/tmp/code-quest-r350.sqlite`、Vite `5279` 复核：`#chapter-1` 点击 `生成成长档案` 后显示 `结案后冒险菜单 / 查看伙伴图鉴和下一章 / 把本关证据整理成回答 / 证明不是只会这一题`；390×844 无横向溢出、无白块，控制台 0 error、0 warning，仅 React DevTools info。
 - 已修复第 1 章 Lab 第二步以后“实战追踪”文案继续套用剧情交接的问题。现在第一题仍解释“剧情教学已经把任务委托交接过来”，第二题及以后会说“上一题已收录，现在继续下一棒”，避免新手忘记上一步或误以为流程重新开始。
 - 已补回归测试，锁定保存 `读取项目材料` 后进入 `还原数据流` 的任务日志文案；`npm run test -- src/App.test.tsx --run -t "进入主线后进入教学地图"`、`npm run typecheck`、`npm run verify:quick` 均通过。
 - 已用真实浏览器在 `http://127.0.0.1:5277/#chapter-1` 复核：页面停在 `还原数据流`，冒险日志显示 `上一题「读取项目材料」已经收录；现在从「还原数据流」继续`；390×844 无横向溢出、无白块，控制台只有 React DevTools 提示。
@@ -141,7 +146,7 @@ npm run verify:quick
 npm run dev
 ```
 
-拉完后 `git log --oneline -5` 应至少能看到 `fix(rpg): clarify lab step handoff` 和本交接更新提交，或更晚提交；同时 `2387686 fix(rpg): preserve lab chapter handoff` 应该出现在更早的日志里：
+拉完后 `git log --oneline -5` 应至少能看到 `b42a904 feat(rpg): show collectible unlock rewards`、本次结案后冒险菜单/交接更新提交，或更晚提交：
 
 ```bash
 git log --oneline -8
@@ -149,7 +154,7 @@ git rev-parse HEAD
 git ls-remote origin refs/heads/cx/ai-career-rpg-home
 ```
 
-如果显示的是 `feat/guided-learning-bridge`、`main` 上的提交，或早于 `2387686`，说明没有拉到今天上传的内容。此时不要继续改，先重新 `git fetch origin` 并切到 `cx/ai-career-rpg-home`。
+如果显示的是 `feat/guided-learning-bridge`、`main` 上的提交，或只停在早于 `b42a904` 的提交，说明没有拉到今天上传的内容。此时不要继续改，先重新 `git fetch origin` 并切到 `cx/ai-career-rpg-home`。
 
 ### 已有仓库更新照抄
 
@@ -243,7 +248,7 @@ npm run verify:quick
 
 - `git status --short --branch` 显示在 `cx/ai-career-rpg-home`，没有未提交文件。
 - `HEAD`、`origin/cx/ai-career-rpg-home`、`git ls-remote` 三个 hash 一致，或 `HEAD` 是刚创建的本地分支并跟踪同一个远端提交。
-- `git log --oneline -8` 能看到 `2387686`、本次 `fix(rpg): clarify lab step handoff` 和本交接更新提交，或更晚提交。
+- `git log --oneline -8` 能看到 `b42a904`、本次结案后冒险菜单和本交接更新提交，或更晚提交。
 - `nvm use` 后 Node 是 `.nvmrc` 指定的 `v24.13.1`。
 - `npm run verify:quick` 通过后再继续开发；如果失败，先不要改业务，先记录错误并修环境或依赖。
 
