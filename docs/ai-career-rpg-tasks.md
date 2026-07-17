@@ -52,6 +52,14 @@
 
 ## 当前已完成切片
 
+### R336：前端第 5 关源头配置去保存链路
+
+- [x] 清理 `frontend-testing-proof` 运行时 Lab 基础步骤里的旧保存链路占位：集成流程不再写 `POST /api/canvases` / `GET /api/canvases`，改成 `GET /api/tasks?status=blocked`、DOM 可见行和 `POST /api/reports/verification`。
+- [x] 移除前端第 5 关专属 rewrite 表里对 `/api/canvases` 的兜底替换，避免靠运行时遮盖旧文案。
+- [x] 新增服务端 API 回归测试：`/api/scenarios/frontend-testing-proof` 必须返回前端验收报告、旧问题失败复现和 Network 复测材料，且不得包含 `/api/canvases`、`canvas-save-persistence`、保存画布或验收试炼画布。
+
+验收：`npm run test -- src/App.test.tsx --run -t "前端回归|岗位 Lab 默认|前端第 5 关测试报告译文"` 通过；`npm run test -- server/app.test.ts --run -t "前端第 5 关"` 通过。
+
 ### R335：前端第 5 关 Lab 真实沙盒与结案停留修复
 
 - [x] 浏览器从 `#chapter-frontend-5` 完整走完 8/8 剧情线索、4 个地点和伙伴会合，进入前端测试 Lab。

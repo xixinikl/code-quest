@@ -1034,6 +1034,28 @@ describe("本地学习 API", () => {
     expect(invalidStep.body.error).toBe("UNKNOWN_STEP");
   });
 
+  it("注册前端第 5 关回归验收沙盒材料，不回退保存画布链路", async () => {
+    const created = await jsonRequest("/api/attempts", {
+      method: "POST",
+      body: JSON.stringify({ scenarioId: "frontend-testing-proof" }),
+    });
+    expect(created.response.status).toBe(201);
+
+    const scenario = await jsonRequest("/api/scenarios/frontend-testing-proof");
+    const serialized = JSON.stringify(scenario.body);
+
+    expect(scenario.response.status).toBe(200);
+    expect(serialized).toContain("前端验收报告面板");
+    expect(serialized).toContain("旧问题失败复现报告");
+    expect(serialized).toContain("前端 Network 复测");
+    expect(serialized).toContain("frontend-testing-proof");
+    expect(serialized).not.toContain("/api/canvases");
+    expect(serialized).not.toContain("canvas-save-persistence");
+    expect(serialized).not.toContain("保存画布");
+    expect(serialized).not.toContain("验收试炼画布");
+    expect(serialized).not.toContain("/Users/");
+  });
+
   it("注册第 12 章 Agent 委托迁移复测材料", async () => {
     const initial = await jsonRequest(
       "/api/transfer-retests/agent-brief-forge",
