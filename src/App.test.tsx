@@ -906,6 +906,64 @@ describe("岗位路线实战场景契约", () => {
     );
   });
 
+  it("第 5 章 Lab 首屏会给出数据一致性的证据任务和验收动作", () => {
+    const config = getLabConfig("data-consistency-forge");
+    const jobArtifacts = Object.entries(config.artifactGuides).map(
+      ([id, guide]) => ({
+        id,
+        label: guide.place,
+        language: "txt",
+        relativePath: `${config.practical.sandboxPath}/${id}.txt`,
+        content: guide.keyLines.join("\n"),
+      }),
+    );
+
+    render(
+      <Lab
+        artifacts={jobArtifacts}
+        attempt={
+          {
+            id: "attempt-case-05-evidence-quest",
+            scenarioId: "data-consistency-forge",
+            status: "active",
+            hintLevel: 0,
+            verificationStatus: "not_run",
+            steps: {},
+          } as Parameters<typeof Lab>[0]["attempt"]
+        }
+        onBackToRoadmap={vi.fn()}
+        onSubmitted={vi.fn()}
+        setAttempt={vi.fn()}
+      />,
+    );
+
+    expect(screen.getByLabelText("本关流程路线")).toHaveTextContent(
+      "数据库约束",
+    );
+    expect(screen.getByLabelText("本关名词小抄")).toHaveTextContent("幂等");
+    expect(screen.getByLabelText("本关名词小抄")).toHaveTextContent(
+      "同一个动作重复执行多次",
+    );
+    expect(screen.getByLabelText("本关证据任务")).toHaveTextContent(
+      "重复请求",
+    );
+    expect(screen.getByLabelText("本关证据任务")).toHaveTextContent(
+      "数据库记录数量",
+    );
+    expect(screen.getByLabelText("本关证据任务")).toHaveTextContent(
+      "测试结果",
+    );
+    expect(screen.getByLabelText("本关证据任务")).toHaveTextContent(
+      "连续点击、刷新重试和并发请求",
+    );
+    expect(screen.getByLabelText("本关证据任务")).toHaveTextContent(
+      "只产生一条核心草稿",
+    );
+    expect(screen.getByLabelText("本关证据任务")).toHaveTextContent(
+      "重复请求、数据库前后记录、后端日志和交付审查证据",
+    );
+  });
+
   it("实战保存后会显示具体接力回执，避免自动跳步后迷路", async () => {
     const user = userEvent.setup();
     const config = getLabConfig("frontend-performance-proof");

@@ -17,7 +17,7 @@
 要拉的分支：cx/ai-career-rpg-home
 不要用 clone 后默认分支继续开发。先切到 cx/ai-career-rpg-home，再核对本地 HEAD、origin/cx/ai-career-rpg-home 和远端 ls-remote 三个 hash。
 完整基线：至少能看到 ffbbf8b feat(rpg): show lab companion squad，或者看到晚于它的场景运镜更新提交。
-最新体验基线：如果能看到 feat(rpg): show lab glossary strip 或更晚提交，说明已包含 Lab 首屏名词小抄和第 4 章接口错误术语解释。
+最新体验基线：如果能看到 feat(rpg): show lab evidence quest 或更晚提交，说明已包含 Lab 首屏证据任务和第 5 章数据一致性验收说明。
 拉完先跑：nvm use && npm install && npm run verify:quick
 准备合并或交付前再跑：npm run verify
 ```
@@ -87,7 +87,7 @@ git pull --ff-only origin cx/ai-career-rpg-home
 
 - `git status --short --branch` 显示在 `cx/ai-career-rpg-home`，并且没有未提交文件。
 - `git rev-parse HEAD`、`git rev-parse origin/cx/ai-career-rpg-home`、`git ls-remote origin refs/heads/cx/ai-career-rpg-home` 的 hash 一致。
-- `git log --oneline -8` 能看到 `b7315bf feat(rpg): show lab route compass`、本次名词小抄更新提交，或更晚提交。
+- `git log --oneline -8` 能看到 `b30bb70 feat(rpg): show lab glossary strip`、本次证据任务更新提交，或更晚提交。
 - `nvm use` 后 Node 是 `.nvmrc` 指定的 `v24.13.1`。
 - `npm run verify:quick` 通过后再继续开发；准备合并或交付前跑完整 `npm run verify`。
 
@@ -101,16 +101,22 @@ git pull --ff-only origin cx/ai-career-rpg-home
 
 - 当前远端：`https://github.com/xixinikl/code-quest.git`
 - 当前工作分支：`cx/ai-career-rpg-home`
-- 当前已推送功能基线：远端 `origin/cx/ai-career-rpg-home` 已到 `b7315bf feat(rpg): show lab route compass`；本次名词小抄更新提交后会晚于它。最终远端 hash 仍以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 输出为准。
-- 当前已推送交接基线：本文件提交后应晚于 `b7315bf`，包含另一台电脑拉取、核对、继续开发、不能直接合并，以及最新第 1 章地点路线/当前流程交接单/主动复述证据边界/复盘关键线索/下一地点证据交接/Lab 刷新恢复/Lab 实战接力/收藏解锁/结案后冒险菜单/下一幕预告/玩家身份契约/当前只读这一行/代码证据交接复盘/带入实战的证据包/Lab 实战入场证据包/同行小队/场景运镜/第 2 章职业产出/本关流程路线/本关名词小抄说明。最终远端 hash 仍以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 为准。
+- 当前已推送功能基线：远端 `origin/cx/ai-career-rpg-home` 已到 `b30bb70 feat(rpg): show lab glossary strip`；本次证据任务更新提交后会晚于它。最终远端 hash 仍以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 输出为准。
+- 当前已推送交接基线：本文件提交后应晚于 `b30bb70`，包含另一台电脑拉取、核对、继续开发、不能直接合并，以及最新第 1 章地点路线/当前流程交接单/主动复述证据边界/复盘关键线索/下一地点证据交接/Lab 刷新恢复/Lab 实战接力/收藏解锁/结案后冒险菜单/下一幕预告/玩家身份契约/当前只读这一行/代码证据交接复盘/带入实战的证据包/Lab 实战入场证据包/同行小队/场景运镜/第 2 章职业产出/本关流程路线/本关名词小抄/本关证据任务说明。最终远端 hash 仍以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 为准。
 - 当前本地核对：推送完成后，`git status --short --branch` 应显示 `cx/ai-career-rpg-home...origin/cx/ai-career-rpg-home` 且没有未提交文件，说明本地与远端一致。
-- 当前远端核对：另一台电脑拉取后 `git log --oneline -8` 应看到 `b7315bf feat(rpg): show lab route compass`、本次名词小抄更新提交，或更晚提交；如果只看到 `98f59b4`、`467073f`、`ffbbf8b`、`4f51ac8`、`5cabd32`、`5c3a176`、`feeac06`、`5c84acf`、`865e721`、`678d428`、`6dc63ea`、`b42a904`、`2387686`、`772f66e`、`65e3603`、`5651c18`、`0fb18e7`、`0f7c433`、`c587a23`、`547ed6f`、`4370ddf`、`1b3cf5d`、`9171ac8`、`1a40fe4`、`e10069f`、`fa12dbc`、`2dd44d3`、`ca2c7aa`、`3fe3db1` 或默认分支提交，说明还没拉到最新交接/体验细修。
+- 当前远端核对：另一台电脑拉取后 `git log --oneline -8` 应看到 `b30bb70 feat(rpg): show lab glossary strip`、本次证据任务更新提交，或更晚提交；如果只看到 `b7315bf`、`98f59b4`、`467073f`、`ffbbf8b`、`4f51ac8`、`5cabd32`、`5c3a176`、`feeac06`、`5c84acf`、`865e721`、`678d428`、`6dc63ea`、`b42a904`、`2387686`、`772f66e`、`65e3603`、`5651c18`、`0fb18e7`、`0f7c433`、`c587a23`、`547ed6f`、`4370ddf`、`1b3cf5d`、`9171ac8`、`1a40fe4`、`e10069f`、`fa12dbc`、`2dd44d3`、`ca2c7aa`、`3fe3db1` 或默认分支提交，说明还没拉到最新交接/体验细修。
 - 远端默认 HEAD：`git ls-remote --symref origin HEAD` 指向 `feat/guided-learning-bridge`，不是本分支；另一台电脑必须显式切到 `cx/ai-career-rpg-home`，不要只用 clone 后默认分支继续。
-- 给协作者的最短说明：不要直接用默认分支；拉仓库后必须切到 `cx/ai-career-rpg-home`。当前至少应看到 `b7315bf feat(rpg): show lab route compass`、本次名词小抄更新提交，或更晚提交；进入项目后必须 `nvm use` 到 Node `24.13.1`。
+- 给协作者的最短说明：不要直接用默认分支；拉仓库后必须切到 `cx/ai-career-rpg-home`。当前至少应看到 `b30bb70 feat(rpg): show lab glossary strip`、本次证据任务更新提交，或更晚提交；进入项目后必须 `nvm use` 到 Node `24.13.1`。
 - 他具体怎么拉：如果另一台电脑没有本项目，按“首次 clone”执行；如果已经 clone 过，按“已有仓库更新”执行；如果他本地有未提交改动，先新建自己的分支或 stash，不要直接覆盖。不要在默认分支上继续开发，也不要在没有核对 hash 的情况下合并。
 
 ### 最新进度补充（2026-07-18 凌晨）
 
+- 已在真实 Lab 首屏加入 `本关证据任务`。现在用户在进入材料前，会先看到这一关到底要用什么证据证明、怎样算真的通过、最后能交出什么结案证据。
+- 证据任务读取当前章节 `evidenceTask / acceptanceAction` 和 Lab 结案事实 `proved / recorded / pending`，不写死第 5 章。
+- 第 5 章真实 Lab 显示：用 `重复请求、数据库记录数量和测试结果` 证明没有重复写入；验收动作是 `连续点击、刷新重试和并发请求` 都不会生成重复核心数据；结案证据是同一用户同一 `clientMutationId` 最终只产生一条核心草稿。
+- 已补回归测试：第 5 章 Lab 必须显示数据一致性的证据任务、验收动作和结案证据。
+- 验证：`npm run test -- src/App.test.tsx --run -t "第 2 章 Lab 会说明工作|第 3 章 Lab 首屏会讲清登录态|第 4 章 Lab 首屏会解释接口错误名词|第 5 章 Lab 首屏会给出数据一致性|岗位 Lab 默认收束辅助资料"` 通过；`npm run verify:quick` 通过 11 个测试文件 / 203 个测试。
+- 浏览器验收：默认 API `4317`、Vite `5284` 打开 `#chapter-5`，补齐本地教学记录后进入真实 Lab，页面显示 `本关证据任务`，控制台 0 error / 0 warning；截图保存在 `output/playwright/r362-chapter5-evidence-quest.png`。
 - 已在真实 Lab 首屏加入 `本关名词小抄`。现在进入 Lab 后，用户不用先自己查术语，也能看到当前章节高频词的人话解释。
 - 名词小抄读取当前路线章节的 `glossary`，并由统一解释表提供新手解释；不是只服务第 4 章。
 - 第 4 章真实 Lab 显示 `请求参数 / 状态码 / 400 / 500 / 日志 / 错误边界`，并解释请求参数是前端交给接口的数据、400 是参数问题、500 要查后端日志和异常栈。

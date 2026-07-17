@@ -9335,6 +9335,57 @@ function LabGlossaryStrip({ config }: { config: LabConfig }) {
   );
 }
 
+function LabEvidenceQuest({ config }: { config: LabConfig }) {
+  const { chapter } = getRouteChapterForScenarioId(config.scenarioId);
+  if (!chapter) return null;
+
+  const evidenceCards = [
+    {
+      label: "证据任务",
+      title: "这关要拿什么证明",
+      body: chapter.evidenceTask,
+      icon: Search,
+    },
+    {
+      label: "验收动作",
+      title: "怎样算真的过关",
+      body: chapter.acceptanceAction,
+      icon: CheckCircle2,
+    },
+    {
+      label: "结案证据",
+      title: config.result.proved,
+      body: `最后要能交出：${config.result.recorded}。`,
+      icon: ShieldCheck,
+    },
+  ];
+
+  return (
+    <section className="lab-evidence-quest" aria-label="本关证据任务">
+      <header>
+        <span>证据任务</span>
+        <strong>别凭感觉通关，用可复查的材料证明判断</strong>
+      </header>
+      <div>
+        {evidenceCards.map((card) => {
+          const Icon = card.icon;
+          return (
+            <article key={card.label}>
+              <Icon aria-hidden="true" />
+              <span>{card.label}</span>
+              <strong>{card.title}</strong>
+              <p>{card.body}</p>
+            </article>
+          );
+        })}
+      </div>
+      <p>
+        未完成前先保留疑问：{config.result.pending}。通过后再写进成长档案和面试复盘。
+      </p>
+    </section>
+  );
+}
+
 function getRouteChapterForScenarioId(scenarioId: string) {
   const target = findRouteChapterTargetForScenarioId(scenarioId);
   const route =
@@ -12485,6 +12536,7 @@ export function Lab({
             config={config}
           />
           <LabGlossaryStrip config={config} />
+          <LabEvidenceQuest config={config} />
           <LabPracticeEvidencePack
             activeIndex={activeIndex}
             activeStep={activeStep}
