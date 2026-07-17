@@ -8,14 +8,16 @@
 
 - 当前远端：`https://github.com/xixinikl/code-quest.git`
 - 当前工作分支：`cx/ai-career-rpg-home`
-- 当前已推送功能基线：至少包含 `0f7c433 fix(rpg): own frontend testing sandbox evidence`、`c587a23 docs(rpg): spell out collaborator pull steps`、`3fe983d fix(rpg): own java incident teaching flow`，以及 `0080bd7 feat(rpg): clarify lab save relay` 之后的岗位 Lab 与前端第 5 关剧情修复；最终远端 hash 以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 为准。
-- 当前已推送交接基线：应包含本次“前端第 5 关剧情修复 / 交接文档更新”提交，或更新提交。
+- 当前已推送功能基线：`5651c18 fix(rpg): clean frontend testing story examples`。本机已核对 `HEAD`、`origin/cx/ai-career-rpg-home` 和 GitHub 远端分支三方一致，均为 `5651c18afaf5fb41ff20dfef71e07b3b58158e91`；后续若继续提交，最终远端 hash 仍以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 为准。
+- 当前已推送交接基线：包含前端第 5 关沙盒证物归属修复、前端第 5 关浏览器串章文案修复，以及本次跨电脑拉取说明更新。
 - 当前本地核对：推送完成后，`git status --short --branch` 应显示 `cx/ai-career-rpg-home...origin/cx/ai-career-rpg-home` 且没有未提交文件，说明本地与远端一致。
-- 当前远端核对：另一台电脑拉取后 `git log --oneline -5` 应看到本次“前端第 5 关剧情修复 / 交接文档更新”提交、`0080bd7 feat(rpg): clarify lab save relay` 或更新提交；如果仍停在 `547ed6f`、`4370ddf`、`1b3cf5d`、`9171ac8`、`1a40fe4`、`e10069f`、`fa12dbc`、`2dd44d3`、`ca2c7aa`、`3fe3db1` 或默认分支提交，说明还没拉到最新交接/体验细修。
+- 当前远端核对：另一台电脑拉取后 `git log --oneline -5` 应看到 `5651c18 fix(rpg): clean frontend testing story examples` 或更晚提交；如果仍停在 `0f7c433`、`c587a23`、`547ed6f`、`4370ddf`、`1b3cf5d`、`9171ac8`、`1a40fe4`、`e10069f`、`fa12dbc`、`2dd44d3`、`ca2c7aa`、`3fe3db1` 或默认分支提交，说明还没拉到最新交接/体验细修。
 - 远端默认 HEAD：`git ls-remote --symref origin HEAD` 指向 `feat/guided-learning-bridge`，不是本分支；另一台电脑必须显式切到 `cx/ai-career-rpg-home`，不要只用 clone 后默认分支继续。
-- 给协作者的最短说明：不要直接用默认分支；拉仓库后必须切到 `cx/ai-career-rpg-home`，确认最新提交是本次交接文档更新、`0080bd7` 之后的更新或更晚提交；进入项目后必须 `nvm use` 到 Node `24.13.1`。
+- 给协作者的最短说明：不要直接用默认分支；拉仓库后必须切到 `cx/ai-career-rpg-home`。当前应看到 `5651c18 fix(rpg): clean frontend testing story examples` 或更晚提交；进入项目后必须 `nvm use` 到 Node `24.13.1`。
 - 他具体怎么拉：如果另一台电脑没有本项目，按“首次 clone”执行；如果已经 clone 过，按“已有仓库更新”执行；如果他本地有未提交改动，先新建自己的分支或 stash，不要直接覆盖。
-- 首次 clone 照抄：
+
+### 另一台电脑首次 clone 照抄
+
   ```bash
   git clone https://github.com/xixinikl/code-quest.git
   cd code-quest
@@ -28,7 +30,17 @@
   npm run verify
   npm run dev
   ```
-- 已有仓库更新照抄：
+
+拉完后 `git log --oneline -1` 应显示：
+
+```bash
+5651c18 fix(rpg): clean frontend testing story examples
+```
+
+如果显示的是 `feat/guided-learning-bridge`、`main` 上的提交，或早于 `5651c18`，说明没有拉到今天上传的内容。
+
+### 已有仓库更新照抄
+
   ```bash
   cd code-quest
   git fetch origin
@@ -40,14 +52,18 @@
   npm run verify
   npm run dev
   ```
-- 如果已有仓库但没有这个本地分支：
+
+如果 `git switch cx/ai-career-rpg-home` 提示本地没有这个分支：
+
   ```bash
   cd code-quest
   git fetch origin
   git switch -c cx/ai-career-rpg-home --track origin/cx/ai-career-rpg-home
   git log --oneline -5
   ```
-- 如果他本地有改动，先保护改动再拉：
+
+### 如果他本地有改动，先保护改动再拉
+
   ```bash
   git status --short
   git switch -c cx/my-local-work
@@ -57,7 +73,11 @@
   git switch cx/ai-career-rpg-home
   git pull --ff-only
   ```
-- 拉完必须确认：
+
+如果他不确定本地改动有没有用，不要 `checkout -B` 强制覆盖；先把改动提交在 `cx/my-local-work`，后面再比较或 cherry-pick。
+
+### 拉完必须确认
+
   ```bash
   git status --short --branch
   git rev-parse HEAD
@@ -66,45 +86,6 @@
   node -v
   ```
   本地 `HEAD`、`origin/cx/ai-career-rpg-home` 和 `git ls-remote` 的 hash 应一致；`node -v` 应是 `.nvmrc` 指定的 `v24.13.1`。如果不一致，不要继续开发，先重新 `git fetch origin` 并切回 `origin/cx/ai-career-rpg-home`。
-- 另一台电脑拉取命令：
-  ```bash
-  git clone https://github.com/xixinikl/code-quest.git
-  cd code-quest
-  git fetch origin cx/ai-career-rpg-home
-  git switch -c cx/ai-career-rpg-home --track origin/cx/ai-career-rpg-home
-  git log --oneline -1
-  git rev-parse HEAD
-  git rev-parse origin/cx/ai-career-rpg-home
-  nvm install
-  nvm use
-  npm install
-  npm run verify
-  ```
-- 如果他已经在本地有项目，但不确定自己在哪个分支：
-  ```bash
-  cd code-quest
-  git fetch origin
-  git checkout -B cx/ai-career-rpg-home origin/cx/ai-career-rpg-home
-  git log --oneline -1
-  git status --short --branch
-  nvm use
-  npm install
-  npm run verify
-  ```
-  `git log --oneline -1` 应显示本次交接文档更新、`0080bd7 feat(rpg): clarify lab save relay` 之后的更新或更晚提交；如果不是，先不要继续开发。
-- 如果另一台电脑已经 clone 过：
-  ```bash
-  cd code-quest
-  git fetch origin
-  git switch cx/ai-career-rpg-home
-  git pull --ff-only
-  git log --oneline -1
-  git rev-parse HEAD
-  git rev-parse origin/cx/ai-career-rpg-home
-  nvm use
-  npm install
-  npm run verify
-  ```
 - AI 应用开发路线：15 章；Java 后端路线：5 章；前端工程路线：5 章。三条路线均已进入岗位档案，Java/前端不再是空白占位。
 - 已实现：暗色神秘 RPG 舞台、章节专属背景、剧情角色立绘、可爱宠物/伙伴、地点航线、流程交接、名词解释、关键代码逐行导读、证据任务、Agent 委托、验收和面试复盘。
 - 最新体验收口：第 2 章产品链路不再串到 AI API 章；教学桥关键控件已暗色 RPG 化；代码导读新增“为什么看这一行 / 检查点 / 下一份证据”，第 1 章 `response.ok` 明确提示不能证明数据库写入。
@@ -134,7 +115,7 @@
 
 ### 2026-07-17 最新跨电脑核对
 
-- 当前功能基线至少包含 `0080bd7 feat(rpg): clarify lab save relay` 之后的岗位 Lab 与前端第 5 关剧情修复；远端 HEAD 请以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 为准。
+- 当前功能基线至少包含 `5651c18 fix(rpg): clean frontend testing story examples`；远端 HEAD 请以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 为准。
 - 当前沙盒内 `xixi-dev-system profile sync`、`doctor --project .` 和 `updates --project .` 已通过。
 - 另一台电脑拉下来后，用 `git rev-parse HEAD`、`git rev-parse origin/cx/ai-career-rpg-home`、`git ls-remote origin refs/heads/cx/ai-career-rpg-home` 三个值互相对照；三者应一致或本地 HEAD 是刚拉下来的同一提交。
 - 当前仍是“可继续开发的阶段分支”，不是 ready 合并态。最新完整 `npm run verify` 已在 Node `24.13.1` 下通过；合并前仍要做桌面与 390px 关键路径视觉终审、PR 审查和真人试玩。

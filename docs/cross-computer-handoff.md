@@ -8,8 +8,8 @@
 
 - 仓库：`https://github.com/xixinikl/code-quest.git`
 - 分支：`cx/ai-career-rpg-home`
-- 当前已推送功能基线：至少包含 `3fe983d fix(rpg): own java incident teaching flow`，以及 `0080bd7 feat(rpg): clarify lab save relay` 之后的岗位 Lab 与前端第 5 关剧情修复；最终 hash 以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 输出为准，不在文档里硬编码。
-- 当前远端最新提交：应包含本次交接文档更新和“前端第 5 关剧情不再复用 AI 保存链路”修复，或更新提交。
+- 当前已推送功能基线：`5651c18 fix(rpg): clean frontend testing story examples`。
+- 当前远端最新提交：本机已核对 `HEAD`、`origin/cx/ai-career-rpg-home` 和 GitHub 远端分支三方一致，均为 `5651c18afaf5fb41ff20dfef71e07b3b58158e91`。如果后续继续开发，以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 的实时输出为准。
 - 远端默认 HEAD：当前指向 `feat/guided-learning-bridge`，不是这条 RPG 分支。另一台电脑必须显式 checkout `cx/ai-career-rpg-home`。
 - 本地状态：`git status --short --branch` 应显示 `cx/ai-career-rpg-home...origin/cx/ai-career-rpg-home` 且没有未提交文件，才表示另一台电脑能完整拉到本轮内容。
 
@@ -31,7 +31,7 @@ npm install
 npm run verify
 ```
 
-`git log --oneline -1` 应显示本次“前端第 5 关剧情修复 / 交接文档更新”提交、`0080bd7 feat(rpg): clarify lab save relay` 之后的更新提交，或更晚提交。如果不是，说明没有拉到今天上传的内容，先不要继续开发。项目必须使用 `.nvmrc` 中的 Node `24.13.1`；如果直接用 Node 18，`node:sqlite` 和 jsdom 测试会失败。
+`git log --oneline -1` 应显示 `5651c18 fix(rpg): clean frontend testing story examples` 或更晚提交。如果不是，说明没有拉到今天上传的内容，先不要继续开发。项目必须使用 `.nvmrc` 中的 Node `24.13.1`；如果直接用 Node 18，`node:sqlite` 和 jsdom 测试会失败。
 
 ## 他到底怎么拉
 
@@ -104,7 +104,7 @@ node -v
 
 - `git status --short --branch` 显示在 `cx/ai-career-rpg-home`，并且没有未提交文件。
 - `git rev-parse HEAD`、`git rev-parse origin/cx/ai-career-rpg-home`、`git ls-remote origin refs/heads/cx/ai-career-rpg-home` 的 hash 一致。
-- `git log --oneline -5` 能看到 `3fe983d fix(rpg): own java incident teaching flow`、`ee64e0d fix(rpg): own accessibility teaching flow`、`1ecb39e fix(rpg): align frontend testing story copy` 或这些之后更新的提交。
+- `git log --oneline -5` 能看到 `5651c18 fix(rpg): clean frontend testing story examples`，以及 `0f7c433 fix(rpg): own frontend testing sandbox evidence`、`c587a23 docs(rpg): spell out collaborator pull steps` 等近期提交，或这些之后更新的提交。
 - `node -v` 是 `.nvmrc` 指定的 `v24.13.1`。
 
 如果这些不满足，先不要继续开发，也不要合并。重新执行 `git fetch origin`，确认远端分支名是 `origin/cx/ai-career-rpg-home`。
@@ -145,10 +145,12 @@ git ls-remote origin refs/heads/cx/ai-career-rpg-home
 期望看到：
 
 - 当前分支是 `cx/ai-career-rpg-home`
-- 最近提交包含本次“前端第 5 关剧情修复 / 交接文档更新”提交，或至少位于 `0080bd7 feat(rpg): clarify lab save relay` 之后；后面还能看到 `547ed6f feat(rpg): add lab flow translator`、`4370ddf feat(rpg): fold lab support dossier`、`1bbcced feat(rpg): consolidate lab mission director` 等岗位路线与实战页收口提交
+- 最近提交包含 `5651c18 fix(rpg): clean frontend testing story examples` 或更晚提交；后面还能看到 `0f7c433 fix(rpg): own frontend testing sandbox evidence`、`c587a23 docs(rpg): spell out collaborator pull steps`、`547ed6f feat(rpg): add lab flow translator`、`4370ddf feat(rpg): fold lab support dossier` 等岗位路线与实战页收口提交
 - `git ls-remote` 返回的 hash 与本机 `git rev-parse origin/cx/ai-career-rpg-home` 一致
 - `git status --short --branch` 没有未提交文件
 - `node -v` 显示 `v24.13.1`，或至少与 `.nvmrc` 一致
+
+如果只是想在另一台电脑继续开发，不需要先合并 `main`。直接在 `cx/ai-career-rpg-home` 上继续，新改动再开 `cx/...` 子分支或直接提交到这条阶段分支，等全站视觉终审和 PR 审查完成后再考虑合并。
 
 如果另一台电脑显示的远端 hash 和当前记录不一致，先执行：
 

@@ -52,6 +52,14 @@
 
 ## 当前已完成切片
 
+### R326：跨电脑拉取说明更新
+
+- [x] 核对本机 `HEAD`、`origin/cx/ai-career-rpg-home` 和 GitHub 远端分支一致，当前三方 hash 均为 `5651c18afaf5fb41ff20dfef71e07b3b58158e91`。
+- [x] 更新 `HANDOFF.md`、`docs/cross-computer-handoff.md` 和 `docs/cx-ai-career-rpg-home-merge-notes.md`，把另一台电脑怎么拉、拉完怎么确认、已有本地改动怎么保护写成可照抄步骤。
+- [x] 明确当前是可跨电脑继续开发的阶段分支，不需要先合并 `main`；不建议直接合并，仍需全站视觉终审、PR 审查和真人试玩。
+
+验收：另一台电脑按交接命令拉取后，`git log --oneline -1` 应显示 `5651c18 fix(rpg): clean frontend testing story examples` 或更晚提交；`git rev-parse HEAD`、`git rev-parse origin/cx/ai-career-rpg-home` 和 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 的 hash 应一致；`node -v` 应为 `.nvmrc` 指定的 `v24.13.1`。
+
 ### R299：跨电脑交接与合并边界复核
 
 - [x] 核对本地分支 `cx/ai-career-rpg-home` 与远端 `origin/cx/ai-career-rpg-home` 对齐；最新已推送提交为 `2dd44d3927a9d2de4b5e96f3737553e35d1a3f68 feat(rpg): guide case four lab scenes`。
