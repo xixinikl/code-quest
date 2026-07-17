@@ -185,6 +185,15 @@
 
 验收：`npm run test -- src/App.test.tsx --run -t "前端第 5 关剧情|岗位 Lab|前端回归|上线港"` 通过 3 项目标测试；`npm run test -- src/teachingRemediation.test.ts --run -t "前端第 5 关教学剧情"` 通过；`npm run typecheck` 通过。浏览器隔离 API `4394`、临时 SQLite `/tmp/code-quest-r321.sqlite`、Vite `5244` 下，`#chapter-frontend-5` 桌面 1200 和 390px 均无横向溢出，暗色背景 `rgb(7, 12, 20)`，控制台 error 为 0；页面正文不再出现 `/api/canvases`、`canvas-save-persistence`、保存画布、验收试炼画布或旧保存链路。
 
+### R322：前端第 4 关教学层无障碍所有权修复
+
+- [x] 接着 R308 的 Lab 修复，继续把 `frontend-accessibility-proof` 的教学 scenario 从第 14 章上线门禁结构里拆出来；项目地图节点改为用户任务、语义与状态反馈、移动端复测、可访问性哨塔、回归守门和无障碍交付决定。
+- [x] 代码导读从 `release-checklist.md` / 生产环境 / AI_API_KEY / 备份恢复 / 回滚，改为 `docs/accessibility-checklist.md` 和 `frontend/accessibility-audit.md`，强调 button/label/landmark、Tab/focus、aria-live、390px 与旧路径回归。
+- [x] 新增教学层回归测试，直接读取 `frontendAccessibilityProofScenario`，防止 `case-014-release-readiness`、上线门禁、上线计划、生产变量、生产环境、AI_API_KEY、备份恢复和数据备份回流。
+- [x] 浏览器深链抽检 `#chapter-frontend-4`：入口和闯关后的剧情页均保持前端工程/无障碍语境，用户能看到可访问性、键盘、读屏、焦点、语义和 390px 回归路线。
+
+验收：`npm run test -- src/teachingRemediation.test.ts --run -t "前端第 4 关教学剧情|前端第 5 关教学剧情"` 通过；`npm run test -- src/App.test.tsx --run -t "前端无障碍|Java 事务和前端性能|岗位路线"` 通过 11 项目标测试；完整 `npm run verify` 通过 10 个测试文件 / 185 个测试、生产构建和 TeachingBridge 懒加载检查。浏览器隔离 API `4395`、临时 SQLite `/tmp/code-quest-r322.sqlite`、Vite `5245` 下，`#chapter-frontend-4` 桌面 1280 与 390px 均无横向溢出，暗色背景 `rgb(7, 12, 20)`，控制台 error 为 0；页面正文不再出现上线门禁、上线计划、生产变量、生产环境、备份恢复或 AI_API_KEY。
+
 ### R300：第 3 章登录态实战剧情导演层
 
 - [x] 第 3 章实战步骤补齐场景、角色、任务卷轴和流程接力：身份路线、凭证存储、401 反证、刷新复查、Agent 委托、交付审查和面试复盘都明确“谁把凭证交给谁，刷新后谁来认人”。

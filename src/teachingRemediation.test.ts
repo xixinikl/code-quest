@@ -14,6 +14,7 @@ import {
   case13Scenario,
   case14Scenario,
   case15Scenario,
+  frontendAccessibilityProofScenario,
   frontendTestingProofScenario,
   type TeachingScenario,
 } from "./teaching";
@@ -185,5 +186,24 @@ describe("第 2-15 章专属补课契约", () => {
     expect(teachingText).not.toContain("保存链路");
     expect(teachingText).not.toContain("保存画布");
     expect(teachingText).not.toContain("验收试炼画布");
+  });
+
+  it("前端第 4 关教学剧情不再复用上线门禁素材", () => {
+    const teachingText = JSON.stringify(frontendAccessibilityProofScenario);
+
+    expect(teachingText).toContain("frontend-accessibility-proof");
+    expect(teachingText).toContain("无障碍交付庭地图");
+    expect(teachingText).toContain("用户任务");
+    expect(teachingText).toContain("语义结构");
+    expect(teachingText).toContain("键盘路径");
+    expect(teachingText).toContain("390px 复测");
+    expect(teachingText).not.toContain("case-014-release-readiness");
+    expect(teachingText).not.toContain("上线门禁");
+    expect(teachingText).not.toContain("上线计划");
+    expect(teachingText).not.toContain("生产变量");
+    expect(teachingText).not.toContain("生产环境");
+    expect(teachingText).not.toContain("AI_API_KEY");
+    expect(teachingText).not.toContain("备份恢复");
+    expect(teachingText).not.toContain("数据备份");
   });
 });
