@@ -849,6 +849,63 @@ describe("岗位路线实战场景契约", () => {
     );
   });
 
+  it("第 4 章 Lab 首屏会解释接口错误名词，避免新手只看到状态码", () => {
+    const config = getLabConfig("api-error-court");
+    const jobArtifacts = Object.entries(config.artifactGuides).map(
+      ([id, guide]) => ({
+        id,
+        label: guide.place,
+        language: "txt",
+        relativePath: `${config.practical.sandboxPath}/${id}.txt`,
+        content: guide.keyLines.join("\n"),
+      }),
+    );
+
+    render(
+      <Lab
+        artifacts={jobArtifacts}
+        attempt={
+          {
+            id: "attempt-case-04-glossary",
+            scenarioId: "api-error-court",
+            status: "active",
+            hintLevel: 0,
+            verificationStatus: "not_run",
+            steps: {},
+          } as Parameters<typeof Lab>[0]["attempt"]
+        }
+        onBackToRoadmap={vi.fn()}
+        onSubmitted={vi.fn()}
+        setAttempt={vi.fn()}
+      />,
+    );
+
+    expect(screen.getByLabelText("本关流程路线")).toHaveTextContent("前端");
+    expect(screen.getByLabelText("本关流程路线")).toHaveTextContent("接口路由");
+    expect(screen.getByLabelText("本关名词小抄")).toHaveTextContent(
+      "请求参数",
+    );
+    expect(screen.getByLabelText("本关名词小抄")).toHaveTextContent(
+      "前端交给接口的数据",
+    );
+    expect(screen.getByLabelText("本关名词小抄")).toHaveTextContent("状态码");
+    expect(screen.getByLabelText("本关名词小抄")).toHaveTextContent(
+      "成功、参数错、未登录还是服务器异常",
+    );
+    expect(screen.getByLabelText("本关名词小抄")).toHaveTextContent("400");
+    expect(screen.getByLabelText("本关名词小抄")).toHaveTextContent(
+      "请求参数有问题",
+    );
+    expect(screen.getByLabelText("本关名词小抄")).toHaveTextContent("500");
+    expect(screen.getByLabelText("本关名词小抄")).toHaveTextContent(
+      "服务器内部异常",
+    );
+    expect(screen.getByLabelText("本关名词小抄")).toHaveTextContent("日志");
+    expect(screen.getByLabelText("本关名词小抄")).toHaveTextContent(
+      "后端留下的运行记录",
+    );
+  });
+
   it("实战保存后会显示具体接力回执，避免自动跳步后迷路", async () => {
     const user = userEvent.setup();
     const config = getLabConfig("frontend-performance-proof");
