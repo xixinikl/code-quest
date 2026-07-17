@@ -13539,6 +13539,21 @@ export default function App() {
     const selectedChapterFlowSteps = getChapterFlowSteps(selectedChapter);
     const selectedChapterHandoffs = getChapterHandoffs(selectedChapter);
     const selectedChapterPlayerGoal = getChapterPlayerGoal(selectedChapter);
+    const nextQuestChapterIndex = selectedRoute.chapters.findIndex(
+      (chapter) => chapter.id === nextQuestChapter.id,
+    );
+    const nearbyRouteChapters =
+      selectedRoutePlayable && selectedRoute.chapters.length > 0
+        ? routeCompleted
+          ? selectedRoute.chapters
+          : selectedRoute.chapters.slice(
+              Math.max(0, nextQuestChapterIndex - 1),
+              Math.min(
+                selectedRoute.chapters.length,
+                Math.max(0, nextQuestChapterIndex - 1) + 5,
+              ),
+            )
+        : [];
     return (
       <section
         className={`intro visual-novel scene-${introScene}`}
@@ -14146,7 +14161,7 @@ export default function App() {
                   </div>
                   {selectedRoutePlayable && (
                     <p className="roadmap-summary-hint">
-                      点击章节查看卷宗；只有当前章节可以进入实战。
+                      先看当前附近星图，完整路线收在下方；只有当前章节可以进入实战。
                     </p>
                   )}
                   <div
@@ -14156,7 +14171,7 @@ export default function App() {
                     <div className="world-map-line" />
                     {selectedRoute.status === "可进入" &&
                     selectedRoute.chapters.length > 0
-                      ? selectedRoute.chapters.map((chapter) => {
+                      ? nearbyRouteChapters.map((chapter) => {
                           const completed = isChapterCleared(
                             developer,
                             chapter.id,

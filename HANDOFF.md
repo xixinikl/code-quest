@@ -17,7 +17,7 @@
 要拉的分支：cx/ai-career-rpg-home
 不要用 clone 后默认分支继续开发。先切到 cx/ai-career-rpg-home，再核对本地 HEAD、origin/cx/ai-career-rpg-home 和远端 ls-remote 三个 hash。
 完整基线：至少能看到 ffbbf8b feat(rpg): show lab companion squad，或者看到晚于它的场景运镜更新提交。
-最新体验基线：如果能看到 feat(rpg): show lab interview replay 或更晚提交，说明已包含 Lab 首屏面试复盘稿，用户能把本关证据整理成面试表达。
+最新体验基线：如果能看到 feat(rpg): show nearby route map 或更晚提交，说明已包含简报页“当前附近星图”减负；如果能看到 feat(rpg): show lab interview replay 或更晚提交，说明已包含 Lab 首屏面试复盘稿，用户能把本关证据整理成面试表达。
 拉完先跑：nvm use && npm install && npm run verify:quick
 准备合并或交付前再跑：npm run verify
 ```
@@ -101,16 +101,20 @@ git pull --ff-only origin cx/ai-career-rpg-home
 
 - 当前远端：`https://github.com/xixinikl/code-quest.git`
 - 当前工作分支：`cx/ai-career-rpg-home`
-- 当前已推送功能基线：远端 `origin/cx/ai-career-rpg-home` 已到 `6933028 feat(rpg): unify teaching dark style`；本次面试复盘稿更新提交后会晚于它。最终远端 hash 仍以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 输出为准。
-- 当前已推送交接基线：本文件提交后应晚于 `6933028`，包含另一台电脑拉取、核对、继续开发、不能直接合并，以及最新第 1 章地点路线/当前流程交接单/主动复述证据边界/复盘关键线索/下一地点证据交接/Lab 刷新恢复/Lab 实战接力/收藏解锁/结案后冒险菜单/下一幕预告/玩家身份契约/当前只读这一行/代码证据交接复盘/带入实战的证据包/Lab 实战入场证据包/同行小队/场景运镜/第 2 章职业产出/本关流程路线/本关名词小抄/本关证据任务/流程分镜/代码证据导师卡/教学桥暗色统一/本关面试复盘稿说明。最终远端 hash 仍以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 为准。
+- 当前已推送功能基线：远端 `origin/cx/ai-career-rpg-home` 已到 `6933028 feat(rpg): unify teaching dark style`；本次面试复盘稿和当前附近星图更新提交后会晚于它。最终远端 hash 仍以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 输出为准。
+- 当前已推送交接基线：本文件提交后应晚于 `6933028`，包含另一台电脑拉取、核对、继续开发、不能直接合并，以及最新第 1 章地点路线/当前流程交接单/主动复述证据边界/复盘关键线索/下一地点证据交接/Lab 刷新恢复/Lab 实战接力/收藏解锁/结案后冒险菜单/下一幕预告/玩家身份契约/当前只读这一行/代码证据交接复盘/带入实战的证据包/Lab 实战入场证据包/同行小队/场景运镜/第 2 章职业产出/本关流程路线/本关名词小抄/本关证据任务/流程分镜/代码证据导师卡/教学桥暗色统一/本关面试复盘稿/简报页当前附近星图说明。最终远端 hash 仍以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 为准。
 - 当前本地核对：推送完成后，`git status --short --branch` 应显示 `cx/ai-career-rpg-home...origin/cx/ai-career-rpg-home` 且没有未提交文件，说明本地与远端一致。
-- 当前远端核对：另一台电脑拉取后 `git log --oneline -8` 应看到 `6933028 feat(rpg): unify teaching dark style`、本次面试复盘稿更新提交，或更晚提交；如果只看到 `5927e56`、`5362d09`、`03aaefc`、`b30bb70`、`b7315bf`、`98f59b4`、`467073f`、`ffbbf8b`、`4f51ac8`、`5cabd32`、`5c3a176`、`feeac06`、`5c84acf`、`865e721`、`678d428`、`6dc63ea`、`b42a904`、`2387686`、`772f66e`、`65e3603`、`5651c18`、`0fb18e7`、`0f7c433`、`c587a23`、`547ed6f`、`4370ddf`、`1b3cf5d`、`9171ac8`、`1a40fe4`、`e10069f`、`fa12dbc`、`2dd44d3`、`ca2c7aa`、`3fe3db1` 或默认分支提交，说明还没拉到最新交接/体验细修。
+- 当前远端核对：另一台电脑拉取后 `git log --oneline -8` 应看到 `6933028 feat(rpg): unify teaching dark style`、本次当前附近星图/面试复盘稿更新提交，或更晚提交；如果只看到 `5927e56`、`5362d09`、`03aaefc`、`b30bb70`、`b7315bf`、`98f59b4`、`467073f`、`ffbbf8b`、`4f51ac8`、`5cabd32`、`5c3a176`、`feeac06`、`5c84acf`、`865e721`、`678d428`、`6dc63ea`、`b42a904`、`2387686`、`772f66e`、`65e3603`、`5651c18`、`0fb18e7`、`0f7c433`、`c587a23`、`547ed6f`、`4370ddf`、`1b3cf5d`、`9171ac8`、`1a40fe4`、`e10069f`、`fa12dbc`、`2dd44d3`、`ca2c7aa`、`3fe3db1` 或默认分支提交，说明还没拉到最新交接/体验细修。
 - 远端默认 HEAD：`git ls-remote --symref origin HEAD` 指向 `feat/guided-learning-bridge`，不是本分支；另一台电脑必须显式切到 `cx/ai-career-rpg-home`，不要只用 clone 后默认分支继续。
-- 给协作者的最短说明：不要直接用默认分支；拉仓库后必须切到 `cx/ai-career-rpg-home`。当前至少应看到 `6933028 feat(rpg): unify teaching dark style`、本次面试复盘稿更新提交，或更晚提交；进入项目后必须 `nvm use` 到 Node `24.13.1`。
+- 给协作者的最短说明：不要直接用默认分支；拉仓库后必须切到 `cx/ai-career-rpg-home`。当前至少应看到 `6933028 feat(rpg): unify teaching dark style`、本次当前附近星图/面试复盘稿更新提交，或更晚提交；进入项目后必须 `nvm use` 到 Node `24.13.1`。
 - 他具体怎么拉：如果另一台电脑没有本项目，按“首次 clone”执行；如果已经 clone 过，按“已有仓库更新”执行；如果他本地有未提交改动，先新建自己的分支或 stash，不要直接覆盖。不要在默认分支上继续开发，也不要在没有核对 hash 的情况下合并。
 
 ### 最新进度补充（2026-07-18 凌晨）
 
+- 已把任务简报右侧世界地图改成 `当前附近星图`：未通关时默认只显示当前章节附近最多 5 个地点，完整 15 章路线仍保留在 `后续主线关卡` 折叠区。
+- 目的：解决用户一进入简报就同时看到 15 章、任务板、卷宗和折叠区而发晕的问题。现在第一屏更聚焦当前委托，路线规划没有删除。
+- 主线全部通关后仍显示完整已点亮世界地图，保证结业状态能看到 15/15。
+- 验证：`npm run test -- src/App.test.tsx --run -t "进入主线后进入教学地图"` 通过。
 - 已在真实 Lab 首屏加入 `本关面试复盘稿`。现在用户在进入材料前，会看到本关如何整理成 `情境 / 行动 / 结果 / 表达` 四段。
 - 面试复盘稿读取路线章节 `workBackground / evidenceTask / acceptanceAction / interviewReview` 自动生成，不写死第 5 章。
 - 第 5 章真实 Lab 显示：情境是用户连点、网络重试、多人同时编辑；行动是用重复请求、数据库记录数量和测试结果证明；结果是连续点击、刷新重试和并发请求不生成重复核心数据；表达是只靠前端禁用不够，还需要后端约束。

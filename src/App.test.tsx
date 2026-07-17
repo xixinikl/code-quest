@@ -1959,7 +1959,9 @@ async function enterMainQuest(user: ReturnType<typeof userEvent.setup>) {
   await user.click(screen.getByRole("button", { name: /领取委托/ }));
   expect(screen.getAllByText(/15 章/).length).toBeGreaterThan(0);
   expect(
-    screen.getByText("点击章节查看卷宗；只有当前章节可以进入实战。"),
+    screen.getByText(
+      "先看当前附近星图，完整路线收在下方；只有当前章节可以进入实战。",
+    ),
   ).toBeInTheDocument();
   expect(
     screen.getByRole("button", { name: /AI 应用开发.*可进入/ }),
@@ -1995,6 +1997,10 @@ async function enterMainQuest(user: ReturnType<typeof userEvent.setup>) {
   expect(screen.getAllByText(/安全接入 AI API/).length).toBeGreaterThan(0);
   expect(screen.getByText(/让资料进入 AI 回答/)).toBeInTheDocument();
   expect(screen.getByText(/把项目经历讲成面试回答/)).toBeInTheDocument();
+  const aiWorldMap = screen.getByLabelText("AI 应用开发世界地图");
+  expect(aiWorldMap).toHaveTextContent("数据断层");
+  expect(aiWorldMap).toHaveTextContent("一致性熔炉");
+  expect(aiWorldMap).not.toHaveTextContent("面试议会");
   const firstChapterDossier = screen.getByRole("region", {
     name: /选中章节卷宗/,
   });
