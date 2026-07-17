@@ -176,6 +176,15 @@
 
 验收：`npm run test -- src/App.test.tsx --run -t "岗位 Lab 默认收束辅助资料|首页到第一章"` 通过目标测试；完整 `npm run verify` 通过格式、lint、typecheck、10 个测试文件 / 181 个测试、生产构建和 TeachingBridge 懒加载检查。浏览器隔离 API `4391`、临时 SQLite `/tmp/code-quest-r318.sqlite`、Vite `5241` 下，从 `#chapter-frontend-5` 逐幕收集 8/8 线索进入实战 Lab，首屏显示 `本幕流程翻译`、`能证明什么、不能证明什么` 和下一棒 `守报告校验器`；390×844 下 `scrollWidth = clientWidth = 390`，背景暗色 `rgb(7, 12, 20)`，控制台 error 为 0。
 
+### R321：前端第 5 关剧情层保存链路串台修复
+
+- [x] 浏览器复核 `#chapter-frontend-5` 时发现剧情线索层仍从通用 AI 验收章露出 `/api/canvases` 和旧保存代码片段，虽然 Lab 配置已修；这是用户截图里“风格和学习逻辑断层”的同类问题。
+- [x] 给 `frontend-testing-proof` 新增专属剧情/journey 文案重写：把通用保存链路改成筛选交互、可见列表、DOM、Network 和报告指纹；第一幕代码片段改为 `applyFilter` / `readVisibleRows`，不再讲 AI 主线保存画布。
+- [x] 新增运行时回归测试，直接读取 `getTeachingStoryScenes("frontend-testing-proof")`，防止 `/api/canvases`、保存链路、保存画布或验收试炼画布从 `TeachingBridge` 剧情层回流。
+- [x] 同步更新交接文档，明确另一台电脑必须拉 `cx/ai-career-rpg-home`，不要停在默认分支；拉完用 `git log --oneline -1`、`git rev-parse HEAD` 和 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 核对。
+
+验收：`npm run test -- src/App.test.tsx --run -t "前端第 5 关剧情|岗位 Lab|前端回归|上线港"` 通过 3 项目标测试；`npm run test -- src/teachingRemediation.test.ts --run -t "前端第 5 关教学剧情"` 通过；`npm run typecheck` 通过。浏览器隔离 API `4394`、临时 SQLite `/tmp/code-quest-r321.sqlite`、Vite `5244` 下，`#chapter-frontend-5` 桌面 1200 和 390px 均无横向溢出，暗色背景 `rgb(7, 12, 20)`，控制台 error 为 0；页面正文不再出现 `/api/canvases`、`canvas-save-persistence`、保存画布、验收试炼画布或旧保存链路。
+
 ### R300：第 3 章登录态实战剧情导演层
 
 - [x] 第 3 章实战步骤补齐场景、角色、任务卷轴和流程接力：身份路线、凭证存储、401 反证、刷新复查、Agent 委托、交付审查和面试复盘都明确“谁把凭证交给谁，刷新后谁来认人”。

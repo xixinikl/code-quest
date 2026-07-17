@@ -14,6 +14,7 @@ import {
   case13Scenario,
   case14Scenario,
   case15Scenario,
+  frontendTestingProofScenario,
   type TeachingScenario,
 } from "./teaching";
 import { withChapterRemediation } from "./remediation";
@@ -169,5 +170,20 @@ describe("第 2-15 章专属补课契约", () => {
     expect(new Set(causalityTakeaways).size).toBe(
       chapterRemediationContracts.length,
     );
+  });
+
+  it("前端第 5 关教学剧情不再露出旧 AI 保存链路", () => {
+    const teachingText = JSON.stringify(frontendTestingProofScenario);
+
+    expect(teachingText).toContain("frontend-testing-proof");
+    expect(teachingText).toContain("执行筛选交互后复核可见列表");
+    expect(teachingText).toContain("筛选后列表仍匹配");
+    expect(teachingText).not.toContain("/api/canvases");
+    expect(teachingText).not.toContain("canvas-save-persistence");
+    expect(teachingText).not.toContain("POST 保存后再 GET");
+    expect(teachingText).not.toContain("保存后刷新丢数据");
+    expect(teachingText).not.toContain("保存链路");
+    expect(teachingText).not.toContain("保存画布");
+    expect(teachingText).not.toContain("验收试炼画布");
   });
 });

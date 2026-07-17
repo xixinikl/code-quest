@@ -8,8 +8,8 @@
 
 - 仓库：`https://github.com/xixinikl/code-quest.git`
 - 分支：`cx/ai-career-rpg-home`
-- 当前已推送功能基线：`0080bd7 feat(rpg): clarify lab save relay`。
-- 当前远端最新提交：至少包含 `ecf2fda docs(rpg): clarify collaborator pull steps`、`0080bd7 feat(rpg): clarify lab save relay` 或更新提交；最终 hash 以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 输出为准，不在文档里硬编码。
+- 当前已推送功能基线：至少包含 `0080bd7 feat(rpg): clarify lab save relay` 之后的岗位 Lab 与前端第 5 关剧情修复；最终 hash 以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 输出为准，不在文档里硬编码。
+- 当前远端最新提交：应包含本次交接文档更新和“前端第 5 关剧情不再复用 AI 保存链路”修复，或更新提交。
 - 远端默认 HEAD：当前指向 `feat/guided-learning-bridge`，不是这条 RPG 分支。另一台电脑必须显式 checkout `cx/ai-career-rpg-home`。
 - 本地状态：`git status --short --branch` 应显示 `cx/ai-career-rpg-home...origin/cx/ai-career-rpg-home` 且没有未提交文件，才表示另一台电脑能完整拉到本轮内容。
 
@@ -31,7 +31,7 @@ npm install
 npm run verify
 ```
 
-`git log --oneline -1` 应显示 `ecf2fda docs(rpg): clarify collaborator pull steps`、`0080bd7 feat(rpg): clarify lab save relay` 或更新提交。如果不是，说明没有拉到今天上传的内容，先不要继续开发。项目必须使用 `.nvmrc` 中的 Node `24.13.1`；如果直接用 Node 18，`node:sqlite` 和 jsdom 测试会失败。
+`git log --oneline -1` 应显示本次“前端第 5 关剧情修复 / 交接文档更新”提交、`0080bd7 feat(rpg): clarify lab save relay` 之后的更新提交，或更晚提交。如果不是，说明没有拉到今天上传的内容，先不要继续开发。项目必须使用 `.nvmrc` 中的 Node `24.13.1`；如果直接用 Node 18，`node:sqlite` 和 jsdom 测试会失败。
 
 ## 另一台电脑从零拉取
 
@@ -69,7 +69,7 @@ git ls-remote origin refs/heads/cx/ai-career-rpg-home
 期望看到：
 
 - 当前分支是 `cx/ai-career-rpg-home`
-- 最近提交包含 `0080bd7 feat(rpg): clarify lab save relay`；后面还能看到 `547ed6f feat(rpg): add lab flow translator`、`4370ddf feat(rpg): fold lab support dossier`、`1bbcced feat(rpg): consolidate lab mission director` 等岗位路线与实战页收口提交
+- 最近提交包含本次“前端第 5 关剧情修复 / 交接文档更新”提交，或至少位于 `0080bd7 feat(rpg): clarify lab save relay` 之后；后面还能看到 `547ed6f feat(rpg): add lab flow translator`、`4370ddf feat(rpg): fold lab support dossier`、`1bbcced feat(rpg): consolidate lab mission director` 等岗位路线与实战页收口提交
 - `git ls-remote` 返回的 hash 与本机 `git rev-parse origin/cx/ai-career-rpg-home` 一致
 - `git status --short --branch` 没有未提交文件
 - `node -v` 显示 `v24.13.1`，或至少与 `.nvmrc` 一致
@@ -97,6 +97,7 @@ git log --oneline -1
 - 第 3 章登录态、第 4 章接口错误、第 5 章数据一致性实战已补齐场景、角色、任务卷轴和流程接力，不再退回普通表单体验。
 - 第 1 章实战后半段已补齐沙盒验收、Agent 委托、交付审查、因果解释和面试迁移的证据交接，强调页面绿灯、接口 201、数据库写入和刷新读回是四种不同证据。
 - 实战页新增「本幕流程翻译」和保存后的「刚刚到下一步的接力」：用户保存回答后会看到上一棒停在哪、现在进入哪一棒、接下来只盯住哪份证据，减少自动跳步后的迷路感。
+- 前端第 5 关剧情层已从通用 AI 保存链路改成前端回归链路：线索、流程和代码片段改为筛选交互、可见列表、DOM、Network 和报告指纹，不再显示 `/api/canvases`、`canvas-save-persistence`、保存画布或验收试炼画布。
 - 新增一批真实沙盒练习与复测材料，放在 `sandbox/`，用于训练用户读证据、写 Agent 任务、验收交付和迁移复盘。
 - 将旧大 PNG 场景替换为 WebP，保留统一暗色幻想风格并减少资源体积。
 - 更新 `HANDOFF.md`、`docs/ai-career-rpg-tasks.md`、`docs/cx-ai-career-rpg-home-merge-notes.md` 和 changelog 片段。
@@ -108,6 +109,7 @@ git log --oneline -1
 - Node `24.13.1` 下完整 `npm run verify` 通过：格式、Lint、TypeScript、10 个测试文件 / 182 个测试、生产构建和 TeachingBridge 懒加载检查均通过；Vite 主包体积 warning 是已知债务，不是失败。
 - 环境反例：如果终端仍在 Node `18.20.8`，`npm run verify` 会因 `node:sqlite` 缺失和 jsdom ESM 依赖失败；先执行 `nvm use` 再验收。
 - 本轮浏览器验收：隔离 API `4393`、临时 SQLite `/tmp/code-quest-r320.sqlite`、Vite `5243`；`#chapter-frontend-3` 从剧情探索收集 10/10 线索进入前端性能 Lab，保存第一题后可见「刚刚停在 Network」「现在进入 接口」「只盯住『拆后端等待』」。桌面 1200 与 390px 均无横向溢出，暗色背景，控制台 error 为 0。
+- 本轮追加浏览器验收：隔离 API `4394`、临时 SQLite `/tmp/code-quest-r321.sqlite`、Vite `5244`；`#chapter-frontend-5` 剧情页真实正文不再出现 `/api/canvases`、`canvas-save-persistence`、保存画布、验收试炼画布或旧保存链路。桌面 1200 与 390px 均无横向溢出，暗色背景 `rgb(7, 12, 20)`，控制台 error 为 0。
 - 浏览器验收：隔离 API `4369`、临时 SQLite `/tmp/code-quest-r303.sqlite`、Vite `5219`；第 1 章完整剧情探索到实战 Lab，桌面和 390px 移动端无横向溢出，控制台 error 为 0。
 - 合并前追加抽检：隔离 API `4370`、临时 SQLite `/tmp/code-quest-r304.sqlite`、Vite `5220`；桌面 1280 与 390px 下序章、证据选择、领取委托、三路线大厅均无横向溢出，控制台 error 为 0。
 

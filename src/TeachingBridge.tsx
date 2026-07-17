@@ -4523,6 +4523,114 @@ const testingProofJourney: QuestJourneyItem[] = [
   },
 ];
 
+function rewriteQuestContent<T>(
+  value: T,
+  replacements: Array<[string, string]>,
+): T {
+  if (typeof value === "string") {
+    let rewritten: string = value;
+    for (const [from, to] of replacements) {
+      rewritten = rewritten.replaceAll(from, to);
+    }
+    return rewritten as T;
+  }
+
+  if (Array.isArray(value)) {
+    return value.map((item) => rewriteQuestContent(item, replacements)) as T;
+  }
+
+  if (value && typeof value === "object") {
+    return Object.fromEntries(
+      Object.entries(value).map(([key, item]) => [
+        key,
+        rewriteQuestContent(item, replacements),
+      ]),
+    ) as T;
+  }
+
+  return value;
+}
+
+const frontendTestingCopyReplacements: Array<[string, string]> = [
+  ["POST 后再 GET / 查询数据库", "筛选交互 → 可见列表 / 报告指纹"],
+  [
+    "集成测试守交接：接口、数据层、数据库之间是不是真的把东西传过去了。",
+    "集成测试守交接：用户动作、组件状态、接口响应和可见列表是不是同一条路径。",
+  ],
+  ["验收试炼场", "前端回归试炼场"],
+  ["验收试炼官", "测试仲裁官"],
+  ["保存成功，刷新后却空无一物", "筛选条件切换后，列表状态和报告不一致"],
+  ["保存消失", "筛选错乱"],
+  [
+    "测试先执行 POST 保存，再执行 GET 读取。旧故障下 GET 返回空数组，测试失败；修复后 GET 能读到刚保存的记录。",
+    "测试先选择筛选条件，再读取可见列表和报告指纹。旧故障下列表状态错乱，测试失败；修复后同一条用户路径能得到稳定结果。",
+  ],
+  [
+    "await postJson('/api/canvases', draft)\nconst list = await getJson('/api/canvases')\nassert.equal(list.length, 1)",
+    "await applyFilter({ status: 'blocked' })\nconst rows = readVisibleRows()\nassert.deepEqual(rows.map(row => row.status), ['blocked'])",
+  ],
+  ["保存后刷新仍存在", "筛选后列表仍匹配"],
+  [
+    "例如 buildCanvasPayload(draft) 应该保留 title 和 nodes。这里不用启动整个页面，只验证这个函数自己的职责。",
+    "例如 buildFilterState(filters) 应该保留 keyword、status 和 sort。这里不用启动整个页面，只验证这个函数自己的职责。",
+  ],
+  [
+    "const payload = buildCanvasPayload(draft)\nassert.equal(payload.title, draft.title)\nassert.deepEqual(payload.nodes, draft.nodes)",
+    "const state = buildFilterState(filters)\nassert.equal(state.status, filters.status)\nassert.equal(state.sort, filters.sort)",
+  ],
+  [
+    "POST 交出去的东西，GET 或数据库能不能再找回来",
+    "用户点出的筛选条件，列表和报告能不能一起对上",
+  ],
+  [
+    "理解集成测试如何证明前端、接口、数据层和数据库协作。",
+    "理解集成测试如何证明用户操作、组件状态、接口响应和可见结果协作。",
+  ],
+  [
+    "当问题发生在交接处，单元测试不够。要用接口请求、数据库查询或 Network 证明链路真的接上。",
+    "当问题发生在交互路径上，单元测试不够。要用用户事件、DOM 结果、Network 和报告指纹证明路径真的接上。",
+  ],
+  [
+    "测试多个模块一起工作时是否完成业务目标，例如接口调用数据层并返回正确结果。",
+    "测试多个模块一起工作时是否完成业务目标，例如用户筛选后组件、请求和列表结果保持一致。",
+  ],
+  ["验证 POST 到 GET", "验证筛选到列表"],
+  ["保存后立刻读取", "筛选后立刻复核"],
+  [
+    "POST /api/canvases 返回 201 只能说明接口回应成功；再 GET 到同一条记录，才说明数据真的进入可读取链路。",
+    "筛选按钮点亮只能说明交互触发了；DOM 列表、Network 响应和报告指纹一致，才说明用户路径真的修好。",
+  ],
+  [
+    "POST /api/canvases -> 201 Created\nGET /api/canvases -> [{ title: '试炼草稿' }]",
+    "选择 status=blocked -> 列表只剩 blocked\n报告 sourceHash -> 当前源码指纹匹配",
+  ],
+  [
+    "这就是你之前卡住的点：201 是一枚印章，GET/数据库证据才证明档案真的入库。",
+    "这就是前端回归最容易漏的点：按钮变色不是证据，可见列表、Network 和报告指纹对齐才是证据。",
+  ],
+  ["核对数据库证据", "核对 DOM 与报告证据"],
+  ["查询记录数量", "核对可见行和源码指纹"],
+  [
+    "如果数据库 SELECT count(*) 是 1，就能反证“只是内存里看起来成功”。验收要能说清每个证据能证明什么。",
+    "如果 DOM 可见行和报告 sourceHash 都对上，就能反证“只是本地状态看起来成功”。验收要能说清每个证据能证明什么。",
+  ],
+  [
+    "SELECT count(*) FROM canvases WHERE title = '试炼草稿'\n结果：1",
+    "visibleRows.every(row => row.status === 'blocked')\nreport.sourceHash === currentSourceHash",
+  ],
+  [
+    "测试和数据库证据一起出现时，Agent 的交付才更容易被信任。",
+    "DOM、Network 和报告证据一起出现时，Agent 的交付才更容易被信任。",
+  ],
+  ["数据库证据", "DOM 与报告证据"],
+  ["接口、数据层、数据库", "用户事件、组件状态、接口响应和 DOM"],
+];
+
+const frontendTestingJourney: QuestJourneyItem[] = rewriteQuestContent(
+  testingProofJourney,
+  frontendTestingCopyReplacements,
+);
+
 const testingProofScenes: QuestScene[] = [
   {
     id: "test-oath-gate",
@@ -6878,45 +6986,46 @@ const javaReleaseScenes: QuestScene[] = releaseReadinessScenes.map(
   },
 );
 
-const frontendTestingScenes: QuestScene[] = testingProofScenes.map(
-  (scene, index) => {
-    const details = [
-      {
-        image: verificationTrialArenaScene,
-        portraitOverride: testArbiterPortrait,
-        place: "前端回归试炼场",
-        speaker: "测试仲裁官",
-        dialogue:
-          "仲裁官把失败复现、组件测试和真实浏览器路径摆在一起：前端修复必须证明用户真正看到的状态变对了。",
-      },
-      {
-        image: memoryEchoGalleryScene,
-        portraitOverride: echoForensicsPortrait,
-        place: "组件行为回声廊",
-        speaker: "交互取证师",
-        dialogue:
-          "取证师让你重放点击、加载、失败和重试：测试不是给按钮盖章，而是记录状态如何随着用户动作变化。",
-      },
-      {
-        image: deliveryReviewCourtScene,
-        portraitOverride: deliveryJudgePortrait,
-        place: "集成路径审查庭",
-        speaker: "路径审查官",
-        dialogue:
-          "审查官把 Network、页面反馈和移动端截图串成一条路径，提醒你单测通过也不能替代真实交互验收。",
-      },
-      {
-        image: releaseReadinessGateScene,
-        portraitOverride: releaseGatekeeperPortrait,
-        place: "前端交付门",
-        speaker: "交付守门人",
-        dialogue:
-          "守门人要求你留下失败证据、修复范围和回归结果，只有别人能复查的证据才算真正交付。",
-      },
-    ][index];
-    return details ? { ...scene, ...details } : scene;
-  },
-);
+const frontendTestingScenes: QuestScene[] = rewriteQuestContent(
+  testingProofScenes,
+  frontendTestingCopyReplacements,
+).map((scene, index) => {
+  const details = [
+    {
+      image: verificationTrialArenaScene,
+      portraitOverride: testArbiterPortrait,
+      place: "前端回归试炼场",
+      speaker: "测试仲裁官",
+      dialogue:
+        "仲裁官把失败复现、组件测试和真实浏览器路径摆在一起：前端修复必须证明用户真正看到的状态变对了。",
+    },
+    {
+      image: memoryEchoGalleryScene,
+      portraitOverride: echoForensicsPortrait,
+      place: "组件行为回声廊",
+      speaker: "交互取证师",
+      dialogue:
+        "取证师让你重放点击、加载、失败和重试：测试不是给按钮盖章，而是记录状态如何随着用户动作变化。",
+    },
+    {
+      image: deliveryReviewCourtScene,
+      portraitOverride: deliveryJudgePortrait,
+      place: "集成路径审查庭",
+      speaker: "路径审查官",
+      dialogue:
+        "审查官把 Network、页面反馈和移动端截图串成一条路径，提醒你单测通过也不能替代真实交互验收。",
+    },
+    {
+      image: releaseReadinessGateScene,
+      portraitOverride: releaseGatekeeperPortrait,
+      place: "前端交付门",
+      speaker: "交付守门人",
+      dialogue:
+        "守门人要求你留下失败证据、修复范围和回归结果，只有别人能复查的证据才算真正交付。",
+    },
+  ][index];
+  return details ? { ...scene, ...details } : scene;
+});
 
 const teachingStorySceneSets: Record<string, QuestScene[]> = {
   "canvas-save-persistence": questScenes,
@@ -9364,7 +9473,7 @@ export function TeachingBridge({
     Math.max(storyScenes.length - 1, 0),
   );
   const storyJourney = isFrontendTesting
-    ? testingProofJourney
+    ? frontendTestingJourney
     : isFrontendAccessibility
       ? accessibilityJourney
       : isJavaIncident

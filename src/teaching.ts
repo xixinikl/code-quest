@@ -101,6 +101,34 @@ export type TeachingScenario = {
   projectMap: ProjectMap;
 };
 
+function rewriteTeachingCopy<T>(
+  value: T,
+  replacements: Array<[string, string]>,
+): T {
+  if (typeof value === "string") {
+    let rewritten: string = value;
+    for (const [from, to] of replacements) {
+      rewritten = rewritten.replaceAll(from, to);
+    }
+    return rewritten as T;
+  }
+
+  if (Array.isArray(value)) {
+    return value.map((item) => rewriteTeachingCopy(item, replacements)) as T;
+  }
+
+  if (value && typeof value === "object") {
+    return Object.fromEntries(
+      Object.entries(value).map(([key, item]) => [
+        key,
+        rewriteTeachingCopy(item, replacements),
+      ]),
+    ) as T;
+  }
+
+  return value;
+}
+
 // ============ 第一关教学场景数据 ============
 
 export const projectMap: ProjectMap = {
@@ -3192,21 +3220,69 @@ export const case11Scenario: TeachingScenario = {
 export const frontendTestingProofScenario: TeachingScenario = {
   ...case11Scenario,
   scenarioId: "frontend-testing-proof",
-  steps: case11Scenario.steps.map((step) => ({
-    ...step,
-    title:
-      step.id === "c11-map"
-        ? "前端回归试炼场勘测"
-        : step.id === "c11-close"
-          ? "前端交付结案报告"
-          : step.title,
-    goal:
-      step.id === "c11-map"
-        ? "先看清前端交互从失败复现到回归证据的完整路线"
-        : step.id === "c11-close"
-          ? "能说明前端修复覆盖了什么，还有哪些设备和路径需要继续复测"
-          : step.goal,
-  })),
+  steps: rewriteTeachingCopy(
+    case11Scenario.steps.map((step) => ({
+      ...step,
+      title:
+        step.id === "c11-map"
+          ? "前端回归试炼场勘测"
+          : step.id === "c11-close"
+            ? "前端交付结案报告"
+            : step.title,
+      goal:
+        step.id === "c11-map"
+          ? "先看清前端交互从失败复现到回归证据的完整路线"
+          : step.id === "c11-close"
+            ? "能说明前端修复覆盖了什么，还有哪些设备和路径需要继续复测"
+            : step.goal,
+    })),
+    [
+      ["sandbox/canvas-save-persistence", "sandbox/frontend-testing-proof"],
+      ["canvas-save-persistence", "frontend-testing-proof"],
+      ["/api/canvases", "前端筛选路径"],
+      ["POST 前端筛选路径 后再 GET 前端筛选路径", "执行筛选交互后复核可见列表"],
+      ["POST 保存后再 GET", "筛选后再复核列表"],
+      ["POST 后再 GET", "操作后复核列表"],
+      ["postJson('前端筛选路径', draft)", "applyFilter(filters)"],
+      ["getJson('前端筛选路径')", "readVisibleRows()"],
+      ["postJson", "applyFilter"],
+      ["getJson", "readVisibleRows"],
+      ["canvas", "filter"],
+      ["Canvas", "Filter"],
+      ["画布", "筛选面板"],
+      [
+        "保存一个 filter，然后模拟刷新后的读取",
+        "执行一次筛选交互，然后复核列表与报告指纹",
+      ],
+      [
+        "测试 buildFilterPayload(draft) 是否会保留 title、nodes 和 updatedAt",
+        "测试 buildFilterPayload(filters) 是否会保留 keyword、status 和 sort",
+      ],
+      [
+        "在浏览器里点击保存、刷新页面、看到记录仍在",
+        "在浏览器里选择筛选条件、刷新或重跑路径、看到列表仍匹配",
+      ],
+      ["保存后刷新仍存在", "筛选后列表仍匹配"],
+      ["保存后刷新丢数据时", "筛选后列表错乱时"],
+      ["保存成功但刷新后消失", "筛选后列表状态和报告不一致"],
+      ["同一条保存链路", "同一条前端回归路径"],
+      [
+        "保存之后再读取，数据应该仍然存在",
+        "筛选之后再复核，可见列表应该仍然匹配",
+      ],
+      ["刚保存的记录", "刚筛选出的列表状态"],
+      ["数据层", "组件状态层"],
+      ["数据库", "DOM 与报告"],
+      ["写入持久化存储", "更新可见列表"],
+    ],
+  ),
+  projectMap: rewriteTeachingCopy(case11Map, [
+    ["/api/canvases", "前端筛选路径"],
+    ["保存成功但刷新后消失", "筛选后列表状态和报告不一致"],
+    ["数据库、响应或页面状态变化", "DOM、报告指纹或页面状态变化"],
+    ["数据库查询", "DOM 快照"],
+    ["数据库", "DOM"],
+  ]),
 };
 
 // ============ 主线 1-12：Agent 任务怎么写 ============

@@ -15,6 +15,7 @@ import App, {
 } from "./App";
 import {
   getTeachingStorySceneImages,
+  getTeachingStoryScenes,
   GuidedCodeTour,
   TeachingBridge,
 } from "./TeachingBridge";
@@ -444,6 +445,20 @@ describe("岗位路线实战场景契约", () => {
     expect(frontendTesting).not.toContain("AI 应用开发");
     expect(frontendTesting).not.toContain("/api/canvases");
     expect(frontendTesting).not.toContain("验收试炼画布");
+  });
+
+  it("前端第 5 关剧情线索不再复用 AI 保存链路", () => {
+    const frontendTestingStory = JSON.stringify(
+      getTeachingStoryScenes("frontend-testing-proof"),
+    );
+
+    expect(frontendTestingStory).toContain("前端回归试炼场");
+    expect(frontendTestingStory).toContain("筛选后列表仍匹配");
+    expect(frontendTestingStory).toContain("DOM 与报告证据");
+    expect(frontendTestingStory).not.toContain("/api/canvases");
+    expect(frontendTestingStory).not.toContain("保存链路");
+    expect(frontendTestingStory).not.toContain("保存画布");
+    expect(frontendTestingStory).not.toContain("验收试炼画布");
   });
 
   it("岗位 Lab 默认收束辅助资料，展开后仍保留岗位专属路线", async () => {

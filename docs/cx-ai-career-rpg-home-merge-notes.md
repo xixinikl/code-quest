@@ -30,7 +30,7 @@ npm install
 npm run verify
 ```
 
-`git log --oneline -1` 应显示 `ecf2fda docs(rpg): clarify collaborator pull steps`、`0080bd7 feat(rpg): clarify lab save relay` 或更新提交。不要只 clone 后停在默认分支；当前 GitHub 默认 HEAD 不是这条 RPG 分支。必须先 `nvm use` 到 `.nvmrc` 指定的 Node `24.13.1`，否则 `node:sqlite` 测试会失败。
+`git log --oneline -1` 应显示本次“前端第 5 关剧情修复 / 交接文档更新”提交、`0080bd7 feat(rpg): clarify lab save relay` 之后的更新提交，或更晚提交。不要只 clone 后停在默认分支；当前 GitHub 默认 HEAD 不是这条 RPG 分支。必须先 `nvm use` 到 `.nvmrc` 指定的 Node `24.13.1`，否则 `node:sqlite` 测试会失败。
 
 新电脑首次拉取：
 
@@ -59,7 +59,7 @@ npm install
 npm run verify
 ```
 
-`git log --oneline -1` 应显示本次交接文档提交、`0080bd7 feat(rpg): clarify lab save relay` 或更新提交。再运行 `git rev-parse HEAD`、`git rev-parse origin/cx/ai-career-rpg-home` 和 `git ls-remote origin refs/heads/cx/ai-career-rpg-home`，三处 hash 应一致；最新远端 HEAD 以命令输出为准。如果显示 `547ed6f`、`4370ddf`、`1b3cf5d`、`9171ac8`、`1a40fe4`、`e10069f`、`fa12dbc`、`2dd44d3`、`ca2c7aa`、`3fe3db1` 或默认分支 `feat/guided-learning-bridge` 的提交，说明拉错分支或没有拉到最新远端。
+`git log --oneline -1` 应显示本次交接文档提交、前端第 5 关剧情修复、`0080bd7 feat(rpg): clarify lab save relay` 之后的更新提交，或更晚提交。再运行 `git rev-parse HEAD`、`git rev-parse origin/cx/ai-career-rpg-home` 和 `git ls-remote origin refs/heads/cx/ai-career-rpg-home`，三处 hash 应一致；最新远端 HEAD 以命令输出为准。如果显示 `547ed6f`、`4370ddf`、`1b3cf5d`、`9171ac8`、`1a40fe4`、`e10069f`、`fa12dbc`、`2dd44d3`、`ca2c7aa`、`3fe3db1` 或默认分支 `feat/guided-learning-bridge` 的提交，说明拉错分支或没有拉到最新远端。
 
 ## 当前主要改动
 
@@ -116,7 +116,8 @@ npm run verify
 - 实战深链追加抽检：隔离 API `4374`、临时 SQLite `/tmp/code-quest-r307.sqlite`、Vite `5224`；`#chapter-java-2` 完成教学后，伙伴会合页显示 Java 后端岗位路线，进入 Lab 后保持 Java 第 2 关订单/库存/事务语境，桌面 1200 与 390px 无横向溢出，控制台 error 为 0。
 - 岗位 Lab 语境追加抽检：隔离 API `4375`、临时 SQLite `/tmp/code-quest-r308.sqlite`、Vite `5225`；`#chapter-frontend-4` 完成教学后，伙伴会合页显示前端工程岗位路线，进入 Lab 后保持键盘、读屏、390px 和回归证据语境，不再显示生产变量、备份恢复或上线门禁，桌面 1200 与 390px 无横向溢出，控制台 error 为 0。
 - 事故 Lab 语境追加抽检：隔离 API `4376`、临时 SQLite `/tmp/code-quest-r309.sqlite`、Vite `5226`；`#chapter-java-5` 完成教学后，伙伴会合页显示 Java 后端岗位路线，进入 Lab 后保持报警、requestId、异常栈和回滚语境，不再显示上线门禁、生产变量或备份恢复，桌面 1200 与 390px 无横向溢出，控制台 error 为 0。
-- 前端 Lab 语境追加修复：前端第 3 关可见 Lab 配置已聚焦首屏瀑布图、接口 TTFB、Server-Timing、X-Cache、React 渲染画像和第二次访问复测；前端第 5 关可见 Lab 配置已聚焦旧故障红灯、报告校验器、浏览器手动复测、sourceHash、回归风险和 Agent 交付审查，不再露出 `/api/canvases` 或 `验收试炼画布`。浏览器深链验收待补录。
+- 前端 Lab 语境追加修复：前端第 3 关可见 Lab 配置已聚焦首屏瀑布图、接口 TTFB、Server-Timing、X-Cache、React 渲染画像和第二次访问复测；前端第 5 关可见 Lab 配置已聚焦旧故障红灯、报告校验器、浏览器手动复测、sourceHash、回归风险和 Agent 交付审查，不再露出 `/api/canvases` 或 `验收试炼画布`。
+- 前端第 5 关剧情层追加修复：`TeachingBridge` 不再让 `frontend-testing-proof` 复用 AI 第 11 章保存链路线索，剧情/journey 已改为筛选交互、可见列表、DOM、Network 和报告指纹；新增运行时回归测试，防止 `/api/canvases`、`canvas-save-persistence`、保存画布或验收试炼画布从剧情线索层回流。隔离 API `4394`、SQLite `/tmp/code-quest-r321.sqlite`、Vite `5244` 下，`#chapter-frontend-5` 桌面 1200 与 390px 无横向溢出，暗色背景 `rgb(7, 12, 20)`，控制台 error 为 0。
 - 上线港 Lab 语境追加修复：Java 第 4 关可见 Lab 配置已聚焦发布窗口、影响范围、发布负责人、生产配置、密钥边界、备份恢复、390px 冒烟、监控信号和回滚后验证，固定“构建通过不等于可以上线”。浏览器深链验收待补录。
 - 教学桥地图追加修复：Java 第 2-5 关、前端第 2-5 关已补齐独立地图镜头契约，不再回退第一章 `数据接力路线 / 断流档案河 / 失忆数据库`。隔离 API `4379`、临时 SQLite `/tmp/code-quest-r312.sqlite`、Vite `5229` 下，`#chapter-java-4` 与 `#chapter-frontend-5` 点击开始闯关后保持岗位路线语境，桌面 1200 无横向溢出，控制台 0 error。
 - 实战页导演台追加修复：实战页将「实战剧情向导」「本步任务卷轴」「流程接力小剧场」收束到同一个 `任务导演台`，桌面并排、手机单列，帮助新手在读代码前先看到角色、地点、为什么学、先看什么和上一棒/当前棒/下一棒。完整 `npm run verify` 通过：10 个测试文件 / 180 个测试、生产构建和 TeachingBridge 懒加载检查均通过；隔离 API `4380`、临时 SQLite `/tmp/code-quest-r313.sqlite`、Vite `5230` 下，390×844 剧情路径无横向溢出，暗色背景，控制台 0 error。

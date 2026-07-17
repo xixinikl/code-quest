@@ -8,12 +8,12 @@
 
 - 当前远端：`https://github.com/xixinikl/code-quest.git`
 - 当前工作分支：`cx/ai-career-rpg-home`
-- 当前已推送功能基线：`0080bd7 feat(rpg): clarify lab save relay`；它包含实战保存后接力回执、交接刷新和 changelog。
-- 当前已推送交接基线：`ecf2fda docs(rpg): clarify collaborator pull steps` 或更新提交。最终远端 hash 以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 为准。
-- 当前本地核对：`git status --short --branch` 显示 `cx/ai-career-rpg-home...origin/cx/ai-career-rpg-home` 且没有未提交文件，说明本地与远端一致。
-- 当前远端核对：另一台电脑拉取后 `git log --oneline -5` 应看到 `ecf2fda docs(rpg): clarify collaborator pull steps`、`0080bd7 feat(rpg): clarify lab save relay` 或更新提交；如果仍停在 `547ed6f`、`4370ddf`、`1b3cf5d`、`9171ac8`、`1a40fe4`、`e10069f`、`fa12dbc`、`2dd44d3`、`ca2c7aa`、`3fe3db1` 或默认分支提交，说明还没拉到最新交接/体验细修。
+- 当前已推送功能基线：至少包含 `0080bd7 feat(rpg): clarify lab save relay` 之后的岗位 Lab 与前端第 5 关剧情修复；最终远端 hash 以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 为准。
+- 当前已推送交接基线：应包含本次“前端第 5 关剧情修复 / 交接文档更新”提交，或更新提交。
+- 当前本地核对：推送完成后，`git status --short --branch` 应显示 `cx/ai-career-rpg-home...origin/cx/ai-career-rpg-home` 且没有未提交文件，说明本地与远端一致。
+- 当前远端核对：另一台电脑拉取后 `git log --oneline -5` 应看到本次“前端第 5 关剧情修复 / 交接文档更新”提交、`0080bd7 feat(rpg): clarify lab save relay` 或更新提交；如果仍停在 `547ed6f`、`4370ddf`、`1b3cf5d`、`9171ac8`、`1a40fe4`、`e10069f`、`fa12dbc`、`2dd44d3`、`ca2c7aa`、`3fe3db1` 或默认分支提交，说明还没拉到最新交接/体验细修。
 - 远端默认 HEAD：`git ls-remote --symref origin HEAD` 指向 `feat/guided-learning-bridge`，不是本分支；另一台电脑必须显式切到 `cx/ai-career-rpg-home`，不要只用 clone 后默认分支继续。
-- 给协作者的最短说明：不要直接用默认分支；拉仓库后必须切到 `cx/ai-career-rpg-home`，确认最新提交是 `ecf2fda`、`0080bd7` 或更新；进入项目后必须 `nvm use` 到 Node `24.13.1`。
+- 给协作者的最短说明：不要直接用默认分支；拉仓库后必须切到 `cx/ai-career-rpg-home`，确认最新提交是本次交接文档更新、`0080bd7` 之后的更新或更晚提交；进入项目后必须 `nvm use` 到 Node `24.13.1`。
 - 另一台电脑拉取命令：
   ```bash
   git clone https://github.com/xixinikl/code-quest.git
@@ -39,7 +39,7 @@
   npm install
   npm run verify
   ```
-  `git log --oneline -1` 应显示 `ecf2fda docs(rpg): clarify collaborator pull steps`、`0080bd7 feat(rpg): clarify lab save relay` 或更新；如果不是，先不要继续开发。
+  `git log --oneline -1` 应显示本次交接文档更新、`0080bd7 feat(rpg): clarify lab save relay` 之后的更新或更晚提交；如果不是，先不要继续开发。
 - 如果另一台电脑已经 clone 过：
   ```bash
   cd code-quest
@@ -72,12 +72,13 @@
 - 最新浏览器发现与修复：隔离 API `4390`、临时 SQLite `/tmp/code-quest-r317.sqlite`、Vite `5240` 下，Playwright 从 `#chapter-frontend-5` 进入前端第 5 关，逐幕收集 8/8 线索并进入实战会合与 Lab；剧情页角色和地点按 `测试仲裁官 → 交互取证师 → 路径审查官 → 交付守门人` 变化，控制台 error 为 0。浏览器发现 Lab 第一题「复现旧故障」却显示当前棒为「单测」的流程错位；已给 `frontend-testing-proof` 补岗位专属 `flowItemIndex`，现在第一题停在「旧故障」，后续单测、集成、浏览器、接收各自对应正确流程棒。完整 `npm run verify` 通过：10 个测试文件 / 181 个测试、生产构建和 TeachingBridge 懒加载检查均通过。
 - 最新导演台流程翻译：实战 `任务导演台` 新增 `本幕流程翻译`，把上一棒交来的材料、当前只盯的证据和下一棒接收对象翻译成一段人话，并固定“先看当前地点和关键材料 → 再说能证明/不能证明 → 最后决定下一份证据”的三步顺序。该卡跟随 `LabConfig.flowItems` 动态生成。验证：完整 `npm run verify` 通过 10 个测试文件 / 181 个测试；隔离 API `4391`、临时 SQLite `/tmp/code-quest-r318.sqlite`、Vite `5241` 下，Playwright 从 `#chapter-frontend-5` 收集 8/8 线索进入前端测试 Lab，首屏可见 `本幕流程翻译`、`能证明什么、不能证明什么` 和下一棒 `守报告校验器`；390×844 下 `scrollWidth = clientWidth = 390`，暗色背景，控制台 error 为 0。
 - 本轮实战保存接力回执：保存一道实战回答后，`LabStepReceipt` 会显示接力信息，把“刚刚停在 → 现在进入 → 只盯住哪份证据”摆出来，避免用户被自动跳步弄丢流程。隔离 API `4393`、临时 SQLite `/tmp/code-quest-r320.sqlite`、Vite `5243` 下，从 `#chapter-frontend-3` 收集 10/10 线索进入前端性能 Lab，保存第一题后可见「刚刚停在 Network」「现在进入 接口」「只盯住『拆后端等待』」，桌面 1200 与 390px 均无横向溢出，暗色背景，控制台 error 为 0。
+- 本轮前端第 5 关剧情修复：浏览器发现 `#chapter-frontend-5` 剧情线索仍从通用 AI 验收章露出 `/api/canvases` 和旧保存路径。已给前端测试路线新增专属剧情/journey 重写，线索改为筛选交互、可见列表、DOM、Network 和报告指纹，并新增运行时回归测试防止 `TeachingBridge` 再串回 AI 保存链路。隔离 API `4394`、临时 SQLite `/tmp/code-quest-r321.sqlite`、Vite `5244` 下，桌面 1200 与 390px 均无横向溢出，暗色背景 `rgb(7, 12, 20)`，控制台 error 为 0；页面正文不再出现 `/api/canvases`、`canvas-save-persistence`、保存画布、验收试炼画布或旧保存链路。
 - 尚未声称完成：真人学习效果、所有章节达到第一章同等细致程度、真实沙盒修复与报告回读、全站最终视觉终审、分支合并审查，以及第 1 章实战后半段“沙盒验收 → Agent 委托 → 交付审查 → 因果解释 → 面试迁移”的对白进一步打磨。
 - 版本状态：当前分支可以被另一台电脑完整拉取继续开发，但尚未合并到 `main`。不建议直接合并；如果时间紧，先开 Draft PR 或继续在本分支开发。转 ready/合并前仍要做 PR 审查、关键路径桌面与 390px 视觉终审，并明确“自动化通过不等于真人学会”。
 
 ### 2026-07-17 最新跨电脑核对
 
-- 当前功能基线为 `0080bd7 feat(rpg): clarify lab save relay`，当前交接基线为 `ecf2fda docs(rpg): clarify collaborator pull steps` 或更新提交；远端 HEAD 请以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 为准。
+- 当前功能基线至少包含 `0080bd7 feat(rpg): clarify lab save relay` 之后的岗位 Lab 与前端第 5 关剧情修复；远端 HEAD 请以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 为准。
 - 当前沙盒内 `xixi-dev-system profile sync`、`doctor --project .` 和 `updates --project .` 已通过。
 - 另一台电脑拉下来后，用 `git rev-parse HEAD`、`git rev-parse origin/cx/ai-career-rpg-home`、`git ls-remote origin refs/heads/cx/ai-career-rpg-home` 三个值互相对照；三者应一致或本地 HEAD 是刚拉下来的同一提交。
 - 当前仍是“可继续开发的阶段分支”，不是 ready 合并态。最新完整 `npm run verify` 已在 Node `24.13.1` 下通过；合并前仍要做桌面与 390px 关键路径视觉终审、PR 审查和真人试玩。
