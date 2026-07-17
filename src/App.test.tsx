@@ -1673,6 +1673,12 @@ async function enterMainQuest(user: ReturnType<typeof userEvent.setup>) {
   await screen.findByRole("heading", { name: /码上冒险/ }, { timeout: 3000 });
   expect(screen.getByText(/代码城失去了记忆/)).toBeInTheDocument();
   expect(screen.getByRole("img", { name: "档案馆记录员" })).toBeInTheDocument();
+  const roleContract = screen.getByRole("region", { name: "玩家身份契约" });
+  expect(roleContract).toHaveTextContent("见习 AI 调试师");
+  expect(roleContract).toHaveTextContent("成长目标");
+  expect(roleContract).toHaveTextContent("定位 bug");
+  expect(roleContract).toHaveTextContent("第一关任务");
+  expect(roleContract).toHaveTextContent("首位伙伴");
 
   await user.click(screen.getByRole("button", { name: /走进档案馆/ }));
   await user.click(screen.getByRole("button", { name: /调取现场证据/ }));

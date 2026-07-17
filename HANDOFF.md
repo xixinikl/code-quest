@@ -109,6 +109,9 @@ git pull --ff-only origin cx/ai-career-rpg-home
 - 已补历史场景 id 兼容：`findRouteChapterTargetForScenarioId` 同时识别描述性 id 和旧 `case-00x` id，旧记录或测试路径不会因为 id 别名找不到路线章节。
 - 已补回归测试，锁定成长档案页必须显示 `下一幕预告`、下一关主题、下一位登场和下一关流程交接；`npm run test -- src/App.test.tsx --run -t "实战通关后的成长档案|提交成功后停留"`、`npm run typecheck`、`npm run verify:quick` 均通过。
 - 已用真实浏览器在隔离 API `4430`、临时 SQLite `/tmp/code-quest-r351.sqlite`、Vite `5280` 复核：`#chapter-1` 点击 `生成成长档案` 后显示 `下一幕预告 · AI 应用开发 / 第 2 关 · AI 点子为什么空泛 / 下一位登场 / 宠物 · 灵感萤火`；390×844 无横向溢出、无白块，控制台 0 error、0 warning，仅 React DevTools info。
+- 已在新手首页第一屏加入 `玩家身份契约`。根路径打开后不用点到路线大厅，也能看到自己是 `见习 AI 调试师`，目标是从看不懂项目练到能读证据、定位 bug、验收 Agent 交付；第一关任务是追踪保存请求，首位伙伴是档案馆记录员。
+- 已补回归测试，锁定首页第一屏必须显示玩家身份、成长目标、第一关任务和首位伙伴；`npm run test -- src/App.test.tsx --run -t "职业路线封面先以剧情方式显示|进入主线后进入教学地图"`、`npm run typecheck`、`npm run verify:quick` 均通过。
+- 已用真实浏览器在隔离 API `4431`、临时 SQLite `/tmp/code-quest-r352.sqlite`、Vite `5281` 复核：首页显示 `玩家身份契约 / 见习 AI 调试师 / 成长目标 / 第一关任务 / 首位伙伴`；390×844 无横向溢出、无白块，控制台 0 error、0 warning，仅 React DevTools info。
 - 已修复第 1 章 Lab 第二步以后“实战追踪”文案继续套用剧情交接的问题。现在第一题仍解释“剧情教学已经把任务委托交接过来”，第二题及以后会说“上一题已收录，现在继续下一棒”，避免新手忘记上一步或误以为流程重新开始。
 - 已补回归测试，锁定保存 `读取项目材料` 后进入 `还原数据流` 的任务日志文案；`npm run test -- src/App.test.tsx --run -t "进入主线后进入教学地图"`、`npm run typecheck`、`npm run verify:quick` 均通过。
 - 已用真实浏览器在 `http://127.0.0.1:5277/#chapter-1` 复核：页面停在 `还原数据流`，冒险日志显示 `上一题「读取项目材料」已经收录；现在从「还原数据流」继续`；390×844 无横向溢出、无白块，控制台只有 React DevTools 提示。

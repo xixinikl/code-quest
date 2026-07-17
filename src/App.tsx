@@ -13017,6 +13017,31 @@ export default function App() {
                   02:17，代码城的档案馆突然变空。市民明明按下了“保存”，灯也亮了；
                   但第二天醒来，所有记录都像从没存在过。
                 </p>
+                <section
+                  className="opening-role-contract"
+                  aria-label="玩家身份契约"
+                >
+                  <header>
+                    <span>玩家身份</span>
+                    <strong>见习 AI 调试师</strong>
+                  </header>
+                  <div>
+                    <article>
+                      <span>成长目标</span>
+                      <p>
+                        从看不懂项目，练到能读证据、定位 bug、验收 Agent 交付。
+                      </p>
+                    </article>
+                    <article>
+                      <span>第一关任务</span>
+                      <p>追踪一次保存请求，从前端灯牌走到数据库档案。</p>
+                    </article>
+                    <article>
+                      <span>首位伙伴</span>
+                      <p>档案馆记录员会提醒你：绿灯不等于真的保存。</p>
+                    </article>
+                  </div>
+                </section>
                 <button
                   className="dialogue-next"
                   onClick={() => {
