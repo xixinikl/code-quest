@@ -6018,8 +6018,16 @@ describe("AI 职业路线入口", () => {
       0,
     );
     expect(screen.getAllByText(/检查绿色灯牌/).length).toBeGreaterThan(0);
+    expect(screen.getByLabelText("本幕复盘三段式")).toHaveTextContent(
+      "追踪发出的委托",
+    );
+    expect(screen.getByLabelText("本幕复盘三段式")).toHaveTextContent(
+      "舞台把“要保存的画布数据”交给传送门",
+    );
     expect(screen.getByText(/面试一句话/)).toBeInTheDocument();
-    expect(screen.getByText(/我会这样讲：在「前端舞台」/)).toBeInTheDocument();
+    expect(screen.getByText(/我会这样讲：在「前端舞台」/)).toHaveTextContent(
+      "追踪发出的委托",
+    );
     expect(screen.getByText(/下一地点预告/)).toBeInTheDocument();
     expect(screen.getAllByText(/传送门大厅/).length).toBeGreaterThan(0);
     await user.click(screen.getByRole("button", { name: /沿证据继续追到/ }));
@@ -6078,6 +6086,12 @@ describe("AI 职业路线入口", () => {
 
     await user.click(screen.getByRole("button", { name: /查看传送门回执/ }));
     await user.click(screen.getByRole("button", { name: /审问守卫的证词/ }));
+    expect(screen.getByLabelText("本幕复盘三段式")).toHaveTextContent(
+      "审问守卫的证词",
+    );
+    expect(screen.getByLabelText("本幕复盘三段式")).toHaveTextContent(
+      "真正的落库证据必须来自数据库查询",
+    );
     await user.click(screen.getByRole("button", { name: /沿证据继续追到/ }));
     await user.type(
       screen.getByLabelText("本幕复述原话"),

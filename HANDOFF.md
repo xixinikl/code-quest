@@ -8,12 +8,12 @@
 
 - 当前远端：`https://github.com/xixinikl/code-quest.git`
 - 当前工作分支：`cx/ai-career-rpg-home`
-- 当前已推送功能基线：远端 `origin/cx/ai-career-rpg-home` 至少已到 `9465b9d fix(rpg): clarify current scene handoff`；本次第 1 章主动复述证据边界提交后会晚于它。最终远端 hash 仍以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 输出为准。
-- 当前已推送交接基线：本文件提交后应晚于 `9465b9d`，包含另一台电脑拉取、核对、继续开发、不能直接合并，以及最新第 1 章地点路线/当前流程交接单/主动复述证据边界说明。最终远端 hash 仍以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 为准。
+- 当前已推送功能基线：远端 `origin/cx/ai-career-rpg-home` 至少已到 `0277771 fix(rpg): ground recall in missing evidence`；本次场景复盘关键线索提交后会晚于它。最终远端 hash 仍以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 输出为准。
+- 当前已推送交接基线：本文件提交后应晚于 `0277771`，包含另一台电脑拉取、核对、继续开发、不能直接合并，以及最新第 1 章地点路线/当前流程交接单/主动复述证据边界/复盘关键线索说明。最终远端 hash 仍以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 为准。
 - 当前本地核对：推送完成后，`git status --short --branch` 应显示 `cx/ai-career-rpg-home...origin/cx/ai-career-rpg-home` 且没有未提交文件，说明本地与远端一致。
 - 当前远端核对：另一台电脑拉取后 `git log --oneline -5` 应看到本次第 1 章主动复述提示提交，以及 `a2050e4 fix(rpg): focus chapter one location rail`、`5625481 fix(rpg): collapse teaching flow overview`、`8901006 docs(rpg): pin cross-computer pull handoff` 这些最近提交，或更晚提交；如果只看到 `772f66e`、`65e3603`、`5651c18`、`0fb18e7`、`0f7c433`、`c587a23`、`547ed6f`、`4370ddf`、`1b3cf5d`、`9171ac8`、`1a40fe4`、`e10069f`、`fa12dbc`、`2dd44d3`、`ca2c7aa`、`3fe3db1` 或默认分支提交，说明还没拉到最新交接/体验细修。
 - 远端默认 HEAD：`git ls-remote --symref origin HEAD` 指向 `feat/guided-learning-bridge`，不是本分支；另一台电脑必须显式切到 `cx/ai-career-rpg-home`，不要只用 clone 后默认分支继续。
-- 给协作者的最短说明：不要直接用默认分支；拉仓库后必须切到 `cx/ai-career-rpg-home`。当前至少应看到 `9465b9d fix(rpg): clarify current scene handoff`、`b28e067 docs(rpg): clarify collaborator pull handoff`、`6564b4d fix(rpg): guide chapter one recall`，以及本次第 1 章主动复述证据边界提交，或更晚提交；进入项目后必须 `nvm use` 到 Node `24.13.1`。
+- 给协作者的最短说明：不要直接用默认分支；拉仓库后必须切到 `cx/ai-career-rpg-home`。当前至少应看到 `0277771 fix(rpg): ground recall in missing evidence`、`9465b9d fix(rpg): clarify current scene handoff`、`b28e067 docs(rpg): clarify collaborator pull handoff`，以及本次第 1 章复盘关键线索提交，或更晚提交；进入项目后必须 `nvm use` 到 Node `24.13.1`。
 - 他具体怎么拉：如果另一台电脑没有本项目，按“首次 clone”执行；如果已经 clone 过，按“已有仓库更新”执行；如果他本地有未提交改动，先新建自己的分支或 stash，不要直接覆盖。不要在默认分支上继续开发，也不要在没有核对 hash 的情况下合并。
 
 ### 另一台电脑怎么拉，给他照抄
@@ -164,6 +164,7 @@ npm run verify:quick
 - 最新体验收口：第 2 章产品链路不再串到 AI API 章；教学桥关键控件已暗色 RPG 化；代码导读新增“为什么看这一行 / 检查点 / 下一份证据”，第 1 章 `response.ok` 明确提示不能证明数据库写入。
 - 最新理解收口：第 1 章教学剧情的 `当前流程定位` 下新增 `当前流程交接单`，把当前这一棒拆成 `收到什么 / 谁来处理 / 交出什么证据 / 下一步看哪里`；桌面与 390px 手机均无横向溢出和白色断层。
 - 最新复述收口：第 1 章主动复述提示不再泛泛写“下一层已经完成”，会按当前流程写清这条证据能证明什么、还不能证明哪份关键证据；第一幕会明确提示 `Network 里看到 201 Created` 还不能证明数据库完成，因为还没看到 `SELECT 查询却是 0 行`。
+- 最新复盘收口：教学剧情 `本幕复盘三段式` 和 `面试一句话` 不再固定使用第一条线索；会跟随当前/最后关键线索。第 1 章第二幕收尾会使用 `审问守卫的证词`，明确落库证据必须来自数据库查询。
 - 最新实战收口：第 1 章测试报告页新增「验收证据桥」；第 1 章保存失败报告会优先指向“数据层写库没接上 / repository `INSERT` 缺证据”，不会误串到第 2 章会话保存话术。第 1 章实战后半段已补齐沙盒验收、Agent 委托、交付审查、因果解释和面试迁移的任务卷轴与流程棒，明确页面绿灯、接口 201、数据库写入和刷新读回是四种不同证据。第 2 章 CanvasStorm 失败报告会把方向筛选、会话保存、空目标输入解释为三个断点，并用「红灯总指挥」给出排查顺序和 Agent 口令。第 3 章登录态实战已补齐身份路线、凭证存储、401 反证、刷新复查、Agent 委托、交付审查和面试复盘的剧情向导、任务卷轴与流程接力。第 4 章接口审判庭实战已补齐请求体证词、状态码判词、错误体修复、日志串证、Agent 委托、交付审查和面试复盘的导演层，并用 `flowItemIndex` 避免后半段流程高亮错位。第 5 章一致性熔炉实战已补齐 Network 双轨、幂等锤印、唯一约束城门、事务炉心、Agent 委托、交付审查和面试复盘的导演层。
 - 最新自动化验证：Node `24.13.1` 下完整 `npm run verify` 通过，包含格式、Lint、TypeScript、11 个测试文件 / 187 个测试、生产构建和 TeachingBridge 懒加载检查。Vite 主包体积 warning 是已知债务，不是失败。环境反例：如果终端仍在 Node `18.20.8`，会因 `node:sqlite` 缺失和 jsdom ESM 依赖失败；先执行 `nvm use` 再验收。
 - 最新浏览器验收：隔离 API `4369`、临时 SQLite `/tmp/code-quest-r303.sqlite`、Vite `5219`；第 1 章从剧情探索完整收集 8/8 线索 → 伙伴会合 → 实战 Lab 通过。桌面 1280 和 390px 手机均无横向溢出，控制台 error 为 0；后半段 Agent、审查、因果和面试迁移步骤都显示新任务卷轴与流程接力。合并前追加抽检过首页和路线大厅：隔离 API `4370`、临时 SQLite `/tmp/code-quest-r304.sqlite`、Vite `5220`；桌面 1280 与 390px 下序章、证据选择、领取委托、三路线大厅均无横向溢出，控制台 error 为 0。

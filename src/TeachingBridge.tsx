@@ -7353,12 +7353,13 @@ function EvidenceStoryQuest({
   const selectedDecision = decision.options.find(
     (option) => option.id === selectedDecisionId,
   );
+  const recapClue = activeClue ?? scene.clues.at(-1);
   const recallPlaceholder = activeClue
     ? `例如：${activeClue.label} 证明了……下一幕要继续查……`
     : `例如：${scene.title} 说明……下一幕要继续查……`;
   const sceneInterviewLine = `我会这样讲：在「${scene.place}」，我用「${
-    scene.clues[0]?.label ?? scene.title
-  }」这条证据说明：${scene.clues.at(-1)?.skill ?? scene.goal}`;
+    recapClue?.label ?? scene.title
+  }」这条证据说明：${recapClue?.skill ?? scene.goal}`;
   const sceneRecap = [
     {
       label: "现象",
@@ -7367,8 +7368,8 @@ function EvidenceStoryQuest({
     },
     {
       label: "证据",
-      value: scene.clues[0]?.label ?? scene.goal,
-      note: scene.clues[0]?.result ?? scene.goal,
+      value: recapClue?.label ?? scene.goal,
+      note: recapClue?.result ?? scene.goal,
     },
     {
       label: "结论",
