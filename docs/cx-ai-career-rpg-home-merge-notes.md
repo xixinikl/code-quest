@@ -8,7 +8,7 @@
 
 ### 当前事实快照（2026-07-17）
 
-AI 路线已扩展为 15 章，Java 后端和前端工程路线各 5 章，均有独立章节契约、剧情场景、教学桥、沙盒和成长结算入口。当前分支已推送到 `origin/cx/ai-career-rpg-home`；远端最新提交以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 为准。分支尚未合并到 `main`。当前远端默认 HEAD 指向旧 `feat/guided-learning-bridge`，接手和合并前必须显式选择本分支。
+AI 路线已扩展为 15 章，Java 后端和前端工程路线各 5 章，均有独立章节契约、剧情场景、教学桥、沙盒和成长结算入口。当前分支已推送到 `origin/cx/ai-career-rpg-home`；当前已知远端至少到 `3fe983d fix(rpg): own java incident teaching flow`，远端最新提交以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 为准。分支尚未合并到 `main`。当前远端默认 HEAD 指向旧 `feat/guided-learning-bridge`，接手和合并前必须显式选择本分支。
 
 最新一轮收口集中在用户反馈最强的“看不懂代码为什么要这么读、谁把东西交给谁、下一步去哪找证据”：第 2 章产品链路不再串到 AI API 安全章；教学桥关键控件已补暗色 RPG 覆盖；第 1 章代码导读新增“当前行证据锚点”，读到 `response.ok` 时明确说明它只能解释前端绿色提示，不能证明数据库已经写入；第 1 章失败测试报告会优先指向数据层写库断点；第 1 章实战后半段已补齐沙盒验收、Agent 委托、交付审查、因果解释和面试迁移的任务卷轴与流程棒；第 2 章失败测试报告能把方向筛选、会话保存、空目标输入分成三类红灯，并先给出「红灯总指挥」排查顺序；第 3 章登录态实战已补齐身份路线、凭证存储、401 反证、刷新复查、Agent 委托、交付审查和面试复盘的剧情向导、任务卷轴、流程接力和交付口令；第 4 章接口审判庭实战已补齐请求体证词、状态码判词、错误体修复、日志串证、Agent 委托、交付审查和面试复盘导演层；第 5 章一致性熔炉实战已补齐 Network 双轨、幂等锤印、唯一约束、事务边界、Agent 委托、交付审查和面试复盘导演层；实战导演台新增 `本幕流程翻译`，保存回答后新增「刚刚到下一步的接力」，把上一棒、当前棒和下一棒用更直接的人话连接起来。
 
@@ -60,6 +60,31 @@ npm run verify
 ```
 
 `git log --oneline -1` 应显示本次交接文档提交、前端第 5 关剧情修复、`0080bd7 feat(rpg): clarify lab save relay` 之后的更新提交，或更晚提交。再运行 `git rev-parse HEAD`、`git rev-parse origin/cx/ai-career-rpg-home` 和 `git ls-remote origin refs/heads/cx/ai-career-rpg-home`，三处 hash 应一致；最新远端 HEAD 以命令输出为准。如果显示 `547ed6f`、`4370ddf`、`1b3cf5d`、`9171ac8`、`1a40fe4`、`e10069f`、`fa12dbc`、`2dd44d3`、`ca2c7aa`、`3fe3db1` 或默认分支 `feat/guided-learning-bridge` 的提交，说明拉错分支或没有拉到最新远端。
+
+如果另一台电脑已经有本地改动，不要直接覆盖：
+
+```bash
+git status --short
+git switch -c cx/my-local-work
+git add .
+git commit -m "wip: save local work"
+git fetch origin
+git switch cx/ai-career-rpg-home
+git pull --ff-only
+```
+
+拉完后用下面这组命令验收是否完整：
+
+```bash
+git status --short --branch
+git rev-parse HEAD
+git rev-parse origin/cx/ai-career-rpg-home
+git ls-remote origin refs/heads/cx/ai-career-rpg-home
+node -v
+npm run verify
+```
+
+`HEAD`、`origin/cx/ai-career-rpg-home` 和 `git ls-remote` 的 hash 应一致；`node -v` 应是 `.nvmrc` 指定的 `v24.13.1`。不一致时不要继续开发，也不要合并。
 
 ## 当前主要改动
 

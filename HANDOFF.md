@@ -8,12 +8,64 @@
 
 - 当前远端：`https://github.com/xixinikl/code-quest.git`
 - 当前工作分支：`cx/ai-career-rpg-home`
-- 当前已推送功能基线：至少包含 `0080bd7 feat(rpg): clarify lab save relay` 之后的岗位 Lab 与前端第 5 关剧情修复；最终远端 hash 以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 为准。
+- 当前已推送功能基线：至少包含 `3fe983d fix(rpg): own java incident teaching flow`，以及 `0080bd7 feat(rpg): clarify lab save relay` 之后的岗位 Lab 与前端第 5 关剧情修复；最终远端 hash 以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 为准。
 - 当前已推送交接基线：应包含本次“前端第 5 关剧情修复 / 交接文档更新”提交，或更新提交。
 - 当前本地核对：推送完成后，`git status --short --branch` 应显示 `cx/ai-career-rpg-home...origin/cx/ai-career-rpg-home` 且没有未提交文件，说明本地与远端一致。
 - 当前远端核对：另一台电脑拉取后 `git log --oneline -5` 应看到本次“前端第 5 关剧情修复 / 交接文档更新”提交、`0080bd7 feat(rpg): clarify lab save relay` 或更新提交；如果仍停在 `547ed6f`、`4370ddf`、`1b3cf5d`、`9171ac8`、`1a40fe4`、`e10069f`、`fa12dbc`、`2dd44d3`、`ca2c7aa`、`3fe3db1` 或默认分支提交，说明还没拉到最新交接/体验细修。
 - 远端默认 HEAD：`git ls-remote --symref origin HEAD` 指向 `feat/guided-learning-bridge`，不是本分支；另一台电脑必须显式切到 `cx/ai-career-rpg-home`，不要只用 clone 后默认分支继续。
 - 给协作者的最短说明：不要直接用默认分支；拉仓库后必须切到 `cx/ai-career-rpg-home`，确认最新提交是本次交接文档更新、`0080bd7` 之后的更新或更晚提交；进入项目后必须 `nvm use` 到 Node `24.13.1`。
+- 他具体怎么拉：如果另一台电脑没有本项目，按“首次 clone”执行；如果已经 clone 过，按“已有仓库更新”执行；如果他本地有未提交改动，先新建自己的分支或 stash，不要直接覆盖。
+- 首次 clone 照抄：
+  ```bash
+  git clone https://github.com/xixinikl/code-quest.git
+  cd code-quest
+  git fetch origin
+  git switch -c cx/ai-career-rpg-home --track origin/cx/ai-career-rpg-home
+  git log --oneline -5
+  nvm install
+  nvm use
+  npm install
+  npm run verify
+  npm run dev
+  ```
+- 已有仓库更新照抄：
+  ```bash
+  cd code-quest
+  git fetch origin
+  git switch cx/ai-career-rpg-home
+  git pull --ff-only
+  git log --oneline -5
+  nvm use
+  npm install
+  npm run verify
+  npm run dev
+  ```
+- 如果已有仓库但没有这个本地分支：
+  ```bash
+  cd code-quest
+  git fetch origin
+  git switch -c cx/ai-career-rpg-home --track origin/cx/ai-career-rpg-home
+  git log --oneline -5
+  ```
+- 如果他本地有改动，先保护改动再拉：
+  ```bash
+  git status --short
+  git switch -c cx/my-local-work
+  git add .
+  git commit -m "wip: save local work"
+  git fetch origin
+  git switch cx/ai-career-rpg-home
+  git pull --ff-only
+  ```
+- 拉完必须确认：
+  ```bash
+  git status --short --branch
+  git rev-parse HEAD
+  git rev-parse origin/cx/ai-career-rpg-home
+  git ls-remote origin refs/heads/cx/ai-career-rpg-home
+  node -v
+  ```
+  本地 `HEAD`、`origin/cx/ai-career-rpg-home` 和 `git ls-remote` 的 hash 应一致；`node -v` 应是 `.nvmrc` 指定的 `v24.13.1`。如果不一致，不要继续开发，先重新 `git fetch origin` 并切回 `origin/cx/ai-career-rpg-home`。
 - 另一台电脑拉取命令：
   ```bash
   git clone https://github.com/xixinikl/code-quest.git

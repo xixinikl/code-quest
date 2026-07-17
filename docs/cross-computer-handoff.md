@@ -8,7 +8,7 @@
 
 - 仓库：`https://github.com/xixinikl/code-quest.git`
 - 分支：`cx/ai-career-rpg-home`
-- 当前已推送功能基线：至少包含 `0080bd7 feat(rpg): clarify lab save relay` 之后的岗位 Lab 与前端第 5 关剧情修复；最终 hash 以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 输出为准，不在文档里硬编码。
+- 当前已推送功能基线：至少包含 `3fe983d fix(rpg): own java incident teaching flow`，以及 `0080bd7 feat(rpg): clarify lab save relay` 之后的岗位 Lab 与前端第 5 关剧情修复；最终 hash 以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 输出为准，不在文档里硬编码。
 - 当前远端最新提交：应包含本次交接文档更新和“前端第 5 关剧情不再复用 AI 保存链路”修复，或更新提交。
 - 远端默认 HEAD：当前指向 `feat/guided-learning-bridge`，不是这条 RPG 分支。另一台电脑必须显式 checkout `cx/ai-career-rpg-home`。
 - 本地状态：`git status --short --branch` 应显示 `cx/ai-career-rpg-home...origin/cx/ai-career-rpg-home` 且没有未提交文件，才表示另一台电脑能完整拉到本轮内容。
@@ -32,6 +32,82 @@ npm run verify
 ```
 
 `git log --oneline -1` 应显示本次“前端第 5 关剧情修复 / 交接文档更新”提交、`0080bd7 feat(rpg): clarify lab save relay` 之后的更新提交，或更晚提交。如果不是，说明没有拉到今天上传的内容，先不要继续开发。项目必须使用 `.nvmrc` 中的 Node `24.13.1`；如果直接用 Node 18，`node:sqlite` 和 jsdom 测试会失败。
+
+## 他到底怎么拉
+
+按他的电脑状态选一种，不要混着来：
+
+### 情况 A：另一台电脑从来没拉过
+
+```bash
+git clone https://github.com/xixinikl/code-quest.git
+cd code-quest
+git fetch origin
+git switch -c cx/ai-career-rpg-home --track origin/cx/ai-career-rpg-home
+git log --oneline -5
+nvm install
+nvm use
+npm install
+npm run verify
+npm run dev
+```
+
+### 情况 B：另一台电脑已经有这个仓库
+
+```bash
+cd code-quest
+git fetch origin
+git switch cx/ai-career-rpg-home
+git pull --ff-only
+git log --oneline -5
+nvm use
+npm install
+npm run verify
+npm run dev
+```
+
+如果提示本地没有 `cx/ai-career-rpg-home`：
+
+```bash
+git fetch origin
+git switch -c cx/ai-career-rpg-home --track origin/cx/ai-career-rpg-home
+git log --oneline -5
+```
+
+### 情况 C：另一台电脑有未提交改动
+
+不要直接 `checkout -B` 覆盖。先保护他的改动：
+
+```bash
+git status --short
+git switch -c cx/my-local-work
+git add .
+git commit -m "wip: save local work"
+git fetch origin
+git switch cx/ai-career-rpg-home
+git pull --ff-only
+```
+
+如果他不想提交临时改动，也可以用 `git stash push -u -m "before pulling rpg branch"`，但对新手更推荐先建 `cx/my-local-work` 分支并提交，后面不容易丢。
+
+### 拉完怎么确认完整
+
+```bash
+git status --short --branch
+git rev-parse HEAD
+git rev-parse origin/cx/ai-career-rpg-home
+git ls-remote origin refs/heads/cx/ai-career-rpg-home
+node -v
+```
+
+期望：
+
+- `git status --short --branch` 显示在 `cx/ai-career-rpg-home`，并且没有未提交文件。
+- `git rev-parse HEAD`、`git rev-parse origin/cx/ai-career-rpg-home`、`git ls-remote origin refs/heads/cx/ai-career-rpg-home` 的 hash 一致。
+- `git log --oneline -5` 能看到 `3fe983d fix(rpg): own java incident teaching flow`、`ee64e0d fix(rpg): own accessibility teaching flow`、`1ecb39e fix(rpg): align frontend testing story copy` 或这些之后更新的提交。
+- `node -v` 是 `.nvmrc` 指定的 `v24.13.1`。
+
+如果这些不满足，先不要继续开发，也不要合并。重新执行 `git fetch origin`，确认远端分支名是 `origin/cx/ai-career-rpg-home`。
 
 ## 另一台电脑从零拉取
 
