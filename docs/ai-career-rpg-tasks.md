@@ -52,6 +52,22 @@
 
 ## 当前已完成切片
 
+### R331：前端第 5 关阅读断句与跨电脑交接刷新
+
+- [x] 修复前端第 5 关剧情第一幕的阅读断层：`真实工作现场` 标签统一加冒号，章节背景从“真实工作现场真实交付里……”改为“真实工作现场：交付审查时，‘测试通过’不等于用户流程可用……”。
+- [x] 刷新 `HANDOFF.md`、`docs/cross-computer-handoff.md` 和 `docs/cx-ai-career-rpg-home-merge-notes.md`，把另一台电脑怎么拉、怎么确认完整、不能直接合并和继续开发边界写成可照抄步骤。
+- [x] 明确另一台电脑必须显式切换 `cx/ai-career-rpg-home`，不要停在远端默认 HEAD；拉完用 `git rev-parse HEAD`、`git rev-parse origin/cx/ai-career-rpg-home` 和 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 三方核对。
+
+验收：本轮是文案和交接收口，不宣称前端第 5 关完整 Lab 新一轮已完成；推送后另一台电脑应看到本次提交、`772f66e docs(rpg): record frontend performance lab verification` 或更晚提交。后续建议补 `#chapter-frontend-5` 从剧情到 Lab 的完整录入式浏览器验收。
+
+### R330：前端第 3 关性能 Lab 完整深链验收
+
+- [x] `#chapter-frontend-3` 第一幕线索不再写“保存后刷新慢”，改为首屏白屏、筛选慢、列表慢、滚动卡顿等前端性能语境。
+- [x] 剧情证据补入 `Server-Timing` 与 `X-Cache: MISS/HIT`；Lab 新手先读卡和证据表达卡改为 Network、TTFB、Server-Timing、X-Cache、后端日志和 render profile。
+- [x] 浏览器隔离 API `4406`、临时 SQLite `/tmp/code-quest-r330.sqlite`、Vite `5256` 下，完整收集 10/10 剧情线索进入实战 Lab。
+
+验收：Node `24.13.1` 下 `npm run verify:quick` 通过 11 个测试文件 / 189 个测试；浏览器桌面 1200 与 390px 均无横向溢出，暗色背景，控制台 error 为 0，旧保存/数据库词检查全为 false。
+
 ### R327：Java 第 4 关上线港剧情与证物归属修复
 
 - [x] 浏览器从 `#chapter-java-4` 进入 Java 第 4 关，发现剧情线索仍露出 AI 第 14 章旧语境：`第 14 章入口`、AI 路线入口、`AI_API_KEY`、AI 调用失败率、第一章 `response.ok`/数据库写入示范卡。

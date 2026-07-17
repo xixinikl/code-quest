@@ -7613,7 +7613,7 @@ function EvidenceStoryQuest({
             <p>{activeJourney.plain}</p>
             {workBackground && (
               <p className="quest-work-context">
-                <b>真实工作现场</b>
+                <b>真实工作现场：</b>
                 {workBackground}
               </p>
             )}

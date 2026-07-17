@@ -8,7 +8,7 @@
 
 ### 当前事实快照（2026-07-17）
 
-AI 路线已扩展为 15 章，Java 后端和前端工程路线各 5 章，均有独立章节契约、剧情场景、教学桥、沙盒和成长结算入口。当前分支已推送到 `origin/cx/ai-career-rpg-home`；当前功能基线至少为 `65e3603 fix(rpg): own java release harbor teaching flow`，本次交接文档提交后应晚于该提交。远端最新提交仍以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 为准。分支尚未合并到 `main`。当前远端默认 HEAD 指向旧 `feat/guided-learning-bridge`，接手和合并前必须显式选择本分支。
+AI 路线已扩展为 15 章，Java 后端和前端工程路线各 5 章，均有独立章节契约、剧情场景、教学桥、沙盒和成长结算入口。当前分支已推送到 `origin/cx/ai-career-rpg-home`；本轮之前远端已到 `772f66e docs(rpg): record frontend performance lab verification`，本次交接文档提交后应晚于该提交。远端最新提交仍以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 为准。分支尚未合并到 `main`。当前远端默认 HEAD 指向旧 `feat/guided-learning-bridge`，接手和合并前必须显式选择本分支。
 
 最新一轮收口集中在用户反馈最强的“看不懂代码为什么要这么读、谁把东西交给谁、下一步去哪找证据”：第 2 章产品链路不再串到 AI API 安全章；教学桥关键控件已补暗色 RPG 覆盖；第 1 章代码导读新增“当前行证据锚点”，读到 `response.ok` 时明确说明它只能解释前端绿色提示，不能证明数据库已经写入；第 1 章失败测试报告会优先指向数据层写库断点；第 1 章实战后半段已补齐沙盒验收、Agent 委托、交付审查、因果解释和面试迁移的任务卷轴与流程棒；第 2 章失败测试报告能把方向筛选、会话保存、空目标输入分成三类红灯，并先给出「红灯总指挥」排查顺序；第 3 章登录态实战已补齐身份路线、凭证存储、401 反证、刷新复查、Agent 委托、交付审查和面试复盘的剧情向导、任务卷轴、流程接力和交付口令；第 4 章接口审判庭实战已补齐请求体证词、状态码判词、错误体修复、日志串证、Agent 委托、交付审查和面试复盘导演层；第 5 章一致性熔炉实战已补齐 Network 双轨、幂等锤印、唯一约束、事务边界、Agent 委托、交付审查和面试复盘导演层；实战导演台新增 `本幕流程翻译`，保存回答后新增「刚刚到下一步的接力」，把上一棒、当前棒和下一棒用更直接的人话连接起来。
 
@@ -30,7 +30,7 @@ npm install
 npm run verify
 ```
 
-`git log --oneline -1` 应显示本次交接文档提交、`65e3603 fix(rpg): own java release harbor teaching flow` 或更晚提交。不要只 clone 后停在默认分支；当前 GitHub 默认 HEAD 不是这条 RPG 分支。必须先 `nvm use` 到 `.nvmrc` 指定的 Node `24.13.1`，否则 `node:sqlite` 测试会失败。
+`git log --oneline -1` 应显示本次交接文档提交、`772f66e docs(rpg): record frontend performance lab verification` 或更晚提交。不要只 clone 后停在默认分支；当前 GitHub 默认 HEAD 不是这条 RPG 分支。必须先 `nvm use` 到 `.nvmrc` 指定的 Node `24.13.1`，否则 `node:sqlite` 测试会失败。
 
 新电脑首次拉取：
 
@@ -59,7 +59,7 @@ npm install
 npm run verify
 ```
 
-`git log --oneline -1` 应显示本次交接文档提交、`65e3603 fix(rpg): own java release harbor teaching flow` 或更晚提交。再运行 `git rev-parse HEAD`、`git rev-parse origin/cx/ai-career-rpg-home` 和 `git ls-remote origin refs/heads/cx/ai-career-rpg-home`，三处 hash 应一致；最新远端 HEAD 以命令输出为准。如果显示 `5651c18`、`0fb18e7`、`0f7c433`、`c587a23`、`547ed6f`、`4370ddf`、`1b3cf5d`、`9171ac8`、`1a40fe4`、`e10069f`、`fa12dbc`、`2dd44d3`、`ca2c7aa`、`3fe3db1` 或默认分支 `feat/guided-learning-bridge` 的提交，说明还没拉到最新远端。
+`git log --oneline -1` 应显示本次交接文档提交、`772f66e docs(rpg): record frontend performance lab verification` 或更晚提交。再运行 `git rev-parse HEAD`、`git rev-parse origin/cx/ai-career-rpg-home` 和 `git ls-remote origin refs/heads/cx/ai-career-rpg-home`，三处 hash 应一致；最新远端 HEAD 以命令输出为准。如果显示 `65e3603`、`5651c18`、`0fb18e7`、`0f7c433`、`c587a23`、`547ed6f`、`4370ddf`、`1b3cf5d`、`9171ac8`、`1a40fe4`、`e10069f`、`fa12dbc`、`2dd44d3`、`ca2c7aa`、`3fe3db1` 或默认分支 `feat/guided-learning-bridge` 的提交，说明还没拉到最新远端。
 
 如果另一台电脑已经有本地改动，不要直接覆盖：
 
@@ -147,6 +147,7 @@ npm run verify
 - 前端第 5 关浏览器串章文案追加修复：隔离 API `4401`、临时 SQLite `/tmp/code-quest-r325.sqlite`、Vite `5251` 下，浏览器发现主动复述 placeholder、第二幕边界用例、第四幕 Agent 示例和 Lab 证据表达卡仍有第一章保存/数据库例子。已改为当前线索 placeholder、筛选状态边界、`sourceHash`、DOM 可见行和回归风险；桌面 1280 与 390px DOM 均无旧词、无横向溢出，控制台 error 为 0。
 - Java 第 4 关上线港追加修复：浏览器从 `#chapter-java-4` 发现剧情线索和 Lab 示范卡仍露出 AI 第 14 章 / 第一章保存链路旧词。已把 Java 上线港五幕剧情、沙盒证物、Lab 先读卡和证据表达示范改为订单服务上线语境，固定 `order-service`、`POST /api/orders`、`JWT_SECRET`、`PAYMENT_API_URL`、订单表迁移、`/actuator/health`、下单成功率、支付回调失败率和回滚后验证。隔离 API `4403`、SQLite `/tmp/code-quest-r327.sqlite`、Vite `5253` 下，完整收集 10/10 剧情线索并进入实战 Lab，控制台 error 为 0。
 - 前端第 3 关性能语境追加修复：浏览器从 `#chapter-frontend-3` 发现第一幕线索仍写“保存后刷新慢”，且 Lab 证据表达默认会掉回第一章 `response.ok / 数据库写入` 模板。已改为首屏白屏、筛选慢、列表慢、滚动卡顿，剧情补入 `Server-Timing` 和 `X-Cache: MISS/HIT`，Lab 新手先读卡与示范卡改为 Network、TTFB、Server-Timing、X-Cache、后端日志和 render profile。隔离 API `4406`、SQLite `/tmp/code-quest-r330.sqlite`、Vite `5256` 下，完整收集 10/10 剧情线索进入实战 Lab；桌面 1200 与 390px 均无横向溢出，暗色背景，控制台 error 为 0，旧保存/数据库词检查全为 false。
+- 前端第 5 关阅读顺序微修：`真实工作现场` 标签统一加冒号，前端回归试炼场背景句从“真实工作现场真实交付里”改为“真实工作现场：交付审查时……”，避免新手读第一幕时被重复词和断句卡住。本轮同时刷新跨电脑交接说明，明确另一台电脑必须拉 `cx/ai-career-rpg-home`，并用 `HEAD / origin/cx/ai-career-rpg-home / git ls-remote` 三方 hash 核对完整性。
 - 前端第 4 关教学层追加修复：`frontend-accessibility-proof` 的 teaching map/code tour 不再复用 AI 第 14 章上线门禁素材；教学项目地图改为用户任务、语义与状态反馈、移动端复测、可访问性哨塔、回归守门和无障碍交付决定，代码导读改为 `docs/accessibility-checklist.md` 与 `frontend/accessibility-audit.md`。完整 `npm run verify` 通过 10 个测试文件 / 185 个测试；隔离 API `4395`、SQLite `/tmp/code-quest-r322.sqlite`、Vite `5245` 下，`#chapter-frontend-4` 桌面 1280 与 390px 无横向溢出，暗色背景，控制台 error 为 0，正文不再出现上线门禁、上线计划、生产变量、生产环境、备份恢复或 `AI_API_KEY`。
 - Java 第 5 关教学层追加修复：`java-production-incident` 的 teaching map/code tour 不再复用 AI 第 14 章上线门禁素材；教学项目地图改为事故窗口、日志与运行环境、影响范围、报警哨塔、止血决策门和事故结论，代码导读改为 `docs/incident-response-timeline.md` 与 `server/IncidentTimeline.java`。完整 `npm run verify` 通过 10 个测试文件 / 186 个测试；隔离 API `4396`、SQLite `/tmp/code-quest-r323.sqlite`、Vite `5246` 下，`#chapter-java-5` 桌面 1280 与 390px 无横向溢出，暗色背景，控制台 error 为 0，正文不再出现上线门禁、上线计划、生产变量、生产环境、备份恢复或 `AI_API_KEY`。
 - 上线港 Lab 语境追加修复：Java 第 4 关可见 Lab 配置已聚焦发布窗口、影响范围、发布负责人、生产配置、密钥边界、备份恢复、390px 冒烟、监控信号和回滚后验证，固定“构建通过不等于可以上线”；R327 已补浏览器深链验收和沙盒证物归属修复。
@@ -160,7 +161,7 @@ npm run verify
 
 ## 当前拉取/合并判断
 
-- 可以拉取：是。`cx/ai-career-rpg-home` 当前本地和远端一致，另一台电脑按上面的命令能完整拿到当前阶段成果。
+- 可以拉取：是。本次提交推送后，`cx/ai-career-rpg-home` 远端会包含今天的前端第 5 关文案修复和交接更新；另一台电脑按上面的命令能完整拿到当前阶段成果。
 - 不建议直接合并：当前还是阶段性 RPG 化分支，不是最终完成版。最新完整 `npm run verify` 已在 Node `24.13.1` 下通过，但全站视觉终审、PR 审查和真人试玩仍要做。
 - 时间紧的处理：可以先继续在本分支开发，或开 Draft PR 让 GitHub 保留审查入口；等上述收尾完成后再转 ready PR。
 
@@ -176,7 +177,7 @@ npm run verify
 
 1. 回看第 1 章和第 5 章实战真人阅读负担，必要时继续压缩术语密度和补比喻。
 2. 做全站视觉节奏终审，重点看每一屏是否能一眼知道当前位置、任务目标、证据材料和下一步按钮；实战页导读已先收进 `任务导演台`，流程图、路线牌和接力板已折叠进 `辅助卷宗`，后续仍需完整 Lab 桌面/手机截图验收。
-3. 补齐 Java 第 4 关、前端第 3 与第 5 关实战 Lab 逐章浏览器抽检，确认岗位路线不只教学入口可用，实战材料、作答和验收页也不回退到 AI 章节或旧白底界面；Java 第 2-5 关与前端第 3-5 关已完成可见语境修复，岗位教学桥地图 fallback 已修，其中 Java 第 4 关、前端第 3/5 关还需要补完整 Lab 深链证据。
+3. 继续补 Java/前端剩余关卡的实战 Lab 逐章浏览器抽检，确认岗位路线不只教学入口可用，实战材料、作答和验收页也不回退到 AI 章节或旧白底界面；Java 第 4 关、前端第 3 关已有完整深链证据，前端第 5 关仍建议补一轮从剧情到 Lab 的完整录入式验收。
 4. 合并前开 PR，并把验证证据、风险和回滚写在 PR 描述里；不要直接 merge 到 `main`。
 
 ## 当前未完成
