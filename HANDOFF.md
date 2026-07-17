@@ -18,8 +18,8 @@
 仓库：https://github.com/xixinikl/code-quest.git
 要拉的分支：cx/ai-career-rpg-home
 不要用 clone 后默认分支继续开发。先切到 cx/ai-career-rpg-home，再核对本地 HEAD、origin/cx/ai-career-rpg-home 和远端 ls-remote 三个 hash。
-完整基线：至少能看到 ffbbf8b feat(rpg): show lab companion squad，或者看到晚于它的场景运镜更新提交。
-最新体验基线：如果能看到 feat(rpg): show clue reward feedback 或更晚提交，说明已包含第 1 章线索点击“线索获得”反馈；如果能看到 feat(rpg): show collection contract 或更晚提交，说明已包含第 1 章剧情探索页“本章收集契约”；如果能看到 feat(rpg): add scene spotlight 或更晚提交，说明已包含第 1 章剧情探索页“剧情舞台镜头”；如果能看到 feat(rpg): show chapter navigation needle 或更晚提交，说明已包含第 1 章剧情/教学页“本章导航针”；如果能看到 feat(rpg): show nearby route map 或更晚提交，说明已包含简报页“当前附近星图”减负；如果能看到 feat(rpg): show lab interview replay 或更晚提交，说明已包含 Lab 首屏面试复盘稿，用户能把本关证据整理成面试表达。
+完整基线：至少能看到 74fc21f feat(rpg): show clue reward feedback，或者看到晚于它的提交。
+最新体验基线：如果能看到 feat(rpg): show route growth contract 或更晚提交，说明已包含路线大厅“成长星约”；如果能看到 feat(rpg): show clue reward feedback 或更晚提交，说明已包含第 1 章线索点击“线索获得”反馈；如果能看到 feat(rpg): show collection contract 或更晚提交，说明已包含第 1 章剧情探索页“本章收集契约”；如果能看到 feat(rpg): add scene spotlight 或更晚提交，说明已包含第 1 章剧情探索页“剧情舞台镜头”；如果能看到 feat(rpg): show chapter navigation needle 或更晚提交，说明已包含第 1 章剧情/教学页“本章导航针”；如果能看到 feat(rpg): show nearby route map 或更晚提交，说明已包含简报页“当前附近星图”减负；如果能看到 feat(rpg): show lab interview replay 或更晚提交，说明已包含 Lab 首屏面试复盘稿，用户能把本关证据整理成面试表达。
 拉完先跑：nvm use && npm install && npm run verify:quick
 准备合并或交付前再跑：npm run verify
 ```
@@ -89,7 +89,7 @@ git pull --ff-only origin cx/ai-career-rpg-home
 
 - `git status --short --branch` 显示在 `cx/ai-career-rpg-home`，并且没有未提交文件。
 - `git rev-parse HEAD`、`git rev-parse origin/cx/ai-career-rpg-home`、`git ls-remote origin refs/heads/cx/ai-career-rpg-home` 的 hash 一致。
-- `git log --oneline -8` 能看到 `6933028 feat(rpg): unify teaching dark style`、本次本章导航针/当前附近星图/面试复盘稿更新提交，或更晚提交。
+- `git log --oneline -8` 能看到 `74fc21f feat(rpg): show clue reward feedback`，或更晚提交。
 - `nvm use` 后 Node 是 `.nvmrc` 指定的 `v24.13.1`。
 - `npm run verify:quick` 通过后再继续开发；准备合并或交付前跑完整 `npm run verify`。
 
@@ -103,16 +103,20 @@ git pull --ff-only origin cx/ai-career-rpg-home
 
 - 当前远端：`https://github.com/xixinikl/code-quest.git`
 - 当前工作分支：`cx/ai-career-rpg-home`
-- 当前已推送功能基线：远端 `origin/cx/ai-career-rpg-home` 已到 `6933028 feat(rpg): unify teaching dark style`；本次面试复盘稿、当前附近星图、本章导航针、剧情舞台镜头和本章收集契约更新提交后会晚于它。最终远端 hash 仍以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 输出为准。
-- 当前已推送交接基线：本文件提交后应晚于 `6933028`，包含另一台电脑拉取、核对、继续开发、不能直接合并，以及最新第 1 章地点路线/当前流程交接单/主动复述证据边界/复盘关键线索/下一地点证据交接/Lab 刷新恢复/Lab 实战接力/收藏解锁/结案后冒险菜单/下一幕预告/玩家身份契约/当前只读这一行/代码证据交接复盘/带入实战的证据包/Lab 实战入场证据包/同行小队/场景运镜/第 2 章职业产出/本关流程路线/本关名词小抄/本关证据任务/流程分镜/代码证据导师卡/教学桥暗色统一/本关面试复盘稿/简报页当前附近星图/本章导航针/剧情舞台镜头/本章收集契约说明。最终远端 hash 仍以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 为准。
+- 当前已推送功能基线：远端 `origin/cx/ai-career-rpg-home` 已到 `74fc21f feat(rpg): show clue reward feedback`，包含第 1 章线索点击“线索获得”反馈、本章收集契约、剧情舞台镜头、本章导航针、简报页当前附近星图、Lab 首屏面试复盘稿和教学暗色统一等体验细修。最终远端 hash 仍以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 输出为准。
+- 当前已推送交接基线：本文件提交后应晚于 `74fc21f`，包含另一台电脑拉取、核对、继续开发、不能直接合并，以及最新第 1 章地点路线/当前流程交接单/主动复述证据边界/复盘关键线索/下一地点证据交接/Lab 刷新恢复/Lab 实战接力/收藏解锁/结案后冒险菜单/下一幕预告/玩家身份契约/当前只读这一行/代码证据交接复盘/带入实战的证据包/Lab 实战入场证据包/同行小队/场景运镜/第 2 章职业产出/本关流程路线/本关名词小抄/本关证据任务/流程分镜/代码证据导师卡/教学桥暗色统一/本关面试复盘稿/简报页当前附近星图/路线大厅成长星约/本章导航针/剧情舞台镜头/本章收集契约/线索获得反馈说明。最终远端 hash 仍以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 为准。
 - 当前本地核对：推送完成后，`git status --short --branch` 应显示 `cx/ai-career-rpg-home...origin/cx/ai-career-rpg-home` 且没有未提交文件，说明本地与远端一致。
-- 当前远端核对：另一台电脑拉取后 `git log --oneline -8` 应看到 `6933028 feat(rpg): unify teaching dark style`、本次剧情舞台镜头/本章导航针/当前附近星图/面试复盘稿更新提交，或更晚提交；如果只看到 `5927e56`、`5362d09`、`03aaefc`、`b30bb70`、`b7315bf`、`98f59b4`、`467073f`、`ffbbf8b`、`4f51ac8`、`5cabd32`、`5c3a176`、`feeac06`、`5c84acf`、`865e721`、`678d428`、`6dc63ea`、`b42a904`、`2387686`、`772f66e`、`65e3603`、`5651c18`、`0fb18e7`、`0f7c433`、`c587a23`、`547ed6f`、`4370ddf`、`1b3cf5d`、`9171ac8`、`1a40fe4`、`e10069f`、`fa12dbc`、`2dd44d3`、`ca2c7aa`、`3fe3db1` 或默认分支提交，说明还没拉到最新交接/体验细修。
+- 当前远端核对：另一台电脑拉取后 `git log --oneline -8` 应看到 `74fc21f feat(rpg): show clue reward feedback`，或晚于它的交接更新提交；如果只看到 `729bcf2`、`9e111e4`、`94fc90b`、`7d5ee4d`、`d9f26d5`、`6933028`、`5927e56` 或默认分支提交，说明还没拉到最新交接/体验细修。
 - 远端默认 HEAD：`git ls-remote --symref origin HEAD` 指向 `feat/guided-learning-bridge`，不是本分支；另一台电脑必须显式切到 `cx/ai-career-rpg-home`，不要只用 clone 后默认分支继续。
-- 给协作者的最短说明：不要直接用默认分支；拉仓库后必须切到 `cx/ai-career-rpg-home`。当前至少应看到 `6933028 feat(rpg): unify teaching dark style`、本次剧情舞台镜头/本章导航针/当前附近星图/面试复盘稿更新提交，或更晚提交；进入项目后必须 `nvm use` 到 Node `24.13.1`。
+- 给协作者的最短说明：不要直接用默认分支；拉仓库后必须切到 `cx/ai-career-rpg-home`。当前至少应看到 `74fc21f feat(rpg): show clue reward feedback`，或更晚提交；进入项目后必须 `nvm use` 到 Node `24.13.1`。
 - 他具体怎么拉：如果另一台电脑没有本项目，按“首次 clone”执行；如果已经 clone 过，按“已有仓库更新”执行；如果他本地有未提交改动，先新建自己的分支或 stash，不要直接覆盖。不要在默认分支上继续开发，也不要在没有核对 hash 的情况下合并。
 
 ### 最新进度补充（2026-07-18 凌晨）
 
+- 已在路线大厅世界地图下加入 `成长星约`。现在用户进入任务简报后，会看到接下来三次会解锁的伙伴、宠物或装备，以及对应 `能力印记`，避免 15 章主线看起来像普通课程列表。
+- 成长星约会随当前路线和进度自动变化；AI 主线从第 1 章开始显示 `伙伴 · 档案馆记录员`、`宠物 · 灵感萤火`、`伙伴 · 回廊守卫`，并提示能力印记。
+- 验证：`npm run test -- src/App.test.tsx --run -t "进入主线后进入教学地图"` 通过；`npm run verify:quick` 通过 11 个测试文件 / 203 个测试。
+- 浏览器验收：隔离 API `4425`、Vite `5297`，从新用户序章进入任务简报，真实页面显示 `成长星约`、`未来三次解锁`、`伙伴 · 档案馆记录员`、`宠物 · 灵感萤火`、`伙伴 · 回廊守卫` 和能力印记；桌面和 390px 手机宽度均无横向溢出；截图保存在 `output/playwright/r372-route-growth-contract-desktop.png` 和 `output/playwright/r372-route-growth-contract-mobile.png`。
 - 已在第 1 章线索点击后加入 `线索获得` 回执。现在点 `检查绿色灯牌` 后，会显示 `证据 +1`、收进卷宗的能力说明、`档案馆记录员 1/2` 默契进度，以及下一步要追的证据方向。
 - 目的：让探索有即时获得感，同时把“这条线索证明什么、下一棒看哪里”讲清楚，避免用户点完只看到一段文字。
 - 验证：`npm run test -- src/App.test.tsx --run -t "进入主线后进入教学地图"` 通过；`npm run verify:quick` 通过 11 个测试文件 / 203 个测试。

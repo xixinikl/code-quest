@@ -13554,6 +13554,18 @@ export default function App() {
               ),
             )
         : [];
+    const routeGrowthPreview =
+      selectedRoutePlayable && selectedRoute.chapters.length > 0
+        ? selectedRoute.chapters.slice(
+            routeCompleted ? 0 : Math.max(0, nextQuestChapterIndex),
+            routeCompleted
+              ? Math.min(3, selectedRoute.chapters.length)
+              : Math.min(
+                  selectedRoute.chapters.length,
+                  Math.max(0, nextQuestChapterIndex) + 3,
+                ),
+          )
+        : [];
     return (
       <section
         className={`intro visual-novel scene-${introScene}`}
@@ -14219,6 +14231,56 @@ export default function App() {
                           </div>
                         ))}
                   </div>
+                  {selectedRoutePlayable && routeGrowthPreview.length > 0 && (
+                    <section
+                      className="route-growth-contract"
+                      aria-label="成长星约"
+                    >
+                      <header>
+                        <span>成长星约</span>
+                        <strong>未来三次解锁</strong>
+                        <p>
+                          这不是普通课程表。每章都会收进一位伙伴、宠物或装备，并留下能放进面试复盘的能力印记。
+                        </p>
+                      </header>
+                      <div>
+                        {routeGrowthPreview.map((chapter) => {
+                          const completed = isChapterCleared(
+                            developer,
+                            chapter.id,
+                          );
+                          const active =
+                            !routeCompleted &&
+                            chapter.id === nextQuestChapter.id;
+                          return (
+                            <article
+                              className={`${completed ? "collected" : ""} ${
+                                active ? "active" : ""
+                              }`}
+                              key={chapter.id}
+                            >
+                              <small>
+                                第 {displayChapterNumber(chapter)} 章 ·{" "}
+                                {completed
+                                  ? "已收集"
+                                  : active
+                                    ? "当前可收集"
+                                    : "下一站预告"}
+                              </small>
+                              <strong>
+                                {chapter.companionUnlock.type} ·{" "}
+                                {chapter.companionUnlock.name}
+                              </strong>
+                              <p>{chapter.companionUnlock.description}</p>
+                              <i>
+                                能力印记：{chapter.rewards.slice(0, 2).join(" / ")}
+                              </i>
+                            </article>
+                          );
+                        })}
+                      </div>
+                    </section>
+                  )}
                   {!selectedRoutePlayable && (
                     <SharedCoreTrail route={selectedRoute} detailed />
                   )}

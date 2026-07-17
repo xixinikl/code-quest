@@ -2001,6 +2001,12 @@ async function enterMainQuest(user: ReturnType<typeof userEvent.setup>) {
   expect(aiWorldMap).toHaveTextContent("数据断层");
   expect(aiWorldMap).toHaveTextContent("一致性熔炉");
   expect(aiWorldMap).not.toHaveTextContent("面试议会");
+  const growthContract = screen.getByLabelText("成长星约");
+  expect(growthContract).toHaveTextContent("未来三次解锁");
+  expect(growthContract).toHaveTextContent("伙伴 · 档案馆记录员");
+  expect(growthContract).toHaveTextContent("宠物 · 灵感萤火");
+  expect(growthContract).toHaveTextContent("伙伴 · 回廊守卫");
+  expect(growthContract).toHaveTextContent("能力印记：数据流追踪 / 数据库验证");
   const firstChapterDossier = screen.getByRole("region", {
     name: /选中章节卷宗/,
   });
