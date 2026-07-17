@@ -2581,6 +2581,56 @@ describe("AI 职业路线入口", () => {
     expect(screen.getByRole("button", { name: /前往伙伴会合/ })).toBeEnabled();
   });
 
+  it("第 1 章教学完成页会显示带入实战的证据包", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn((input: RequestInfo | URL) => {
+        const url = String(input);
+        if (url === "/api/attempts/attempt-primary-complete/teaching") {
+          return response(
+            teachingScenario.steps.map((step) => ({
+              stepId: step.id,
+              completed: true,
+              teachingResponse: {},
+              remediationEvents: [],
+              updatedAt: "2026-07-05T00:00:00.000Z",
+            })),
+          );
+        }
+        return response({ error: "NOT_FOUND", message: "unexpected" }, 404);
+      }),
+    );
+
+    render(
+      <TeachingBridge
+        attemptId="attempt-primary-complete"
+        scenario={teachingScenario}
+        developer={{
+          name: "见习开发者",
+          rank: "见习开发者",
+          xp: 0,
+          missionsCleared: 0,
+          clearedChapterIds: [],
+          unlockedCompanionNames: [],
+          joinedAt: "2026-07-05T00:00:00.000Z",
+        }}
+        onComplete={vi.fn()}
+      />,
+    );
+
+    expect(
+      await screen.findByRole("heading", { name: /教学阶段完成/ }),
+    ).toBeInTheDocument();
+    const evidencePack = screen.getByLabelText("带入实战的证据包");
+    expect(evidencePack).toHaveTextContent("起点别忘");
+    expect(evidencePack).toHaveTextContent("代码只带关键行");
+    expect(evidencePack).toHaveTextContent("下一步验证");
+    expect(evidencePack).toHaveTextContent("实战边界");
+    expect(evidencePack).toHaveTextContent("frontend/SaveCanvasButton.jsx");
+    expect(evidencePack).toHaveTextContent("只改沙盒，不碰真实项目");
+    expect(evidencePack).toHaveTextContent("Network、日志、数据库或测试结果");
+  });
+
   it("教学桥会持续显示上一站、当前棒和下一步，避免用户忘记流程", async () => {
     const user = userEvent.setup();
     const clipboardWrite = vi.fn().mockResolvedValue(undefined);

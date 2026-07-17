@@ -10023,6 +10023,63 @@ textarea:focus {
   font-weight: 900;
 }
 
+.practice-evidence-pack {
+  display: grid;
+  gap: 10px;
+  padding: 15px;
+  border: 1px solid rgba(231, 197, 111, 0.24);
+  border-radius: 8px;
+  background:
+    radial-gradient(
+      circle at 10% 0%,
+      rgba(231, 197, 111, 0.14),
+      transparent 36%
+    ),
+    rgba(3, 10, 17, 0.72);
+}
+
+.practice-evidence-pack > span {
+  color: #e9c878;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.practice-evidence-pack > div {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.practice-evidence-pack article {
+  min-width: 0;
+  padding: 11px;
+  border: 1px solid rgba(147, 239, 208, 0.14);
+  border-radius: 7px;
+  background: rgba(255, 255, 255, 0.045);
+}
+
+.practice-evidence-pack small {
+  display: block;
+  margin-bottom: 5px;
+  color: #93efd0;
+  font-size: 10px;
+  font-weight: 900;
+}
+
+.practice-evidence-pack strong {
+  display: block;
+  color: #fff4ce;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.practice-evidence-pack p {
+  margin: 6px 0 0;
+  color: #b9cbd2;
+  font-size: 12px;
+  line-height: 1.65;
+}
+
 .celebration-handoff {
   padding: 15px 16px;
   border: 1px solid rgba(147, 239, 208, 0.2);
@@ -10972,6 +11029,10 @@ textarea:focus {
   .celebration-gate-mentor img {
     width: 72px;
     height: 72px;
+  }
+
+  .practice-evidence-pack > div {
+    grid-template-columns: 1fr;
   }
 
   .coaching-mentor {

@@ -10397,6 +10397,11 @@ export function TeachingBridge({
     const stepCount = scenario.steps.length;
     const isPrimarySandbox = scenario.scenarioId === "canvas-save-persistence";
     const completionScene = storyScenes.at(-1) ?? storyScenes[0];
+    const firstNode = scenario.projectMap.nodes[0];
+    const finalNode = scenario.projectMap.nodes.at(-1);
+    const codeFocusSteps = scenario.steps.filter((step) => step.codeFocus);
+    const firstCodeFocus = codeFocusSteps[0]?.codeFocus;
+    const finalCodeFocus = codeFocusSteps.at(-1)?.codeFocus;
     const completionCards = [
       {
         label: "流程地图",
@@ -10417,6 +10422,38 @@ export function TeachingBridge({
         label: "复盘产出",
         value: "整理成工作和面试表达",
         detail: "把现象、证据、结论和 Agent 委托收束起来。",
+      },
+    ];
+    const practiceEvidencePack = [
+      {
+        label: "起点别忘",
+        value: firstNode
+          ? `${firstNode.input} → ${firstNode.label}`
+          : "先说清任务从哪里来",
+        detail:
+          firstNode?.description ??
+          "进入实战前先确认上一棒交来的材料，不要直接跳到改代码。",
+      },
+      {
+        label: "代码只带关键行",
+        value: firstCodeFocus
+          ? firstCodeFocus.filePath
+          : "本章关键代码已经读过",
+        detail: firstCodeFocus
+          ? `刚才只证明「${firstCodeFocus.observationGoal}」`
+          : "实战里仍然只看和当前任务有关的几行。",
+      },
+      {
+        label: "下一步验证",
+        value: finalCodeFocus?.output ?? finalNode?.output ?? "用证据闭环",
+        detail: `${finalCodeFocus?.observationGoal ?? finalNode?.evidenceSources.join(" + ") ?? "继续用证据证明。"} 实战继续用 Network、日志、数据库或测试结果闭环。`,
+      },
+      {
+        label: "实战边界",
+        value: isPrimarySandbox ? "只改沙盒，不碰真实项目" : "先会合，再进沙盒",
+        detail: isPrimarySandbox
+          ? "下面才开始独立练习，提示和验证都会如实记录。"
+          : "XP、伙伴和面试素材等实战通过后再结算。",
       },
     ];
     return (
@@ -10460,6 +10497,21 @@ export function TeachingBridge({
               </div>
             ))}
           </div>
+          <section
+            className="practice-evidence-pack"
+            aria-label="带入实战的证据包"
+          >
+            <span>带入实战的证据包</span>
+            <div>
+              {practiceEvidencePack.map((item) => (
+                <article key={item.label}>
+                  <small>{item.label}</small>
+                  <strong>{item.value}</strong>
+                  <p>{item.detail}</p>
+                </article>
+              ))}
+            </div>
+          </section>
           <div className="celebration-handoff">
             <b>{isPrimarySandbox ? "进入独立实战" : "前往伙伴会合"}</b>
             <p>
