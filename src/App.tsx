@@ -9182,6 +9182,55 @@ function LabPracticeEvidencePack({
   );
 }
 
+function LabRouteCompass({
+  activeIndex,
+  activeStep,
+  config,
+}: {
+  activeIndex: number;
+  activeStep: LabStep;
+  config: LabConfig;
+}) {
+  const activeFlowIndex = getLabStepFlowIndex(activeStep.id, activeIndex, config);
+  const activeFlow = config.flowItems[activeFlowIndex] ?? config.flowItems[0];
+  const nextFlow = config.flowItems[activeFlowIndex + 1];
+
+  return (
+    <section className="lab-route-compass" aria-label="本关流程路线">
+      <header>
+        <span>本关流程路线</span>
+        <strong>先看谁把什么交给谁，再读这一段证据</strong>
+      </header>
+      <div className="lab-route-compass-focus" aria-label="当前流程交接">
+        <span>当前交接</span>
+        <strong>
+          {activeFlow?.label ?? activeStep.label} 把「
+          {activeFlow?.title ?? activeStep.label}」交给{" "}
+          {nextFlow?.label ?? "结案卷宗"}
+        </strong>
+        <p>
+          {activeFlow?.detail ?? "先把当前证据讲清楚。"}
+          {nextFlow ? ` 下一棒会继续确认「${nextFlow.title}」。` : ""}
+        </p>
+      </div>
+      <ol>
+        {config.flowItems.map((item, index) => (
+          <li
+            className={`${index === activeFlowIndex ? "active" : ""} ${
+              index < activeFlowIndex ? "done" : ""
+            }`}
+            key={`${item.label}-${item.title}`}
+          >
+            <small>{String(index + 1).padStart(2, "0")}</small>
+            <b>{item.label}</b>
+            <span>{item.title}</span>
+          </li>
+        ))}
+      </ol>
+    </section>
+  );
+}
+
 function getRouteChapterForScenarioId(scenarioId: string) {
   const target = findRouteChapterTargetForScenarioId(scenarioId);
   const route =
@@ -12325,6 +12374,11 @@ export function Lab({
                     : "最后生成成长档案，把本关产出整理成工作、Agent 和面试三种表达。",
             }}
             handoff={questLogHandoff}
+          />
+          <LabRouteCompass
+            activeIndex={activeIndex}
+            activeStep={activeStep}
+            config={config}
           />
           <LabPracticeEvidencePack
             activeIndex={activeIndex}

@@ -762,6 +762,12 @@ describe("岗位路线实战场景契约", () => {
     expect(screen.getByLabelText("实战入场证据包")).toHaveTextContent(
       "Project Brief 表单",
     );
+    expect(screen.getByLabelText("本关流程路线")).toHaveTextContent(
+      "用户",
+    );
+    expect(screen.getByLabelText("本关流程路线")).toHaveTextContent(
+      "写 Brief",
+    );
     expect(screen.getByLabelText("本关同行小队")).toHaveTextContent(
       "宠物 · 灵感萤火",
     );
@@ -783,6 +789,63 @@ describe("岗位路线实战场景契约", () => {
     );
     expect(screen.getByLabelText("本关职业产出")).toHaveTextContent(
       "我把模糊 AI 想法拆成可开发链路",
+    );
+  });
+
+  it("第 3 章 Lab 首屏会讲清登录态是谁交给谁", () => {
+    const config = getLabConfig("identity-session-corridor");
+    const jobArtifacts = Object.entries(config.artifactGuides).map(
+      ([id, guide]) => ({
+        id,
+        label: guide.place,
+        language: "txt",
+        relativePath: `${config.practical.sandboxPath}/${id}.txt`,
+        content: guide.keyLines.join("\n"),
+      }),
+    );
+
+    render(
+      <Lab
+        artifacts={jobArtifacts}
+        attempt={
+          {
+            id: "attempt-case-03-route-compass",
+            scenarioId: "identity-session-corridor",
+            status: "active",
+            hintLevel: 0,
+            verificationStatus: "not_run",
+            steps: {},
+          } as Parameters<typeof Lab>[0]["attempt"]
+        }
+        onBackToRoadmap={vi.fn()}
+        onSubmitted={vi.fn()}
+        setAttempt={vi.fn()}
+      />,
+    );
+
+    expect(screen.getByLabelText("本关流程路线")).toHaveTextContent(
+      "当前交接",
+    );
+    expect(screen.getByLabelText("本关流程路线")).toHaveTextContent(
+      "登录接口",
+    );
+    expect(screen.getByLabelText("本关流程路线")).toHaveTextContent(
+      "浏览器凭证",
+    );
+    expect(screen.getByLabelText("本关流程路线")).toHaveTextContent(
+      "受保护接口",
+    );
+    expect(screen.getByLabelText("本关流程路线")).toHaveTextContent(
+      "服务端会话",
+    );
+    expect(screen.getByLabelText("本关职业产出")).toHaveTextContent(
+      "用户刷新后掉登录",
+    );
+    expect(screen.getByLabelText("本关职业产出")).toHaveTextContent(
+      "登录态存放位置",
+    );
+    expect(screen.getByLabelText("本关职业产出")).toHaveTextContent(
+      "用 Network 证明登录态",
     );
   });
 
