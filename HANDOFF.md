@@ -19,7 +19,7 @@
 要拉的分支：cx/ai-career-rpg-home
 不要用 clone 后默认分支继续开发。先切到 cx/ai-career-rpg-home，再核对本地 HEAD、origin/cx/ai-career-rpg-home 和远端 ls-remote 三个 hash。
 完整基线：至少能看到 ffbbf8b feat(rpg): show lab companion squad，或者看到晚于它的场景运镜更新提交。
-最新体验基线：如果能看到 feat(rpg): add scene spotlight 或更晚提交，说明已包含第 1 章剧情探索页“剧情舞台镜头”；如果能看到 feat(rpg): show chapter navigation needle 或更晚提交，说明已包含第 1 章剧情/教学页“本章导航针”；如果能看到 feat(rpg): show nearby route map 或更晚提交，说明已包含简报页“当前附近星图”减负；如果能看到 feat(rpg): show lab interview replay 或更晚提交，说明已包含 Lab 首屏面试复盘稿，用户能把本关证据整理成面试表达。
+最新体验基线：如果能看到 feat(rpg): show collection contract 或更晚提交，说明已包含第 1 章剧情探索页“本章收集契约”；如果能看到 feat(rpg): add scene spotlight 或更晚提交，说明已包含第 1 章剧情探索页“剧情舞台镜头”；如果能看到 feat(rpg): show chapter navigation needle 或更晚提交，说明已包含第 1 章剧情/教学页“本章导航针”；如果能看到 feat(rpg): show nearby route map 或更晚提交，说明已包含简报页“当前附近星图”减负；如果能看到 feat(rpg): show lab interview replay 或更晚提交，说明已包含 Lab 首屏面试复盘稿，用户能把本关证据整理成面试表达。
 拉完先跑：nvm use && npm install && npm run verify:quick
 准备合并或交付前再跑：npm run verify
 ```
@@ -103,8 +103,8 @@ git pull --ff-only origin cx/ai-career-rpg-home
 
 - 当前远端：`https://github.com/xixinikl/code-quest.git`
 - 当前工作分支：`cx/ai-career-rpg-home`
-- 当前已推送功能基线：远端 `origin/cx/ai-career-rpg-home` 已到 `6933028 feat(rpg): unify teaching dark style`；本次面试复盘稿、当前附近星图、本章导航针和剧情舞台镜头更新提交后会晚于它。最终远端 hash 仍以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 输出为准。
-- 当前已推送交接基线：本文件提交后应晚于 `6933028`，包含另一台电脑拉取、核对、继续开发、不能直接合并，以及最新第 1 章地点路线/当前流程交接单/主动复述证据边界/复盘关键线索/下一地点证据交接/Lab 刷新恢复/Lab 实战接力/收藏解锁/结案后冒险菜单/下一幕预告/玩家身份契约/当前只读这一行/代码证据交接复盘/带入实战的证据包/Lab 实战入场证据包/同行小队/场景运镜/第 2 章职业产出/本关流程路线/本关名词小抄/本关证据任务/流程分镜/代码证据导师卡/教学桥暗色统一/本关面试复盘稿/简报页当前附近星图/本章导航针/剧情舞台镜头说明。最终远端 hash 仍以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 为准。
+- 当前已推送功能基线：远端 `origin/cx/ai-career-rpg-home` 已到 `6933028 feat(rpg): unify teaching dark style`；本次面试复盘稿、当前附近星图、本章导航针、剧情舞台镜头和本章收集契约更新提交后会晚于它。最终远端 hash 仍以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 输出为准。
+- 当前已推送交接基线：本文件提交后应晚于 `6933028`，包含另一台电脑拉取、核对、继续开发、不能直接合并，以及最新第 1 章地点路线/当前流程交接单/主动复述证据边界/复盘关键线索/下一地点证据交接/Lab 刷新恢复/Lab 实战接力/收藏解锁/结案后冒险菜单/下一幕预告/玩家身份契约/当前只读这一行/代码证据交接复盘/带入实战的证据包/Lab 实战入场证据包/同行小队/场景运镜/第 2 章职业产出/本关流程路线/本关名词小抄/本关证据任务/流程分镜/代码证据导师卡/教学桥暗色统一/本关面试复盘稿/简报页当前附近星图/本章导航针/剧情舞台镜头/本章收集契约说明。最终远端 hash 仍以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 为准。
 - 当前本地核对：推送完成后，`git status --short --branch` 应显示 `cx/ai-career-rpg-home...origin/cx/ai-career-rpg-home` 且没有未提交文件，说明本地与远端一致。
 - 当前远端核对：另一台电脑拉取后 `git log --oneline -8` 应看到 `6933028 feat(rpg): unify teaching dark style`、本次剧情舞台镜头/本章导航针/当前附近星图/面试复盘稿更新提交，或更晚提交；如果只看到 `5927e56`、`5362d09`、`03aaefc`、`b30bb70`、`b7315bf`、`98f59b4`、`467073f`、`ffbbf8b`、`4f51ac8`、`5cabd32`、`5c3a176`、`feeac06`、`5c84acf`、`865e721`、`678d428`、`6dc63ea`、`b42a904`、`2387686`、`772f66e`、`65e3603`、`5651c18`、`0fb18e7`、`0f7c433`、`c587a23`、`547ed6f`、`4370ddf`、`1b3cf5d`、`9171ac8`、`1a40fe4`、`e10069f`、`fa12dbc`、`2dd44d3`、`ca2c7aa`、`3fe3db1` 或默认分支提交，说明还没拉到最新交接/体验细修。
 - 远端默认 HEAD：`git ls-remote --symref origin HEAD` 指向 `feat/guided-learning-bridge`，不是本分支；另一台电脑必须显式切到 `cx/ai-career-rpg-home`，不要只用 clone 后默认分支继续。
@@ -113,6 +113,10 @@ git pull --ff-only origin cx/ai-career-rpg-home
 
 ### 最新进度补充（2026-07-18 凌晨）
 
+- 已在第 1 章剧情探索页加入 `本章收集契约`。现在剧情舞台镜头后会显示通关收藏、线索印记和能力印记，让用户知道这一章不是只拿 XP，而是在收集伙伴、证据和可面试复盘的能力。
+- 第 1 章显示 `伙伴 · 档案馆记录员`，线索总进度 `0/8`，当前地点进度，以及当前证据出口作为能力印记；后续章节复用 `teachingCompanions`，可自动显示各自伙伴/宠物/装备。
+- 验证：`npm run test -- src/App.test.tsx --run -t "进入主线后进入教学地图"` 通过；`npm run verify:quick` 通过 11 个测试文件 / 203 个测试。
+- 浏览器验收：隔离 API `4423`、Vite `5295`，从新用户序章进入第 1 章，真实页面存在 `本章收集契约`，文案包含 `伙伴 · 档案馆记录员`、`线索印记 0/8` 和能力印记；桌面和 390px 手机宽度均无横向溢出；控制台 0 error / 0 warning；截图保存在 `output/playwright/r370-collection-contract-desktop.png` 和 `output/playwright/r370-collection-contract-mobile.png`。
 - 已在第 1 章剧情探索页加入 `剧情舞台镜头`。现在地点航线后会显示当前场景背景、当前登场角色、剧情对白、`我现在在哪 / 先懂这一句 / 下一幕交接` 三个学习锚点。
 - 目的：解决探索页虽然有背景、人物和信息卡，但关键路径仍不够像“真实游戏一幕”的问题；新手不用先翻线索，也能知道这一幕发生在哪里、谁在带他、要先懂哪一句。
 - 人物图复用现有同风格角色资产，桌面左文右人，手机单列头像式对话；保留原有章节 `h1`，舞台标题不抢 heading 语义。

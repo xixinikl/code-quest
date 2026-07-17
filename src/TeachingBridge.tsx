@@ -1357,6 +1357,70 @@ function QuestSceneSpotlight({
   );
 }
 
+function QuestCollectionContract({
+  companion,
+  totalFound,
+  totalClues,
+  sceneFound,
+  sceneTotal,
+  abilityMark,
+}: {
+  companion:
+    | {
+        name: string;
+        type: "伙伴" | "宠物" | "装备";
+        image: string;
+        gift: string;
+      }
+    | undefined;
+  totalFound: number;
+  totalClues: number;
+  sceneFound: number;
+  sceneTotal: number;
+  abilityMark: string;
+}) {
+  const progress = totalClues > 0 ? Math.round((totalFound / totalClues) * 100) : 0;
+  const unlockName = companion?.name ?? "本章同行";
+  const unlockType = companion?.type ?? "伙伴";
+  const unlockGift = companion?.gift ?? abilityMark;
+
+  return (
+    <section className="quest-collection-contract" aria-label="本章收集契约">
+      <header>
+        <span>收集契约</span>
+        <strong>通关不是只拿 XP，也会把角色和能力收进图鉴</strong>
+      </header>
+      <div className="quest-collection-grid">
+        <article className="quest-collection-unlock">
+          {companion?.image ? <img src={companion.image} alt="" /> : null}
+          <span>通关收藏</span>
+          <strong>
+            {unlockType} · {unlockName}
+          </strong>
+          <p>完成实战证据后，{unlockName} 会带着「{unlockGift}」归队。</p>
+        </article>
+        <article>
+          <span>线索印记</span>
+          <strong>
+            {totalFound}/{totalClues}
+          </strong>
+          <p>
+            当前地点 {sceneFound}/{sceneTotal}。先把本幕线索收齐，再进入下一幕。
+          </p>
+          <i aria-hidden="true">
+            <b style={{ width: `${progress}%` }} />
+          </i>
+        </article>
+        <article>
+          <span>能力印记</span>
+          <strong>{abilityMark}</strong>
+          <p>这枚印记会变成结案复盘和面试素材，不靠字数或感觉冒充掌握。</p>
+        </article>
+      </div>
+    </section>
+  );
+}
+
 type SceneDecisionOption = {
   id: string;
   label: string;
@@ -7821,6 +7885,15 @@ function EvidenceStoryQuest({
         previousScene={previousScene}
         nextScene={nextScene}
         activeJourney={activeJourney}
+      />
+
+      <QuestCollectionContract
+        companion={companion}
+        totalFound={totalFound}
+        totalClues={totalClues}
+        sceneFound={sceneDiscovered.length}
+        sceneTotal={scene.clues.length}
+        abilityMark={activeJourney?.proof ?? scene.goal}
       />
 
       <section className="quest-stage">

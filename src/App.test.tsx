@@ -6536,6 +6536,13 @@ describe("AI 职业路线入口", () => {
     expect(screen.getByLabelText("当前登场角色")).toHaveTextContent(
       "舞台记录员",
     );
+    const collectionContract = screen.getByLabelText("本章收集契约");
+    expect(collectionContract).toHaveTextContent("通关不是只拿 XP");
+    expect(collectionContract).toHaveTextContent("伙伴 · 档案馆记录员");
+    expect(collectionContract).toHaveTextContent("线索印记");
+    expect(collectionContract).toHaveTextContent("0/8");
+    expect(collectionContract).toHaveTextContent("能力印记");
+    expect(collectionContract).toHaveTextContent("你能看到按钮变成“保存成功”");
     expect(
       screen.getAllByText(/保存数据的完整旅行路线/).length,
     ).toBeGreaterThan(0);
