@@ -165,6 +165,69 @@ function ChapterMemoryStrip({
   );
 }
 
+function ChapterNavigationNeedle({
+  scenario,
+  currentStepIdx,
+  routeLabel,
+}: {
+  scenario: TeachingScenario;
+  currentStepIdx: number;
+  routeLabel: string;
+}) {
+  const currentStep = scenario.steps[currentStepIdx];
+  if (!currentStep) return null;
+
+  const previousStep = scenario.steps[currentStepIdx - 1];
+  const nextStep = scenario.steps[currentStepIdx + 1];
+  const currentOutput =
+    currentStep.codeFocus?.output ??
+    currentStep.projectPosition ??
+    currentStep.goal;
+  const previousOutput =
+    previousStep?.codeFocus?.output ??
+    previousStep?.projectPosition ??
+    previousStep?.goal ??
+    "开场调查已经确认事故为什么发生";
+  const nextInput =
+    nextStep?.codeFocus?.input ??
+    nextStep?.projectPosition ??
+    nextStep?.goal ??
+    "带着证据进入伙伴会合和实战修复";
+
+  return (
+    <section className="chapter-navigation-needle" aria-label="本章导航针">
+      <header>
+        <span>本章导航针</span>
+        <strong>{routeLabel}</strong>
+        <small>
+          第 {currentStepIdx + 1}/{scenario.steps.length} 站 ·{" "}
+          {currentStep.title}
+        </small>
+      </header>
+      <div>
+        <article>
+          <span>刚从哪里来</span>
+          <strong>{previousStep?.title ?? "剧情调查"}</strong>
+          <p>{previousOutput}</p>
+        </article>
+        <article className="active">
+          <span>现在做什么</span>
+          <strong>{currentStep.title}</strong>
+          <p>{currentStep.goal}</p>
+        </article>
+        <article>
+          <span>完成后交给谁</span>
+          <strong>{nextStep?.title ?? "实战会合"}</strong>
+          <p>{nextInput}</p>
+        </article>
+      </div>
+      <p>
+        当前只要交出：<b>{currentOutput}</b>。先把这一站说清楚，再进入下一站。
+      </p>
+    </section>
+  );
+}
+
 function ChapterQuestLog({
   scenario,
   currentStepIdx,
@@ -7596,6 +7659,49 @@ function EvidenceStoryQuest({
         </small>
       </section>
 
+      <section
+        className="chapter-navigation-needle quest-navigation-needle"
+        aria-label="本章导航针"
+      >
+        <header>
+          <span>本章导航针</span>
+          <strong>{scene.title}</strong>
+          <small>
+            第 {sceneIndex + 1}/{scenes.length} 站 · {scene.place}
+          </small>
+        </header>
+        <div>
+          <article>
+            <span>刚从哪里来</span>
+            <strong>{previousScene ? previousScene.place : "剧情调查"}</strong>
+            <p>
+              {previousScene
+                ? `${previousScene.title} 已收录，继续追它交出的下一份证据。`
+                : "序章委托已经确认：这不是背名词，而是追一条保存证据链。"}
+            </p>
+          </article>
+          <article className="active">
+            <span>现在做什么</span>
+            <strong>{scene.title}</strong>
+            <p>{scene.goal}</p>
+          </article>
+          <article>
+            <span>完成后交给谁</span>
+            <strong>{nextScene ? nextScene.place : "实战会合"}</strong>
+            <p>
+              {nextScene
+                ? `带着这一幕证据去找「${nextScene.title}」。`
+                : "把本章证据带进真实项目实战。"}
+            </p>
+          </article>
+        </div>
+        <p>
+          当前只要交出：
+          <b>{activeJourney?.proof ?? scene.clues[0]?.skill ?? scene.goal}</b>
+          。先把这一站说清楚，再进入下一站。
+        </p>
+      </section>
+
       <nav className="quest-scene-rail" aria-label="本章地点航线">
         <div className="quest-scene-rail-heading">
           <span>本章地点航线</span>
@@ -11321,6 +11427,12 @@ export function TeachingBridge({
           当前这一站：{scenario.steps[currentStepIdx]?.title ?? "剧情探索"}
         </small>
       </section>
+
+      <ChapterNavigationNeedle
+        scenario={scenario}
+        currentStepIdx={currentStepIdx}
+        routeLabel={storyRouteLabel}
+      />
 
       <ChapterMentorCompanion
         key={storyScenes[currentStepIdx]?.id ?? currentStepIdx}

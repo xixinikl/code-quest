@@ -6527,8 +6527,17 @@ describe("AI 职业路线入口", () => {
       }),
     ).toBeInTheDocument();
     expect(screen.getAllByText(/前端舞台/).length).toBeGreaterThanOrEqual(1);
-    expect(screen.getByText(/保存数据的完整旅行路线/)).toBeInTheDocument();
+    expect(
+      screen.getAllByText(/保存数据的完整旅行路线/).length,
+    ).toBeGreaterThan(0);
     expect(screen.getByText(/用户 → 前端页面/)).toBeInTheDocument();
+    const chapterNeedle = screen.getByLabelText("本章导航针");
+    expect(chapterNeedle).toHaveTextContent("刚从哪里来");
+    expect(chapterNeedle).toHaveTextContent("剧情调查");
+    expect(chapterNeedle).toHaveTextContent("现在做什么");
+    expect(chapterNeedle).toHaveTextContent("灯亮了，但戏还没演完");
+    expect(chapterNeedle).toHaveTextContent("完成后交给谁");
+    expect(chapterNeedle).toHaveTextContent("当前只要交出");
     expect(screen.getByLabelText("当前流程交接单")).toHaveTextContent(
       "点击保存，把画布名字交给页面",
     );

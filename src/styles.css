@@ -10548,6 +10548,94 @@ textarea:focus {
   font-weight: 800;
 }
 
+.chapter-navigation-needle {
+  display: grid;
+  gap: 12px;
+  margin: 0 0 16px;
+  padding: 14px;
+  border: 1px solid rgba(217, 184, 110, 0.28);
+  border-radius: 8px;
+  background:
+    linear-gradient(115deg, rgba(217, 184, 110, 0.1), transparent 38%),
+    linear-gradient(90deg, rgba(147, 239, 208, 0.08), transparent 72%),
+    rgba(5, 12, 20, 0.82);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 244, 214, 0.04),
+    0 18px 42px rgba(0, 0, 0, 0.24);
+}
+
+.chapter-navigation-needle > header {
+  display: grid;
+  gap: 4px;
+}
+
+.chapter-navigation-needle > header span,
+.chapter-navigation-needle article span {
+  color: #93efd0;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.chapter-navigation-needle > header strong {
+  color: #fff4ce;
+  font-family: "Songti SC", "Noto Serif SC", Georgia, serif;
+  font-size: 19px;
+}
+
+.chapter-navigation-needle > header small {
+  color: #aebbd0;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.chapter-navigation-needle > div {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.chapter-navigation-needle article {
+  min-width: 0;
+  padding: 12px;
+  border: 1px solid rgba(206, 224, 238, 0.14);
+  border-radius: 7px;
+  background: rgba(255, 255, 255, 0.035);
+}
+
+.chapter-navigation-needle article.active {
+  border-color: rgba(217, 184, 110, 0.44);
+  background:
+    linear-gradient(180deg, rgba(217, 184, 110, 0.12), transparent),
+    rgba(4, 10, 16, 0.72);
+}
+
+.chapter-navigation-needle article strong {
+  display: block;
+  margin-top: 5px;
+  color: #f5ead0;
+  font-size: 14px;
+}
+
+.chapter-navigation-needle article p,
+.chapter-navigation-needle > p {
+  margin: 6px 0 0;
+  color: #b8c8d2;
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+.chapter-navigation-needle > p {
+  margin: 0;
+  padding: 10px 12px;
+  border: 1px solid rgba(147, 239, 208, 0.18);
+  border-radius: 7px;
+  background: rgba(147, 239, 208, 0.06);
+}
+
+.chapter-navigation-needle > p b {
+  color: #fff4ce;
+}
+
 .teaching-bridge .chapter-memory-strip {
   border-color: rgba(217, 184, 110, 0.22);
   background:
@@ -14157,6 +14245,14 @@ textarea:focus {
 
   .learning-support-drawer > summary {
     margin: 0 -8px;
+  }
+
+  .chapter-navigation-needle {
+    padding: 11px;
+  }
+
+  .chapter-navigation-needle > div {
+    grid-template-columns: 1fr;
   }
 
   .mentor-companion-brief article:not(:first-child) {

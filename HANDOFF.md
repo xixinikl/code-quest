@@ -10,6 +10,8 @@
 
 最新判断：这条分支可以给另一台电脑拉下来继续开发，但还不建议直接合并到 `main`。如果时间紧，先把 `cx/ai-career-rpg-home` 当作完整备份和继续开发基线；另一台电脑拉完后从它切自己的 `cx/...` 分支继续做 UI/剧情/关卡，不要在默认分支上改。
 
+进度口径说明：之前口头提到的 `60%` 或文档历史里的 `70%` 是旧范围下的体感数字；后来需求扩展为完整 RPG 化、15 章 AI 主线、多岗位入口、统一视觉、交接和跨电脑继续开发后，进度必须按“已验证并已推送的可交付切片”计算。按当前严格口径，本分支已经有可继续开发的基线，但整体产品还没有到可合并 `main` 的完成态；后续不要再用旧百分比判断是否倒退。
+
 给对方直接复制这一段：
 
 ```text
@@ -17,7 +19,7 @@
 要拉的分支：cx/ai-career-rpg-home
 不要用 clone 后默认分支继续开发。先切到 cx/ai-career-rpg-home，再核对本地 HEAD、origin/cx/ai-career-rpg-home 和远端 ls-remote 三个 hash。
 完整基线：至少能看到 ffbbf8b feat(rpg): show lab companion squad，或者看到晚于它的场景运镜更新提交。
-最新体验基线：如果能看到 feat(rpg): show nearby route map 或更晚提交，说明已包含简报页“当前附近星图”减负；如果能看到 feat(rpg): show lab interview replay 或更晚提交，说明已包含 Lab 首屏面试复盘稿，用户能把本关证据整理成面试表达。
+最新体验基线：如果能看到 feat(rpg): show chapter navigation needle 或更晚提交，说明已包含第 1 章剧情/教学页“本章导航针”；如果能看到 feat(rpg): show nearby route map 或更晚提交，说明已包含简报页“当前附近星图”减负；如果能看到 feat(rpg): show lab interview replay 或更晚提交，说明已包含 Lab 首屏面试复盘稿，用户能把本关证据整理成面试表达。
 拉完先跑：nvm use && npm install && npm run verify:quick
 准备合并或交付前再跑：npm run verify
 ```
@@ -87,7 +89,7 @@ git pull --ff-only origin cx/ai-career-rpg-home
 
 - `git status --short --branch` 显示在 `cx/ai-career-rpg-home`，并且没有未提交文件。
 - `git rev-parse HEAD`、`git rev-parse origin/cx/ai-career-rpg-home`、`git ls-remote origin refs/heads/cx/ai-career-rpg-home` 的 hash 一致。
-- `git log --oneline -8` 能看到 `6933028 feat(rpg): unify teaching dark style`、本次面试复盘稿更新提交，或更晚提交。
+- `git log --oneline -8` 能看到 `6933028 feat(rpg): unify teaching dark style`、本次本章导航针/当前附近星图/面试复盘稿更新提交，或更晚提交。
 - `nvm use` 后 Node 是 `.nvmrc` 指定的 `v24.13.1`。
 - `npm run verify:quick` 通过后再继续开发；准备合并或交付前跑完整 `npm run verify`。
 
@@ -101,16 +103,21 @@ git pull --ff-only origin cx/ai-career-rpg-home
 
 - 当前远端：`https://github.com/xixinikl/code-quest.git`
 - 当前工作分支：`cx/ai-career-rpg-home`
-- 当前已推送功能基线：远端 `origin/cx/ai-career-rpg-home` 已到 `6933028 feat(rpg): unify teaching dark style`；本次面试复盘稿和当前附近星图更新提交后会晚于它。最终远端 hash 仍以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 输出为准。
-- 当前已推送交接基线：本文件提交后应晚于 `6933028`，包含另一台电脑拉取、核对、继续开发、不能直接合并，以及最新第 1 章地点路线/当前流程交接单/主动复述证据边界/复盘关键线索/下一地点证据交接/Lab 刷新恢复/Lab 实战接力/收藏解锁/结案后冒险菜单/下一幕预告/玩家身份契约/当前只读这一行/代码证据交接复盘/带入实战的证据包/Lab 实战入场证据包/同行小队/场景运镜/第 2 章职业产出/本关流程路线/本关名词小抄/本关证据任务/流程分镜/代码证据导师卡/教学桥暗色统一/本关面试复盘稿/简报页当前附近星图说明。最终远端 hash 仍以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 为准。
+- 当前已推送功能基线：远端 `origin/cx/ai-career-rpg-home` 已到 `6933028 feat(rpg): unify teaching dark style`；本次面试复盘稿、当前附近星图和本章导航针更新提交后会晚于它。最终远端 hash 仍以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 输出为准。
+- 当前已推送交接基线：本文件提交后应晚于 `6933028`，包含另一台电脑拉取、核对、继续开发、不能直接合并，以及最新第 1 章地点路线/当前流程交接单/主动复述证据边界/复盘关键线索/下一地点证据交接/Lab 刷新恢复/Lab 实战接力/收藏解锁/结案后冒险菜单/下一幕预告/玩家身份契约/当前只读这一行/代码证据交接复盘/带入实战的证据包/Lab 实战入场证据包/同行小队/场景运镜/第 2 章职业产出/本关流程路线/本关名词小抄/本关证据任务/流程分镜/代码证据导师卡/教学桥暗色统一/本关面试复盘稿/简报页当前附近星图/本章导航针说明。最终远端 hash 仍以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 为准。
 - 当前本地核对：推送完成后，`git status --short --branch` 应显示 `cx/ai-career-rpg-home...origin/cx/ai-career-rpg-home` 且没有未提交文件，说明本地与远端一致。
-- 当前远端核对：另一台电脑拉取后 `git log --oneline -8` 应看到 `6933028 feat(rpg): unify teaching dark style`、本次当前附近星图/面试复盘稿更新提交，或更晚提交；如果只看到 `5927e56`、`5362d09`、`03aaefc`、`b30bb70`、`b7315bf`、`98f59b4`、`467073f`、`ffbbf8b`、`4f51ac8`、`5cabd32`、`5c3a176`、`feeac06`、`5c84acf`、`865e721`、`678d428`、`6dc63ea`、`b42a904`、`2387686`、`772f66e`、`65e3603`、`5651c18`、`0fb18e7`、`0f7c433`、`c587a23`、`547ed6f`、`4370ddf`、`1b3cf5d`、`9171ac8`、`1a40fe4`、`e10069f`、`fa12dbc`、`2dd44d3`、`ca2c7aa`、`3fe3db1` 或默认分支提交，说明还没拉到最新交接/体验细修。
+- 当前远端核对：另一台电脑拉取后 `git log --oneline -8` 应看到 `6933028 feat(rpg): unify teaching dark style`、本次本章导航针/当前附近星图/面试复盘稿更新提交，或更晚提交；如果只看到 `5927e56`、`5362d09`、`03aaefc`、`b30bb70`、`b7315bf`、`98f59b4`、`467073f`、`ffbbf8b`、`4f51ac8`、`5cabd32`、`5c3a176`、`feeac06`、`5c84acf`、`865e721`、`678d428`、`6dc63ea`、`b42a904`、`2387686`、`772f66e`、`65e3603`、`5651c18`、`0fb18e7`、`0f7c433`、`c587a23`、`547ed6f`、`4370ddf`、`1b3cf5d`、`9171ac8`、`1a40fe4`、`e10069f`、`fa12dbc`、`2dd44d3`、`ca2c7aa`、`3fe3db1` 或默认分支提交，说明还没拉到最新交接/体验细修。
 - 远端默认 HEAD：`git ls-remote --symref origin HEAD` 指向 `feat/guided-learning-bridge`，不是本分支；另一台电脑必须显式切到 `cx/ai-career-rpg-home`，不要只用 clone 后默认分支继续。
-- 给协作者的最短说明：不要直接用默认分支；拉仓库后必须切到 `cx/ai-career-rpg-home`。当前至少应看到 `6933028 feat(rpg): unify teaching dark style`、本次当前附近星图/面试复盘稿更新提交，或更晚提交；进入项目后必须 `nvm use` 到 Node `24.13.1`。
+- 给协作者的最短说明：不要直接用默认分支；拉仓库后必须切到 `cx/ai-career-rpg-home`。当前至少应看到 `6933028 feat(rpg): unify teaching dark style`、本次本章导航针/当前附近星图/面试复盘稿更新提交，或更晚提交；进入项目后必须 `nvm use` 到 Node `24.13.1`。
 - 他具体怎么拉：如果另一台电脑没有本项目，按“首次 clone”执行；如果已经 clone 过，按“已有仓库更新”执行；如果他本地有未提交改动，先新建自己的分支或 stash，不要直接覆盖。不要在默认分支上继续开发，也不要在没有核对 hash 的情况下合并。
 
 ### 最新进度补充（2026-07-18 凌晨）
 
+- 已在第 1 章剧情探索页和教学桥页加入 `本章导航针`。现在进入主线后，会先看到 `刚从哪里来 / 现在做什么 / 完成后交给谁`，并显示当前只要交出的证据出口。
+- 目的：解决用户虽然看到地点航线、流程卷轴和线索，但仍可能不知道“当前讲到哪一棒、下一步接给谁”的问题。
+- 导航针保持暗色 RPG 样式，桌面三列、手机单列；剧情探索页和代码教学页共用同一理解锚点。
+- 验证：`npm run test -- src/App.test.tsx --run -t "进入主线后进入教学地图"` 通过；`npm run verify:quick` 通过 11 个测试文件 / 203 个测试。
+- 浏览器验收：隔离 API `4421`、Vite `5293`，从新用户序章进入第 1 章，真实页面显示 `本章导航针 / 刚从哪里来 / 现在做什么 / 完成后交给谁`；390px 手机宽度 `scrollWidth = 390`，无横向溢出；控制台 0 error / 0 warning；截图保存在 `output/playwright/r368-chapter-navigation-needle-mobile.png`。
 - 已把任务简报右侧世界地图改成 `当前附近星图`：未通关时默认只显示当前章节附近最多 5 个地点，完整 15 章路线仍保留在 `后续主线关卡` 折叠区。
 - 目的：解决用户一进入简报就同时看到 15 章、任务板、卷宗和折叠区而发晕的问题。现在第一屏更聚焦当前委托，路线规划没有删除。
 - 主线全部通关后仍显示完整已点亮世界地图，保证结业状态能看到 15/15。
