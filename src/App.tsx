@@ -9206,9 +9206,16 @@ function LabFlowDialogue({
 }) {
   const flowIndex = getLabStepFlowIndex(activeStep.id, activeIndex, config);
   const currentFlow = config.flowItems[flowIndex] ?? config.flowItems[0];
-  const previousFlow =
-    config.flowItems[Math.max(0, flowIndex - 1)] ?? currentFlow;
-  const nextFlow = config.flowItems[flowIndex + 1] ?? currentFlow;
+  const previousFlow = config.flowItems[flowIndex - 1];
+  const nextFlow = config.flowItems[flowIndex + 1];
+  const previousLabel = previousFlow?.label ?? "剧情现场";
+  const previousTitle = previousFlow?.title ?? "事故线索";
+  const previousDetail =
+    previousFlow?.detail ??
+    `先把「${currentFlow.title}」变成可检查的第一份证据。`;
+  const nextLabel = nextFlow?.label ?? "结案卷宗";
+  const nextTitle = nextFlow?.title ?? "最终验收";
+  const nextDetail = nextFlow?.detail ?? "把证据收束成可以复核的结论。";
   const currentTask =
     activeStep.kind === "verification"
       ? "把修复结果交给测试和验收报告复查。"
@@ -9222,16 +9229,16 @@ function LabFlowDialogue({
         <span>流程接力小剧场</span>
         <strong>
           {activeStep.flowDialogue?.headline ??
-            `${previousFlow.label} 把线索交给 ${currentFlow.label}，再去找 ${nextFlow.label}`}
+            `${previousLabel} 把线索交给 ${currentFlow.label}，再去找 ${nextLabel}`}
         </strong>
       </header>
       <div>
         <article>
-          <span>上一棒 · {previousFlow.label}</span>
+          <span>上一棒 · {previousLabel}</span>
           <p>
             “
             {activeStep.flowDialogue?.previous ??
-              `我已经把「${previousFlow.title}」交出来了：${previousFlow.detail}。`}
+              `我已经把「${previousTitle}」交出来了：${previousDetail}。`}
             ”
           </p>
         </article>
@@ -9245,11 +9252,11 @@ function LabFlowDialogue({
           </p>
         </article>
         <article>
-          <span>下一棒 · {nextFlow.label}</span>
+          <span>下一棒 · {nextLabel}</span>
           <p>
             “
             {activeStep.flowDialogue?.next ??
-              `等你说清这一棒，我才知道要检查「${nextFlow.title}」：${nextFlow.detail}。`}
+              `等你说清这一棒，我才知道要检查「${nextTitle}」：${nextDetail}。`}
             ”
           </p>
         </article>

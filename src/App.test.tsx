@@ -606,6 +606,14 @@ describe("岗位路线实战场景契约", () => {
       expect(screen.getByLabelText("本幕流程翻译")).toHaveTextContent(
         nextFlow?.title ?? "结案卷宗",
       );
+      if (flowIndex === 0) {
+        expect(screen.getByLabelText("流程接力小剧场")).toHaveTextContent(
+          "剧情现场",
+        );
+        expect(screen.getByLabelText("流程接力小剧场")).not.toHaveTextContent(
+          `${currentFlow.label} 把线索交给 ${currentFlow.label}`,
+        );
+      }
       expect(screen.getByLabelText("辅助卷宗")).toHaveTextContent(
         config.flowTitle,
       );
