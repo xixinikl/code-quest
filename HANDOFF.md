@@ -8,12 +8,12 @@
 
 - 当前远端：`https://github.com/xixinikl/code-quest.git`
 - 当前工作分支：`cx/ai-career-rpg-home`
-- 当前已推送功能基线：`5651c18 fix(rpg): clean frontend testing story examples`。本机已核对 `HEAD`、`origin/cx/ai-career-rpg-home` 和 GitHub 远端分支三方一致，均为 `5651c18afaf5fb41ff20dfef71e07b3b58158e91`；后续若继续提交，最终远端 hash 仍以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 为准。
-- 当前已推送交接基线：包含前端第 5 关沙盒证物归属修复、前端第 5 关浏览器串章文案修复，以及本次跨电脑拉取说明更新。
+- 当前已推送功能基线：`5651c18 fix(rpg): clean frontend testing story examples`。
+- 当前已推送交接基线：`0fb18e7 docs(rpg): clarify collaborator pull steps` 或更晚提交，包含前端第 5 关沙盒证物归属修复、前端第 5 关浏览器串章文案修复，以及本次跨电脑拉取说明更新。最终远端 hash 仍以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 为准。
 - 当前本地核对：推送完成后，`git status --short --branch` 应显示 `cx/ai-career-rpg-home...origin/cx/ai-career-rpg-home` 且没有未提交文件，说明本地与远端一致。
-- 当前远端核对：另一台电脑拉取后 `git log --oneline -5` 应看到 `5651c18 fix(rpg): clean frontend testing story examples` 或更晚提交；如果仍停在 `0f7c433`、`c587a23`、`547ed6f`、`4370ddf`、`1b3cf5d`、`9171ac8`、`1a40fe4`、`e10069f`、`fa12dbc`、`2dd44d3`、`ca2c7aa`、`3fe3db1` 或默认分支提交，说明还没拉到最新交接/体验细修。
+- 当前远端核对：另一台电脑拉取后 `git log --oneline -5` 应看到 `0fb18e7 docs(rpg): clarify collaborator pull steps`、`5651c18 fix(rpg): clean frontend testing story examples` 或更晚提交；如果仍停在 `0f7c433`、`c587a23`、`547ed6f`、`4370ddf`、`1b3cf5d`、`9171ac8`、`1a40fe4`、`e10069f`、`fa12dbc`、`2dd44d3`、`ca2c7aa`、`3fe3db1` 或默认分支提交，说明还没拉到最新交接/体验细修。
 - 远端默认 HEAD：`git ls-remote --symref origin HEAD` 指向 `feat/guided-learning-bridge`，不是本分支；另一台电脑必须显式切到 `cx/ai-career-rpg-home`，不要只用 clone 后默认分支继续。
-- 给协作者的最短说明：不要直接用默认分支；拉仓库后必须切到 `cx/ai-career-rpg-home`。当前应看到 `5651c18 fix(rpg): clean frontend testing story examples` 或更晚提交；进入项目后必须 `nvm use` 到 Node `24.13.1`。
+- 给协作者的最短说明：不要直接用默认分支；拉仓库后必须切到 `cx/ai-career-rpg-home`。当前应看到 `0fb18e7 docs(rpg): clarify collaborator pull steps`、`5651c18 fix(rpg): clean frontend testing story examples` 或更晚提交；进入项目后必须 `nvm use` 到 Node `24.13.1`。
 - 他具体怎么拉：如果另一台电脑没有本项目，按“首次 clone”执行；如果已经 clone 过，按“已有仓库更新”执行；如果他本地有未提交改动，先新建自己的分支或 stash，不要直接覆盖。
 
 ### 另一台电脑首次 clone 照抄
@@ -34,10 +34,10 @@
 拉完后 `git log --oneline -1` 应显示：
 
 ```bash
-5651c18 fix(rpg): clean frontend testing story examples
+0fb18e7 docs(rpg): clarify collaborator pull steps
 ```
 
-如果显示的是 `feat/guided-learning-bridge`、`main` 上的提交，或早于 `5651c18`，说明没有拉到今天上传的内容。
+如果显示的是 `feat/guided-learning-bridge`、`main` 上的提交，或早于 `0fb18e7` / `5651c18`，说明没有拉到今天上传的内容。
 
 ### 已有仓库更新照抄
 

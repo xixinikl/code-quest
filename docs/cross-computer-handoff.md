@@ -9,7 +9,7 @@
 - 仓库：`https://github.com/xixinikl/code-quest.git`
 - 分支：`cx/ai-career-rpg-home`
 - 当前已推送功能基线：`5651c18 fix(rpg): clean frontend testing story examples`。
-- 当前远端最新提交：本机已核对 `HEAD`、`origin/cx/ai-career-rpg-home` 和 GitHub 远端分支三方一致，均为 `5651c18afaf5fb41ff20dfef71e07b3b58158e91`。如果后续继续开发，以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 的实时输出为准。
+- 当前已推送交接基线：`0fb18e7 docs(rpg): clarify collaborator pull steps` 或更晚提交。拉取完整性以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 的实时输出为准。
 - 远端默认 HEAD：当前指向 `feat/guided-learning-bridge`，不是这条 RPG 分支。另一台电脑必须显式 checkout `cx/ai-career-rpg-home`。
 - 本地状态：`git status --short --branch` 应显示 `cx/ai-career-rpg-home...origin/cx/ai-career-rpg-home` 且没有未提交文件，才表示另一台电脑能完整拉到本轮内容。
 
@@ -31,7 +31,7 @@ npm install
 npm run verify
 ```
 
-`git log --oneline -1` 应显示 `5651c18 fix(rpg): clean frontend testing story examples` 或更晚提交。如果不是，说明没有拉到今天上传的内容，先不要继续开发。项目必须使用 `.nvmrc` 中的 Node `24.13.1`；如果直接用 Node 18，`node:sqlite` 和 jsdom 测试会失败。
+`git log --oneline -1` 应显示 `0fb18e7 docs(rpg): clarify collaborator pull steps`、`5651c18 fix(rpg): clean frontend testing story examples` 或更晚提交。如果不是，说明没有拉到今天上传的内容，先不要继续开发。项目必须使用 `.nvmrc` 中的 Node `24.13.1`；如果直接用 Node 18，`node:sqlite` 和 jsdom 测试会失败。
 
 ## 他到底怎么拉
 
@@ -104,7 +104,7 @@ node -v
 
 - `git status --short --branch` 显示在 `cx/ai-career-rpg-home`，并且没有未提交文件。
 - `git rev-parse HEAD`、`git rev-parse origin/cx/ai-career-rpg-home`、`git ls-remote origin refs/heads/cx/ai-career-rpg-home` 的 hash 一致。
-- `git log --oneline -5` 能看到 `5651c18 fix(rpg): clean frontend testing story examples`，以及 `0f7c433 fix(rpg): own frontend testing sandbox evidence`、`c587a23 docs(rpg): spell out collaborator pull steps` 等近期提交，或这些之后更新的提交。
+- `git log --oneline -5` 能看到 `0fb18e7 docs(rpg): clarify collaborator pull steps`、`5651c18 fix(rpg): clean frontend testing story examples`，以及 `0f7c433 fix(rpg): own frontend testing sandbox evidence` 等近期提交，或这些之后更新的提交。
 - `node -v` 是 `.nvmrc` 指定的 `v24.13.1`。
 
 如果这些不满足，先不要继续开发，也不要合并。重新执行 `git fetch origin`，确认远端分支名是 `origin/cx/ai-career-rpg-home`。
@@ -145,7 +145,7 @@ git ls-remote origin refs/heads/cx/ai-career-rpg-home
 期望看到：
 
 - 当前分支是 `cx/ai-career-rpg-home`
-- 最近提交包含 `5651c18 fix(rpg): clean frontend testing story examples` 或更晚提交；后面还能看到 `0f7c433 fix(rpg): own frontend testing sandbox evidence`、`c587a23 docs(rpg): spell out collaborator pull steps`、`547ed6f feat(rpg): add lab flow translator`、`4370ddf feat(rpg): fold lab support dossier` 等岗位路线与实战页收口提交
+- 最近提交包含 `0fb18e7 docs(rpg): clarify collaborator pull steps`、`5651c18 fix(rpg): clean frontend testing story examples` 或更晚提交；后面还能看到 `0f7c433 fix(rpg): own frontend testing sandbox evidence`、`c587a23 docs(rpg): spell out collaborator pull steps`、`547ed6f feat(rpg): add lab flow translator`、`4370ddf feat(rpg): fold lab support dossier` 等岗位路线与实战页收口提交
 - `git ls-remote` 返回的 hash 与本机 `git rev-parse origin/cx/ai-career-rpg-home` 一致
 - `git status --short --branch` 没有未提交文件
 - `node -v` 显示 `v24.13.1`，或至少与 `.nvmrc` 一致
