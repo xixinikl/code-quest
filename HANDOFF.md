@@ -8,7 +8,7 @@
 
 - 当前远端：`https://github.com/xixinikl/code-quest.git`
 - 当前工作分支：`cx/ai-career-rpg-home`
-- 当前已推送功能基线：至少包含 `c587a23 docs(rpg): spell out collaborator pull steps`、`3fe983d fix(rpg): own java incident teaching flow`，以及 `0080bd7 feat(rpg): clarify lab save relay` 之后的岗位 Lab 与前端第 5 关剧情修复；最终远端 hash 以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 为准。
+- 当前已推送功能基线：至少包含 `0f7c433 fix(rpg): own frontend testing sandbox evidence`、`c587a23 docs(rpg): spell out collaborator pull steps`、`3fe983d fix(rpg): own java incident teaching flow`，以及 `0080bd7 feat(rpg): clarify lab save relay` 之后的岗位 Lab 与前端第 5 关剧情修复；最终远端 hash 以 `git ls-remote origin refs/heads/cx/ai-career-rpg-home` 为准。
 - 当前已推送交接基线：应包含本次“前端第 5 关剧情修复 / 交接文档更新”提交，或更新提交。
 - 当前本地核对：推送完成后，`git status --short --branch` 应显示 `cx/ai-career-rpg-home...origin/cx/ai-career-rpg-home` 且没有未提交文件，说明本地与远端一致。
 - 当前远端核对：另一台电脑拉取后 `git log --oneline -5` 应看到本次“前端第 5 关剧情修复 / 交接文档更新”提交、`0080bd7 feat(rpg): clarify lab save relay` 或更新提交；如果仍停在 `547ed6f`、`4370ddf`、`1b3cf5d`、`9171ac8`、`1a40fe4`、`e10069f`、`fa12dbc`、`2dd44d3`、`ca2c7aa`、`3fe3db1` 或默认分支提交，说明还没拉到最新交接/体验细修。
@@ -109,7 +109,7 @@
 - 已实现：暗色神秘 RPG 舞台、章节专属背景、剧情角色立绘、可爱宠物/伙伴、地点航线、流程交接、名词解释、关键代码逐行导读、证据任务、Agent 委托、验收和面试复盘。
 - 最新体验收口：第 2 章产品链路不再串到 AI API 章；教学桥关键控件已暗色 RPG 化；代码导读新增“为什么看这一行 / 检查点 / 下一份证据”，第 1 章 `response.ok` 明确提示不能证明数据库写入。
 - 最新实战收口：第 1 章测试报告页新增「验收证据桥」；第 1 章保存失败报告会优先指向“数据层写库没接上 / repository `INSERT` 缺证据”，不会误串到第 2 章会话保存话术。第 1 章实战后半段已补齐沙盒验收、Agent 委托、交付审查、因果解释和面试迁移的任务卷轴与流程棒，明确页面绿灯、接口 201、数据库写入和刷新读回是四种不同证据。第 2 章 CanvasStorm 失败报告会把方向筛选、会话保存、空目标输入解释为三个断点，并用「红灯总指挥」给出排查顺序和 Agent 口令。第 3 章登录态实战已补齐身份路线、凭证存储、401 反证、刷新复查、Agent 委托、交付审查和面试复盘的剧情向导、任务卷轴与流程接力。第 4 章接口审判庭实战已补齐请求体证词、状态码判词、错误体修复、日志串证、Agent 委托、交付审查和面试复盘的导演层，并用 `flowItemIndex` 避免后半段流程高亮错位。第 5 章一致性熔炉实战已补齐 Network 双轨、幂等锤印、唯一约束城门、事务炉心、Agent 委托、交付审查和面试复盘的导演层。
-- 最新自动化验证：Node `24.13.1` 下完整 `npm run verify` 通过，包含格式、Lint、TypeScript、10 个测试文件 / 182 个测试、生产构建和 TeachingBridge 懒加载检查。Vite 主包体积 warning 是已知债务，不是失败。环境反例：如果终端仍在 Node `18.20.8`，会因 `node:sqlite` 缺失和 jsdom ESM 依赖失败；先执行 `nvm use` 再验收。
+- 最新自动化验证：Node `24.13.1` 下完整 `npm run verify` 通过，包含格式、Lint、TypeScript、11 个测试文件 / 187 个测试、生产构建和 TeachingBridge 懒加载检查。Vite 主包体积 warning 是已知债务，不是失败。环境反例：如果终端仍在 Node `18.20.8`，会因 `node:sqlite` 缺失和 jsdom ESM 依赖失败；先执行 `nvm use` 再验收。
 - 最新浏览器验收：隔离 API `4369`、临时 SQLite `/tmp/code-quest-r303.sqlite`、Vite `5219`；第 1 章从剧情探索完整收集 8/8 线索 → 伙伴会合 → 实战 Lab 通过。桌面 1280 和 390px 手机均无横向溢出，控制台 error 为 0；后半段 Agent、审查、因果和面试迁移步骤都显示新任务卷轴与流程接力。合并前追加抽检过首页和路线大厅：隔离 API `4370`、临时 SQLite `/tmp/code-quest-r304.sqlite`、Vite `5220`；桌面 1280 与 390px 下序章、证据选择、领取委托、三路线大厅均无横向溢出，控制台 error 为 0。
 - 最新岗位路线收口：Java/前端第 2-5 章深链进入剧情探索后会持续显示「当前路线身份」铭牌，标明 Java 后端或前端工程成长路线、当前案件和当前地点，避免用户从封面进入剧情后失去岗位方向。隔离 API `4371`、临时 SQLite `/tmp/code-quest-r305.sqlite`、Vite `5221` 下，8 个深链桌面 1280 与 390px 均无横向溢出，暗色背景保持，控制台 error 为 0。
 - 最新实战深链收口：Java 第 2 关从 `#chapter-java-2` 完成教学后，伙伴会合页显示 `Java 后端 / 岗位路线 · 第 2 章`，进入 Lab 后保持 `Java 后端 · 第 2 关`。事务 Lab 可见文案已从旧“保存草稿”语境修正为订单、库存、下单、事务回滚语境；桌面 1200 与 390px 无横向溢出，控制台无 error。剩余 Java/前端第 3-5 关仍需逐关做同类 Lab 抽检。
@@ -117,6 +117,7 @@
 - 最新事故 Lab 语境收口：Java 第 5 关事故 Lab 的可见流程已改为报警、requestId、异常栈、版本号、影响范围、止血/回滚和恢复复测，不再显示上线门禁、生产变量或备份恢复模板词。隔离 API `4376`、临时 SQLite `/tmp/code-quest-r309.sqlite`、Vite `5226` 下，`#chapter-java-5` 深链到 Lab 桌面 1200 与 390px 无横向溢出，控制台无 error。
 - 最新前端 Lab 语境收口：前端第 3 关性能 Lab 的可见流程已改为首屏瀑布图、接口 TTFB、Server-Timing、X-Cache、React 渲染画像和第二次访问复测；前端第 5 关测试 Lab 的可见流程已改为旧故障红灯、报告校验器、浏览器手动复测、sourceHash、回归风险和 Agent 交付审查，不再露出 `/api/canvases` 或 `验收试炼画布` 这类 AI 主线保存链路词。浏览器深链验收待补录。
 - 最新前端第 5 关沙盒证物收口：`sandbox/frontend-testing-proof` 的 README、Network、手动报告、失败复现、过期报告、后端日志和 Agent 交付说明已全部改为任务列表筛选回归语境，固定 `GET /api/tasks?status=blocked`、DOM 可见列表、`POST /api/reports/verification` 和 `sourceHash` 证据链；新增 `src/sandboxEvidence.test.ts` 防止 `/api/canvases`、保存画布、验收试炼画布等旧词回流。Node `24.13.1` 下 `npm run verify:quick` 通过 11 个测试文件 / 187 个测试；沙盒自身 `npm test` 仍按练习设计失败 5 项，用于训练用户修报告校验器。
+- 最新前端第 5 关浏览器文案收口：隔离 API `4401`、临时 SQLite `/tmp/code-quest-r325.sqlite`、Vite `5251` 下，从 `#chapter-frontend-5` 真实浏览器发现主动复述、边界用例、Agent 示例和 Lab 证据表达卡仍有第一章保存/数据库例子；已改为筛选状态、DOM 可见行、Network、`sourceHash` 和回归风险。桌面 1280 与 390px 手机 DOM 旧词检查为空，暗色背景，控制台 error 为 0。
 - 最新上线港 Lab 语境收口：Java 第 4 关上线 Lab 的可见流程已改为发布窗口、影响范围、发布负责人、生产配置、密钥边界、备份恢复、390px 冒烟、监控信号和回滚后验证，固定“构建通过不等于可以上线”的教学口径。浏览器深链验收待补录。
 - 最新教学桥地图收口：Java 第 2-5 关、前端第 2-5 关已补齐独立 `chapterCinematics` 地图镜头契约，不再因为缺少配置回退到第一章 `数据接力路线 / 断流档案河 / 失忆数据库`。隔离 API `4379`、临时 SQLite `/tmp/code-quest-r312.sqlite`、Vite `5229` 下，`#chapter-java-4` 与 `#chapter-frontend-5` 点击开始闯关后保持岗位路线语境，桌面 1200 无横向溢出，控制台 0 error。
 - 最新实战导演台收口：实战页把「实战剧情向导」「本步任务卷轴」「流程接力小剧场」合并到同一个 `任务导演台` 视觉容器中，桌面并排显示角色地点、学习目的、证据入口和上一棒/当前棒/下一棒，手机改为单列，降低用户在多张卡之间来回滚动拼流程的成本。完整 `npm run verify` 通过：10 个测试文件 / 180 个测试、生产构建和 TeachingBridge 懒加载检查均通过；隔离 API `4380`、临时 SQLite `/tmp/code-quest-r313.sqlite`、Vite `5230` 下，390×844 剧情路径无横向溢出，暗色背景，控制台 0 error。

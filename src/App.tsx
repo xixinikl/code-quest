@@ -9371,6 +9371,7 @@ function StepOutputContractCard({ stepId }: { stepId: string }) {
 
 function ResponseForm({
   stepId,
+  scenarioId,
   title,
   prompt,
   placeholder,
@@ -9380,6 +9381,7 @@ function ResponseForm({
   children,
 }: {
   stepId: string;
+  scenarioId: string;
   title: string;
   prompt: string;
   placeholder: string;
@@ -9393,11 +9395,12 @@ function ResponseForm({
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState("");
   const isAgentBrief = stepId === "agent-brief";
+  const isFrontendTesting = scenarioId === FRONTEND_TESTING_SCENARIO_ID;
   const answerFrame = isAgentBrief
     ? "背景：\n目标：\n范围/约束：\n验收标准：\n风险和回滚："
     : "我看到：\n它说明：\n下一步：";
   const evidencePattern =
-    /Network|日志|数据库|代码|测试|SELECT|POST|GET|201|错误|状态码|Diff|回归|验收|证据/;
+    /Network|DOM|sourceHash|manual|日志|数据库|代码|测试|SELECT|POST|GET|201|错误|状态码|Diff|回归|验收|证据/;
   const hasSectionValue = (labels: string[], minimumLength = 8) =>
     labels.some((label) => {
       const escaped = label.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -9439,48 +9442,96 @@ function ResponseForm({
       ];
   const completedAnswerChecks = answerChecks.filter((item) => item.done).length;
   const nextMissingAnswerCheck = answerChecks.find((item) => !item.done);
-  const primerCards = isAgentBrief
-    ? [
-        {
-          label: "这题到底在问什么",
-          body: "把一段模糊愿望改写成 Agent 能执行、能停下、能交证据的任务。",
-        },
-        {
-          label: "先看哪里",
-          body: "先看现场材料和失败证据，再写目标；不要让 Agent 自己猜范围。",
-        },
-        {
-          label: "不要怎么写",
-          body: "不要写“你看着办”。必须写背景、边界、验收、风险和交付格式。",
-        },
-      ]
-    : [
-        {
-          label: "这题到底在问什么",
-          body: "不是问你背概念，而是问你能不能用一份证据解释当前流程卡在哪里。",
-        },
-        {
-          label: "先看哪里",
-          body: "先看下面材料导览里的 Network、日志、数据库、代码或测试结果，挑一条最能说明问题的证据。",
-        },
-        {
-          label: "不要怎么写",
-          body: "不要只写“有问题 / 修好了”。要写清证据、证据含义和下一步验证。",
-        },
-      ];
+  const primerCards = isFrontendTesting
+    ? isAgentBrief
+      ? [
+          {
+            label: "这题到底在问什么",
+            body: "把前端筛选回归写成 Agent 能执行、能停下、能交证据的任务。",
+          },
+          {
+            label: "先看哪里",
+            body: "先看失败复现、sourceHash、DOM 可见行和手动报告，再写任务边界。",
+          },
+          {
+            label: "不要怎么写",
+            body: "不要只写“修测试”。必须写清旧故障、允许范围、验收标准和风险。",
+          },
+        ]
+      : [
+          {
+            label: "这题到底在问什么",
+            body: "不是问你背概念，而是问你能不能解释这份前端回归证据到底证明了什么。",
+          },
+          {
+            label: "先看哪里",
+            body: "先看材料里的失败复现、DOM 可见行、Network、sourceHash 或测试报告。",
+          },
+          {
+            label: "不要怎么写",
+            body: "不要只写“测试过了”。要写清证据、证据边界和下一步验收。",
+          },
+        ]
+    : isAgentBrief
+      ? [
+          {
+            label: "这题到底在问什么",
+            body: "把一段模糊愿望改写成 Agent 能执行、能停下、能交证据的任务。",
+          },
+          {
+            label: "先看哪里",
+            body: "先看现场材料和失败证据，再写目标；不要让 Agent 自己猜范围。",
+          },
+          {
+            label: "不要怎么写",
+            body: "不要写“你看着办”。必须写背景、边界、验收、风险和交付格式。",
+          },
+        ]
+      : [
+          {
+            label: "这题到底在问什么",
+            body: "不是问你背概念，而是问你能不能用一份证据解释当前流程卡在哪里。",
+          },
+          {
+            label: "先看哪里",
+            body: "先看下面材料导览里的 Network、日志、数据库、代码或测试结果，挑一条最能说明问题的证据。",
+          },
+          {
+            label: "不要怎么写",
+            body: "不要只写“有问题 / 修好了”。要写清证据、证据含义和下一步验证。",
+          },
+        ];
   const expressionExample = isAgentBrief
-    ? {
-        lead: "可照着这个顺序写委托",
-        evidence: "背景：保存后刷新数据消失，Network 曾返回成功。",
-        meaning: "目标：请只检查保存链路，不要改无关页面或执行危险命令。",
-        next: "验收：给出测试报告、手动路径、仍有风险和回滚方式。",
-      }
-    : {
-        lead: "可照着这个顺序写判断",
-        evidence: "我看到：前端发出了 POST，并且 response.ok 后显示 saved。",
-        meaning: "它说明：页面收到成功信号，但还不能证明数据库真的写入。",
-        next: "下一步：继续查后端日志和 SELECT 结果，确认记录能否被刷新读回。",
-      };
+    ? isFrontendTesting
+      ? {
+          lead: "可照着这个顺序写委托",
+          evidence:
+            "背景：筛选 blocked 后仍混入 done 任务，旧故障需要先复现成红灯。",
+          meaning:
+            "目标：请只检查前端筛选、报告校验器和验收证据，不要改无关页面。",
+          next: "验收：给出失败复现、单测、集成测试、手动报告、sourceHash 和回归风险。",
+        }
+      : {
+          lead: "可照着这个顺序写委托",
+          evidence: "背景：保存后刷新数据消失，Network 曾返回成功。",
+          meaning: "目标：请只检查保存链路，不要改无关页面或执行危险命令。",
+          next: "验收：给出测试报告、手动路径、仍有风险和回滚方式。",
+        }
+    : isFrontendTesting
+      ? {
+          lead: "可照着这个顺序写判断",
+          evidence:
+            "我看到：`GET /api/tasks?status=blocked` 返回 200，DOM 可见行都是 blocked。",
+          meaning:
+            "它说明：这条筛选路径在浏览器里跑通了，但还不能替代失败复现、sourceHash 和回归风险。",
+          next: "下一步：继续核对报告是否绑定当前代码，并补手动复测和未覆盖风险。",
+        }
+      : {
+          lead: "可照着这个顺序写判断",
+          evidence: "我看到：前端发出了 POST，并且 response.ok 后显示 saved。",
+          meaning: "它说明：页面收到成功信号，但还不能证明数据库真的写入。",
+          next: "下一步：继续查后端日志和 SELECT 结果，确认记录能否被刷新读回。",
+        };
 
   const save = async () => {
     setSaving(true);
@@ -11523,6 +11574,7 @@ export function Lab({
             <ResponseForm
               key={activeStep.id}
               stepId={activeStep.id}
+              scenarioId={config.scenarioId}
               title={activeStep.response.title}
               prompt={activeStep.response.prompt}
               placeholder={activeStep.response.placeholder}

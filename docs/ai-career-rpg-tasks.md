@@ -1926,3 +1926,16 @@ Goal 模式的完成口径必须比“能点进去”更严格：只接剧情教
 - [x] 沙盒自身 `npm test` 仍按练习设计失败：5 个失败均来自当前坏实现没有拒绝不可信验收证据；这是本关练习入口，不是主应用门禁失败。
 
 验收目标：用户进入前端第 5 关材料时，剧情、UI 和证物都围绕“前端回归怎么证明修好了”，不会突然看到第一章或 AI 主线的保存画布链路。
+
+## R325：前端第 5 关浏览器串章文案修复
+
+- [x] 浏览器从 `#chapter-frontend-5` 走前端第 5 关时发现 4 类串章文案：主动复述 placeholder 仍举第一章数据库例子；第二幕边界用例仍是 `buildCanvasPayload/title/nodes`；第四幕 Agent 示例仍写“保存刷新后丢失”；Lab 证据表达示范卡仍写 `response.ok` 和数据库写入。
+- [x] `TeachingBridge` 已改为按当前线索生成主动复述 placeholder，不再固定“页面成功/数据库写入”例子。
+- [x] 前端第 5 关剧情替换表补齐 `buildCanvasPayload`、`title/nodes`、`sourceFingerprint`、保存刷新、`和DOM` 等漏网词，统一为筛选状态、空结果、`sourceHash`、DOM/Network/报告证据。
+- [x] `ResponseForm` 接收当前 `scenarioId`，前端第 5 关使用专属新手先读卡、Agent 委托示例和证据表达示范卡，示例固定为 `GET /api/tasks?status=blocked`、DOM 可见行、`sourceHash` 和回归风险。
+- [x] `src/App.test.tsx` 加严回归：前端第 5 关剧情和 Lab 渲染都禁止出现 `buildCanvasPayload`、`sourceFingerprint`、保存刷新、`response.ok 后显示 saved`、数据库写入等旧词。
+- [x] 定向测试通过：`npm run test -- src/App.test.tsx --run -t "前端第 5"`、`npm run test -- src/App.test.tsx --run -t "岗位 Lab 默认"`、`npm run test -- src/sandboxEvidence.test.ts --run`。
+- [x] 浏览器验收：隔离 API `4401`、临时 SQLite `/tmp/code-quest-r325.sqlite`、Vite `5251`；桌面 `1280px` 和 390×844 下 `#chapter-frontend-5` DOM 均无 `response.ok 后显示 saved`、数据库写入、保存刷新、`buildCanvasPayload`、`sourceFingerprint`、`/api/canvases`、验收试炼画布或 `和DOM`，暗色背景 `rgb(7, 12, 20)`，控制台 error 为 0。
+- [x] 完整门禁通过：Node `v24.13.1` 下 `npm run verify` 通过，包含格式、Lint、TypeScript、11 个测试文件 / 187 个测试、生产构建和 TeachingBridge 懒加载检查；Vite 主包体积 warning 仍是已知债务，不是失败。
+
+验收目标：用户从前端第 5 关剧情、教学桥或 Lab 进入时，看到的例子都围绕前端回归验收，不再被第一章保存/数据库示例带偏。

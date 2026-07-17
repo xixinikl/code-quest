@@ -445,6 +445,9 @@ describe("岗位路线实战场景契约", () => {
     expect(frontendTesting).not.toContain("AI 应用开发");
     expect(frontendTesting).not.toContain("/api/canvases");
     expect(frontendTesting).not.toContain("验收试炼画布");
+    expect(frontendTesting).not.toContain("buildCanvasPayload");
+    expect(frontendTesting).not.toContain("sourceFingerprint");
+    expect(frontendTesting).not.toContain("保存刷新后丢失");
   });
 
   it("前端第 5 关剧情线索不再复用 AI 保存链路", () => {
@@ -459,6 +462,11 @@ describe("岗位路线实战场景契约", () => {
     expect(frontendTestingStory).not.toContain("保存链路");
     expect(frontendTestingStory).not.toContain("保存画布");
     expect(frontendTestingStory).not.toContain("验收试炼画布");
+    expect(frontendTestingStory).not.toContain("buildCanvasPayload");
+    expect(frontendTestingStory).not.toContain("draft.title");
+    expect(frontendTestingStory).not.toContain("sourceFingerprint");
+    expect(frontendTestingStory).not.toContain("保存刷新后丢失");
+    expect(frontendTestingStory).not.toContain("和DOM");
   });
 
   it("岗位 Lab 默认收束辅助资料，展开后仍保留岗位专属路线", async () => {
@@ -480,6 +488,10 @@ describe("岗位路线实战场景契约", () => {
           "AI 应用开发",
           "/api/canvases",
           "验收试炼画布",
+          "response.ok 后显示 saved",
+          "数据库真的写入",
+          "保存后刷新数据消失",
+          "保存链路",
         ],
       },
     ];

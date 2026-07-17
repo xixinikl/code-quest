@@ -4578,6 +4578,15 @@ const frontendTestingCopyReplacements: Array<[string, string]> = [
     "const payload = buildCanvasPayload(draft)\nassert.equal(payload.title, draft.title)\nassert.deepEqual(payload.nodes, draft.nodes)",
     "const state = buildFilterState(filters)\nassert.equal(state.status, filters.status)\nassert.equal(state.sort, filters.sort)",
   ],
+  ["空标题或空节点会怎样", "未知状态或空结果会怎样"],
+  [
+    "边界用例能防止只测最顺的路径。比如 title 为空时应该报错，nodes 为空时是否允许，要写清楚预期。",
+    "边界用例能防止只测最顺的路径。比如 status 是未知值时要回到全部列表，筛选结果为空时也要显示清楚的空状态。",
+  ],
+  [
+    "draft.title = ''\nexpect(() => buildCanvasPayload(draft)).toThrow('title required')",
+    "filters.status = 'unknown'\nexpect(buildFilterState(filters).status).toBe('all')",
+  ],
   [
     "POST 交出去的东西，GET 或数据库能不能再找回来",
     "用户点出的筛选条件，列表和报告能不能一起对上",
@@ -4624,6 +4633,9 @@ const frontendTestingCopyReplacements: Array<[string, string]> = [
   ],
   ["数据库证据", "DOM 与报告证据"],
   ["接口、数据层、数据库", "用户事件、组件状态、接口响应和 DOM"],
+  ["sourceFingerprint", "sourceHash"],
+  ["请修复保存刷新后丢失", "请修复筛选 blocked 后仍混入 done 任务"],
+  ["和DOM", "和 DOM"],
 ];
 
 const frontendTestingJourney: QuestJourneyItem[] = rewriteQuestContent(
@@ -7158,6 +7170,9 @@ function EvidenceStoryQuest({
   const selectedDecision = decision.options.find(
     (option) => option.id === selectedDecisionId,
   );
+  const recallPlaceholder = activeClue
+    ? `例如：${activeClue.label} 证明了……下一幕要继续查……`
+    : `例如：${scene.title} 说明……下一幕要继续查……`;
   const sceneInterviewLine = `我会这样讲：在「${scene.place}」，我用「${
     scene.clues[0]?.label ?? scene.title
   }」这条证据说明：${scene.clues.at(-1)?.skill ?? scene.goal}`;
@@ -7642,7 +7657,7 @@ function EvidenceStoryQuest({
                       aria-label="本幕复述原话"
                       value={recallDraft}
                       onChange={(event) => setRecallDraft(event.target.value)}
-                      placeholder="例如：页面显示成功只能说明收到回信，我还要查数据库是否真的写入。"
+                      placeholder={recallPlaceholder}
                       rows={3}
                     />
                     <small>
