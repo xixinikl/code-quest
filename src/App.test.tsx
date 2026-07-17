@@ -2146,6 +2146,14 @@ describe("AI 职业路线入口", () => {
     expect(companionSquad).toHaveTextContent("伙伴 · 档案馆记录员");
     expect(companionSquad).toHaveTextContent("下一位会遇见");
     expect(companionSquad).toHaveTextContent("宠物 · 灵感萤火");
+    const sceneTravel = screen.getByLabelText("场景运镜");
+    expect(sceneTravel).toHaveTextContent("当前镜头");
+    expect(sceneTravel).toHaveTextContent("前端讯号窗");
+    expect(sceneTravel).toHaveTextContent("下一地点");
+    expect(sceneTravel).toHaveTextContent("请求中转门");
+    expect(sceneTravel).toHaveTextContent("角色切换");
+    expect(sceneTravel).toHaveTextContent("传送门书记官");
+    expect(sceneTravel).toHaveTextContent("接口接待员");
     expect(screen.queryByLabelText("数据断层项目地图")).not.toBeInTheDocument();
   });
 

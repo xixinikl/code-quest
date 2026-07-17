@@ -9274,6 +9274,79 @@ function LabCompanionSquad({ config }: { config: LabConfig }) {
   );
 }
 
+function LabSceneTravel({
+  activeIndex,
+  activeStep,
+  config,
+}: {
+  activeIndex: number;
+  activeStep: LabStep;
+  config: LabConfig;
+}) {
+  const currentScene = getLabStepScene(config, activeStep);
+  const nextStep = config.steps[activeIndex + 1];
+  const nextScene = nextStep ? getLabStepScene(config, nextStep) : undefined;
+  const nextFlow =
+    config.flowItems[
+      getLabStepFlowIndex(
+        nextStep?.id ?? activeStep.id,
+        activeIndex + 1,
+        config,
+      )
+    ];
+
+  return (
+    <section className="lab-scene-travel" aria-label="场景运镜">
+      <header>
+        <span>场景运镜</span>
+        <strong>这一幕在哪里，下一幕要去哪里</strong>
+      </header>
+      <div>
+        <article className="active">
+          <i
+            aria-hidden="true"
+            style={
+              { "--scene-thumb": `url(${currentScene.image})` } as CSSProperties
+            }
+          />
+          <span>当前镜头</span>
+          <strong>{currentScene.location}</strong>
+          <p>
+            {currentScene.actor} 正在陪你完成「{activeStep.label}」。
+          </p>
+        </article>
+        <article>
+          <i
+            aria-hidden="true"
+            style={
+              {
+                "--scene-thumb": `url(${nextScene?.image ?? currentScene.image})`,
+              } as CSSProperties
+            }
+          />
+          <span>{nextStep ? "下一地点" : "结案镜头"}</span>
+          <strong>{nextScene?.location ?? config.result.nextTitle}</strong>
+          <p>
+            {nextStep
+              ? `下一幕交给 ${nextScene?.actor ?? "下一位同行"}：${nextFlow?.title ?? nextStep.label}。`
+              : "完成验收后进入成长档案，把证据写成面试复盘。"}
+          </p>
+        </article>
+        <article>
+          <span>角色切换</span>
+          <strong>
+            {currentScene.actor}
+            {nextScene ? ` → ${nextScene.actor}` : " → 成长档案"}
+          </strong>
+          <p>
+            角色变化对应工作流程变化：每换一位同行，就换一份证据和一个判断目标。
+          </p>
+        </article>
+      </div>
+    </section>
+  );
+}
+
 function LabStepReceipt({
   config,
   nextStep,
@@ -12209,6 +12282,11 @@ export function Lab({
             config={config}
           />
           <LabCompanionSquad config={config} />
+          <LabSceneTravel
+            activeIndex={activeIndex}
+            activeStep={activeStep}
+            config={config}
+          />
           <section className="lab-director-stage" aria-label="任务导演台">
             <header>
               <span>任务导演台</span>
