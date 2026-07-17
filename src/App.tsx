@@ -11710,6 +11710,13 @@ export function Lab({
   }
 
   const activeScene = getLabStepScene(config, activeStep);
+  const previousLabStep = config.steps[activeIndex - 1];
+  const questLogHandoff =
+    activeIndex === 1
+      ? `剧情教学已经把「${config.steps[0]?.label ?? "任务委托"}」整理成委托草案；所以实战从「${activeStep.label}」开始。你没有漏步骤，现在要把刚才看懂的流程拿去读真实材料。`
+      : activeIndex > 1 && previousLabStep
+        ? `上一题「${previousLabStep.label}」已经收录；现在从「${activeStep.label}」继续。你没有漏步骤，只是在把同一条证据链交给下一棒。`
+        : undefined;
 
   return (
     <div
@@ -11803,11 +11810,7 @@ export function Lab({
                     ? "下一步继续补一段可复述的证据解释。"
                     : "最后生成成长档案，把本关产出整理成工作、Agent 和面试三种表达。",
             }}
-            handoff={
-              activeIndex > 0
-                ? `剧情教学已经把「${config.steps[0]?.label ?? "任务委托"}」整理成委托草案；所以实战从「${activeStep.label}」开始。你没有漏步骤，现在要把刚才看懂的流程拿去读真实材料。`
-                : undefined
-            }
+            handoff={questLogHandoff}
           />
           <section className="lab-director-stage" aria-label="任务导演台">
             <header>

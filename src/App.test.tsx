@@ -6401,6 +6401,15 @@ describe("AI 职业路线入口", () => {
     expect(screen.getByLabelText("实战剧情向导")).toHaveTextContent(
       "请求中转门",
     );
+    expect(screen.getByLabelText(/实战追踪/)).toHaveTextContent(
+      "上一题「读取项目材料」已经收录",
+    );
+    expect(screen.getByLabelText(/实战追踪/)).toHaveTextContent(
+      "现在从「还原数据流」继续",
+    );
+    expect(screen.getByLabelText(/实战追踪/)).not.toHaveTextContent(
+      "所以实战从「还原数据流」开始",
+    );
     await user.click(screen.getByRole("button", { name: /沙盒修复与测试/ }));
     expect(screen.getByLabelText("流程接力小剧场")).toHaveTextContent(
       "数据层交出测试报告，再进入协作委托",
