@@ -1976,6 +1976,7 @@ Goal 模式的完成口径必须比“能点进去”更严格：只接剧情教
 - [x] 加严 `src/App.test.tsx`：前端第 3 关剧情必须包含 TTFB、Server-Timing、X-Cache，并禁止保存后刷新、`response.ok 后显示 saved`、数据库写入和保存链路旧词；岗位 Lab 默认渲染也禁止这些旧词。
 - [x] 定向验证通过：`npm run test -- src/App.test.tsx --run -t "前端第 3|岗位 Lab 默认"`，2 个测试通过。
 - [x] 快速门禁通过：Node `v24.13.1` 下 `npm run verify:quick`，11 个测试文件 / 189 个测试通过。
-- [x] 浏览器验收：隔离 API `4405`、临时 SQLite `/tmp/code-quest-r329.sqlite`、Vite `5255`；`#chapter-frontend-3` 从封面进入剧情，完成首屏计时港与浏览器瀑布观测台两幕，桌面 `scrollWidth = clientWidth = 1200`，暗色背景 `rgb(7, 12, 20)`，控制台 error 为 0。当前 DOM 中 `保存后刷新慢`、`response.ok 后显示 saved`、`数据库真的写入`、`保存后刷新数据消失`、`保存链路` 均为 false。
+- [x] 浏览器初验：隔离 API `4405`、临时 SQLite `/tmp/code-quest-r329.sqlite`、Vite `5255`；`#chapter-frontend-3` 从封面进入剧情，完成首屏计时港与浏览器瀑布观测台两幕，桌面 `scrollWidth = clientWidth = 1200`，暗色背景 `rgb(7, 12, 20)`，控制台 error 为 0。当前 DOM 中 `保存后刷新慢`、`response.ok 后显示 saved`、`数据库真的写入`、`保存后刷新数据消失`、`保存链路` 均为 false。
+- [x] 浏览器补验：隔离 API `4406`、临时 SQLite `/tmp/code-quest-r330.sqlite`、Vite `5256`；`#chapter-frontend-3` 完整收集 10/10 剧情线索 → 伙伴会合 → 与伙伴进入实战 Lab。Lab 首屏显示前端工程第 3 关、当前阶段「读瀑布图」、`新手先读卡`、`证据表达示范卡`、TTFB、Server-Timing、X-Cache、backend.log 和 render profile；旧保存/数据库词检查全为 false。桌面 `scrollWidth = clientWidth = 1200`，390×844 下 `scrollWidth = clientWidth = 390`，暗色背景 `rgb(7, 12, 20)`，控制台 error 为 0。
 
 验收目标：前端第 3 关不再用第一章保存/数据库例子解释性能问题；用户看到的是完整的性能排查语言：体感现象 → Network 瀑布图 → TTFB/Server-Timing → 渲染画像 → X-Cache 与复测。
