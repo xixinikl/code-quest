@@ -8551,6 +8551,18 @@ textarea:focus {
   line-height: 1.65;
 }
 
+.quest-log-handoff {
+  margin: 0;
+  padding: 10px 12px;
+  border: 1px solid rgba(147, 239, 208, 0.18);
+  border-radius: 6px;
+  color: #d7eced;
+  background: rgba(7, 24, 31, 0.58);
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.6;
+}
+
 .teaching-quest-log {
   margin-top: 0;
 }

@@ -2032,6 +2032,56 @@ describe("AI 职业路线入口", () => {
     ).not.toBeInTheDocument();
   });
 
+  it("第 1 章剧情调查完成后刷新深链会回到 Lab", async () => {
+    window.history.replaceState(null, "", "/#chapter-1");
+    const scenarioId = "canvas-save-persistence";
+    const fetchMock = vi.fn((input: RequestInfo | URL, init?: RequestInit) => {
+      const url = String(input);
+      if (url === "/api/health") return response({ status: "ok" });
+      if (url === "/api/diagnostic-sessions") {
+        return response(diagnosticActive, 201);
+      }
+      if (url === "/api/diagnostic-sessions/diagnostic-001") {
+        return response(diagnosticCompleted);
+      }
+      if (url === "/api/attempts" && init?.method === "POST") {
+        return response(
+          {
+            ...attempt,
+            id: "attempt-canvas-save-persistence",
+            scenarioId,
+          },
+          201,
+        );
+      }
+      if (url === `/api/scenarios/${scenarioId}`) {
+        return response({ scenarioId, artifacts });
+      }
+      if (url === "/api/attempts/attempt-canvas-save-persistence/teaching") {
+        return response([
+          {
+            stepId: "canvasstorm-investigation",
+            completed: true,
+            teachingResponse: { completedAt: "2026-07-17T00:00:00.000Z" },
+          },
+        ]);
+      }
+      return response({ error: "NOT_FOUND", message: "unexpected" }, 404);
+    });
+    vi.stubGlobal("fetch", fetchMock);
+
+    render(<App />);
+
+    expect(
+      await screen.findByLabelText("任务导演台", undefined, {
+        timeout: 3000,
+      }),
+    ).toBeInTheDocument();
+    expect(screen.getByLabelText(/主线 1-1 · AI 应用开发 实战追踪/))
+      .toHaveTextContent("剧情教学已经把「任务委托」整理成委托草案");
+    expect(screen.queryByLabelText("数据断层项目地图")).not.toBeInTheDocument();
+  });
+
   it("当前委托会根据成长档案推进到下一章主线", async () => {
     const user = userEvent.setup();
     localStorage.setItem(
@@ -3864,7 +3914,7 @@ describe("AI 职业路线入口", () => {
     expect(screen.getByLabelText("本步交付口令")).toHaveTextContent("场景");
     expect(screen.getByLabelText("本步交付口令")).toHaveTextContent("行动");
     expect(screen.getByLabelText("本步交付口令")).toHaveTextContent("结果");
-    expect(window.location.hash).toBe("");
+    expect(window.location.hash).toBe("#chapter-2");
   });
 
   it("第 1 章实战后半段会解释验收、委托、审查和迁移证据链", async () => {
@@ -6147,11 +6197,18 @@ describe("AI 职业路线入口", () => {
       await screen.findByRole("button", { name: /与伙伴进入实战/ }),
     );
 
+    expect(window.location.hash).toBe("#chapter-1");
     expect(
       await screen.findByText(/保存数据从哪里来，又在哪里断掉/),
     ).toBeInTheDocument();
     expect(screen.getByLabelText(/实战追踪/)).toHaveTextContent("冒险日志");
     expect(screen.getByLabelText(/实战追踪/)).toHaveTextContent("当前任务");
+    expect(screen.getByLabelText(/实战追踪/)).toHaveTextContent(
+      "剧情教学已经把「任务委托」整理成委托草案",
+    );
+    expect(screen.getByLabelText(/实战追踪/)).toHaveTextContent(
+      "你没有漏步骤",
+    );
     expect(screen.getByLabelText("任务导演台")).toHaveTextContent(
       "先看角色、目标和接力，再开始读代码",
     );

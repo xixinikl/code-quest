@@ -8014,6 +8014,37 @@ function getScenarioIdForRouteChapter(
   return routeChapterScenarioIds[`${routeId}:${chapterId}`];
 }
 
+function getStoryProgressStepIdForRestore(scenarioId: string) {
+  const storyStepIds: Record<string, string> = {
+    "frontend-component-state": "frontend-component-investigation",
+    "frontend-request-states": "frontend-request-states-investigation",
+    "java-layered-request": "java-layered-investigation",
+    "java-transaction-consistency": "java-transaction-investigation",
+    "java-cache-observability": "java-cache-investigation",
+    "frontend-performance-proof": "frontend-performance-investigation",
+    "frontend-accessibility-proof": "frontend-accessibility-investigation",
+    "frontend-testing-proof": "frontend-testing-investigation",
+    "java-release-harbor": "java-release-investigation",
+    "java-production-incident": "java-release-investigation",
+    "canvas-save-persistence": "canvasstorm-investigation",
+    "case-002": "canvasstorm-investigation",
+    "case-003-login-state": "login-state-investigation",
+    "case-004-api-error": "api-error-investigation",
+    "case-005-data-consistency": "consistency-investigation",
+    "case-006-performance": "performance-investigation",
+    "case-007-ai-api": "ai-api-investigation",
+    "case-008-hallucination": "hallucination-investigation",
+    "case-009-rag": "rag-investigation",
+    "case-010-agent-tools": "agent-tools-investigation",
+    "case-011-testing-proof": "testing-proof-investigation",
+    "case-012-agent-brief": "agent-brief-investigation",
+    "case-013-delivery-review": "delivery-review-investigation",
+    "case-014-release-readiness": "release-readiness-investigation",
+    "case-015-interview-review": "interview-review-investigation",
+  };
+  return storyStepIds[scenarioId] ?? "story-investigation";
+}
+
 function getChapterHash(target: number | RouteChapterTarget) {
   if (typeof target === "number") return `#chapter-${target}`;
   if (target.routeId === "ai-development")
@@ -8079,6 +8110,33 @@ function findRouteChapterTarget(
   };
 }
 
+function findRouteChapterTargetForScenarioId(
+  scenarioId: string,
+): RouteChapterTarget | null {
+  const aiChapterEntry = Object.entries(chapterScenarioIds).find(
+    ([, candidateScenarioId]) => candidateScenarioId === scenarioId,
+  );
+  if (aiChapterEntry) {
+    const chapterNumber = Number(aiChapterEntry[0]);
+    return {
+      routeId: "ai-development",
+      chapterId: String(chapterNumber),
+      chapterNumber,
+      scenarioId,
+    };
+  }
+
+  const routeEntry = Object.entries(routeChapterScenarioIds).find(
+    ([, candidateScenarioId]) => candidateScenarioId === scenarioId,
+  );
+  if (!routeEntry) return null;
+  const [routeId, chapterId] = routeEntry[0].split(":") as [
+    CareerRoute["id"],
+    string,
+  ];
+  return findRouteChapterTarget(routeId, chapterId);
+}
+
 function writeChapterHash(chapter: number) {
   if (typeof window === "undefined") return;
   const nextHash = getChapterHash(chapter);
@@ -8101,6 +8159,15 @@ function writeRouteChapterHashById(
 ) {
   const target = findRouteChapterTarget(routeId, chapterId);
   if (target) writeRouteChapterHash(target);
+}
+
+function writeScenarioChapterHash(scenarioId: string, fallbackChapter: number) {
+  const target = findRouteChapterTargetForScenarioId(scenarioId);
+  if (target) {
+    writeRouteChapterHash(target);
+    return;
+  }
+  writeChapterHash(fallbackChapter);
 }
 
 function clearChapterHash() {
@@ -9371,11 +9438,13 @@ function QuestLog({
   previous,
   current,
   next,
+  handoff,
 }: {
   title: string;
   previous: { label: string; body: string };
   current: { label: string; body: string };
   next: { label: string; body: string };
+  handoff?: string;
 }) {
   return (
     <section className="quest-log" aria-label={title}>
@@ -9400,6 +9469,7 @@ function QuestLog({
           <p>{next.body}</p>
         </article>
       </div>
+      {handoff && <p className="quest-log-handoff">{handoff}</p>}
     </section>
   );
 }
@@ -11733,6 +11803,11 @@ export function Lab({
                     ? "下一步继续补一段可复述的证据解释。"
                     : "最后生成成长档案，把本关产出整理成工作、Agent 和面试三种表达。",
             }}
+            handoff={
+              activeIndex > 0
+                ? `剧情教学已经把「${config.steps[0]?.label ?? "任务委托"}」整理成委托草案；所以实战从「${activeStep.label}」开始。你没有漏步骤，现在要把刚才看懂的流程拿去读真实材料。`
+                : undefined
+            }
           />
           <section className="lab-director-stage" aria-label="任务导演台">
             <header>
@@ -12034,7 +12109,12 @@ export default function App() {
                   (item) => item.stepId === step.id && item.completed,
                 ),
               );
-            setTeachingComplete(allDone);
+            const storyDone = teaching.some(
+              (item) =>
+                item.stepId === getStoryProgressStepIdForRestore(scenarioId) &&
+                item.completed,
+            );
+            setTeachingComplete(allDone || storyDone);
           } catch {
             setTeachingComplete(false);
           }
@@ -13782,7 +13862,7 @@ export default function App() {
                 <button
                   className="novel-back"
                   onClick={() => {
-                    clearChapterHash();
+                    writeScenarioChapterHash(activeScenarioId, currentMission);
                     setTeachingComplete(true);
                   }}
                 >
@@ -13881,7 +13961,7 @@ export default function App() {
         }}
         onContinueToLab={() => {
           scrollPageToTop();
-          clearChapterHash();
+          writeScenarioChapterHash(activeScenarioId, currentMission);
           setChapterReward(null);
           setTeachingComplete(true);
         }}

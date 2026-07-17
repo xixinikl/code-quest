@@ -179,6 +179,13 @@ function ChapterQuestLog({
 
   const previousStep = scenario.steps[currentStepIdx - 1];
   const nextStep = scenario.steps[currentStepIdx + 1];
+  const teachingHandoffStep =
+    currentStepIdx > 0 && completedCount >= currentStepIdx
+      ? previousStep
+      : undefined;
+  const teachingHandoff = teachingHandoffStep
+    ? `剧情教学已经把「${teachingHandoffStep.title}」整理成委托草案；所以实战从「${currentStep.title}」开始。你没有漏步骤，现在要把刚才看懂的流程拿去读真实材料。`
+    : "";
 
   return (
     <section className="quest-log teaching-quest-log" aria-label="章节冒险日志">
@@ -211,6 +218,9 @@ function ChapterQuestLog({
           </p>
         </article>
       </div>
+      {teachingHandoff && (
+        <p className="quest-log-handoff">{teachingHandoff}</p>
+      )}
     </section>
   );
 }
